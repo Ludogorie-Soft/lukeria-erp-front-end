@@ -73,13 +73,14 @@
     .form-group button:hover {
         background-color: #3e64e2;
     }
+
 </style>
 
 <body>
 <div class="wrapper">
     <nav id="sidebar" class="sidebar js-sidebar">
         <div class="sidebar-content js-simplebar">
-            <a class="sidebar-brand" href="../index.html">
+            <a class="sidebar-brand" href="index">
                 <span class="align-middle">Lukeria</span>
             </a>
 
@@ -134,21 +135,27 @@
                         <form action="/submit" method="post">
                             <div class="form-group">
                                 <label for="name">Име:</label>
-                                <input type="text" id="name" name="name" pattern=".{10,}" title="Моля въведете името на кашона с поне 10 символа!" required th:value="${carton.name}" />
+                                <input type="text" id="name" name="name" pattern=".{10,}"
+                                       title="Моля въведете името на кашона с поне 10 символа!" required
+                                       th:value="${carton.name}"/>
                                 <div class="error-message"></div>
                             </div>
                             <div class="form-group">
                                 <label for="size">Размери:</label>
-                                <input type="text" id="size" name="size" pattern=".{10,}" title="Моля въведете размерите на кашона с поне 10 символа!" required th:value="${carton.size}" />
+                                <input type="text" id="size" name="size" pattern=".{10,}"
+                                       title="Моля въведете размерите на кашона с поне 10 символа!" required
+                                       th:value="${carton.size}"/>
                                 <div class="error-message"></div>
                             </div>
                             <div class="form-group">
                                 <label for="availableQuantity">Налични бройки:</label>
-                                <input type="number" id="availableQuantity" name="availableQuantity" min="1" required th:value="${carton.availableQuantity}" />
+                                <input type="number" id="availableQuantity" name="availableQuantity" min="1" required
+                                       th:value="${carton.availableQuantity}"/>
                             </div>
                             <div class="form-group">
                                 <label for="price">Цена:</label>
-                                <input type="number" id="price" name="price" step="0.01" min="0.01" required th:value="${carton.price}" />
+                                <input type="number" id="price" name="price" step="0.01" min="0.01" required
+                                       th:value="${carton.price}"/>
                             </div>
                             <div class="text-center">
                                 <button type="submit" class="btn btn-primary">Създай</button>
