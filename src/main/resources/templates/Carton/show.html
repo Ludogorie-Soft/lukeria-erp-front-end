@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 
 <head>
     <meta charset="utf-8">
@@ -15,17 +15,28 @@
 
     <link rel="canonical" href="https://demo-basic.adminkit.io/"/>
 
-    <title>Lukeria Меню</title>
+    <title> Кашони </title>
 
     <link href="css/app.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
+<style>
+      .custom-card-width-lg {
+        width: auto; /* Променете стойността на ширината, според вашите нужди */
+        margin: 0 auto; /* Опционално: Центриране на карта хоризонтално */
+    }
+
+
+
+
+
+</style>
 
 <body>
 <div class="wrapper">
     <nav id="sidebar" class="sidebar js-sidebar">
         <div class="sidebar-content js-simplebar">
-            <a class="sidebar-brand" href="index.html">
+            <a class="sidebar-brand" href="../index.html">
                 <span class="align-middle">Lukeria</span>
             </a>
 
@@ -73,49 +84,51 @@
         <main class="content">
             <div class="d-flex justify-content-center">
                 <div class="row">
-                    <div class="col-12 col-md-4">
-                        <div class="card custom-card-width">
-                            <img class="card-img-top" src="img/photos/logo.png" alt="Logo">
+                    <div class="col-12">
+                        <div class="card custom-card-width-lg">
                             <div class="card-header">
-                                <h5 class="card-title mb-0">Card with image and links</h5>
+                                <h5 class="card-title mb-0">Всички кашони</h5>
+                            </div>
+                            <div class="text-center">
+                                <a href="/create" class="btn btn-primary">Добави Кашон</a>
                             </div>
                             <div class="card-body">
-                                <p class="card-text">Some quick example text to build on the card title and make up the
-                                    bulk of the card's content.</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-12 col-md-4">
-                        <div class="card custom-card-width">
-                            <img class="card-img-top" src="img/photos/logo.png" alt="Logo">
-                            <div class="card-header">
-                                <h5 class="card-title mb-0">Card with image and links</h5>
-                            </div>
-                            <div class="card-body">
-                                <p class="card-text">Some quick example text to build on the card title and make up the
-                                    bulk of the card's content.</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-12 col-md-4">
-                        <div class="card custom-card-width">
-                            <img class="card-img-top" src="img/photos/logo.png" alt="Logo">
-                            <div class="card-header">
-                                <h5 class="card-title mb-0">Card with image and links</h5>
-                            </div>
-                            <div class="card-body">
-                                <p class="card-text">Some quick example text to build on the card title and make up the
-                                    bulk of the card's content.</p>
+                                <table class="table">
+                                    <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Име</th>
+                                        <th>Размери</th>
+                                        <th>Наличност</th>
+                                        <th>Цена</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="carton : ${cartons}" data-id="${carton.id}" class="carton-row">
+                                        <td th:text="${carton.id}"></td>
+                                        <td th:text="${carton.name}"></td>
+                                        <td th:text="${carton.size + ' См'}"></td>
+                                        <td th:text="${carton.availableQuantity + ' Броя'}"></td>
+                                        <td th:text="${carton.price + ' Лв'}"></td>
+                                        <td>
+                                            <form th:action="@{'/delete/' + ${carton.id}}" method="post" th:attr="onsubmit='return confirm(\'Сигурни ли сте, че искате да изтриете кашон с име: ' + ${carton.name} + '?\');'">
+                                                <button type="submit" class="btn btn-danger">Изтрий</button>
+                                            </form>
+                                        </td>
+                                        <td>
+                                            <form th:action="@{'/editCarton/' + ${carton.id}}" method="get" th:attr="onsubmit='return confirm(\'Сигурни ли сте, че искате да редактирате кашон с име: ' + ${carton.name} + '?\');'">
+                                                <button type="submit" class="btn btn-primary">Редактирай</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </main>
-
-
     </div>
 </div>
 <script src="js/app.js"></script>
