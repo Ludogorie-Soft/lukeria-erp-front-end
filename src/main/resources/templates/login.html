@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="">
 
 <head>
 	<meta charset="utf-8">
@@ -22,44 +22,8 @@
 
 <body>
 <div class="wrapper">
-	<nav id="sidebar" class="sidebar js-sidebar">
-		<div class="sidebar-content js-simplebar">
-			<a class="sidebar-brand" href="index">
-				<span class="align-middle">Lukeria</span>
-			</a>
-
-			<ul class="sidebar-nav">
-				<li class="sidebar-header">
-					Страници
-				</li>
-
-				<li class="sidebar-item">
-					<a class="sidebar-link" href="index">
-						<i class="align-middle" data-feather="sliders"></i> <span class="align-middle">Главна страница</span>
-					</a>
-				</li>
-
-
-				<li class="sidebar-item active">
-					<a class="sidebar-link" href="login">
-						<i class="align-middle" data-feather="log-in"></i> <span class="align-middle">Впиши се</span>
-					</a>
-				</li>
-
-				<li class="sidebar-item">
-					<a class="sidebar-link" href="register">
-						<i class="align-middle" data-feather="user-plus"></i> <span class="align-middle">Регистрирай се</span>
-					</a>
-				</li>
-
-				<li class="sidebar-item">
-					<a class="sidebar-link" href="/show">
-						<i class="align-middle" data-feather="book"></i> <span class="align-middle">Кашони</span>
-					</a>
-				</li>
-			</ul>
-		</div>
-	</nav>
+<!--    HEADER  -->
+<th:block th:include="~{fragments/header}"></th:block>
 	<div class="main">
 		<nav class="navbar navbar-expand navbar-light navbar-bg">
 			<a class="sidebar-toggle js-sidebar-toggle">
