@@ -1,4 +1,4 @@
-package com.example.LukeriaFrontendApplication;
+package com.example.LukeriaFrontendApplication.controllers;
 
 import com.example.LukeriaFrontendApplication.config.CartonClient;
 import com.example.LukeriaFrontendApplication.dtos.CartonDTO;
@@ -25,17 +25,10 @@ public class CartonController {
     public String index(Model model) {
         List<CartonDTO> cartons = cartonClient.getAllCartons();
         model.addAttribute("deleteMessageBoolean", true);
-
         model.addAttribute("cartons", cartons);
         return "Carton/show";
     }
 
-    @GetMapping("/show/{id}")
-    String getCartonById(@PathVariable(name = "id") Long id, Model model) {
-        CartonDTO carton = cartonClient.getCartonById(id);
-        model.addAttribute(CARTONTXT, carton);
-        return "Carton/showById";
-    }
 
 
     @GetMapping("/create")
