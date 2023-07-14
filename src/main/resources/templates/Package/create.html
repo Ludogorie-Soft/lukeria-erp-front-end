@@ -123,6 +123,12 @@
                                     <option th:each="carton : ${cartons}" th:value="${carton.id}" th:text="${carton.name}"></option>
                                 </select>
                             </div>
+                            <div class="form-group">
+                                <label for="plateId" style="width: 100%;">Тарелка която се поставя в кутията:</label>
+                                <select id="plateId" name="plateId" style="width: 100%;">
+                                    <option th:each="plate : ${plates}" th:value="${plate.id}" th:text="${plate.name}"></option>
+                                </select>
+                            </div>
                             <div class="text-center">
                                 <button type="submit" class="btn btn-primary">Създай</button>
                             </div>

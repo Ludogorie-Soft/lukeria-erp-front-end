@@ -2,8 +2,10 @@ package com.example.LukeriaFrontendApplication.controllers;
 
 import com.example.LukeriaFrontendApplication.config.CartonClient;
 import com.example.LukeriaFrontendApplication.config.PackageClient;
+import com.example.LukeriaFrontendApplication.config.PlateClient;
 import com.example.LukeriaFrontendApplication.dtos.CartonDTO;
 import com.example.LukeriaFrontendApplication.dtos.PackageDTO;
+import com.example.LukeriaFrontendApplication.dtos.PlateDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ui.Model;
@@ -21,6 +23,7 @@ import java.util.List;
 public class PackageController {
     private final PackageClient packageClient;
     private final CartonClient cartonClient;
+    private final PlateClient plateClient;
     private static final String REDIRECTTXT ="redirect:/package/show";
 
 
@@ -35,6 +38,8 @@ public class PackageController {
     String createPackage(Model model) {
         PackageDTO packageEntity = new PackageDTO();
         List<CartonDTO> cartons=cartonClient.getAllCartons();
+        List<PlateDTO> plates=plateClient.getAllPlates();
+        model.addAttribute("plates", plates);
         model.addAttribute("cartons", cartons);
         model.addAttribute("packageEntity", packageEntity);
         return "Package/create";
@@ -51,6 +56,8 @@ public class PackageController {
     String editPackage(@PathVariable(name = "id") Long id, Model model) {
         PackageDTO existingPackage = packageClient.getPackageById(id);
         List<CartonDTO> cartons=cartonClient.getAllCartons();
+        List<PlateDTO> plates=plateClient.getAllPlates();
+        model.addAttribute("plates", plates);
         model.addAttribute("cartons", cartons);
         model.addAttribute("package", existingPackage);
         return "Package/edit";

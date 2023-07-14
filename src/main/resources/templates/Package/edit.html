@@ -108,9 +108,15 @@
                                 <div class="error-message" th:if="${#fields.hasErrors('availableQuantity')}" th:errors="*{availableQuantity}"></div>
                             </div>
                             <div class="form-group">
-                                <label for="cartonId">Картон в който се опакова пакета:</label>
+                                <label for="cartonId">Картон в който се опакова кутията:</label>
                                 <select id="cartonId" name="cartonId" th:field="*{cartonId}">
                                     <option th:each="carton : ${cartons}" th:value="${carton.id}" th:text="${carton.name}"></option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="plateId">Тарелка който се поставя в кутията:</label>
+                                <select id="plateId" name="plateId" th:field="*{plateId}">
+                                    <option th:each="plate : ${plates}" th:value="${plate.id}" th:text="${plate.name}"></option>
                                 </select>
                             </div>
                             <div class="form-group">

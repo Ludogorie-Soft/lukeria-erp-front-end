@@ -69,6 +69,7 @@ margin: 0 auto; /* Опционално: Центриране на карта х
                                         <th>Наличност</th>
                                         <th>Цена</th>
                                         <th>Кашон ID</th>
+                                        <th>Тарелка ID</th>
                                         <th>Брой кутии в Кашон</th>
                                         <th>Снимка</th>
                                     </tr>
@@ -82,6 +83,7 @@ margin: 0 auto; /* Опционално: Центриране на карта х
                                         </td>
                                         <td th:text="${package.price + ' Лв'}"></td>
                                         <td th:text="${package.cartonId}"></td>
+                                        <td th:text="${package.plateId}"></td>
                                         <td th:text="${package.piecesCarton}"></td>
                                         <td th:text="${package.photo}"></td>
                                         <td>
