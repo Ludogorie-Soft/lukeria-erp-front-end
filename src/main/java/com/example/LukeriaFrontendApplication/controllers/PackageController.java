@@ -21,6 +21,7 @@ import java.util.List;
 public class PackageController {
     private final PackageClient packageClient;
     private final CartonClient cartonClient;
+    private static final String REDIRECTTXT ="redirect:/package/show";
 
 
     @GetMapping("/package/show")
@@ -42,10 +43,11 @@ public class PackageController {
     @PostMapping("/package/submit")
     public ModelAndView submitPackage(@ModelAttribute("packageEntity") PackageDTO packageDTO) {
         packageClient.createPackage(packageDTO);
-        return new ModelAndView("redirect:/package/show");
+        return new ModelAndView(REDIRECTTXT
+        );
     }
 
-    @GetMapping("/editPackage/{id}")
+    @GetMapping("/package/editPackage/{id}")
     String editPackage(@PathVariable(name = "id") Long id, Model model) {
         PackageDTO existingPackage = packageClient.getPackageById(id);
         List<CartonDTO> cartons=cartonClient.getAllCartons();
@@ -54,15 +56,15 @@ public class PackageController {
         return "Package/edit";
     }
 
-    @GetMapping("/package/edit/{id}")
+    @PostMapping("/package/editSubmit/{id}")
     ModelAndView editPackage(@PathVariable(name = "id") Long id, PackageDTO packageDTO) {
         packageClient.updatePackage(id, packageDTO);
-        return new ModelAndView("redirect:/package/show");
+        return new ModelAndView(REDIRECTTXT);
     }
 
     @PostMapping("/package/delete/{id}")
     ModelAndView deletePackageById(@PathVariable("id") Long id, Model model) {
         packageClient.deletePackageById(id);
-        return new ModelAndView("redirect:/package/show");
+        return new ModelAndView(REDIRECTTXT);
     }
 }

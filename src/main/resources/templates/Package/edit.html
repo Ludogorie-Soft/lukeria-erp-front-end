@@ -90,10 +90,10 @@
             <div class="form-container">
                 <div class="card custom-card-width-lg">
                     <div class="card-header">
-                        <h5 class="card-title mb-0">Редактирай кашон</h5>
+                        <h5 class="card-title mb-0">Редактирай Кутия</h5>
                     </div>
                     <div class="card-body">
-                        <form th:action="@{'/package/edit/' + ${package.id}}" method="post" th:object="${package}">
+                        <form th:action="@{'/package/editSubmit/' + ${package.id}}" method="post" th:object="${package}">
                             <div class="form-group">
                                 <label for="name">Име:</label>
                                 <input type="text" id="name" name="name" pattern=".{10,}"

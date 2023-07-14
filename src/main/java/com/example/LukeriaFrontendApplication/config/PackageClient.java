@@ -3,8 +3,6 @@ package com.example.LukeriaFrontendApplication.config;
 import com.example.LukeriaFrontendApplication.dtos.PackageDTO;
 import jakarta.validation.Valid;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,7 +20,7 @@ public interface PackageClient {
     PackageDTO createPackage(@Valid @RequestBody PackageDTO packageDTO) ;
 
     @PutMapping("/{id}")
-    void updatePackage(@PathVariable("id") Long id, @Valid @RequestBody PackageDTO packageDTO);
+    void updatePackage(@PathVariable("id") Long id, @RequestBody PackageDTO packageDTO);
 
     @DeleteMapping("/{id}")
    String deletePackageById(@PathVariable("id") Long id);
