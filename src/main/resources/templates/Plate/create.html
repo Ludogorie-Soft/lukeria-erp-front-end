@@ -42,7 +42,7 @@
             <form action="/plate/submit" method="post">
               <div class="form-group">
                 <label for="name">Име:</label>
-                <input type="text" id="name" name="name" pattern=".{10,}"
+                <input type="text" id="name" name="name"
                        title="Моля въведете името на тарелката!" required
                        th:value="${plate.name}"/>
                 <div class="error-message"></div>
@@ -67,6 +67,6 @@
     </main>
   </div>
 </div>
-<script src="/js/app.js"></script>
+<script src="js/app.js"></script>
 </body>
 </html>
