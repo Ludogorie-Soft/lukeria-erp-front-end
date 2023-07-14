@@ -1,0 +1,12 @@
+.custom-card-width-lg {
+width: auto; /* Променете стойността на ширината, според вашите нужди */
+margin: 0 auto; /* Опционално: Центриране на карта хоризонтално */
+    }
+
+.yellow-cell {
+  background-color: yellow;
+}
+
+.red-cell {
+  background-color: red;
+}
