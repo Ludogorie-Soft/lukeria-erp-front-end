@@ -17,7 +17,7 @@ import java.util.List;
 public class ClientController {
     private final ClientClient clientClient;
     private  static final String CARTONTXT = "client";
-    private static final String REDIRECTTXT = "redirect:/show";
+    private static final String REDIRECTTXT = "redirect:/client/show";
 
     @GetMapping("/show")
     public String index(Model model) {
