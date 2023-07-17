@@ -1,4 +1,4 @@
-package com.example.LukeriaFrontendApplication;
+package com.example.LukeriaFrontendApplication.controllers;
 
 import com.example.LukeriaFrontendApplication.config.CartonClient;
 import com.example.LukeriaFrontendApplication.dtos.CartonDTO;
