@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+  <!--    LINKS  -->
+  <th:block th:include="~{fragments/links}"></th:block>
+
+  <title> Клиенти </title>
+  <link href="/css/show.css" rel="stylesheet">
+</head>
+<body>
+<div class="wrapper">
+  <!--    HEADER  -->
+  <th:block th:include="~{fragments/header}"></th:block>
+
+
+  <div class="main">
+    <nav class="navbar navbar-expand navbar-light navbar-bg">
+      <a class="sidebar-toggle js-sidebar-toggle">
+        <i class="hamburger align-self-center"></i>
+      </a>
+    </nav>
+    <main class="content">
+      <div class="d-flex justify-content-center">
+        <div class="row">
+          <div class="col-12">
+            <div class="card custom-card-width-lg">
+              <div class="card-header">
+                <h5 class="card-title mb-0">Всички клиенти</h5>
+              </div>
+              <div class="text-center">
+                <a href="/client/create" class="btn btn-primary">Добави Клиент</a>
+              </div>
+              <div class="card-body">
+                <table class="table">
+                  <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Име на фирма</th>
+                    <th>Ид. Номер по ЕИК</th>
+                    <th>Ид. Номер по ДДС</th>
+                    <th>Адрес</th>
+                    <th>Български клиент</th>
+                    <th>МОЛ</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr th:each="client : ${clients}" data-id="${client.id}" class="client-row">
+                    <td th:text="${client.id}"></td>
+                    <td th:text="${client.businessName}"></td>
+                    <td th:text="${client.idNumEIK}"></td>
+                    <td th:text="${client.hasIdNumDDS ? 'BG' + client.idNumEIK : 'няма'}"></td>
+                    <td th:text="${client.address}"></td>
+                    <td th:text="${client.isBulgarianClient ? 'ДА' : 'НЕ'}"></td>
+                    <td th:text="${client.mol}"></td>
+                    <td>
+                      <form th:action="@{'/client/delete/' + ${client.id}}" method="post"
+                            th:attr="onsubmit='return confirm(\'Сигурни ли сте, че искате да изтриете клинет с id: ' + ${client.id} + '?\');'">
+                        <button type="submit" class="btn btn-danger">Изтрий</button>
+                      </form>
+                    </td>
+                    <td>
+                      <form th:action="@{'/client/editClient/' + ${client.id}}" method="get"
+                            th:attr="onsubmit='return confirm(\'Сигурни ли сте, че искате да редактирате клинет с id: ' + ${client.id} + '?\');'">
+                        <button type="submit" class="btn btn-primary">Редактирай</button>
+                      </form>
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+<script src="/js/app.js"></script>
+</body>
+</html>
