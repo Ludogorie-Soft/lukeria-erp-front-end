@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="Responsive Admin &amp; Dashboard Template based on Bootstrap 5">
+  <meta name="author" content="AdminKit">
+  <meta name="keywords"
+        content="adminkit, bootstrap, bootstrap 5, admin, dashboard, template, responsive, css, sass, html, theme, front-end, ui kit, web">
+
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link rel="shortcut icon" href="/static/img/icons/icon-48x48.png"/>
+
+  <link rel="canonical" href="https://demo-basic.adminkit.io/"/>
+
+  <title> Тарелки </title>
+
+  <link href="/css/app.css" rel="stylesheet">
+  <link href="/css/show.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="wrapper">
+  <!--    HEADER  -->
+  <th:block th:include="~{fragments/header}"></th:block>
+
+
+  <div class="main">
+    <nav class="navbar navbar-expand navbar-light navbar-bg">
+      <a class="sidebar-toggle js-sidebar-toggle">
+        <i class="hamburger align-self-center"></i>
+      </a>
+    </nav>
+    <main class="content">
+      <div class="d-flex justify-content-center">
+        <div class="row">
+          <div class="col-12">
+            <div class="card custom-card-width-lg">
+              <div class="card-header">
+                <h5 class="card-title mb-0">Всички тарелки</h5>
+              </div>
+              <div class="text-center">
+                <a href="/plate/create" class="btn btn-primary">Добави Тарелка</a>
+              </div>
+              <div class="card-body">
+                <table class="table">
+                  <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Име</th>
+                    <th>Наличност</th>
+                    <th>Цена</th>
+                    <th>Снимка</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr th:each="plate : ${plates}" data-id="${plate.id}" class="plate-row">
+                    <td th:text="${plate.id}"></td>
+                    <td th:text="${plate.name}"></td>
+                    <td>
+                      <span th:text="${plate.availableQuantity + ' Броя'}" th:class="${plate.availableQuantity <= 20 ? 'red-cell' : (plate.availableQuantity <= 100 ? 'yellow-cell' : '')}"></span>
+                    </td>
+                    <td th:text="${plate.price + ' Лв'}"></td>
+                    <td th:text="${plate.photo}"></td>
+                    <td>
+                      <form th:action="@{'/plate/delete/' + ${plate.id}}" method="post"
+                            th:attr="onsubmit='return confirm(\'Сигурни ли сте, че искате да изтриете тарелка с име: ' + ${plate.name} + '?\');'">
+                        <button type="submit" class="btn btn-danger">Изтрий</button>
+                      </form>
+                    </td>
+                    <td>
+                      <form th:action="@{'/plate/editPlate/' + ${plate.id}}" method="get"
+                            th:attr="onsubmit='return confirm(\'Сигурни ли сте, че искате да редактирате тарелка с име: ' + ${plate.name} + '?\');'">
+                        <button type="submit" class="btn btn-primary">Редактирай</button>
+                      </form>
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+<script src="/js/app.js"></script>
+</body>
+</html>
