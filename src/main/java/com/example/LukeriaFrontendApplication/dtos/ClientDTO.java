@@ -18,7 +18,17 @@ public class ClientDTO {
     private boolean hasIdNumDDS;
     @NotNull(message = "Моля въведете адреса!")
     private String address;
-    private boolean isBulgarianClient;
     private String mol;
+
+    // I did the fiend String because otherwise it always gets value of FALSE from the html form and only this way i could fix it
+    private String isBulgarianClient;
+
+    public boolean isBulgarianClient() {
+        return Boolean.parseBoolean(isBulgarianClient);
+    }
+
+    public void setBulgarianClient(boolean bulgarianClient) {
+        isBulgarianClient = String.valueOf(bulgarianClient);
+    }
 }
 
