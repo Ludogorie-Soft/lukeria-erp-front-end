@@ -1,5 +1,5 @@
 /*! For license information please see app.js.LICENSE.txt */
- document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function() {
   var currentPageUrl = window.location.href;
   var sidebarLinks = document.querySelectorAll('.sidebar-link');
 
