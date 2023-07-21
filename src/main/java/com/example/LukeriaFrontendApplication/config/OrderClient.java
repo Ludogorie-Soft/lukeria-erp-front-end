@@ -3,6 +3,7 @@ package com.example.LukeriaFrontendApplication.config;
 import com.example.LukeriaFrontendApplication.dtos.OrderDTO;
 import jakarta.validation.Valid;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -11,6 +12,8 @@ import java.util.List;
 public interface OrderClient {
     @GetMapping()
     List<OrderDTO> getAllOrders();
+    @GetMapping("/findLastOrder")
+    OrderDTO findFirstByOrderByIdDesc();
 
     @GetMapping("/{id}")
     OrderDTO getOrderById(@PathVariable(name = "id") Long id);

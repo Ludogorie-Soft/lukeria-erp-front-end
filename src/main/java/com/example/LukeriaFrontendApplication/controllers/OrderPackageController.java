@@ -27,15 +27,7 @@ public class OrderPackageController {
     @GetMapping("/addProduct")
     String createOrderProduct(Model model) {
         OrderProductDTO orderProduct = new OrderProductDTO();
-        List<OrderDTO> orderDTOS = orderClient.getAllOrders();
-        Long biggestId = null;
-        for (OrderDTO orderDTO : orderDTOS) {
-            Long currentId = orderDTO.getId();
-            if (biggestId == null || (currentId != null && currentId > biggestId)) {
-                biggestId = currentId;
-            }
-        }
-        OrderDTO orderDTO = orderClient.getOrderById(biggestId);
+        OrderDTO orderDTO = orderClient.getOrderById(orderClient.findFirstByOrderByIdDesc().getId());
         List<PackageDTO> packageDTOS = packageClient.getAllPackages();
         model.addAttribute("order", orderDTO);
         model.addAttribute("packages", packageDTOS);
@@ -46,19 +38,10 @@ public class OrderPackageController {
     @PostMapping("/submit")
     public ModelAndView submitOrderProduct(@ModelAttribute("orderProduct") OrderProductDTO orderProductDTO,
                                            @RequestParam(value = "addAnotherDish", required = false) boolean addAnotherDish, Model model) {
-        List<OrderDTO> orderDTOS = orderClient.getAllOrders();
-        Long biggestId = null;
-        for (OrderDTO orderDTO : orderDTOS) {
-            Long currentId = orderDTO.getId();
-            if (biggestId == null || (currentId != null && currentId > biggestId)) {
-                biggestId = currentId;
-            }
-        }
-
-        orderProductDTO.setOrderId(biggestId);
+        orderProductDTO.setOrderId(orderClient.findFirstByOrderByIdDesc().getId());
         orderProductClient.createOrderProduct(orderProductDTO);
         if(addAnotherDish){
-            OrderDTO orderDTO = orderClient.getOrderById(biggestId);
+            OrderDTO orderDTO = orderClient.getOrderById(orderClient.findFirstByOrderByIdDesc().getId());
             model.addAttribute("order", orderDTO);
             List<PackageDTO> packageDTOS = packageClient.getAllPackages();
             model.addAttribute("packages", packageDTOS);
