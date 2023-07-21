@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+
+<head>
+    <!--    LINKS  -->
+    <th:block th:include="~{fragments/links}"></th:block>
+
+    <title> Добави продукти на поръчка </title>
+    <link href="/css/form.css" rel="stylesheet">
+</head>
+
+<body>
+<div class="wrapper">
+    <!--    HEADER  -->
+    <th:block th:include="~{fragments/header}"></th:block>
+    <div class="main">
+        <nav class="navbar navbar-expand navbar-light navbar-bg">
+            <a class="sidebar-toggle js-sidebar-toggle">
+                <i class="hamburger align-self-center"></i>
+            </a>
+        </nav>
+        <main class="content">
+            <div class="form-container">
+                <div class="card custom-card-width-lg">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Добави продукти на поръчка</h5>
+                    </div>
+                    <div class="card-body">
+                        <form action="/orderProduct/submit" method="post">
+                            <div class="form-group">
+                                <p>Order ID: <span th:text="${order.id}"></span></p>
+                            </div>
+                            <div class="form-group">
+                                <label for="packageId" style="width: 100%;">Продукти:</label>
+                                <select class="form-select" size="6" aria-label="size 6 select example" id="packageId" name="packageId" style="width: 100%;">
+                                    <option th:each="packageId : ${packages}" th:value="${packageId.id}" th:text="${packageId.name}"></option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="number" style="width: 100%;">Брой:</label>
+                                <input type="number" id="number"  th:field="${orderProduct.number}" name="number">
+                            </div>
+                            <p>Добави още продукти към поръчката ->
+                                <input class="form-check-input" type="checkbox" name="addAnotherDish"></p>
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-primary">Създай</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+<script src="js/app.js"></script>
+</body>

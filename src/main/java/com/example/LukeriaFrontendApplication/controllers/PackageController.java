@@ -48,8 +48,7 @@ public class PackageController {
     @PostMapping("/package/submit")
     public ModelAndView submitPackage(@ModelAttribute("packageEntity") PackageDTO packageDTO) {
         packageClient.createPackage(packageDTO);
-        return new ModelAndView(REDIRECTTXT
-        );
+        return new ModelAndView(REDIRECTTXT);
     }
 
     @GetMapping("/package/editPackage/{id}")
