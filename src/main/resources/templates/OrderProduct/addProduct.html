@@ -34,7 +34,7 @@
                             <div class="form-group">
                                 <label for="packageId" style="width: 100%;">Продукти:</label>
                                 <select class="form-select" size="6" aria-label="size 6 select example" id="packageId" name="packageId" style="width: 100%;" required>
-                                    <option th:each="packageId : ${packages}" th:value="${packageId.id}" th:text="${packageId.name}" ></option>
+                                    <option th:each="packageId : ${packages}" th:value="${packageId.id}" th:text="${packageId.id} + ' - ' +${packageId.name}"  ></option>
                                 </select>
                             </div>
                             <div class="form-group">
@@ -50,6 +50,22 @@
                                 <button type="submit" class="btn btn-primary">Запази</button>
                             </div>
                         </form>
+                        <br>
+                        <h6 class="card-title mb-0">Вече добавени продукти към поръчката</h6>
+                        <table class="table table-hover">
+                            <thead>
+                            <tr>
+                                <th>Номер</th>
+                                <th>Име</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="product : ${products}">
+                                <td th:text="${product.id}"></td>
+                                <td th:text="${product.name}"></td>
+                            </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>

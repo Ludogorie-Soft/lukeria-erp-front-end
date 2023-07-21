@@ -11,13 +11,15 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 
 @org.springframework.stereotype.Controller
 @RequiredArgsConstructor
 @Slf4j
 @RequestMapping("/orderProduct")
-public class OrderPackageController {
+public class OrderProductController {
     private final OrderProductClient orderProductClient;
     private final OrderClient orderClient;
     private final PackageClient packageClient;
@@ -28,9 +30,19 @@ public class OrderPackageController {
     String createOrderProduct(Model model) {
         OrderProductDTO orderProduct = new OrderProductDTO();
         OrderDTO orderDTO = orderClient.getOrderById(orderClient.findFirstByOrderByIdDesc().getId());
-        List<PackageDTO> packageDTOS = packageClient.getAllPackages();
+        List<OrderProductDTO> orderProductDTOS = orderProductClient.getAllOrderProducts()
+                .stream()
+                .filter(order -> Objects.equals(order.getOrderId(), orderDTO.getId())).toList();
+        List<Long> packageDTOIds = orderProductDTOS
+                .stream()
+                .map(OrderProductDTO::getPackageId).toList();
+        List<PackageDTO> packageDTOList = packageDTOIds
+                .stream()
+                .map(packageClient::getPackageById)
+                .collect(Collectors.toList());
+        model.addAttribute("products", packageDTOList);
         model.addAttribute("order", orderDTO);
-        model.addAttribute("packages", packageDTOS);
+        model.addAttribute("packages", packageClient.getAllPackages());
         model.addAttribute(CARTONTXT, orderProduct);
         return "OrderProduct/addProduct";
     }
@@ -43,8 +55,18 @@ public class OrderPackageController {
         if(addAnotherDish){
             OrderDTO orderDTO = orderClient.getOrderById(orderClient.findFirstByOrderByIdDesc().getId());
             model.addAttribute("order", orderDTO);
-            List<PackageDTO> packageDTOS = packageClient.getAllPackages();
-            model.addAttribute("packages", packageDTOS);
+            model.addAttribute("packages", packageClient.getAllPackages());
+            List<OrderProductDTO> orderProductDTOS = orderProductClient.getAllOrderProducts()
+                    .stream()
+                    .filter(order -> Objects.equals(order.getOrderId(), orderDTO.getId())).toList();
+            List<Long> packageDTOIds = orderProductDTOS
+                    .stream()
+                    .map(OrderProductDTO::getPackageId).toList();
+            List<PackageDTO> packageDTOList = packageDTOIds
+                    .stream()
+                    .map(packageClient::getPackageById)
+                    .collect(Collectors.toList());
+            model.addAttribute("products", packageDTOList);
             return new ModelAndView("OrderProduct/addProduct");
         }
         return new ModelAndView(REDIRECTTXT);
