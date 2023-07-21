@@ -7,6 +7,7 @@
 
     <title> Добави продукти на поръчка </title>
     <link href="/css/form.css" rel="stylesheet">
+    <link href="/css/checkbox.css" rel="stylesheet">
 </head>
 
 <body>
@@ -32,16 +33,19 @@
                             </div>
                             <div class="form-group">
                                 <label for="packageId" style="width: 100%;">Продукти:</label>
-                                <select class="form-select" size="6" aria-label="size 6 select example" id="packageId" name="packageId" style="width: 100%;">
-                                    <option th:each="packageId : ${packages}" th:value="${packageId.id}" th:text="${packageId.name}"></option>
+                                <select class="form-select" size="6" aria-label="size 6 select example" id="packageId" name="packageId" style="width: 100%;" required>
+                                    <option th:each="packageId : ${packages}" th:value="${packageId.id}" th:text="${packageId.name}" ></option>
                                 </select>
                             </div>
                             <div class="form-group">
                                 <label for="number" style="width: 100%;">Брой:</label>
-                                <input type="number" id="number"  th:field="${orderProduct.number}" name="number">
+                                <input type="number" id="number"  th:field="${orderProduct.number}" name="number" required>
                             </div>
-                            <p>Добави още продукти към поръчката ->
-                                <input class="form-check-input" type="checkbox" name="addAnotherDish"></p>
+                            <div class="checkbox-wrapper-19">
+                                <label>Добави още продукти към поръчката: </label>
+                                <input id="addAnotherDish" type="checkbox" name="addAnotherDish">
+                                <label class="check-box" for="addAnotherDish">
+                                </label></div>
                             <div class="text-center">
                                 <button type="submit" class="btn btn-primary">Създай</button>
                             </div>
