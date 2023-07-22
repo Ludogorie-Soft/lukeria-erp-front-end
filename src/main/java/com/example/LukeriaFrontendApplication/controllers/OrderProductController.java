@@ -30,16 +30,10 @@ public class OrderProductController {
     String createOrderProduct(Model model) {
         OrderProductDTO orderProduct = new OrderProductDTO();
         OrderDTO orderDTO = orderClient.getOrderById(orderClient.findFirstByOrderByIdDesc().getId());
-        List<OrderProductDTO> orderProductDTOS = orderProductClient.getAllOrderProducts()
-                .stream()
-                .filter(order -> Objects.equals(order.getOrderId(), orderDTO.getId())).toList();
-        List<Long> packageDTOIds = orderProductDTOS
-                .stream()
-                .map(OrderProductDTO::getPackageId).toList();
-        List<PackageDTO> packageDTOList = packageDTOIds
-                .stream()
-                .map(packageClient::getPackageById)
-                .collect(Collectors.toList());
+        List<OrderProductDTO> orderProductDTOS = orderProductClient.getAllOrderProducts().stream().filter(order -> Objects.equals(order.getOrderId(), orderDTO.getId())).toList();
+        List<Long> packageDTOIds = orderProductDTOS.stream().map(OrderProductDTO::getPackageId).toList();
+        List<PackageDTO> packageDTOList = packageDTOIds.stream().map(packageClient::getPackageById).collect(Collectors.toList());
+        model.addAttribute("orderProducts", orderProductDTOS);
         model.addAttribute("products", packageDTOList);
         model.addAttribute("order", orderDTO);
         model.addAttribute("packages", packageClient.getAllPackages());
@@ -56,19 +50,23 @@ public class OrderProductController {
             OrderDTO orderDTO = orderClient.getOrderById(orderClient.findFirstByOrderByIdDesc().getId());
             model.addAttribute("order", orderDTO);
             model.addAttribute("packages", packageClient.getAllPackages());
-            List<OrderProductDTO> orderProductDTOS = orderProductClient.getAllOrderProducts()
-                    .stream()
-                    .filter(order -> Objects.equals(order.getOrderId(), orderDTO.getId())).toList();
-            List<Long> packageDTOIds = orderProductDTOS
-                    .stream()
-                    .map(OrderProductDTO::getPackageId).toList();
-            List<PackageDTO> packageDTOList = packageDTOIds
-                    .stream()
-                    .map(packageClient::getPackageById)
-                    .collect(Collectors.toList());
+            List<OrderProductDTO> orderProductDTOS = orderProductClient.getAllOrderProducts().stream().filter(order -> Objects.equals(order.getOrderId(), orderDTO.getId())).toList();
+            List<Long> packageDTOIds = orderProductDTOS.stream().map(OrderProductDTO::getPackageId).toList();
+            List<PackageDTO> packageDTOList = packageDTOIds.stream().map(packageClient::getPackageById).collect(Collectors.toList());
+            model.addAttribute("orderProducts", orderProductDTOS);
             model.addAttribute("products", packageDTOList);
             return new ModelAndView("OrderProduct/addProduct");
         }
         return new ModelAndView(REDIRECTTXT);
+    }
+    @GetMapping("/orderDetails/{orderId}")
+    public String showOrderDetails(@PathVariable(name = "orderId") Long orderId, Model model) {
+        List<OrderProductDTO> orderProductDTOS = orderProductClient.getAllOrderProducts().stream().filter(order -> Objects.equals(order.getOrderId(), orderId)).toList();
+        List<Long> packageDTOIds = orderProductDTOS.stream().map(OrderProductDTO::getPackageId).toList();
+        List<PackageDTO> packageDTOList = packageDTOIds.stream().map(packageClient::getPackageById).collect(Collectors.toList());
+        model.addAttribute("orderProducts", orderProductDTOS);
+        model.addAttribute("products", packageDTOList);
+        model.addAttribute("packages", packageClient.getAllPackages());
+        return "OrderProduct/orderDetails";
     }
 }

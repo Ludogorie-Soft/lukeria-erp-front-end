@@ -2,19 +2,12 @@ package com.example.LukeriaFrontendApplication.controllers;
 
 import com.example.LukeriaFrontendApplication.config.ClientClient;
 import com.example.LukeriaFrontendApplication.config.OrderClient;
-import com.example.LukeriaFrontendApplication.config.OrderProductClient;
-import com.example.LukeriaFrontendApplication.config.PackageClient;
 import com.example.LukeriaFrontendApplication.dtos.ClientDTO;
 import com.example.LukeriaFrontendApplication.dtos.OrderDTO;
-import com.example.LukeriaFrontendApplication.dtos.OrderProductDTO;
-import com.example.LukeriaFrontendApplication.dtos.PackageDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
@@ -42,5 +35,19 @@ public class OrderController {
     public ModelAndView submitOrder(@ModelAttribute("order") OrderDTO orderDTO) {
         orderClient.createOrder(orderDTO);
         return new ModelAndView("redirect:/orderProduct/addProduct");
+    }
+    @GetMapping("/show")
+    public String index(Model model) {
+        List<OrderDTO> orders = orderClient.getAllOrders();
+        List<Long> clientIds = orders.stream().map(OrderDTO::getClientId).toList();
+        List<ClientDTO> clients = clientIds.stream().map(clientClient::getClientById).toList();
+        model.addAttribute("orders", orders);
+        model.addAttribute("clients", clients);
+        return "OrderProduct/show";
+    }
+    @PostMapping("/delete/{id}")
+    ModelAndView deleteOrderById(@PathVariable("id") Long id, Model model) {
+        orderClient.deleteOrderById(id);
+        return new ModelAndView("redirect:/order/show");
     }
 }
