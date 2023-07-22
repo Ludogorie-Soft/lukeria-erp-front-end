@@ -4,8 +4,10 @@ import com.example.LukeriaFrontendApplication.config.ClientClient;
 import com.example.LukeriaFrontendApplication.config.OrderClient;
 import com.example.LukeriaFrontendApplication.dtos.ClientDTO;
 import com.example.LukeriaFrontendApplication.dtos.OrderDTO;
+import com.example.LukeriaFrontendApplication.dtos.PlateDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.annotation.Order;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -19,15 +21,15 @@ import java.util.List;
 public class OrderController {
     private final OrderClient orderClient;
     private final ClientClient clientClient;
-    private static final String CARTONTXT = "order";
-    private static final String REDIRECTTXT = "redirect:/orderProduct/show";
+    private static final String ORDERTXT = "order";
+    private static final String REDIRECTTXT = "redirect:/order/show";
 
     @GetMapping("/create")
     String createOrder(Model model) {
         OrderDTO orderDTO = new OrderDTO();
         List<ClientDTO> clientDTOS = clientClient.getAllClients();
         model.addAttribute("clients", clientDTOS);
-        model.addAttribute(CARTONTXT, orderDTO);
+        model.addAttribute(ORDERTXT, orderDTO);
         return "OrderProduct/create";
     }
 
@@ -48,6 +50,19 @@ public class OrderController {
     @PostMapping("/delete/{id}")
     ModelAndView deleteOrderById(@PathVariable("id") Long id, Model model) {
         orderClient.deleteOrderById(id);
-        return new ModelAndView("redirect:/order/show");
+        return new ModelAndView(REDIRECTTXT);
+    }
+    @GetMapping("/editOrder/{id}")
+    String editOrder(@PathVariable(name = "id") Long id, Model model) {
+        OrderDTO existingOrder = orderClient.getOrderById(id);
+        List<ClientDTO> clientDTOS = clientClient.getAllClients();
+        model.addAttribute("clients", clientDTOS);
+        model.addAttribute(ORDERTXT, existingOrder);
+        return "OrderProduct/edit";
+    }
+    @GetMapping("/edit/{id}")
+    ModelAndView editOrder(@PathVariable(name = "id") Long id, OrderDTO orderDTO) {
+        orderClient.updateOrder(id, orderDTO);
+        return new ModelAndView(REDIRECTTXT);
     }
 }

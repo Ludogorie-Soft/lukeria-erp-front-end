@@ -24,7 +24,7 @@ public class OrderProductController {
     private final OrderClient orderClient;
     private final PackageClient packageClient;
     private static final String CARTONTXT = "orderProduct";
-    private static final String REDIRECTTXT = "redirect:/orderProduct/show";
+    private static final String REDIRECTTXT = "redirect:/order/show";
 
     @GetMapping("/addProduct")
     String createOrderProduct(Model model) {
@@ -46,7 +46,7 @@ public class OrderProductController {
                                            @RequestParam(value = "addAnotherDish", required = false) boolean addAnotherDish, Model model) {
         orderProductDTO.setOrderId(orderClient.findFirstByOrderByIdDesc().getId());
         orderProductClient.createOrderProduct(orderProductDTO);
-        if(addAnotherDish){
+        if (addAnotherDish) {
             OrderDTO orderDTO = orderClient.getOrderById(orderClient.findFirstByOrderByIdDesc().getId());
             model.addAttribute("order", orderDTO);
             model.addAttribute("packages", packageClient.getAllPackages());
@@ -59,14 +59,43 @@ public class OrderProductController {
         }
         return new ModelAndView(REDIRECTTXT);
     }
+
     @GetMapping("/orderDetails/{orderId}")
     public String showOrderDetails(@PathVariable(name = "orderId") Long orderId, Model model) {
         List<OrderProductDTO> orderProductDTOS = orderProductClient.getAllOrderProducts().stream().filter(order -> Objects.equals(order.getOrderId(), orderId)).toList();
         List<Long> packageDTOIds = orderProductDTOS.stream().map(OrderProductDTO::getPackageId).toList();
         List<PackageDTO> packageDTOList = packageDTOIds.stream().map(packageClient::getPackageById).collect(Collectors.toList());
+        model.addAttribute("order", orderClient.getOrderById(orderId));
         model.addAttribute("orderProducts", orderProductDTOS);
         model.addAttribute("products", packageDTOList);
         model.addAttribute("packages", packageClient.getAllPackages());
         return "OrderProduct/orderDetails";
+    }
+
+    @GetMapping("/addProductToExistingOrder/{orderId}")
+    public String addProductToExistingOrder(@PathVariable("orderId") Long orderId, Model model) {
+        OrderProductDTO orderProduct = new OrderProductDTO();
+        OrderDTO orderDTO = orderClient.getOrderById(orderId);
+        List<OrderProductDTO> orderProductDTOS = orderProductClient.getAllOrderProducts().stream().filter(order -> Objects.equals(order.getOrderId(), orderDTO.getId())).toList();
+        List<Long> packageDTOIds = orderProductDTOS.stream().map(OrderProductDTO::getPackageId).toList();
+        List<PackageDTO> packageDTOList = packageDTOIds.stream().map(packageClient::getPackageById).collect(Collectors.toList());
+        model.addAttribute("orderProducts", orderProductDTOS);
+        model.addAttribute("products", packageDTOList);
+        model.addAttribute("order", orderDTO);
+        model.addAttribute("packages", packageClient.getAllPackages());
+        model.addAttribute(CARTONTXT, orderProduct);
+        return "OrderProduct/addProductToExistingOrder";
+    }
+    @PostMapping("/submitExistingOrder")
+    public ModelAndView submitExistingOrderProduct(@ModelAttribute("orderProduct") OrderProductDTO orderProductDTO, Model model,
+                                                   @RequestParam("orderId") Long orderId) {
+        orderProductDTO.setOrderId(orderId);
+        orderProductClient.createOrderProduct(orderProductDTO);
+        return new ModelAndView(REDIRECTTXT);
+    }
+    @PostMapping("/delete/{id}")
+    ModelAndView deleteOrderProductById(@PathVariable("id") Long id, Model model) {
+        orderProductClient.deleteOrderProductById(id);
+        return new ModelAndView(REDIRECTTXT);
     }
 }

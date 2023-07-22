@@ -51,11 +51,10 @@
                             th:attr="onsubmit='return confirm(\'Сигурни ли сте, че искате да изтриете поръчка с номер: ' + ${order.id} + '?\');'">
                         <button type="submit" class="btn btn-danger">Изтрий</button>
                       </form>
-<!--                    </td>-->
-<!--                    <td>-->
-<!--                      <form th:action="@{'/plate/editPlate/' + ${plate.id}}" method="get"-->
-<!--                            th:attr="onsubmit='return confirm(\'Сигурни ли сте, че искате да редактирате тарелка с име: ' + ${plate.name} + '?\');'">-->
-<!--                        <button type="submit" class="btn btn-primary">Редактирай</button>-->
+                    </td>
+                    <td>
+                      <form th:action="@{'/order/editOrder/' + ${order.id}}" method="get">
+                        <button type="submit" class="btn btn-primary">Редактирай</button>
                       </form>
                     </td>
                   </tr>

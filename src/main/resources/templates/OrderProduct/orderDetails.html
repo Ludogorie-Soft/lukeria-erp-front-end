@@ -25,6 +25,12 @@
         <div class="card custom-card-width-lg">
           <div class="card-header">
             <h5 class="card-title mb-0">Продукти на поръчката</h5>
+            <br>
+            <center>
+              <form th:action="@{'/orderProduct/addProductToExistingOrder/' + ${order.id}}" method="get">
+                <button type="submit" class="btn btn-primary">Добави продукт към поръчка</button>
+              </form>
+            </center>
           </div>
           <div class="card-body">
             <table class="table table-hover">
@@ -32,7 +38,7 @@
               <tr>
                 <th>Номер</th>
                 <th>Име</th>
-                <th>Брой</th><!-- Replace with the actual name of the third column -->
+                <th>Брой</th>
               </tr>
               </thead>
               <tbody>
@@ -40,6 +46,12 @@
                 <td th:text="${product.id}"></td>
                 <td th:text="${product.name}"></td>
                 <td th:text="${orderProducts[iter.index]?.number}"></td>
+                <td>
+                  <form th:action="@{'/orderProduct/delete/' + ${orderProducts[iter.index]?.id}}" method="post"
+                        th:attr="onsubmit='return confirm(\'Сигурни ли сте, че искате да изтриете от тази поръчка продукта: ' + ${product.name} + '?\');'">
+                    <button type="submit" class="btn btn-danger">Изтрий</button>
+                  </form>
+                </td>
               </tr>
               </tbody>
             </table>
