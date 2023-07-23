@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+
+<head>
+    <!--    LINKS  -->
+    <th:block th:include="~{fragments/links}"></th:block>
+
+    <title> Добави поръчка </title>
+    <link href="/css/form.css" rel="stylesheet">
+    <link href="/css/datepicker.css" rel="stylesheet">
+</head>
+
+<body>
+<div class="wrapper">
+    <!--    HEADER  -->
+    <th:block th:include="~{fragments/header}"></th:block>
+    <div class="main">
+        <nav class="navbar navbar-expand navbar-light navbar-bg">
+            <a class="sidebar-toggle js-sidebar-toggle">
+                <i class="hamburger align-self-center"></i>
+            </a>
+        </nav>
+        <main class="content">
+            <div class="form-container">
+                <div class="card custom-card-width-lg">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Създай поръчка</h5>
+                    </div>
+                    <div class="card-body">
+                        <form action="/order/submit" method="post">
+                            <div class="form-group">
+                                <label for="clientId" style="width: 100%;">Клинети:</label>
+                                <select class="form-select" size="6" aria-label="size 6 select example" id="clientId" name="clientId" style="width: 100%;" required>
+                                    <option th:each="client : ${clients}" th:value="${client.id}" th:text="${client.businessName}"></option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <center>
+                            <label for="orderDate">Дата на поръчка:</label>
+                            <input type="date" name="orderDate" id="orderDate"  th:field="${order.orderDate}" required>
+                                </center>
+                            </div>
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-primary">Запази и добави продукти</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+<script src="/js/app.js"></script>
+</body>
+</html>

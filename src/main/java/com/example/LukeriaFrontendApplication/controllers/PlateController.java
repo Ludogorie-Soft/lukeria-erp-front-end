@@ -48,19 +48,16 @@ public class PlateController {
         model.addAttribute(CARTONTXT, existingPlate);
         return "Plate/edit";
     }
-
-    @PostMapping("/submit")
-    public ModelAndView submitPlate(@ModelAttribute("plate") PlateDTO plateDTO) {
-        plateClient.createPlate(plateDTO);
-        return new ModelAndView(REDIRECTTXT);
-    }
-
     @GetMapping("/edit/{id}")
     ModelAndView editPlate(@PathVariable(name = "id") Long id, PlateDTO plateDTO) {
         plateClient.updatePlate(id, plateDTO);
         return new ModelAndView(REDIRECTTXT);
     }
-
+    @PostMapping("/submit")
+    public ModelAndView submitPlate(@ModelAttribute("plate") PlateDTO plateDTO) {
+        plateClient.createPlate(plateDTO);
+        return new ModelAndView(REDIRECTTXT);
+    }
     @PostMapping("/delete/{id}")
     ModelAndView deletePlateById(@PathVariable("id") Long id, Model model) {
         plateClient.deletePlateById(id);
