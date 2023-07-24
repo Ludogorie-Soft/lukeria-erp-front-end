@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@FeignClient(name = "lukeria-erp-client", url = "http://localhost:8088/api/v1/material-order")
+@FeignClient(name = "lukeria-erp-material-order", url = "http://localhost:8088/api/v1/material-order")
 public interface MaterialOrderClient {
     @GetMapping
     ResponseEntity<List<MaterialOrderDTO>> getAllMaterialOrders();
