@@ -42,7 +42,6 @@
                   </thead>
                   <tbody>
                   <tr th:each="order, iter : ${orders}">
-                    <td th:text="${order.id}"></td>
                     <td th:text="${clients[iter.index]?.businessName}"></td>
                     <td th:text="${order.orderDate}"></td>
                     <td><a th:href="@{/orderProduct/orderDetails/{orderId}(orderId=${order.id})}">Повече информация</a></td>
@@ -55,6 +54,11 @@
                     <td>
                       <form th:action="@{'/order/editOrder/' + ${order.id}}" method="get">
                         <button type="submit" class="btn btn-primary">Редактирай</button>
+                      </form>
+                    </td>
+                    <td>
+                      <form th:action="@{'/material-order/materials/' + ${order.id}}" method="get">
+                        <button type="submit" class="btn btn-warning">Провери налични Материали</button>
                       </form>
                     </td>
                   </tr>
