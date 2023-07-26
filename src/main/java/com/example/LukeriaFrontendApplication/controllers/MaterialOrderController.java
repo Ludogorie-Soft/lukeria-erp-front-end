@@ -37,7 +37,7 @@ public class MaterialOrderController {
     }
     @GetMapping("/show")
     public String index(Model model) {
-        List<MaterialOrderDTO> materialOrderDTOS = materialOrderClient.getAllMaterialOrders();;
+        List<MaterialOrderDTO> materialOrderDTOS = materialOrderClient.getAllMaterialOrders();
         model.addAttribute("orders", materialOrderDTOS);
         return "MaterialOrder/show";
     }
@@ -59,6 +59,6 @@ public class MaterialOrderController {
         model.addAttribute("packages", packageClient.getAllPackages());
         model.addAttribute("plates", plateClient.getAllPlates());
         model.addAttribute(ORDERTXT, existingOrder);
-        return "OrderProduct/edit";
+        return "MaterialOrder/edit";
     }
 }

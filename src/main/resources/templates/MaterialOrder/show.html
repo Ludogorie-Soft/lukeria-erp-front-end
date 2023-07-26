@@ -47,7 +47,9 @@
                                     <tr th:each="order : ${orders}">
                                         <td th:text="${order.id}"></td>
                                         <td th:text="${order.materialId}"></td>
-                                        <td th:text="${order.materialType}"></td>
+                                        <td th:if="${order.materialType == 'CARTON'}">Кутия</td>
+                                        <td th:if="${order.materialType == 'PLATE'}">Тарелка</td>
+                                        <td th:if="${order.materialType == 'PACKAGE'}">Кашон</td>
                                         <td th:text="${order.orderedQuantity}"></td>
                                         <td th:text="${order.receivedQuantity}"></td>
                                         <td th:text="${order.materialPrice}"></td>
