@@ -5,6 +5,7 @@ import com.example.LukeriaFrontendApplication.config.MaterialOrderClient;
 import com.example.LukeriaFrontendApplication.config.PackageClient;
 import com.example.LukeriaFrontendApplication.config.PlateClient;
 import com.example.LukeriaFrontendApplication.dtos.MaterialOrderDTO;
+import com.example.LukeriaFrontendApplication.dtos.PackageDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ui.Model;
@@ -66,5 +67,10 @@ public class MaterialOrderController {
         model.addAttribute("plates", plateClient.getAllPlates());
         model.addAttribute(ORDERTXT, existingOrder);
         return "MaterialOrder/edit";
+    }
+    @PostMapping("/editSubmit/{id}")
+    ModelAndView editMaterialOrder(@PathVariable(name = "id") Long id, MaterialOrderDTO materialOrderDTO) {
+        materialOrderClient.updateMaterialOrder(id, materialOrderDTO);
+        return new ModelAndView(REDIRECTTXT);
     }
 }
