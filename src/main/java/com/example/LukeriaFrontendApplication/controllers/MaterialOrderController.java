@@ -1,17 +1,16 @@
 package com.example.LukeriaFrontendApplication.controllers;
 
-import com.example.LukeriaFrontendApplication.config.*;
-import com.example.LukeriaFrontendApplication.dtos.CartonDTO;
-import com.example.LukeriaFrontendApplication.dtos.ClientDTO;
+import com.example.LukeriaFrontendApplication.config.CartonClient;
+import com.example.LukeriaFrontendApplication.config.MaterialOrderClient;
+import com.example.LukeriaFrontendApplication.config.PackageClient;
+import com.example.LukeriaFrontendApplication.config.PlateClient;
 import com.example.LukeriaFrontendApplication.dtos.MaterialOrderDTO;
-import com.example.LukeriaFrontendApplication.dtos.OrderDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @org.springframework.stereotype.Controller
@@ -40,6 +39,13 @@ public class MaterialOrderController {
         List<MaterialOrderDTO> materialOrderDTOS = materialOrderClient.getAllMaterialOrders();
         model.addAttribute("orders", materialOrderDTOS);
         return "MaterialOrder/show";
+    }
+
+    @GetMapping("/materials/{id}")
+    public String showMaterialForOrderId(@PathVariable("id") Long id,Model model) {
+        List<MaterialOrderDTO> materialsForOrder = materialOrderClient.getAllProductsByOrderId(id);
+        model.addAttribute("orders", materialsForOrder);
+        return "MaterialOrder/showMaterialForOrderId";
     }
 
     @PostMapping("/submit")

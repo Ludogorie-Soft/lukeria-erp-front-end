@@ -3,7 +3,6 @@ package com.example.LukeriaFrontendApplication.config;
 import com.example.LukeriaFrontendApplication.dtos.MaterialOrderDTO;
 import jakarta.validation.Valid;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,5 +25,5 @@ public interface MaterialOrderClient {
     String deleteMaterialOrderById(@PathVariable("id") Long id);
 
     @GetMapping("products/{id}")
-    void getAllProductsByOrderId(@PathVariable(name = "id") Long id);
+     List<MaterialOrderDTO> getAllProductsByOrderId(@PathVariable(name = "id") Long id);
 }
