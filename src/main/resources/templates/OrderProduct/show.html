@@ -42,7 +42,6 @@
                   </thead>
                   <tbody>
                   <tr th:each="order, iter : ${orders}">
-                    <td th:text="${order.id}"></td>
                     <td th:text="${clients[iter.index]?.businessName}"></td>
                     <td th:text="${order.orderDate}"></td>
                     <td><a th:href="@{/orderProduct/orderDetails/{orderId}(orderId=${order.id})}">Повече информация</a></td>
