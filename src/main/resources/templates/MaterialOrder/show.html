@@ -18,9 +18,8 @@
             </a>
         </nav>
         <main class="content">
-            <div class="d-flex justify-content-center">
                 <div class="row">
-                    <div class="col-12">
+                    <div class="col-lg-9 mx-auto">
                         <div class="card custom-card-width-lg">
                             <div class="card-header">
                                 <h5 class="card-title mb-0">Всички поръчки на материали, които НЕ са доставени</h5>
@@ -29,7 +28,8 @@
                                 <a href="/material-order/create" class="btn btn-primary">Поръчай материал</a>
                             </div>
                             <div class="card-body">
-                                <table class="table">
+                                <div class="table-responsive">
+                                    <table class="table">
                                     <thead>
                                     <tr>
                                         <th>Поръчка</th>
@@ -42,9 +42,9 @@
                                     <tr th:each="order : ${orders}"  th:unless="${order.arrivalDate}">
                                         <td th:text="${order.id}"></td>
                                         <td th:text="${order.materialId}"></td>
-                                        <td th:if="${order.materialType == 'CARTON'}">Кутия</td>
+                                        <td th:if="${order.materialType == 'CARTON'}">Кашон</td>
                                         <td th:if="${order.materialType == 'PLATE'}">Тарелка</td>
-                                        <td th:if="${order.materialType == 'PACKAGE'}">Кашон</td>
+                                        <td th:if="${order.materialType == 'PACKAGE'}">Кутия</td>
                                         <td th:text="${order.orderedQuantity}"></td>
                                         <td>
                                             <form th:action="@{'/material-order/delete/' + ${order.id}}" method="post"
@@ -63,12 +63,12 @@
                             </div>
                         </div>
                         <br><br>
-                        <div class="card custom-card-width-lg">
                             <div class="card-header">
                                 <h5 class="card-title mb-0">Всички поръчки на материали, които СА са доставени</h5>
                             </div>
                             <div class="card-body">
-                                <table class="table">
+                                <div class="table-responsive">
+                                    <table class="table">
                                     <thead>
                                     <tr>
                                         <th>Поръчка</th>
@@ -109,7 +109,8 @@
                         </div>
                     </div>
                 </div>
-            </div>
+                    </div>
+                </div>
         </main>
     </div>
 </div>
