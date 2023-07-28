@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+
+<head>
+    <!--    LINKS  -->
+    <th:block th:include="~{fragments/links}"></th:block>
+
+    <title> Поръчка на материали </title>
+    <link href="/css/form.css" rel="stylesheet">
+    <link href="/css/datepicker.css" rel="stylesheet">
+</head>
+
+<body>
+<div class="wrapper">
+    <!--    HEADER  -->
+    <th:block th:include="~{fragments/header}"></th:block>
+    <div class="main">
+        <nav class="navbar navbar-expand navbar-light navbar-bg">
+            <a class="sidebar-toggle js-sidebar-toggle">
+                <i class="hamburger align-self-center"></i>
+            </a>
+        </nav>
+        <main class="content">
+            <div class="form-container">
+                <div class="card custom-card-width-lg">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Редактирай поръчка на материал</h5>
+                    </div>
+                    <div class="card-body">
+                        <form th:action="@{'/material-order/editSubmit/' + ${order.id}}" method="post" th:object="${order}">
+                            <div class="form-group">
+                                <label for="materialId">Вид на материала:</label>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" th:field="*{materialType}" name="materialType" value=CARTON id="materialType">
+                                    <label class="form-check-label" for="materialType">
+                                        Кашон
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" th:field="*{materialType}" name="materialType" value=PACKAGE id="materialType1">
+                                    <label class="form-check-label" for="materialType1">
+                                        Кутия
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" th:field="*{materialType}" name="materialType" value=PLATE id="materialType2">
+                                    <label class="form-check-label" for="materialType2">
+                                        Тарелка
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="materialId">Номер на поръчан материал:</label>
+                                <input type="text" id="materialId1" name="materialId"
+                                       th:field="${order.materialId}" disabled/>
+                                <input type="hidden"  name="materialId"
+                                       th:field="${order.materialId}" />
+                            </div>
+                            <div class="form-group">
+                                <div id="plateDropdown" style="display: none;">
+                                    <label for="materialId">Тарелки:</label>
+                                    <select class="form-select" size="3" aria-label="size 3 select example" id="plateId" name="materialId">
+                                        <option th:each="plate : ${plates}" th:value="${plate.id}" th:text="${plate.id} + ' - ' + ${plate.name}"></option>
+                                    </select>
+                                </div>
+                                <div id="cartonDropdown" style="display: none;">
+                                    <label for="materialId">Кашони:</label>
+                                    <select class="form-select" size="3" aria-label="size 3 select example" id="materialId" name="materialId">
+                                        <option th:each="carton : ${cartons}" th:value="${carton.id}" th:text="${carton.id} + ' - ' + ${carton.name}"></option>
+                                    </select>
+                                </div>
+                                <div id="packageDropdown" style="display: none;">
+                                    <label for="materialId">Кутии:</label>
+                                    <select class="form-select" size="3" aria-label="size 3 select example" id="packageId" name="materialId">
+                                        <option th:each="package : ${packages}" th:value="${package.id}" th:text="${package.id} + ' - ' + ${package.name}"></option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="orderedQuantity">Поръчан брой:</label>
+                                <input type="number" id="orderedQuantity" name="orderedQuantity" required
+                                       th:field="${order.orderedQuantity}"/>
+                            </div>
+                            <div class="form-group">
+                                <label for="receivedQuantity">Доставен брой:</label>
+                                <input type="number" id="receivedQuantity" name="receivedQuantity"
+                                       th:field="${order.receivedQuantity}"/>
+                            </div>
+                            <div class="form-group">
+                                <label for="materialPrice">Обща цена на поръчката:</label>
+                                <input type="number" id="materialPrice" name="materialPrice"
+                                       th:field="${order.materialPrice}"/>
+                            </div>
+                            <div class="form-group">
+                            <label for="arrivalDate">Дата на доставка:</label>
+                                <center>
+                            <input type="date" name="arrivalDate" id="arrivalDate"  th:field="${order.arrivalDate}">
+                                </center>
+                            </div>
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-primary" >Редактирай поръчка</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+<script src="js/app.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+        $(document).ready(function() {
+            $('input[type=radio][name=materialType]').change(function() {
+                var materialType = $(this).val();
+                $('#plateDropdown').toggle(materialType === 'PLATE');
+                $('#cartonDropdown').toggle(materialType === 'CARTON');
+                $('#packageDropdown').toggle(materialType === 'PACKAGE');
+            });
+        });
+    </script>
+</body>
+</html>

@@ -20,22 +20,6 @@
     <link href="/css/app.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
-<style>
-.custom-card-width-lg {
-width: auto; /* Променете стойността на ширината, според вашите нужди */
-margin: 0 auto; /* Опционално: Центриране на карта хоризонтално */
-    }
-
-.yellow-cell {
-  background-color: yellow;
-}
-
-.red-cell {
-  background-color: red;
-}
-
-
-</style>
 <body>
 <div class="wrapper">
     <!--    HEADER  -->
@@ -50,9 +34,8 @@ margin: 0 auto; /* Опционално: Центриране на карта х
             </a>
         </nav>
         <main class="content">
-            <div class="d-flex justify-content-center">
                 <div class="row">
-                    <div class="col-12">
+                    <div class="col-lg-8 mx-auto">
                         <div class="card custom-card-width-lg">
                             <div class="card-header">
                                 <h5 class="card-title mb-0">Всички Кутии</h5>
@@ -61,7 +44,8 @@ margin: 0 auto; /* Опционално: Центриране на карта х
                                 <a href="/package/create" class="btn btn-primary">Добави Кутия</a>
                             </div>
                             <div class="card-body">
-                                <table class="table">
+                                <div class="table-responsive">
+                                    <table class="table">
                                     <thead>
                                     <tr>
                                         <th>ID</th>

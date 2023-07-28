@@ -20,9 +20,8 @@
       </a>
     </nav>
     <main class="content">
-      <div class="d-flex justify-content-center">
         <div class="row">
-          <div class="col-12">
+          <div class="col-lg-8 mx-auto">
             <div class="card custom-card-width-lg">
               <div class="card-header">
                 <h5 class="card-title mb-0">Всички поръчки</h5>
@@ -31,7 +30,8 @@
                 <a href="/order/create" class="btn btn-primary">Добави Поръчка</a>
               </div>
               <div class="card-body">
-                <table class="table">
+                <div class="table-responsive">
+                  <table class="table">
                   <thead>
                   <tr>
                     <th>Поръчка</th>
@@ -55,6 +55,11 @@
                     <td>
                       <form th:action="@{'/order/editOrder/' + ${order.id}}" method="get">
                         <button type="submit" class="btn btn-primary">Редактирай</button>
+                      </form>
+                    </td>
+                    <td>
+                      <form th:action="@{'/material-order/materials/' + ${order.id}}" method="get">
+                        <button type="submit" class="btn btn-warning">Провери налични Материали</button>
                       </form>
                     </td>
                   </tr>
