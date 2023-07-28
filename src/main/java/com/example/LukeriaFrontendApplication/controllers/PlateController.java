@@ -23,7 +23,6 @@ public class PlateController {
     public String index(Model model) {
         List<PlateDTO> plates = plateClient.getAllPlates();
         model.addAttribute("deleteMessageBoolean", true);
-
         model.addAttribute("plates", plates);
         return "Plate/show";
     }
