@@ -4,8 +4,10 @@ import com.example.LukeriaFrontendApplication.config.CartonClient;
 import com.example.LukeriaFrontendApplication.config.MaterialOrderClient;
 import com.example.LukeriaFrontendApplication.config.PackageClient;
 import com.example.LukeriaFrontendApplication.config.PlateClient;
+import com.example.LukeriaFrontendApplication.dtos.CartonDTO;
 import com.example.LukeriaFrontendApplication.dtos.MaterialOrderDTO;
 import com.example.LukeriaFrontendApplication.dtos.PackageDTO;
+import com.example.LukeriaFrontendApplication.dtos.PlateDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ui.Model;
@@ -45,6 +47,27 @@ public class MaterialOrderController {
     @GetMapping("/materials/{id}")
     public String showMaterialForOrderId(@PathVariable("id") Long id,Model model) {
         List<MaterialOrderDTO> materialsForOrder = materialOrderClient.getAllProductsByOrderId(id);
+        List<PackageDTO> packages=packageClient.getAllPackages();
+        List<CartonDTO> cartons =cartonClient.getAllCartons();
+        List<PlateDTO> plates=plateClient.getAllPlates();
+
+        model.addAttribute("packages", packages);
+        model.addAttribute("cartons", cartons);
+        model.addAttribute("plates", plates);
+        model.addAttribute("orders", materialsForOrder);
+        return "MaterialOrder/showMaterialForOrderId";
+    }
+
+    @GetMapping("/all-materials")
+    public String showMaterialForAllOrders(Model model) {
+        List<MaterialOrderDTO> materialsForOrder = materialOrderClient.allAvailableProducts();
+        List<PackageDTO> packages=packageClient.getAllPackages();
+        List<CartonDTO> cartons =cartonClient.getAllCartons();
+        List<PlateDTO> plates=plateClient.getAllPlates();
+
+        model.addAttribute("packages", packages);
+        model.addAttribute("cartons", cartons);
+        model.addAttribute("plates", plates);
         model.addAttribute("orders", materialsForOrder);
         return "MaterialOrder/showMaterialForOrderId";
     }
