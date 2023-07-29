@@ -25,22 +25,25 @@ public class MaterialOrderController {
     private final CartonClient cartonClient;
     private final PackageClient packageClient;
     private final PlateClient plateClient;
-    private static final String ORDERTXT = "order";
+    private static final String ORDERTXT = "orders";
+    private static final String PLATETXT = "plates";
+    private static final String PACKAGETXT = "packages";
+    private static final String CARTONTXT = "cartons";
     private static final String REDIRECTTXT = "redirect:/material-order/show";
 
     @GetMapping("/create")
     String createMaterialOrder(Model model) {
         MaterialOrderDTO materialOrderDTO = new MaterialOrderDTO();
-        model.addAttribute("cartons", cartonClient.getAllCartons());
-        model.addAttribute("packages", packageClient.getAllPackages());
-        model.addAttribute("plates", plateClient.getAllPlates());
+        model.addAttribute(CARTONTXT, cartonClient.getAllCartons());
+        model.addAttribute(PACKAGETXT, packageClient.getAllPackages());
+        model.addAttribute(PLATETXT, plateClient.getAllPlates());
         model.addAttribute(ORDERTXT, materialOrderDTO);
         return "MaterialOrder/create";
     }
     @GetMapping("/show")
     public String index(Model model) {
         List<MaterialOrderDTO> materialOrderDTOS = materialOrderClient.getAllMaterialOrders();
-        model.addAttribute("orders", materialOrderDTOS);
+        model.addAttribute(ORDERTXT, materialOrderDTOS);
         return "MaterialOrder/show";
     }
 
@@ -51,10 +54,10 @@ public class MaterialOrderController {
         List<CartonDTO> cartons =cartonClient.getAllCartons();
         List<PlateDTO> plates=plateClient.getAllPlates();
 
-        model.addAttribute("packages", packages);
-        model.addAttribute("cartons", cartons);
-        model.addAttribute("plates", plates);
-        model.addAttribute("orders", materialsForOrder);
+        model.addAttribute(PACKAGETXT, packages);
+        model.addAttribute(CARTONTXT, cartons);
+        model.addAttribute(PLATETXT, plates);
+        model.addAttribute(ORDERTXT, materialsForOrder);
         return "MaterialOrder/showMaterialForOrderId";
     }
 
@@ -65,10 +68,10 @@ public class MaterialOrderController {
         List<CartonDTO> cartons =cartonClient.getAllCartons();
         List<PlateDTO> plates=plateClient.getAllPlates();
 
-        model.addAttribute("packages", packages);
-        model.addAttribute("cartons", cartons);
-        model.addAttribute("plates", plates);
-        model.addAttribute("orders", materialsForOrder);
+        model.addAttribute(PACKAGETXT, packages);
+        model.addAttribute(CARTONTXT, cartons);
+        model.addAttribute(PLATETXT, plates);
+        model.addAttribute(ORDERTXT, materialsForOrder);
         return "MaterialOrder/showMaterialForOrderId";
     }
 
@@ -85,9 +88,9 @@ public class MaterialOrderController {
     @GetMapping("/edit/{id}")
     String editMaterialOrder(@PathVariable(name = "id") Long id, Model model) {
         MaterialOrderDTO existingOrder = materialOrderClient.getMaterialOrderById(id);
-        model.addAttribute("cartons", cartonClient.getAllCartons());
-        model.addAttribute("packages", packageClient.getAllPackages());
-        model.addAttribute("plates", plateClient.getAllPlates());
+        model.addAttribute(CARTONTXT, cartonClient.getAllCartons());
+        model.addAttribute(PACKAGETXT, packageClient.getAllPackages());
+        model.addAttribute(PLATETXT, plateClient.getAllPlates());
         model.addAttribute(ORDERTXT, existingOrder);
         return "MaterialOrder/edit";
     }
