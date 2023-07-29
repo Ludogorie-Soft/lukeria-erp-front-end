@@ -25,7 +25,12 @@
                     <div class="col-12">
                         <div class="card custom-card-width-lg">
                             <div class="card-header">
-                                <h5 class="card-title mb-0">Всички Нужни брой Материали</h5>
+                                <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+                                    <h5 class="card-title mb-0">Всички Нужни брой Материали</h5>
+                                    <button onclick="printPage()">
+                                        <i class="fas fa-print"></i>
+                                    </button>
+                                </div>
                             </div>
 
                             <div class="card-body">
@@ -40,9 +45,9 @@
                                     <tbody>
                                     <tr th:each="order : ${orders}">
                                         <td>
-                                            <span th:if="${order.materialType == 'CARTON'}"  th:text="${cartons[order.materialId-1]}"></span>
-                                            <span th:if="${order.materialType == 'PACKAGE'}" th:text="${packages[order.materialId-1]}"></span>
-                                            <span th:if="${order.materialType == 'PLATE'}" th:text="${plates[order.materialId-1]}"></span>
+                                            <span th:if="${order.materialType == 'CARTON'}"  th:text="${cartons[order.materialId-1].name}"></span>
+                                            <span th:if="${order.materialType == 'PACKAGE'}" th:text="${packages[order.materialId-1].name}"></span>
+                                            <span th:if="${order.materialType == 'PLATE'}" th:text="${plates[order.materialId-1].name}"></span>
 
                                         </td>
                                         <td>
@@ -63,6 +68,11 @@
         </main>
     </div>
 </div>
+<script>
+    function printPage() {
+        window.print();
+    }
+</script>
 <script src="/js/app.js"></script>
 </body>
 </html>
