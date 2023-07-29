@@ -11,8 +11,6 @@
 <div class="wrapper">
     <!--    HEADER  -->
     <th:block th:include="~{fragments/header}"></th:block>
-
-
     <div class="main">
         <nav class="navbar navbar-expand navbar-light navbar-bg">
             <a class="sidebar-toggle js-sidebar-toggle">
@@ -20,18 +18,57 @@
             </a>
         </nav>
         <main class="content">
-            <div class="d-flex justify-content-center">
                 <div class="row">
-                    <div class="col-12">
+                    <div class="col-lg-9 mx-auto">
                         <div class="card custom-card-width-lg">
                             <div class="card-header">
-                                <h5 class="card-title mb-0">Всички поръчки на материали</h5>
+                                <h5 class="card-title mb-0">Всички поръчки на материали, които НЕ са доставени</h5>
                             </div>
                             <div class="text-center">
                                 <a href="/material-order/create" class="btn btn-primary">Поръчай материал</a>
                             </div>
                             <div class="card-body">
-                                <table class="table">
+                                <div class="table-responsive">
+                                    <table class="table">
+                                    <thead>
+                                    <tr>
+                                        <th>Поръчка</th>
+                                        <th>Материал</th>
+                                        <th>Вид материал</th>
+                                        <th>Поръчан брой</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="order : ${orders}"  th:unless="${order.arrivalDate}">
+                                        <td th:text="${order.id}"></td>
+                                        <td th:text="${order.materialId}"></td>
+                                        <td th:if="${order.materialType == 'CARTON'}">Кашон</td>
+                                        <td th:if="${order.materialType == 'PLATE'}">Тарелка</td>
+                                        <td th:if="${order.materialType == 'PACKAGE'}">Кутия</td>
+                                        <td th:text="${order.orderedQuantity}"></td>
+                                        <td>
+                                            <form th:action="@{'/material-order/delete/' + ${order.id}}" method="post"
+                                                  th:attr="onsubmit='return confirm(\'Сигурни ли сте, че искате да изтриете поръчка с номер: ' + ${order.id} + '?\');'">
+                                                <button type="submit" class="btn btn-danger">Изтрий</button>
+                                            </form>
+                                        </td>
+                                        <td>
+                                            <form th:action="@{'/material-order/edit/' + ${order.id}}" method="get">
+                                                <button type="submit" class="btn btn-primary">Редактирай</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <br><br>
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">Всички поръчки на материали, които СА са доставени</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table">
                                     <thead>
                                     <tr>
                                         <th>Поръчка</th>
@@ -44,10 +81,12 @@
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    <tr th:each="order : ${orders}">
+                                    <tr th:each="order : ${orders}"  th:if="${order.arrivalDate}">
                                         <td th:text="${order.id}"></td>
                                         <td th:text="${order.materialId}"></td>
-                                        <td th:text="${order.materialType}"></td>
+                                        <td th:if="${order.materialType == 'CARTON'}">Кутия</td>
+                                        <td th:if="${order.materialType == 'PLATE'}">Тарелка</td>
+                                        <td th:if="${order.materialType == 'PACKAGE'}">Кашон</td>
                                         <td th:text="${order.orderedQuantity}"></td>
                                         <td th:text="${order.receivedQuantity}"></td>
                                         <td th:text="${order.materialPrice}"></td>
@@ -70,7 +109,8 @@
                         </div>
                     </div>
                 </div>
-            </div>
+                    </div>
+                </div>
         </main>
     </div>
 </div>
