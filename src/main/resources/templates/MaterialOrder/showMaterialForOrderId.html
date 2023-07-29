@@ -40,12 +40,10 @@
                                     <tbody>
                                     <tr th:each="order : ${orders}">
                                         <td>
-                                            <span th:if="${order.materialType == 'CARTON'}"
-                                                  th:text="${#arrays.length(cartons) > order.materialId ? cartons[order.materialId-1].name : order.materialId}"></span>
-                                            <span th:if="${order.materialType == 'PACKAGE'}"
-                                                  th:text="${#arrays.length(packages) > order.materialId ? packages[order.materialId-1].name :order.materialId}"></span>
-                                            <span th:if="${order.materialType == 'PLATE'}"
-                                                  th:text="${#arrays.length(plates) > order.materialId ? plates[order.materialId-1].name : order.materialId}"></span>
+                                            <span th:if="${order.materialType == 'CARTON'}"  th:text="${cartons[order.materialId-1]}"></span>
+                                            <span th:if="${order.materialType == 'PACKAGE'}" th:text="${packages[order.materialId-1]}"></span>
+                                            <span th:if="${order.materialType == 'PLATE'}" th:text="${plates[order.materialId-1]}"></span>
+
                                         </td>
                                         <td>
                                             <span th:if="${order.materialType == 'CARTON'}">Кашон</span>
