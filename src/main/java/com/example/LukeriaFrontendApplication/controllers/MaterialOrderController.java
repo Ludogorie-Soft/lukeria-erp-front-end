@@ -37,7 +37,7 @@ public class MaterialOrderController {
         model.addAttribute(CARTONTXT, cartonClient.getAllCartons());
         model.addAttribute(PACKAGETXT, packageClient.getAllPackages());
         model.addAttribute(PLATETXT, plateClient.getAllPlates());
-        model.addAttribute(ORDERTXT, materialOrderDTO);
+        model.addAttribute("order", materialOrderDTO);
         return "MaterialOrder/create";
     }
     @GetMapping("/show")
@@ -91,12 +91,26 @@ public class MaterialOrderController {
         model.addAttribute(CARTONTXT, cartonClient.getAllCartons());
         model.addAttribute(PACKAGETXT, packageClient.getAllPackages());
         model.addAttribute(PLATETXT, plateClient.getAllPlates());
-        model.addAttribute(ORDERTXT, existingOrder);
+        model.addAttribute("order", existingOrder);
         return "MaterialOrder/edit";
     }
     @PostMapping("/editSubmit/{id}")
     ModelAndView editMaterialOrder(@PathVariable(name = "id") Long id, MaterialOrderDTO materialOrderDTO) {
         materialOrderClient.updateMaterialOrder(id, materialOrderDTO);
         return new ModelAndView(REDIRECTTXT);
+    }
+    @GetMapping("/material/{materialId}")
+    public String viewMaterial(@PathVariable Long materialId, @RequestParam("materialType") String materialType, Model model) {
+        if(materialType.equals("CARTON")){
+            model.addAttribute("material", cartonClient.getCartonById(materialId));
+            model.addAttribute("type", "Кашон");
+        } else if(materialType.equals("PLATE")){
+            model.addAttribute("material", plateClient.getPlateById(materialId));
+            model.addAttribute("type", "Тарелка");
+        } else{
+            model.addAttribute("material", packageClient.getPackageById(materialId));
+            model.addAttribute("type", "Кутия");
+        }
+        return "MaterialOrder/material";
     }
 }

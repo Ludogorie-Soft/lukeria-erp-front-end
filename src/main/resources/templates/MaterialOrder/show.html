@@ -42,9 +42,11 @@
                                     <tr th:each="order : ${orders}"  th:unless="${order.arrivalDate}">
                                         <td th:text="${order.id}"></td>
                                         <td th:text="${order.materialId}"></td>
-                                        <td th:if="${order.materialType == 'CARTON'}">Кашон</td>
-                                        <td th:if="${order.materialType == 'PLATE'}">Тарелка</td>
-                                        <td th:if="${order.materialType == 'PACKAGE'}">Кутия</td>
+                                        <td>
+                                            <a th:if="${order.materialType == 'CARTON'}" th:href="@{'/material-order/material/' + ${order.materialId} + '?materialType=CARTON'}">Кашон</a>
+                                            <a th:if="${order.materialType == 'PLATE'}" th:href="@{'/material-order/material/' + ${order.materialId} + '?materialType=PLATE'}">Тарелка</a>
+                                            <a th:if="${order.materialType == 'PACKAGE'}" th:href="@{'/material-order/material/' + ${order.materialId} + '?materialType=PACKAGE'}">Кутия</a>
+                                        </td>
                                         <td th:text="${order.orderedQuantity}"></td>
                                         <td>
                                             <form th:action="@{'/material-order/delete/' + ${order.id}}" method="post"
@@ -84,9 +86,11 @@
                                     <tr th:each="order : ${orders}"  th:if="${order.arrivalDate}">
                                         <td th:text="${order.id}"></td>
                                         <td th:text="${order.materialId}"></td>
-                                        <td th:if="${order.materialType == 'CARTON'}">Кутия</td>
-                                        <td th:if="${order.materialType == 'PLATE'}">Тарелка</td>
-                                        <td th:if="${order.materialType == 'PACKAGE'}">Кашон</td>
+                                        <td>
+                                            <a th:if="${order.materialType == 'CARTON'}" th:href="@{'/material-order/material/' + ${order.materialId} + '?materialType=CARTON'}">Кашон</a>
+                                            <a th:if="${order.materialType == 'PLATE'}" th:href="@{'/material-order/material/' + ${order.materialId} + '?materialType=PLATE'}">Тарелка</a>
+                                            <a th:if="${order.materialType == 'PACKAGE'}" th:href="@{'/material-order/material/' + ${order.materialId} + '?materialType=PACKAGE'}">Кутия</a>
+                                        </td>
                                         <td th:text="${order.orderedQuantity}"></td>
                                         <td th:text="${order.receivedQuantity}"></td>
                                         <td th:text="${order.materialPrice}"></td>
@@ -110,7 +114,7 @@
                     </div>
                 </div>
                     </div>
-                </div>
+
         </main>
     </div>
 </div>
