@@ -30,6 +30,7 @@ public class MaterialOrderController {
     private static final String PACKAGETXT = "packages";
     private static final String CARTONTXT = "cartons";
     private static final String REDIRECTTXT = "redirect:/material-order/show";
+    private static final String MATERIALSORDERSHOW = "MaterialOrder/show";
 
     @GetMapping("/create")
     String createMaterialOrder(Model model) {
@@ -44,12 +45,17 @@ public class MaterialOrderController {
     public String index(Model model) {
         List<MaterialOrderDTO> materialOrderDTOS = materialOrderClient.getAllMaterialOrders();
         model.addAttribute(ORDERTXT, materialOrderDTOS);
-        return "MaterialOrder/show";
+        return MATERIALSORDERSHOW;
     }
 
     @GetMapping("/materials/{id}")
     public String showMaterialForOrderId(@PathVariable("id") Long id,Model model) {
         List<MaterialOrderDTO> materialsForOrder = materialOrderClient.getAllProductsByOrderId(id);
+        if (materialsForOrder.isEmpty()) {
+            model.addAttribute("materialAvailability",true);
+            model.addAttribute("materialsForOrder",materialsForOrder);
+            return MATERIALSORDERSHOW;
+        }
         List<PackageDTO> packages=packageClient.getAllPackages();
         List<CartonDTO> cartons =cartonClient.getAllCartons();
         List<PlateDTO> plates=plateClient.getAllPlates();
@@ -64,6 +70,11 @@ public class MaterialOrderController {
     @GetMapping("/all-materials")
     public String showMaterialForAllOrders(Model model) {
         List<MaterialOrderDTO> materialsForOrder = materialOrderClient.allAvailableProducts();
+        if (materialsForOrder.isEmpty()) {
+            model.addAttribute("materialAvailability",true);
+            model.addAttribute("materialsForOrder",materialsForOrder);
+            return MATERIALSORDERSHOW;
+        }
         List<PackageDTO> packages=packageClient.getAllPackages();
         List<CartonDTO> cartons =cartonClient.getAllCartons();
         List<PlateDTO> plates=plateClient.getAllPlates();

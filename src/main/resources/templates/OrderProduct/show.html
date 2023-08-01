@@ -29,6 +29,12 @@
               <div class="text-center">
                 <a href="/order/create" class="btn btn-primary">Добави Поръчка</a>
               </div>
+              <div>
+
+              </div>
+              <div class="text-center">
+                <a href="/material-order/all-materials" class="btn btn-warning">Провери налични Материали за Всички Поръчки</a>
+              </div>
               <div class="card-body">
                 <div class="table-responsive">
                   <table class="table">
@@ -42,6 +48,7 @@
                   </thead>
                   <tbody>
                   <tr th:each="order, iter : ${orders}">
+                    <td th:text="${order.id}"></td>
                     <td th:text="${clients[iter.index]?.businessName}"></td>
                     <td th:text="${order.orderDate}"></td>
                     <td><a th:href="@{/orderProduct/orderDetails/{orderId}(orderId=${order.id})}">Повече информация</a></td>
