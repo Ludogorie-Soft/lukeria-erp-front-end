@@ -7,17 +7,6 @@
     <title> Поръчки на материали </title>
     <link href="/css/show.css" rel="stylesheet">
 </head>
-<style>
-        .availability-message {
-            background-color: #4CAF50; /* Зелен цвят на фона */
-            color: white; /* Бял цвят на текста */
-            padding: 10px; /* Подравняване на текста около съобщението */
-            position: fixed; /* Фиксирано позициониране */
-            top: 0; /* Отгоре на страницата */
-            left: 50%; /* Половината от ширината на страницата (центриране) */
-            transform: translateX(-50%); /* Центриране на хоризонталната ос */
-        }
-    </style>
 <body>
 <div class="wrapper">
     <!--    HEADER  -->
@@ -29,21 +18,18 @@
             </a>
         </nav>
         <main class="content">
-            <div class="row">
-                <div class="col-lg-9 mx-auto">
-                    <div class="card custom-card-width-lg">
-                        <div class="card-header">
-                            <h5 class="card-title mb-0">Всички поръчки на материали, които НЕ са доставени</h5>
-                        </div>
-                        <div class="text-center">
-                            <a href="/material-order/create" class="btn btn-primary">Поръчай материал</a>
-                        </div>
-                        <div class="availability-message">
-                            <p> Всичко е налично !</p>
-                        </div>
-                        <div class="card-body">
-                            <div class="table-responsive">
-                                <table class="table">
+                <div class="row">
+                    <div class="col-lg-9 mx-auto">
+                        <div class="card custom-card-width-lg">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">Всички поръчки на материали, които НЕ са доставени</h5>
+                            </div>
+                            <div class="text-center">
+                                <a href="/material-order/create" class="btn btn-primary">Поръчай материал</a>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table">
                                     <thead>
                                     <tr>
                                         <th>Поръчка</th>
@@ -56,9 +42,11 @@
                                     <tr th:each="order : ${orders}" th:unless="${order.arrivalDate}">
                                         <td th:text="${order.id}"></td>
                                         <td th:text="${order.materialId}"></td>
-                                        <td th:if="${order.materialType == 'CARTON'}">Кашон</td>
-                                        <td th:if="${order.materialType == 'PLATE'}">Тарелка</td>
-                                        <td th:if="${order.materialType == 'PACKAGE'}">Кутия</td>
+                                        <td>
+                                            <a th:if="${order.materialType == 'CARTON'}" th:href="@{'/material-order/material/' + ${order.materialId} + '?materialType=CARTON'}">Кашон</a>
+                                            <a th:if="${order.materialType == 'PLATE'}" th:href="@{'/material-order/material/' + ${order.materialId} + '?materialType=PLATE'}">Тарелка</a>
+                                            <a th:if="${order.materialType == 'PACKAGE'}" th:href="@{'/material-order/material/' + ${order.materialId} + '?materialType=PACKAGE'}">Кутия</a>
+                                        </td>
                                         <td th:text="${order.orderedQuantity}"></td>
                                         <td>
                                             <form th:action="@{'/material-order/delete/' + ${order.id}}" method="post"
@@ -98,9 +86,11 @@
                                     <tr th:each="order : ${orders}" th:if="${order.arrivalDate}">
                                         <td th:text="${order.id}"></td>
                                         <td th:text="${order.materialId}"></td>
-                                        <td th:if="${order.materialType == 'CARTON'}">Кутия</td>
-                                        <td th:if="${order.materialType == 'PLATE'}">Тарелка</td>
-                                        <td th:if="${order.materialType == 'PACKAGE'}">Кашон</td>
+                                        <td>
+                                            <a th:if="${order.materialType == 'CARTON'}" th:href="@{'/material-order/material/' + ${order.materialId} + '?materialType=CARTON'}">Кашон</a>
+                                            <a th:if="${order.materialType == 'PLATE'}" th:href="@{'/material-order/material/' + ${order.materialId} + '?materialType=PLATE'}">Тарелка</a>
+                                            <a th:if="${order.materialType == 'PACKAGE'}" th:href="@{'/material-order/material/' + ${order.materialId} + '?materialType=PACKAGE'}">Кутия</a>
+                                        </td>
                                         <td th:text="${order.orderedQuantity}"></td>
                                         <td th:text="${order.receivedQuantity}"></td>
                                         <td th:text="${order.materialPrice}"></td>
@@ -123,9 +113,10 @@
                         </div>
                     </div>
                 </div>
-            </div>
-    </main>
-</div>
+                    </div>
+
+        </main>
+    </div>
 </div>
 <script src="/js/app.js"></script>
 </body>
