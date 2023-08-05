@@ -37,18 +37,26 @@ margin: 0 auto; /* Опционално: Центриране на карта х
             </a>
         </nav>
         <main class="content">
-                <div class="row">
-                    <div class="col-lg-8 mx-auto">
-                        <div class="card custom-card-width-lg">
-                            <div class="card-header">
-                                <h5 class="card-title mb-0">Всички кашони</h5>
+            <div class="row">
+                <div class="col-lg-8 mx-auto">
+                    <div class="card custom-card-width-lg">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">Всички кашони</h5>
+                        </div>
+                        <div class="text-center">
+                            <a href="/create" class="btn btn-primary">Добави Кашон</a>
+                        </div>
+                        <div class="card-body">
+                            <div class="row mb-3">
+                                <div class="col">
+                                    <input type="text" id="searchInput1" class="form-control" placeholder="Търсене по номер ID...">
+                                </div>
+                                <div class="col">
+                                    <input type="text" id="searchInput" class="form-control" placeholder="Търсене по име...">
+                                </div>
                             </div>
-                            <div class="text-center">
-                                <a href="/create" class="btn btn-primary">Добави Кашон</a>
-                            </div>
-                            <div class="card-body">
-                                <div class="table-responsive">
-                                    <table class="table">
+                            <div class="table-responsive">
+                                <table class="table">
                                     <thead>
                                     <tr>
                                         <th>ID</th>
@@ -56,6 +64,8 @@ margin: 0 auto; /* Опционално: Центриране на карта х
                                         <th>Размери</th>
                                         <th>Наличност</th>
                                         <th>Цена</th>
+                                        <th>Изтрий</th>
+                                        <th>Редактирай</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -64,7 +74,8 @@ margin: 0 auto; /* Опционално: Центриране на карта х
                                         <td th:text="${carton.name}"></td>
                                         <td th:text="${carton.size + ' См'}"></td>
                                         <td>
-                                            <span th:text="${carton.availableQuantity + ' Броя'}" th:class="${carton.availableQuantity <= 20 ? 'red-cell' : (carton.availableQuantity <= 100 ? 'yellow-cell' : '')}"></span>
+                                        <span th:text="${carton.availableQuantity + ' Броя'}"
+                                              th:class="${carton.availableQuantity <= 20 ? 'red-cell' : (carton.availableQuantity <= 100 ? 'yellow-cell' : '')}"></span>
                                         </td>
                                         <td th:text="${carton.price + ' Лв'}"></td>
                                         <td>
@@ -84,14 +95,12 @@ margin: 0 auto; /* Опционално: Центриране на карта х
                                 </table>
                             </div>
                         </div>
-                        </div>
                     </div>
                 </div>
+            </div>
         </main>
     </div>
 </div>
 <script src="js/app.js"></script>
 </body>
 </html>
-<script>
-</script>

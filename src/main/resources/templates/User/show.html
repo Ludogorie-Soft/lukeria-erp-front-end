@@ -20,18 +20,26 @@
             </a>
         </nav>
         <main class="content">
-            <div class="d-flex justify-content-center">
-                <div class="row">
-                    <div class="col-12">
-                        <div class="card custom-card-width-lg">
-                            <div class="card-header">
+            <div class="row">
+                <div class="col-lg-8 mx-auto">
+                    <div class="card custom-card-width-lg">
+                        <div class="card-header">
                                 <h5 class="card-title mb-0">Всички Потребители</h5>
                             </div>
                             <div class="text-center">
                                 <a href="/user/create" class="btn btn-primary">Добави Потребител</a>
                             </div>
                             <div class="card-body">
-                                <table class="table">
+                                <div class="row mb-3">
+                                    <div class="col">
+                                        <input type="text" id="searchInput1" class="form-control" placeholder="Търсене по номер ID...">
+                                    </div>
+                                    <div class="col">
+                                        <input type="text" id="searchInput" class="form-control" placeholder="Търсене по пълно име...">
+                                    </div>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table">
                                     <thead>
                                     <tr>
                                         <th>ID</th>
@@ -74,3 +82,24 @@
 <script src="/js/app.js"></script>
 </body>
 </html>
+<script>
+    document.getElementById('searchInput').addEventListener('input', function () {
+        var input, filter, table, tr, td, i, txtValue;
+        input = document.getElementById('searchInput');
+        filter = input.value.toUpperCase();
+        table = document.querySelector('table');
+        tr = table.getElementsByTagName('tr');
+
+        for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName('td')[2];
+            if (td) {
+                txtValue = td.textContent || td.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = '';
+                } else {
+                    tr[i].style.display = 'none';
+                }
+            }
+        }
+    });
+</script>
