@@ -39,7 +39,7 @@
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    <tr th:each="order : ${orders}"  th:unless="${order.arrivalDate}">
+                                    <tr th:each="order : ${orders}" th:unless="${order.arrivalDate}">
                                         <td th:text="${order.id}"></td>
                                         <td th:text="${order.materialId}"></td>
                                         <td>
@@ -65,12 +65,12 @@
                             </div>
                         </div>
                         <br><br>
-                            <div class="card-header">
-                                <h5 class="card-title mb-0">Всички поръчки на материали, които СА са доставени</h5>
-                            </div>
-                            <div class="card-body">
-                                <div class="table-responsive">
-                                    <table class="table">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">Всички поръчки на материали, които СА са доставени</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table">
                                     <thead>
                                     <tr>
                                         <th>Поръчка</th>
@@ -83,7 +83,7 @@
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    <tr th:each="order : ${orders}"  th:if="${order.arrivalDate}">
+                                    <tr th:each="order : ${orders}" th:if="${order.arrivalDate}">
                                         <td th:text="${order.id}"></td>
                                         <td th:text="${order.materialId}"></td>
                                         <td>
