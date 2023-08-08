@@ -4,7 +4,7 @@
     <!--    LINKS  -->
     <th:block th:include="~{fragments/links}"></th:block>
 
-    <title> Поръчки на материали </title>
+    <title> Всички Нужни брой Материали </title>
     <link href="/css/show.css" rel="stylesheet">
 </head>
 <body>
@@ -25,7 +25,12 @@
                     <div class="col-12">
                         <div class="card custom-card-width-lg">
                             <div class="card-header">
-                                <h5 class="card-title mb-0">Всички Нужни брой Материали</h5>
+                                <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+                                    <h5 class="card-title mb-0">Всички Нужни брой Материали</h5>
+                                    <button onclick="printPage()">
+                                        <i class="fas fa-print"></i>
+                                    </button>
+                                </div>
                             </div>
 
                             <div class="card-body">
@@ -39,8 +44,17 @@
                                     </thead>
                                     <tbody>
                                     <tr th:each="order : ${orders}">
-                                        <td th:text="${order.materialId}"></td>
-                                        <td th:text="${order.materialType}"></td>
+                                        <td>
+                                            <span th:if="${order.materialType == 'CARTON'}"  th:text="${cartons[order.materialId-1].name}"></span>
+                                            <span th:if="${order.materialType == 'PACKAGE'}" th:text="${packages[order.materialId-1].name}"></span>
+                                            <span th:if="${order.materialType == 'PLATE'}" th:text="${plates[order.materialId-1].name}"></span>
+
+                                        </td>
+                                        <td>
+                                            <span th:if="${order.materialType == 'CARTON'}">Кашон</span>
+                                            <span th:if="${order.materialType == 'PACKAGE'}">Кутия</span>
+                                            <span th:if="${order.materialType == 'PLATE'}">Тарелка</span>
+                                        </td>
                                         <td th:text="${order.orderedQuantity}"></td>
 
                                     </tr>
@@ -54,6 +68,11 @@
         </main>
     </div>
 </div>
+<script>
+    function printPage() {
+        window.print();
+    }
+</script>
 <script src="/js/app.js"></script>
 </body>
 </html>

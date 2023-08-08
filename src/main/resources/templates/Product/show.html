@@ -19,17 +19,25 @@
         </nav>
 
         <main class="content">
-            <div class="d-flex justify-content-center">
-                <div class="row">
-                    <div class="col-12">
-                        <div class="card custom-card-width-lg">
-                            <div class="card-header">
-                                <h5 class="card-title mb-0">Всички Продукти Лукерия</h5>
+            <div class="row">
+                <div class="col-lg-8 mx-auto">
+                    <div class="card custom-card-width-lg">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">Всички Потребители</h5>
+                        </div>
+                        <div class="text-center">
+                            <a href="/user/create" class="btn btn-primary">Добави Потребител</a>
+                        </div>
+                        <div class="card-body">
+                            <div class="row mb-3">
+                                <div class="col">
+                                    <input type="text" id="searchInput1" class="form-control" placeholder="Търсене по номер ID...">
+                                </div>
+                                <div class="col">
+                                    <input type="text" id="searchInput" class="form-control" placeholder="Търсене по име...">
+                                </div>
                             </div>
-                            <div class="text-center">
-                                <a href="/product/create" class="btn btn-primary">Добави Продукт</a>
-                            </div>
-                            <div class="card-body">
+                            <div class="table-responsive">
                                 <table class="table">
                                     <thead>
                                     <tr>

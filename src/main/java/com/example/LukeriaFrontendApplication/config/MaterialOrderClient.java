@@ -26,4 +26,7 @@ public interface MaterialOrderClient {
 
     @GetMapping("products/{id}")
      List<MaterialOrderDTO> getAllProductsByOrderId(@PathVariable(name = "id") Long id);
+
+    @GetMapping("/all-missing-materials")
+     List<MaterialOrderDTO>  allAvailableProducts();
 }

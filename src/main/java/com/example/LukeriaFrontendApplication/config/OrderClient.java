@@ -3,7 +3,6 @@ package com.example.LukeriaFrontendApplication.config;
 import com.example.LukeriaFrontendApplication.dtos.OrderDTO;
 import jakarta.validation.Valid;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
