@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -42,18 +43,25 @@ public class InvoiceController {
     @GetMapping("/certificate/{id}")
     public String certificate(@PathVariable(name = "id") Long id, Model model) {
         InvoiceDTO invoiceDTO = invoiceClient.getInvoiceById(id);
-        Optional<InvoiceOrderProductDTO> orderProductDTO = invoiceOrderProduct.getAllInvoiceOrderProduct().stream().filter(order -> Objects.equals(order.getInvoiceId(), id)).findFirst();
-        orderProductDTO.ifPresent(order -> {
-            OrderDTO orderDTO = orderClient.getOrderById(order.getOrderProductId());
-            if (orderDTO != null) {
-                ClientDTO clientDTO = clientClient.getClientById(orderDTO.getClientId());
-                if (clientDTO != null) {
-                    model.addAttribute("client", clientDTO);
-                }
+        OrderProductDTO orderProductDTO = null;
+        for (InvoiceOrderProductDTO order: invoiceOrderProduct.getAllInvoiceOrderProduct()) {
+            if(Objects.equals(order.getInvoiceId(), id)){
+                orderProductDTO = orderProductClient.getOrderProductById(order.getOrderProductId());
             }
-        });
+        }
+        if(orderProductDTO != null) {
+            OrderDTO orderDTO = orderClient.getOrderById(orderProductDTO.getOrderId());
+            ClientDTO clientDTO = clientClient.getClientById(orderDTO.getClientId());
+            model.addAttribute("client", clientDTO);
+        }
         model.addAttribute("date", invoiceDTO.getInvoiceDate());
         model.addAttribute("invoiceNumber", invoiceDTO.getInvoiceNumber());
-        return "/Certificate";
+        return "Certificate/Certificate";
+    }
+    @GetMapping("/certificate/show")
+    public String certificateShow(Model model) {
+        List<InvoiceDTO> invoiceDTOS = invoiceClient.getAllInvoices();
+        model.addAttribute("invoices", invoiceDTOS);
+        return "Certificate/show";
     }
 }

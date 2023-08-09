@@ -22,7 +22,11 @@
         <main class="content">
             <div class="row">
                 <div class="col-lg-8 mx-auto">
+                    <button onclick="printPage()">
+                    <i class="fas fa-print"></i>
+                </button>
                     <div class="card custom-card-width-lg">
+
                         <img class="card-img-top" src="/img/photos/logo.png" alt="Logo" style="width: 260px; height: 260px; float: left;">
                         <div class="card-body">
                             <center>
@@ -69,5 +73,10 @@
     </div>
 </div>
 <script src="/js/app.js"></script>
+<script>
+    function printPage() {
+        window.print();
+    }
+</script>
 </body>
 </html>
