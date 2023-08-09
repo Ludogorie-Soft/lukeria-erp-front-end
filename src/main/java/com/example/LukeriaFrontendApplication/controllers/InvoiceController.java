@@ -1,13 +1,7 @@
 package com.example.LukeriaFrontendApplication.controllers;
 
-import com.example.LukeriaFrontendApplication.config.ClientClient;
-import com.example.LukeriaFrontendApplication.config.OrderClient;
-import com.example.LukeriaFrontendApplication.config.PackageClient;
-import com.example.LukeriaFrontendApplication.config.QueryClient;
-import com.example.LukeriaFrontendApplication.dtos.ClientDTO;
-import com.example.LukeriaFrontendApplication.dtos.OrderDTO;
-import com.example.LukeriaFrontendApplication.dtos.OrderProductDTO;
-import com.example.LukeriaFrontendApplication.dtos.PackageDTO;
+import com.example.LukeriaFrontendApplication.config.*;
+import com.example.LukeriaFrontendApplication.dtos.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ui.Model;
@@ -16,6 +10,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @org.springframework.stereotype.Controller
 @RequiredArgsConstructor
@@ -26,6 +22,9 @@ public class InvoiceController {
     private final PackageClient packageClient;
     private final ClientClient clientClient;
     private final OrderClient orderClient;
+    private final InvoiceClient invoiceClient;
+    private final OrderProductClient orderProductClient;
+    private final InvoiceOrderProduct invoiceOrderProduct;
 
     @GetMapping("/show/{id}")
     public String index(@PathVariable(name = "id") Long id, Model model) {
@@ -40,4 +39,21 @@ public class InvoiceController {
         return "Query/show";
     }
 
+    @GetMapping("/certificate/{id}")
+    public String certificate(@PathVariable(name = "id") Long id, Model model) {
+        InvoiceDTO invoiceDTO = invoiceClient.getInvoiceById(id);
+        Optional<InvoiceOrderProductDTO> orderProductDTO = invoiceOrderProduct.getAllInvoiceOrderProduct().stream().filter(order -> Objects.equals(order.getInvoiceId(), id)).findFirst();
+        orderProductDTO.ifPresent(order -> {
+            OrderDTO orderDTO = orderClient.getOrderById(order.getOrderProductId());
+            if (orderDTO != null) {
+                ClientDTO clientDTO = clientClient.getClientById(orderDTO.getClientId());
+                if (clientDTO != null) {
+                    model.addAttribute("client", clientDTO);
+                }
+            }
+        });
+        model.addAttribute("date", invoiceDTO.getInvoiceDate());
+        model.addAttribute("invoiceNumber", invoiceDTO.getInvoiceNumber());
+        return "/Certificate";
+    }
 }
