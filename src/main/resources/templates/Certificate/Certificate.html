@@ -26,8 +26,9 @@
                     <i class="fas fa-print"></i>
                 </button>
                     <div class="card custom-card-width-lg">
-
-                        <img class="card-img-top" src="/img/photos/logo.png" alt="Logo" style="width: 260px; height: 260px; float: left;">
+                        <center>
+                        <img class="card-img-top" src="/img/photos/logos.png" alt="Logo" style="width: 800px; height: 280px; float: left;">
+                        </center>
                         <div class="card-body">
                             <center>
                                 <h3>ТЪРГОВСКИ ДОКУМЕНТ № <span th:text="${invoiceNumber}">Invoice Number</span></h3>
@@ -37,14 +38,14 @@
                             <div class="card-body">
                                 <div style="display: flex; justify-content: space-between;">
                                     <div style="text-align: left;">
-                                        <h3>ДОСТАВЧИК:</h3>
+                                        <I><h4>ДОСТАВЧИК:</h4></I>
                                         <h4>ЛУКЕРИЯ ООД</h4>
                                         <h4>гр. Търговище, Промишлена зона</h4>
                                         <h4>EИК: 200418603</h4>
                                         <h4>МОЛ: Кадрия Йълдъз</h4>
                                     </div>
                                     <div style="text-align: left;">
-                                        <h3>ПОЛУЧАТЕЛ:</h3>
+                                        <I><h4>ПОЛУЧАТЕЛ:</h4></I>
                                         <h4> <span th:text="${client.businessName}"></span></h4>
                                         <h4 th:text="${client.address}"></h4>
                                         <h4>ЕИК: <span th:text="${client.idNumEIK}"></span></h4>
@@ -61,8 +62,7 @@
                                 УДОСТОВЕРЕНИЕ ЗА РЕГИСТРАЦИЯ НА ОБУКТ ЗА ПРОИЗВОДСТВО НА ХРАНИ № 640/12.12.2012г. - и се регистрира с
                                 № 25040009 / 12.12.2012г.</h6>
                                 <br>
-                                <h4>Управител: Кадрия Йълдъз</h4>
-                                <br>
+                                <i><h3>Управител: Кадрия Йълдъз</h3></i>
                                 <h4>/.............../</h4>
                             </div>
                         </div>
