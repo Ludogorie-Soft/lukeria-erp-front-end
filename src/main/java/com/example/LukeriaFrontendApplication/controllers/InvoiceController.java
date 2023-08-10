@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 @org.springframework.stereotype.Controller
 @RequiredArgsConstructor
@@ -25,7 +24,7 @@ public class InvoiceController {
     private final OrderClient orderClient;
     private final InvoiceClient invoiceClient;
     private final OrderProductClient orderProductClient;
-    private final InvoiceOrderProduct invoiceOrderProduct;
+    private final InvoiceOrderProductClient invoiceOrderProductClient;
 
     @GetMapping("/show/{id}")
     public String index(@PathVariable(name = "id") Long id, Model model) {
@@ -44,7 +43,7 @@ public class InvoiceController {
     public String certificate(@PathVariable(name = "id") Long id, Model model) {
         InvoiceDTO invoiceDTO = invoiceClient.getInvoiceById(id);
         OrderProductDTO orderProductDTO = null;
-        for (InvoiceOrderProductDTO order: invoiceOrderProduct.getAllInvoiceOrderProduct()) {
+        for (InvoiceOrderProductDTO order: invoiceOrderProductClient.getAllInvoiceOrderProduct()) {
             if(Objects.equals(order.getInvoiceId(), id)){
                 orderProductDTO = orderProductClient.getOrderProductById(order.getOrderProductId());
             }
@@ -58,10 +57,36 @@ public class InvoiceController {
         model.addAttribute("invoiceNumber", invoiceDTO.getInvoiceNumber());
         return "Certificate/Certificate";
     }
+    @GetMapping("/confirmation/{id}")
+    public String confirmation(@PathVariable(name = "id") Long id, Model model) {
+        InvoiceDTO invoiceDTO = invoiceClient.getInvoiceById(id);
+        List<OrderProductDTO> orderProductDTOS = new ArrayList<>();
+        for(InvoiceOrderProductDTO invoiceOrderProductDTO: invoiceOrderProductClient.getAllInvoiceOrderProduct()){
+            if(Objects.equals(invoiceOrderProductDTO.getInvoiceId(), id)){
+                OrderProductDTO orderProductDTO = orderProductClient.getOrderProductById(invoiceOrderProductDTO.getOrderProductId());
+                orderProductDTOS.add(orderProductDTO);
+            }
+        }
+        List<PackageDTO> packageDTOS = new ArrayList<>();
+        for (OrderProductDTO order: orderProductDTOS) {
+            packageDTOS.add(packageClient.getPackageById(order.getPackageId()));
+        }
+        model.addAttribute("packageDTOS", packageDTOS);
+        model.addAttribute("orderProductDTOS", orderProductDTOS);
+        model.addAttribute("date", invoiceDTO.getInvoiceDate());
+        model.addAttribute("invoiceNumber", invoiceDTO.getInvoiceNumber());
+        return "Confirmation/confirmation";
+    }
     @GetMapping("/certificate/show")
     public String certificateShow(Model model) {
         List<InvoiceDTO> invoiceDTOS = invoiceClient.getAllInvoices();
         model.addAttribute("invoices", invoiceDTOS);
         return "Certificate/show";
+    }
+    @GetMapping("/confirmation/show")
+    public String confirmationShow(Model model) {
+        List<InvoiceDTO> invoiceDTOS = invoiceClient.getAllInvoices();
+        model.addAttribute("invoices", invoiceDTOS);
+        return "Confirmation/show";
     }
 }
