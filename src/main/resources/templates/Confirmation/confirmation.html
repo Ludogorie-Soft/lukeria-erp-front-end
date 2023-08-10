@@ -35,7 +35,7 @@
                             </center>
                             <br>
                             <div class="card-body">
-                                <h5> Today: <span th:text="${date}"> </span>.(date),      ………………………………………………….………. (name), as ……………...... (position) of "DAMAK" GbR, GERMANY, 47800 Krefeld, EMIL
+                                <h5> Today: <span th:text="${date}"> </span>.(date),      ……………………………………………………… (name), as ……………...... (position) of "DAMAK" GbR, GERMANY, 47800 Krefeld, EMIL
                                     SCHAEFER STR.18, VAT № DE  181 791 338, accept goods on the invoice <span th:text="${invoiceNumber}"></span> / 23.06.2023 from ......................................
                                     position – driver, with truck  ........ with reg plates № ,  ………………………… from “ LUKERIA “ LTD with Vat ID №: 200418603,
                                     in the city Krefeld, Germany,as follows:	</h5>
@@ -48,7 +48,7 @@
                                             <th>number and kind of packages description of goods</th>
                                             <th>quantity  of packs</th>
                                             <th>unit  price (€ /pack)</th>
-                                            <th> Value € </th>
+                                            <th>Value € </th>
                                         </tr>
                                         </thead>
                                         <tbody>
@@ -116,7 +116,7 @@
         const opt = {
             margin: 10,
             filename: 'confirmation.pdf', // Set the PDF file name
-            image: { type: 'jpeg', quality: 0.98 }, // Image settings
+            image: { type: 'jpeg', quality: 0.40 }, // Image settings
             html2canvas: { scale: 2 }, // Higher scale for better resolution
             jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } // PDF settings
         };
