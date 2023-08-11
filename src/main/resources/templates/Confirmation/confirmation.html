@@ -25,9 +25,6 @@
                     <button onclick="generatePDF()">
                         Свали PDF
                     </button>
-                    <button type="button" class="btn btn-outline-primary" onclick="generateWordFile()">
-                        Generate Word File
-                    </button>
 
                     <div class="card custom-card-width-lg">
                         <center>
@@ -114,32 +111,6 @@
 <script src="/js/app.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
-<script>
-    function generateWordFile() {
-        const htmlContent = `<!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
-<head>
-    <!-- ... (head section content) ... -->
-</head>
-<body>
-    <!-- ... (body content) ... -->
-</body>
-</html>`;
-
-        mammoth.convertToHtml({ html: htmlContent })
-            .then(result => {
-                const docxContent = result.value;
-                const blob = new Blob([docxContent], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
-                const link = document.createElement('a');
-                link.href = URL.createObjectURL(blob);
-                link.download = 'work_file.docx';
-                link.click();
-            })
-            .catch(error => {
-                console.error('Error generating Word file:', error);
-            });
-    }
-</script>
 
 <script>
     function generatePDF() {
