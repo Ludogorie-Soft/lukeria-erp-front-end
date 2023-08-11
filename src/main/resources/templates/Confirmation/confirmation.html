@@ -4,7 +4,7 @@
     <!--    LINKS  -->
     <th:block th:include="~{fragments/links}"></th:block>
 
-    <title> Сертификат </title>
+    <title> Confirmation </title>
     <link href="/css/show.css" rel="stylesheet">
 </head>
 <body>
@@ -25,6 +25,10 @@
                     <button onclick="generatePDF()">
                         Свали PDF
                     </button>
+                    <button type="button" class="btn btn-outline-primary" onclick="generateWordFile()">
+                        Generate Word File
+                    </button>
+
                     <div class="card custom-card-width-lg">
                         <center>
                             <img class="card-img-top" src="/img/photos/logo.png" alt="Logo" style="width: 250px; height: 220px; float: left;">
@@ -35,7 +39,7 @@
                             </center>
                             <br>
                             <div class="card-body">
-                                <h5> Today: <span th:text="${date}"> </span>.(date),      ……………………………………………………… (name), as ……………...... (position) of "DAMAK" GbR, GERMANY, 47800 Krefeld, EMIL
+                                <h5> Today:............... </span>.(date),      ……………………………………………………… (name), as ............. (position) of "DAMAK" GbR, GERMANY, 47800 Krefeld, EMIL
                                     SCHAEFER STR.18, VAT № DE  181 791 338, accept goods on the invoice <span th:text="${invoiceNumber}"></span> / 23.06.2023 from ......................................
                                     position – driver, with truck  ........ with reg plates № ,  ………………………… from “ LUKERIA “ LTD with Vat ID №: 200418603,
                                     in the city Krefeld, Germany,as follows:	</h5>
@@ -109,6 +113,33 @@
 </div>
 <script src="/js/app.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+<script>
+    function generateWordFile() {
+        const htmlContent = `<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <!-- ... (head section content) ... -->
+</head>
+<body>
+    <!-- ... (body content) ... -->
+</body>
+</html>`;
+
+        mammoth.convertToHtml({ html: htmlContent })
+            .then(result => {
+                const docxContent = result.value;
+                const blob = new Blob([docxContent], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = 'work_file.docx';
+                link.click();
+            })
+            .catch(error => {
+                console.error('Error generating Word file:', error);
+            });
+    }
+</script>
 
 <script>
     function generatePDF() {
