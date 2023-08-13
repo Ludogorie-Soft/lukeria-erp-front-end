@@ -10,3 +10,49 @@ margin: 0 auto; /* Опционално: Центриране на карта х
 .red-cell {
   background-color: red;
 }
+  .container {
+          display: flex;
+          justify-content: space-between;
+      }
+
+      .text-container {
+          flex-basis: 45%;
+      }
+
+      .underlined {
+          text-decoration: underline;
+      }
+
+      .right-align {
+          text-align: right;
+      }
+
+      .text-container.right {
+          margin-left: auto;
+      }
+
+      .centered {
+          text-align: center;
+          margin-top: 20px;
+      }
+
+      .total {
+          text-align: center;
+          margin-top: 10px;
+      }
+      .price-input {
+          width: 60px; /* Променете тази стойност според вашите предпочитания за ширина */
+          padding: 5px;
+          border: 1px solid #ccc;
+          border-radius: 4px;
+          box-sizing: border-box;
+          text-align: right;
+      }
+      .quantity-input {
+          width: 40px; /* Променете тази стойност според вашите предпочитания за ширина */
+          padding: 3px;
+          border: 1px solid #ccc;
+          border-radius: 4px;
+          box-sizing: border-box;
+          text-align: center;
+      }
