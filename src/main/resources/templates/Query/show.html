@@ -19,6 +19,9 @@
             </a>
         </nav>
         <main class="content">
+            <button id="printButton" class="btn btn-primary">
+                Принтирай <i class="fas fa-print"></i>
+            </button>
             <div class="row">
                 <div class="col-lg-8 mx-auto">
                     <div class="card custom-card-width-lg">
@@ -78,28 +81,60 @@
                                     <tr th:each="orderProductDTO : ${orderProductDTOS}">
                                         <td th:text="${orderProductDTO.id}"></td>
                                         <td>
-                                            <span th:each="packageDTO : ${packageDTOS}"
-                                                  th:if="${packageDTO.id == orderProductDTO.packageId}"
-                                                  th:text="${packageDTO.name}"></span>
+                                              <span th:each="packageDTO : ${packageDTOS}"
+                                                    th:if="${packageDTO.id == orderProductDTO.packageId}"
+                                                    th:text="${packageDTO.name}"></span>
                                         </td>
                                         <td>
-                                            <input class="quantity-input" type="number" th:value="${orderProductDTO.number}" min="1">
+                                            <label>
+                                                <input class="quantity-input" type="number"
+                                                       th:value="${orderProductDTO.number}" min="1">
+                                            </label>
                                             <span> БР</span>
                                         </td>
 
                                         <td>
-                                            <input type="number" step="0.01" class="price-input"
-                                                   data-value="${productDTOS[__${orderProductDTO.packageId - 1}__].price}"
-                                                   th:value="${productDTOS[__${orderProductDTO.packageId - 1}__].price}"
-                                                   placeholder="${productDTOS[__${orderProductDTO.packageId - 1}__].price}"
-                                                   size="5">
+                                            <label>
+                                                <input type="number" step="0.01" class="price-input"
+                                                       data-value="${productDTOS[__${orderProductDTO.packageId - 1}__].price}"
+                                                       th:value="${productDTOS[__${orderProductDTO.packageId - 1}__].price}"
+                                                       placeholder="${productDTOS[__${orderProductDTO.packageId - 1}__].price}"
+                                                       size="5">
+                                            </label>
                                         </td>
                                         <td th:text="20"></td>
 
-                                        <td><span th:each="productDTO : ${productDTOS}"
-                                                  th:if="${productDTO.id == orderProductDTO.packageId}"
-                                                  th:text="${productDTO.price}*${orderProductDTO.number}"></span></td>
+                                        <td>
+                <span th:each="productDTO : ${productDTOS}"
+                      th:if="${productDTO.id == orderProductDTO.packageId}"
+                      th:text="${productDTO.price * orderProductDTO.number}"></span>
+                                        </td>
                                     </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td>ДАНЪЧНА УСНОВА (BGN):</td>
+                                        <td id="totalPrice"></td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td>Стойност на ДДС (BGN):</td>
+                                        <td id="vatValue"></td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td>СУМА ЗА ПЛАЩАНЕ (BGN):</td>
+                                        <td id="paymentAmount"></td>
+                                    </tr>
+
                                     </tbody>
                                 </table>
                                 <div class="text-center">
@@ -117,6 +152,7 @@
                     </div>
                 </div>
             </div>
+
         </main>
     </div>
 </div>

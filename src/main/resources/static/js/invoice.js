@@ -9,64 +9,122 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   });
 });
-window.addEventListener('load', function() {
+var quantityInputs = document.querySelectorAll('.quantity-input');
+var priceInputs = document.querySelectorAll('.price-input');
+var totalPriceCell = document.getElementById('totalPrice');
+var vatValueCell = document.getElementById('vatValue');
+var paymentAmountCell = document.getElementById('paymentAmount');
+
+function updateTable() {
     var totalValue = 0;
-    var cells = document.querySelectorAll('td:nth-child(6) span'); // Изберете всички съдържащи стойности в 6-тата колона
-    cells.forEach(function(cell) {
-        totalValue += parseFloat(cell.textContent);
+
+    quantityInputs.forEach(function (input, index) {
+        var quantity = parseFloat(input.value);
+        var price = parseFloat(priceInputs[index].value);
+        var subTotal = quantity * price;
+
+        totalValue += subTotal;
     });
 
-    var totalCell = document.createElement('td');
-    totalCell.textContent = totalValue.toFixed(2);
+    totalPriceCell.textContent = totalValue.toFixed(2);
+    updateVatValue();
+    updatePaymentAmount();
+}
 
-    var totalTextLabel = document.createElement('td');
-    totalTextLabel.textContent = 'Обща стойност (BGN):';
+function updateVatValue() {
+    var totalValue = parseFloat(totalPriceCell.textContent);
+    var vatValue = totalValue * 0.2; // Изчисляване на стойността на ДДС (20%)
 
-    var newRow = document.createElement('tr');
-    newRow.appendChild(document.createElement('td'));
-    newRow.appendChild(document.createElement('td'));
-    newRow.appendChild(document.createElement('td'));
-    newRow.appendChild(document.createElement('td'));
-    newRow.appendChild(totalTextLabel);
-    newRow.appendChild(totalCell);
+    vatValueCell.textContent = vatValue.toFixed(2);
+}
 
-    var tbody = document.querySelector('tbody');
-    tbody.appendChild(newRow);
+function updatePaymentAmount() {
+    var totalValue = parseFloat(totalPriceCell.textContent);
+    var vatValue = parseFloat(vatValueCell.textContent);
+    var paymentAmount = totalValue + vatValue;
 
-    var vatValue = totalValue * 0.2;
-        var vatCell = document.createElement('td');
-        vatCell.textContent = vatValue.toFixed(2);
+    paymentAmountCell.textContent = paymentAmount.toFixed(2);
+}
 
-        var vatTextLabel = document.createElement('td');
-        vatTextLabel.textContent = 'Стойност на ДДС (BGN):';
-
-        var vatRow = document.createElement('tr');
-        vatRow.appendChild(document.createElement('td'));
-        vatRow.appendChild(document.createElement('td'));
-        vatRow.appendChild(document.createElement('td'));
-        vatRow.appendChild(document.createElement('td'));
-        vatRow.appendChild(vatTextLabel);
-        vatRow.appendChild(vatCell);
-
-        tbody.appendChild(vatRow);
-
-         var paymentAmount = totalValue + vatValue;
-            var paymentAmountCell = document.createElement('td');
-            paymentAmountCell.textContent = paymentAmount.toFixed(2);
-
-            var paymentAmountTextLabel = document.createElement('td');
-            paymentAmountTextLabel.textContent = 'Сума за Плащане (BGN):';
-
-            var paymentAmountRow = document.createElement('tr');
-            paymentAmountRow.appendChild(document.createElement('td'));
-            paymentAmountRow.appendChild(document.createElement('td'));
-            paymentAmountRow.appendChild(document.createElement('td'));
-            paymentAmountRow.appendChild(document.createElement('td'));
-            paymentAmountRow.appendChild(paymentAmountTextLabel);
-            paymentAmountRow.appendChild(paymentAmountCell);
-
-            tbody.appendChild(paymentAmountRow);
+quantityInputs.forEach(function (input) {
+    input.addEventListener('input', updateTable);
 });
+
+priceInputs.forEach(function (input) {
+    input.addEventListener('input', updateTable);
+});
+
+updateTable();
+
+var quantityInputs = document.querySelectorAll('.quantity-input');
+var priceInputs = document.querySelectorAll('.price-input');
+var totalPriceCell = document.getElementById('totalPrice');
+var vatValueCell = document.getElementById('vatValue');
+var paymentAmountCell = document.getElementById('paymentAmount');
+
+function updateTable() {
+    var totalValue = 0;
+
+    quantityInputs.forEach(function (input, index) {
+        var quantity = parseFloat(input.value);
+        var price = parseFloat(priceInputs[index].value);
+        var subTotal = quantity * price;
+
+        totalValue += subTotal;
+    });
+
+    totalPriceCell.textContent = totalValue.toFixed(2);
+    updateVatValue();
+    updatePaymentAmount();
+}
+
+function updateVatValue() {
+    var totalValue = parseFloat(totalPriceCell.textContent);
+    var vatValue = totalValue * 0.2; // Изчисляване на стойността на ДДС (20%)
+
+    vatValueCell.textContent = vatValue.toFixed(2);
+}
+
+function updatePaymentAmount() {
+    var totalValue = parseFloat(totalPriceCell.textContent);
+    var vatValue = parseFloat(vatValueCell.textContent);
+    var paymentAmount = totalValue + vatValue;
+
+    paymentAmountCell.textContent = paymentAmount.toFixed(2);
+}
+
+quantityInputs.forEach(function (input) {
+    input.addEventListener('input', updateTable);
+});
+
+priceInputs.forEach(function (input) {
+    input.addEventListener('input', updateTable);
+});
+
+updateTable();
+
+var printButton = document.getElementById('printButton');
+
+printButton.addEventListener('click', function () {
+    // Създаване на нов документ за печат
+    var printWindow = window.open('', '_blank');
+
+    // Генериране на съдържанието за печат в новия документ
+    var printContent = '<html><head><title>Фактура</title>' +
+                       '<link href="/css/show.css" rel="stylesheet"></head>' +
+                       '<body>' + document.getElementsByClassName('card')[0].outerHTML + '</body></html>';
+
+    // Вмъкване на съдържанието в новия документ
+    printWindow.document.open();
+    printWindow.document.write(printContent);
+    printWindow.document.close();
+
+    // Изчакване на зареждане на съдържанието и след това печатане
+    printWindow.onload = function () {
+        printWindow.print();
+    };
+});
+
     document.getElementById('searchInput1').addEventListener('input', function () {
         var input, filter, table, tr, td, i, txtValue;
         input = document.getElementById('searchInput1');

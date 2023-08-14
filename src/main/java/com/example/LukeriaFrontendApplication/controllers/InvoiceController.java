@@ -16,22 +16,23 @@ import java.util.List;
 @Slf4j
 @RequestMapping("/invoice")
 public class InvoiceController {
+    private final InvoiceClient invoiceClient;
     private final QueryClient queryClient;
     private final PackageClient packageClient;
     private final ClientClient clientClient;
     private final OrderClient orderClient;
-    private  final ProductClient productClient;
+    private final ProductClient productClient;
 
     @GetMapping("/show/{id}")
     public String index(@PathVariable(name = "id") Long id, Model model) {
-        Long lastInvoiceNumber=2000000000L;
+        Long lastInvoiceNumber = invoiceClient.findLastInvoiceNumberStartingWith();
         List<OrderProductDTO> orderProductDTOS = queryClient.getOrderProductsByOrderId(id);
         List<PackageDTO> packageDTOS = packageClient.getAllPackages();
         List<ClientDTO> clientDTOS = clientClient.getAllClients();
         OrderDTO orderDTO = orderClient.getOrderById(id);
-        List<ProductDTO> productDTOS=productClient.getAllProducts();
-        model.addAttribute("lastInvoiceNumber",lastInvoiceNumber);
-        model.addAttribute("productDTOS",productDTOS);
+        List<ProductDTO> productDTOS = productClient.getAllProducts();
+        model.addAttribute("lastInvoiceNumber", lastInvoiceNumber);
+        model.addAttribute("productDTOS", productDTOS);
         model.addAttribute("orderDTO", orderDTO);
         model.addAttribute("clientDTOS", clientDTOS);
         model.addAttribute("packageDTOS", packageDTOS);
