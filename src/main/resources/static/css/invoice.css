@@ -108,4 +108,8 @@ margin: 0 auto; /* Опционално: Центриране на карта х
                        flex-direction: column;
                        margin-bottom: 15px;
                    }
+    .small-input {
+        width: 20px; /* Променете стойностите според вашите нужди */
+    }
+
  }

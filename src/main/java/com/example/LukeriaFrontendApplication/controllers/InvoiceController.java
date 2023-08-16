@@ -8,6 +8,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 @org.springframework.stereotype.Controller
@@ -41,11 +43,16 @@ public class InvoiceController {
         return "Query/show";
     }
     @PostMapping("/submit")
-    public ModelAndView submitInvoice(@RequestParam("paymentMethod") String paymentMethod,
-                                            @RequestParam("dateInput") String paymentDateStr,
-                                            @RequestParam("paymentAmount") String paymentAmountStr) {
+    public ModelAndView submitInvoice(@RequestParam("paymentMethod") boolean paymentMethod,
+                                      @RequestParam("dateInput") LocalDate paymentDateStr,
+                                      @RequestParam("paymentAmount") BigDecimal paymentAmountStr) {
+        InvoiceDTO invoiceDTO=new InvoiceDTO();
+        invoiceDTO.setTotalPrice(paymentAmountStr);
+        invoiceDTO.setDeadline(paymentDateStr);
+        invoiceDTO.setCashPayment(paymentMethod);
         for (int i = 0; i <5 ; i++) {
             System.err.println("paymentMethod: "+paymentMethod+"/dateInput:"+paymentDateStr+"/paymentAmountInput:"+paymentAmountStr);
+            System.err.println(invoiceDTO);
         }
         return new ModelAndView("redirect:/show");
     }

@@ -1,4 +1,3 @@
-/*! For license information please see app.js.LICENSE.txt */
 document.addEventListener("DOMContentLoaded", function() {
   var currentPageUrl = window.location.href;
   var sidebarLinks = document.querySelectorAll('.sidebar-link');
@@ -9,6 +8,38 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   });
 });
+document.addEventListener("DOMContentLoaded", function () {
+    var paymentAmountElement = document.getElementById("paymentAmount");
+    var paymentAmountInput = document.getElementById("paymentAmountInput");
+
+    function updatePaymentAmountInput() {
+        paymentAmountInput.value = paymentAmountElement.textContent.trim();
+    }
+
+    var observer = new MutationObserver(updatePaymentAmountInput);
+    var config = { childList: true, characterData: true, subtree: true };
+    observer.observe(paymentAmountElement, config);
+
+    updatePaymentAmountInput();
+});
+
+
+document.addEventListener("DOMContentLoaded", function () {
+    var dateInput = document.getElementById("dateInput");
+
+    // Генериране на текущата дата във формат "YYYY-MM-DD"
+    var currentDate = new Date();
+    var year = currentDate.getFullYear();
+    var month = (currentDate.getMonth() + 1).toString().padStart(2, "0");
+    var day = currentDate.getDate().toString().padStart(2, "0");
+    var formattedDate = `${year}-${month}-${day}`;
+
+    dateInput.value = formattedDate;
+
+    dateInput.min = formattedDate;
+});
+
+
 var quantityInputs = document.querySelectorAll('.quantity-input');
 var priceInputs = document.querySelectorAll('.price-input');
 var totalPriceCell = document.getElementById('totalPrice');
@@ -33,7 +64,7 @@ function updateTable() {
 
 function updateVatValue() {
     var totalValue = parseFloat(totalPriceCell.textContent);
-    var vatValue = totalValue * 0.2; // Изчисляване на стойността на ДДС (20%)
+    var vatValue = totalValue * 0.2;
 
     vatValueCell.textContent = vatValue.toFixed(2);
 }
@@ -80,7 +111,7 @@ function updateTable() {
 
 function updateVatValue() {
     var totalValue = parseFloat(totalPriceCell.textContent);
-    var vatValue = totalValue * 0.2; // Изчисляване на стойността на ДДС (20%)
+    var vatValue = totalValue * 0.2;
 
     vatValueCell.textContent = vatValue.toFixed(2);
 }
@@ -109,17 +140,15 @@ printButton.addEventListener('click', function () {
     // Създаване на нов документ за печат
     var printWindow = window.open('', '_blank');
 
-    // Генериране на съдържанието за печат в новия документ
     var printContent = '<html><head><title>Фактура</title>' +
                        '<link href="/css/show.css" rel="stylesheet"></head>' +
                        '<body>' + document.getElementsByClassName('card')[0].outerHTML + '</body></html>';
 
-    // Вмъкване на съдържанието в новия документ
+
     printWindow.document.open();
     printWindow.document.write(printContent);
     printWindow.document.close();
 
-    // Изчакване на зареждане на съдържанието и след това печатане
     printWindow.onload = function () {
         printWindow.print();
     };
