@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <!--    LINKS  -->
+    <th:block th:include="~{fragments/links}"></th:block>
+
+    <title> Confirmation </title>
+    <link href="/css/show.css" rel="stylesheet">
+</head>
+<body>
+<div class="wrapper">
+    <!--    HEADER  -->
+    <th:block th:include="~{fragments/header}"></th:block>
+
+
+    <div class="main">
+        <nav class="navbar navbar-expand navbar-light navbar-bg">
+            <a class="sidebar-toggle js-sidebar-toggle">
+                <i class="hamburger align-self-center"></i>
+            </a>
+        </nav>
+        <main class="content">
+            <div class="row">
+                <div class="col-lg-8 mx-auto">
+                    <button onclick="generatePDF()">
+                        Свали PDF
+                    </button>
+
+                    <div class="card custom-card-width-lg">
+                        <center>
+                            <img class="card-img-top" src="/img/photos/logo.png" alt="Logo" style="width: 250px; height: 220px; float: left;">
+                        </center>
+                        <div class="card-body">
+                            <center>
+                                <h3>CONFIRMATION</h3>
+                            </center>
+                            <br>
+                            <div class="card-body">
+                                <h5> Today:............... </span>.(date),      ……………………………………………………… (name), as ............. (position) of "DAMAK" GbR, GERMANY, 47800 Krefeld, EMIL
+                                    SCHAEFER STR.18, VAT № DE  181 791 338, accept goods on the invoice <span th:text="${invoiceNumber}"></span> / 23.06.2023 from ......................................
+                                    position – driver, with truck  ........ with reg plates № ,  ………………………… from “ LUKERIA “ LTD with Vat ID №: 200418603,
+                                    in the city Krefeld, Germany,as follows:	</h5>
+                                <br><br>
+                                <div class="table-responsive">
+                                    <table class="table table-bordered">
+                                        <thead>
+                                        <tr>
+                                            <th>CODE</th>
+                                            <th>number and kind of packages description of goods</th>
+                                            <th>quantity  of packs</th>
+                                            <th>unit  price (€ /pack)</th>
+                                            <th>Value € </th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr th:each="orderProductDTO : ${orderProductDTOS}">
+                                            <td th:text="${orderProductDTO.id}"></td>
+                                            <td th:text="${orderProductDTO.number}"></td>
+                                            <td>
+                                            <span th:each="packageDTO : ${packageDTOS}"
+                                                  th:if="${packageDTO.id == orderProductDTO.packageId}"
+                                                  th:text="${packageDTO.name}"></span>
+                                            </td>
+                                            <td>
+                                                <span th:each="packageDTO : ${packageDTOS}"
+                                                      th:text="${packageDTO.price}"></span>
+                                            </td>
+                                            <td>
+                                                <span th:each="packageDTO : ${packageDTOS}"
+                                                      th:text="${packageDTO.price * orderProductDTO.number}"></span>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                    <center><h5>The goods are delivered on time and unharmed.</h5></center>
+                                </div>
+                                <br>
+                                <div style="display: flex; justify-content: space-between;">
+                                    <div style="text-align: left;">
+                                        <I><h6>Изпращач:</h6></I>
+                                        <p>Sender:    </p>
+                                        <p>Kadriya Yaldaz,Manager</p>
+                                        <br><br>
+                                        <p>/Име,длъжност,  подпис и печат/ (Name,Position,Signature, Stamp) </p>
+                                    </div>
+                                    <div style="text-align: center;">
+                                        <I><h6>Получател:</h6></I>
+                                        <p>Recipient:    </p>
+                                        <br>
+                                        <br>
+                                        <p>.............................</p>
+                                        <p style="text-align: left;">/Име,длъжност,  подпис и печат/ (Name,Position,Signature, Stamp)  </p>
+                                    </div>
+                                    <div style="text-align: left;">
+                                        <I><h6>Превозвач:</h6></I>
+                                        <p>Carrier:    </p>
+                                        <br>
+                                        <br>
+                                        <p>.............................</p>
+                                        <p>/Име,длъжност,  подпис и печат/ (Name,Position,Signature, Stamp)  </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+<script src="/js/app.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+
+<script>
+    function generatePDF() {
+        const element = document.querySelector('.custom-card-width-lg'); // Select the element to convert to PDF
+        const opt = {
+            margin: 10,
+            filename: 'confirmation.pdf', // Set the PDF file name
+            image: { type: 'jpeg', quality: 0.40 }, // Image settings
+            html2canvas: { scale: 2 }, // Higher scale for better resolution
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } // PDF settings
+        };
+
+        // Use html2pdf to generate the PDF
+        html2pdf().from(element).set(opt).save();
+    }
+</script>
+
+</body>
+</html>

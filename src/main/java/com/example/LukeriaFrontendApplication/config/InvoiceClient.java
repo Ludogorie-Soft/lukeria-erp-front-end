@@ -20,7 +20,7 @@ public interface InvoiceClient {
     InvoiceDTO createInvoice(@Valid @RequestBody InvoiceDTO invoiceDTO);
 
     @PutMapping("/{id}")
-    InvoiceDTO updateInvoice(@PathVariable("id") Long id, @Valid @RequestBody InvoiceDTO invoiceDTO);
+    void updateInvoice(@PathVariable("id") Long id, @Valid @RequestBody InvoiceDTO invoiceDTO) ;
 
     @DeleteMapping("/{id}")
     String deleteInvoiceById(@PathVariable("id") Long id);
