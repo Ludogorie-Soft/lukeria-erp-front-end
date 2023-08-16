@@ -124,6 +124,26 @@ printButton.addEventListener('click', function () {
         printWindow.print();
     };
 });
+  function formatDate(date) {
+        var year = date.getFullYear();
+        var month = (date.getMonth() + 1).toString().padStart(2, '0');
+        var day = date.getDate().toString().padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    }
+
+    var currentDate = new Date();
+    currentDate.setDate(currentDate.getDate() - 45);
+    var maxDate = formatDate(new Date()); // Максималната дата е днешната дата
+    var minDate = formatDate(currentDate);
+
+    const dateInput = document.getElementById('invoiceDateInput');
+    dateInput.min = minDate;
+    dateInput.max = maxDate;
+
+    var today = new Date();
+    dateInput.value = formatDate(today);
+
+
 
     document.getElementById('searchInput1').addEventListener('input', function () {
         var input, filter, table, tr, td, i, txtValue;

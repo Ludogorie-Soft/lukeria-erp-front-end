@@ -1,0 +1,111 @@
+.custom-card-width-lg {
+width: auto; /* Променете стойността на ширината, според вашите нужди */
+margin: 0 auto; /* Опционално: Центриране на карта хоризонтално */
+    }
+
+.yellow-cell {
+  background-color: yellow;
+}
+
+.red-cell {
+  background-color: red;
+}
+  .container {
+          display: flex;
+          justify-content: space-between;
+      }
+
+      .text-container {
+          flex-basis: 45%;
+      }
+
+      .underlined {
+          text-decoration: underline;
+      }
+
+      .right-align {
+          text-align: right;
+      }
+
+      .text-container.right {
+          margin-left: auto;
+      }
+
+      .centered {
+          text-align: center;
+          margin-top: 20px;
+      }
+
+      .total {
+          text-align: center;
+          margin-top: 10px;
+      }
+      .price-input {
+          width: 60px; /* Променете тази стойност според вашите предпочитания за ширина */
+          padding: 5px;
+          border: 1px solid #ccc;
+          border-radius: 4px;
+          box-sizing: border-box;
+          text-align: right;
+      }
+      .quantity-input {
+          width: 40px; /* Променете тази стойност според вашите предпочитания за ширина */
+          padding: 3px;
+          border: 1px solid #ccc;
+          border-radius: 4px;
+          box-sizing: border-box;
+          text-align: center;
+      }
+       .form-group {
+              display: flex;
+              flex-direction: column;
+              margin-bottom: 15px;
+          }
+@media print {
+     body {
+         font-size: 12pt; /* Подходящ размер на шрифта за печат */
+     }
+
+     .card {
+         display: flex;
+         flex-direction: row; /* Променете на 'row' за вертикален изглед */
+         justify-content: space-between; /* Променете на 'space-between' за разпределение на колоните */
+     }
+
+     .text-container {
+         display: flex;
+         flex-direction: column;
+         border: 1px solid black; /* Добавете рамка */
+         padding: 10px;
+     }
+
+     .underlined {
+         text-decoration: underline;
+     }
+
+     .right {
+         /* Може да оставите или промените на 'left', за да центрирате текста */
+         text-align: right;
+     }
+
+     .centered {
+         text-align: center;
+         margin-top: 10px; /* Разтояние между таблицата и секцията за фактура */
+     }
+
+     .table {
+         width: 100%;
+         border-collapse: collapse;
+     }
+
+     .table th, .table td {
+         border: 1px solid black;
+         padding: 5px;
+         text-align: center; /* Центриране на текста */
+     }
+    .form-group {
+                       display: flex;
+                       flex-direction: column;
+                       margin-bottom: 15px;
+                   }
+ }

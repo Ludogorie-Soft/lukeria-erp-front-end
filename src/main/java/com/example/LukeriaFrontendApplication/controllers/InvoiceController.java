@@ -5,9 +5,8 @@ import com.example.LukeriaFrontendApplication.dtos.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
 
@@ -24,13 +23,15 @@ public class InvoiceController {
     private final ProductClient productClient;
 
     @GetMapping("/show/{id}")
-    public String index(@PathVariable(name = "id") Long id, Model model) {
+    public String invoiceCreateFromOrder(@PathVariable(name = "id") Long id, Model model) {
         Long lastInvoiceNumber = invoiceClient.findLastInvoiceNumberStartingWith();
         List<OrderProductDTO> orderProductDTOS = queryClient.getOrderProductsByOrderId(id);
         List<PackageDTO> packageDTOS = packageClient.getAllPackages();
         List<ClientDTO> clientDTOS = clientClient.getAllClients();
         OrderDTO orderDTO = orderClient.getOrderById(id);
         List<ProductDTO> productDTOS = productClient.getAllProducts();
+        InvoiceDTO invoiceDTO=new InvoiceDTO();
+        model.addAttribute("invoiceDTO", invoiceDTO);
         model.addAttribute("lastInvoiceNumber", lastInvoiceNumber);
         model.addAttribute("productDTOS", productDTOS);
         model.addAttribute("orderDTO", orderDTO);
@@ -38,6 +39,15 @@ public class InvoiceController {
         model.addAttribute("packageDTOS", packageDTOS);
         model.addAttribute("orderProductDTOS", orderProductDTOS);
         return "Query/show";
+    }
+    @PostMapping("/submit")
+    public ModelAndView submitInvoice(@RequestParam("paymentMethod") String paymentMethod,
+                                            @RequestParam("dateInput") String paymentDateStr,
+                                            @RequestParam("paymentAmount") String paymentAmountStr) {
+        for (int i = 0; i <5 ; i++) {
+            System.err.println("paymentMethod: "+paymentMethod+"/dateInput:"+paymentDateStr+"/paymentAmountInput:"+paymentAmountStr);
+        }
+        return new ModelAndView("redirect:/show");
     }
 
 }
