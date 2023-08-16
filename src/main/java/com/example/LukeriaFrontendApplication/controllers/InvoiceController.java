@@ -10,6 +10,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @org.springframework.stereotype.Controller
@@ -32,7 +33,7 @@ public class InvoiceController {
         List<ClientDTO> clientDTOS = clientClient.getAllClients();
         OrderDTO orderDTO = orderClient.getOrderById(id);
         List<ProductDTO> productDTOS = productClient.getAllProducts();
-        InvoiceDTO invoiceDTO=new InvoiceDTO();
+        InvoiceDTO invoiceDTO = new InvoiceDTO();
         model.addAttribute("invoiceDTO", invoiceDTO);
         model.addAttribute("lastInvoiceNumber", lastInvoiceNumber);
         model.addAttribute("productDTOS", productDTOS);
@@ -42,19 +43,25 @@ public class InvoiceController {
         model.addAttribute("orderProductDTOS", orderProductDTOS);
         return "Query/show";
     }
+
     @PostMapping("/submit")
     public ModelAndView submitInvoice(@RequestParam("paymentMethod") boolean paymentMethod,
                                       @RequestParam("dateInput") LocalDate paymentDateStr,
-                                      @RequestParam("paymentAmount") BigDecimal paymentAmountStr) {
-        InvoiceDTO invoiceDTO=new InvoiceDTO();
+                                      @RequestParam("paymentAmount") BigDecimal paymentAmountStr,
+                                      @RequestParam("invoiceNumber") Long invoiceNumber,
+                                      @RequestParam("currentDate") String currentDate) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+        LocalDate currentDateSte = LocalDate.parse(currentDate, formatter);
+        InvoiceDTO invoiceDTO = new InvoiceDTO();
+        invoiceDTO.setInvoiceNumber(invoiceNumber);
+        invoiceDTO.setInvoiceDate(currentDateSte);
         invoiceDTO.setTotalPrice(paymentAmountStr);
         invoiceDTO.setDeadline(paymentDateStr);
         invoiceDTO.setCashPayment(paymentMethod);
-        for (int i = 0; i <5 ; i++) {
-            System.err.println("paymentMethod: "+paymentMethod+"/dateInput:"+paymentDateStr+"/paymentAmountInput:"+paymentAmountStr);
-            System.err.println(invoiceDTO);
-        }
+        invoiceClient.createInvoice(invoiceDTO);
         return new ModelAndView("redirect:/show");
     }
+
+
 
 }

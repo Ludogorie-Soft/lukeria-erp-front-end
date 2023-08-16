@@ -147,7 +147,11 @@
                                     </tr>
                                     </tbody>
                                 </table>
+
                                 <form method="post" action="/invoice/submit">
+                                    <input type="hidden" id="invoiceNumberInput" name="invoiceNumber" th:value="${lastInvoiceNumber + 1}">
+                                    <input type="hidden" id="currentDateInput" name="currentDate" th:value="${#dates.format(#dates.createNow(), 'dd.MM.yyyy')}">
+
                                     <div class="form-group">
                                         <label for="paymentMethod">Начин на плащане:</label>
                                         <select class="form-control small-input" id="paymentMethod" name="paymentMethod">
