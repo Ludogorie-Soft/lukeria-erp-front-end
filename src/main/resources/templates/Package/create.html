@@ -18,64 +18,10 @@
     <title> Кутии </title>
 
     <link href="/css/app.css" rel="stylesheet">
+    <link href="/css/form.css" rel="stylesheet">
+
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
-<style>
-    .custom-card-width-lg {
-        width: auto; /* Променете стойността на ширината, според вашите нужди */
-        margin: 0 auto; /* Опционално: Центриране на карта хоризонтално */
-    }
-
-    .form-container {
-        max-width: 400px;
-        margin: 0 auto;
-    }
-
-    .form-group {
-        margin-bottom: 20px;
-    }
-
-    .form-group label {
-        display: block;
-        font-weight: bold;
-        margin-bottom: 5px;
-    }
-
-    .form-group input[type="text"],
-    .form-group input[type="number"] {
-        width: 100%;
-        padding: 8px;
-        border-radius: 4px;
-        border: 1px solid #ccc;
-    }
-
-    .form-group input[type="text"]:focus,
-    .form-group input[type="number"]:focus {
-        outline: none;
-        border-color: #4c75f2;
-    }
-
-    .form-group .error-message {
-        color: red;
-        font-size: 12px;
-        margin-top: 5px;
-    }
-
-    .form-group button {
-        padding: 10px 20px;
-        background-color: #4c75f2;
-        color: white;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-    }
-
-    .form-group button:hover {
-        background-color: #3e64e2;
-    }
-
-
-</style>
 
 <body>
 <div class="wrapper">
@@ -94,7 +40,7 @@
                         <h5 class="card-title mb-0">Създай Кутия</h5>
                     </div>
                     <div class="card-body">
-                        <form action="/package/submit" method="post">
+                        <form th:action="/package/submit" method="post" enctype="multipart/form-data">
                             <div class="form-group">
                                 <label for="name">Име:</label>
                                 <input type="text" id="name" name="name" pattern=".{10,}"
@@ -128,6 +74,10 @@
                                 <select id="plateId" name="plateId" style="width: 100%;">
                                     <option th:each="plate : ${plates}" th:value="${plate.id}" th:text="${plate.name}"></option>
                                 </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="photo">Photo:</label>
+                                <input type="file" id="photo" name="file" />
                             </div>
                             <div class="text-center">
                                 <button type="submit" class="btn btn-primary">Създай</button>
