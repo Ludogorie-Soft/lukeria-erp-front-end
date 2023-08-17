@@ -113,9 +113,9 @@
                                         <td th:text="20"></td>
 
                                         <td>
-                <span th:each="productDTO : ${productDTOS}"
-                      th:if="${productDTO.id == orderProductDTO.packageId}"
-                      th:text="${productDTO.price * orderProductDTO.number}"></span>
+                                                <span th:each="productDTO : ${productDTOS}"
+                                                      th:if="${productDTO.id == orderProductDTO.packageId}"
+                                                      th:text="${productDTO.price * orderProductDTO.number}"></span>
                                         </td>
                                     </tr>
                                     <tr>
@@ -147,29 +147,36 @@
                                     </tr>
                                     </tbody>
                                 </table>
-
                                 <form method="post" action="/invoice/submit">
-                                    <input type="hidden" id="invoiceNumberInput" name="invoiceNumber" th:value="${lastInvoiceNumber + 1}">
-                                    <input type="hidden" id="currentDateInput" name="currentDate" th:value="${#dates.format(#dates.createNow(), 'dd.MM.yyyy')}">
+                                    <input type="hidden" id="invoiceNumberInput" name="invoiceNumber"
+                                           th:value="${lastInvoiceNumber + 1}">
+                                    <input type="hidden" id="currentDateInput" name="currentDate"
+                                           th:value="${#dates.format(#dates.createNow(), 'dd.MM.yyyy')}">
 
                                     <div class="form-group">
                                         <label for="paymentMethod">Начин на плащане:</label>
-                                        <select class="form-control small-input" id="paymentMethod" name="paymentMethod">
+                                        <select class="form-control small-input" id="paymentMethod"
+                                                name="paymentMethod">
                                             <option value="true">В БРОЙ</option>
                                             <option value="false">С ПРЕВОДНО НАРЕЖДАНЕ</option>
                                         </select>
                                     </div>
                                     <div class="form-group">
                                         <label for="dateInput">Дата на падеж:</label>
-                                        <input class="form-control small-input" type="date" id="dateInput" name="dateInput" value="" min="">
+                                        <input class="form-control small-input" type="date" id="dateInput"
+                                               name="dateInput" value="" min="">
                                     </div>
                                     <input type="hidden" id="paymentAmountInput" name="paymentAmount">
+
+                                    <th:block th:each="orderProductDTO : ${orderProductDTOS}">
+                                        <input type="hidden" name="orderProductIds" th:value="${orderProductDTO.id}">
+                                    </th:block>
                                     <button type="submit">Изпрати</button>
                                 </form>
-
                                 <label>БАНКОВА СМЕТКА:
                                     <strong>BG56 UNCR 7000 1523215088 УНИКРЕДИТ БУЛБАНК АД BIC:UNCRBGSF</strong>
                                 </label>
+
                                 <div class="text-center">
                                     <a th:if="${orderProductDTOS != null and orderProductDTOS.size() > 0}"
                                        th:href="@{/orderProduct/orderDetails/{orderId}(orderId=${orderProductDTOS[0].orderId})}"
