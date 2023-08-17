@@ -48,6 +48,29 @@ public class InvoiceController {
         return "Query/show";
     }
 
+    @PostMapping("/submit")
+    public ModelAndView submitInvoice(@RequestParam("paymentMethod") boolean paymentMethod,
+                                      @RequestParam("dateInput") LocalDate paymentDateStr,
+                                      @RequestParam("paymentAmount") BigDecimal paymentAmountStr,
+                                      @RequestParam("invoiceNumber") Long invoiceNumber,
+                                      @RequestParam("currentDate") String currentDate,
+                                      @RequestParam("orderProductIds") List<Long> orderProductIds) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+        LocalDate currentDateSte = LocalDate.parse(currentDate, formatter);
+        InvoiceDTO invoiceDTO = new InvoiceDTO();
+        invoiceDTO.setInvoiceNumber(invoiceNumber);
+        invoiceDTO.setInvoiceDate(currentDateSte);
+        invoiceDTO.setTotalPrice(paymentAmountStr);
+        invoiceDTO.setDeadline(paymentDateStr);
+        invoiceDTO.setCashPayment(paymentMethod);
+        InvoiceDTO createdInvoice = invoiceClient.createInvoice(invoiceDTO);
+        InvoiceOrderProductConfigDTO invoiceOrderProductConfigDTO = new InvoiceOrderProductConfigDTO();
+        invoiceOrderProductConfigDTO.setInvoiceId(createdInvoice.getId());
+        invoiceOrderProductConfigDTO.setOrderProductIds(orderProductIds);
+        invoiceOrderProductClient.createInvoiceOrderProductWhitIdsList(invoiceOrderProductConfigDTO);
+        return new ModelAndView("redirect:/show");
+    }
+
     @GetMapping("/certificate/{id}")
     public String certificate(@PathVariable(name = "id") Long id, Model model) {
         InvoiceDTO invoiceDTO = invoiceClient.getInvoiceById(id);
@@ -101,29 +124,4 @@ public class InvoiceController {
         model.addAttribute("invoices", invoiceDTOS);
         return "Confirmation/show";
     }
-
-    @PostMapping("/submit")
-    public ModelAndView submitInvoice(@RequestParam("paymentMethod") boolean paymentMethod,
-                                      @RequestParam("dateInput") LocalDate paymentDateStr,
-                                      @RequestParam("paymentAmount") BigDecimal paymentAmountStr,
-                                      @RequestParam("invoiceNumber") Long invoiceNumber,
-                                      @RequestParam("currentDate") String currentDate,
-                                      @RequestParam("orderProductIds") List<Long> orderProductIds) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-        LocalDate currentDateSte = LocalDate.parse(currentDate, formatter);
-        InvoiceDTO invoiceDTO = new InvoiceDTO();
-        invoiceDTO.setInvoiceNumber(invoiceNumber);
-        invoiceDTO.setInvoiceDate(currentDateSte);
-        invoiceDTO.setTotalPrice(paymentAmountStr);
-        invoiceDTO.setDeadline(paymentDateStr);
-        invoiceDTO.setCashPayment(paymentMethod);
-        InvoiceDTO createdInvoice = invoiceClient.createInvoice(invoiceDTO);
-        InvoiceOrderProductConfigDTO invoiceOrderProductConfigDTO = new InvoiceOrderProductConfigDTO();
-        invoiceOrderProductConfigDTO.setInvoiceId(createdInvoice.getId());
-        invoiceOrderProductConfigDTO.setOrderProductIds(orderProductIds);
-        invoiceOrderProductClient.createInvoiceOrderProductWhitIdsList(invoiceOrderProductConfigDTO);
-        return new ModelAndView("redirect:/show");
-    }
-
-
 }

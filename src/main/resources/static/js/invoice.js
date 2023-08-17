@@ -134,25 +134,10 @@ priceInputs.forEach(function (input) {
 
 updateTable();
 
-var printButton = document.getElementById('printButton');
+  function printPage() {
+        window.print();
+    }
 
-printButton.addEventListener('click', function () {
-    // Създаване на нов документ за печат
-    var printWindow = window.open('', '_blank');
-
-    var printContent = '<html><head><title>Фактура</title>' +
-                       '<link href="/css/show.css" rel="stylesheet"></head>' +
-                       '<body>' + document.getElementsByClassName('card')[0].outerHTML + '</body></html>';
-
-
-    printWindow.document.open();
-    printWindow.document.write(printContent);
-    printWindow.document.close();
-
-    printWindow.onload = function () {
-        printWindow.print();
-    };
-});
   function formatDate(date) {
         var year = date.getFullYear();
         var month = (date.getMonth() + 1).toString().padStart(2, '0');

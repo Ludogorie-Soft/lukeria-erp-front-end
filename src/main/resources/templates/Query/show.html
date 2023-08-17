@@ -19,9 +19,21 @@
             </a>
         </nav>
         <main class="content">
-            <button id="printButton" class="btn btn-primary">
-                Принтирай <i class="fas fa-print"></i>
-            </button>
+            <div class="row">
+                <div class="col-md-6 text-start">
+                    <button id="printButton" class="btn btn-primary" onclick="printPage()">
+                        Принтирай <i class="fas fa-print"></i>
+                    </button>
+                </div>
+                <div class="col-md-6 text-end">
+                    <a th:if="${orderProductDTOS != null and orderProductDTOS.size() > 0}"
+                       th:href="@{/orderProduct/orderDetails/{orderId}(orderId=${orderProductDTOS[0].orderId})}">
+                        <button id="printButton2" class="btn btn-primary">
+                            Провери поръчката <i class="fas fa-file-alt"></i>
+                        </button>
+                    </a>
+                </div>
+            </div>
             <div class="row">
                 <div class="col-lg-8 mx-auto">
                     <div class="card custom-card-width-lg">
@@ -31,9 +43,6 @@
                                     <strong class="underlined" th:text="ПОЛУЧАТЕЛ"></strong>
                                     <h5><strong
                                             th:text=" ${clientDTOS[orderDTO.clientId - 1].businessName}"></strong>
-                                    </h5>
-                                    <h5>
-
                                     </h5>
                                     <h5><strong
                                             th:text="'Ид. номер: ' + ${clientDTOS[orderDTO.clientId - 1].idNumEIK}"></strong>
@@ -111,15 +120,15 @@
                                             </label>
                                         </td>
                                         <td th:text="20"></td>
-
                                         <td>
-                                                <span th:each="productDTO : ${productDTOS}"
-                                                      th:if="${productDTO.id == orderProductDTO.packageId}"
-                                                      th:text="${productDTO.price * orderProductDTO.number}"></span>
+                                            <span th:with="productPrice=${productDTO.price}, orderNumber=${orderProductDTO.number}"
+                                                  th:each="productDTO : ${productDTOS}"
+                                                  th:if="${productDTO.id == orderProductDTO.packageId}"
+                                                  th:id="${'productValue-' + productDTO.id}"
+                                                  th:text="${productPrice * orderNumber}"></span>
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td></td>
                                         <td></td>
                                         <td></td>
                                         <td></td>
@@ -132,12 +141,10 @@
                                         <td></td>
                                         <td></td>
                                         <td></td>
-                                        <td></td>
                                         <td>Стойност на ДДС (BGN):</td>
                                         <td id="vatValue"></td>
                                     </tr>
                                     <tr>
-                                        <td></td>
                                         <td></td>
                                         <td></td>
                                         <td></td>
@@ -152,7 +159,9 @@
                                            th:value="${lastInvoiceNumber + 1}">
                                     <input type="hidden" id="currentDateInput" name="currentDate"
                                            th:value="${#dates.format(#dates.createNow(), 'dd.MM.yyyy')}">
-
+                                    <label>БАНКОВА СМЕТКА:
+                                        <strong>BG56 UNCR 7000 1523215088 УНИКРЕДИТ БУЛБАНК АД BIC:UNCRBGSF</strong>
+                                    </label>
                                     <div class="form-group">
                                         <label for="paymentMethod">Начин на плащане:</label>
                                         <select class="form-control small-input" id="paymentMethod"
@@ -171,17 +180,14 @@
                                     <th:block th:each="orderProductDTO : ${orderProductDTOS}">
                                         <input type="hidden" name="orderProductIds" th:value="${orderProductDTO.id}">
                                     </th:block>
-                                    <button type="submit">Изпрати</button>
+                                    <label>
+                                        <strong>СЪГЛАСНО ЧЛ. 7, АЛ. 1 ОТ ЗАКОНА ЗА СЧЕТОВОДСТВОТО, ЧЛ. 114 ОТ ЗДДС И ЧЛ.
+                                            78 ОТ ИИЗДДС, ПЕЧАТЪТ И ПОДПИСЪТ НЕ СА ЗАДЪЛЖИТЕЛЕН РЕКВИЗИТ</strong>
+                                    </label>
+                                    <div>
+                                        <button id="printButton3" type="submit">Фактурирай</button>
+                                    </div>
                                 </form>
-                                <label>БАНКОВА СМЕТКА:
-                                    <strong>BG56 UNCR 7000 1523215088 УНИКРЕДИТ БУЛБАНК АД BIC:UNCRBGSF</strong>
-                                </label>
-
-                                <div class="text-center">
-                                    <a th:if="${orderProductDTOS != null and orderProductDTOS.size() > 0}"
-                                       th:href="@{/orderProduct/orderDetails/{orderId}(orderId=${orderProductDTOS[0].orderId})}"
-                                       class="btn btn-primary">Order Details</a>
-                                </div>
                             </div>
                         </div>
                     </div>

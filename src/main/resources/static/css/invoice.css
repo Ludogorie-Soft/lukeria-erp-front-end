@@ -10,7 +10,93 @@ margin: 0 auto; /* Опционално: Центриране на карта х
 .red-cell {
   background-color: red;
 }
-  .container {
+  @media print {
+         body {
+             font-family: Arial, sans-serif;
+             margin: 0;
+             padding: 0;
+         }
+
+         .wrapper {
+             width: 210mm;
+             margin: 0 auto;
+             padding: 20px;
+         }
+
+         .card {
+             border: none;
+             box-shadow: none;
+             margin: 0;
+         }
+
+         .card-header {
+             background-color: transparent;
+             border: none;
+         }
+
+         .container {
+             padding: 0;
+         }
+
+         .text-container {
+             margin: 10px 0;
+         }
+
+         .underlined {
+             text-decoration: underline;
+         }
+
+         h5 {
+             font-size: 14px;
+             margin: 5px 0;
+         }
+
+         table {
+             font-size: 12px;
+             width: 100%;
+             border-collapse: collapse;
+         }
+
+         .table th,
+         .table td {
+             padding: 5px;
+             border: 1px solid #ddd;
+         }
+
+         .centered {
+             text-align: center;
+             margin-top: 20px;
+         }
+
+         .form-group {
+             margin: 5px 0;
+         }
+
+         label {
+             display: block;
+             font-weight: bold;
+             margin-bottom: 2px;
+         }
+
+         input[type="number"],
+         select {
+             width: 100%;
+             padding: 4px;
+             font-size: 12px;
+         }
+
+         #printButton,
+         #printButton2,
+         #printButton3 {
+             display: none;
+         }
+
+         @page {
+             size: A4;
+             margin: 0;
+         }
+     }
+.container {
           display: flex;
           justify-content: space-between;
       }
@@ -49,67 +135,27 @@ margin: 0 auto; /* Опционално: Центриране на карта х
           text-align: right;
       }
       .quantity-input {
-          width: 40px; /* Променете тази стойност според вашите предпочитания за ширина */
+          width: 40px;
           padding: 3px;
           border: 1px solid #ccc;
           border-radius: 4px;
           box-sizing: border-box;
           text-align: center;
       }
-       .form-group {
+      .form-group {
               display: flex;
               flex-direction: column;
               margin-bottom: 15px;
-          }
-@media print {
-     body {
-         font-size: 12pt; /* Подходящ размер на шрифта за печат */
-     }
+      }
 
-     .card {
-         display: flex;
-         flex-direction: row; /* Променете на 'row' за вертикален изглед */
-         justify-content: space-between; /* Променете на 'space-between' за разпределение на колоните */
-     }
 
-     .text-container {
-         display: flex;
-         flex-direction: column;
-         border: 1px solid black; /* Добавете рамка */
-         padding: 10px;
-     }
-
-     .underlined {
-         text-decoration: underline;
-     }
-
-     .right {
-         /* Може да оставите или промените на 'left', за да центрирате текста */
-         text-align: right;
-     }
-
-     .centered {
-         text-align: center;
-         margin-top: 10px; /* Разтояние между таблицата и секцията за фактура */
-     }
-
-     .table {
-         width: 100%;
-         border-collapse: collapse;
-     }
-
-     .table th, .table td {
-         border: 1px solid black;
-         padding: 5px;
-         text-align: center; /* Центриране на текста */
-     }
-    .form-group {
-                       display: flex;
-                       flex-direction: column;
-                       margin-bottom: 15px;
-                   }
-    .small-input {
-        width: 20px; /* Променете стойностите според вашите нужди */
-    }
-
- }
+     #printButton3 {
+                 position: absolute;
+                 background-color: red;
+                 color: white;
+                 border: none;
+                 padding: 5px 10px;
+                 font-size: 12px;
+                 cursor: pointer;
+                 border-radius: 5px;
+             }
