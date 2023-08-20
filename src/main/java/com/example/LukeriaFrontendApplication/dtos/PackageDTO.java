@@ -5,7 +5,6 @@ import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.web.multipart.MultipartFile;
 
 @Data
 @AllArgsConstructor
@@ -21,7 +20,7 @@ public class PackageDTO {
     private Long plateId;
     @Min(value = 1, message = "Брой картони трябда да бъде по-голямо от 0!")
     private int piecesCarton;
-    private MultipartFile photo;
+    public String photo;
     @Min(value = 1, message = "Цената трябва да бъде по-голяма от 0!")
     private double price;
 
