@@ -47,6 +47,30 @@ public class InvoiceController {
         model.addAttribute("orderProductDTOS", orderProductDTOS);
         return "Query/show";
     }
+    @GetMapping("/showId/{id}")
+    public String invoiceShow(@PathVariable(name = "id") Long id, Model model) {
+        Long lastInvoiceNumber = invoiceClient.findLastInvoiceNumberStartingWith();
+        List<OrderProductDTO> orderProductDTOS = queryClient.getOrderProductsByOrderId(id);
+        List<PackageDTO> packageDTOS = packageClient.getAllPackages();
+        List<ClientDTO> clientDTOS = clientClient.getAllClients();
+        OrderDTO orderDTO = orderClient.getOrderById(id);
+        List<ProductDTO> productDTOS = productClient.getAllProducts();
+        InvoiceDTO invoiceDTO = invoiceClient.getInvoiceById(id);
+        model.addAttribute("invoiceDTO", invoiceDTO);
+        model.addAttribute("lastInvoiceNumber", lastInvoiceNumber);
+        model.addAttribute("productDTOS", productDTOS);
+        model.addAttribute("orderDTO", orderDTO);
+        model.addAttribute("clientDTOS", clientDTOS);
+        model.addAttribute("packageDTOS", packageDTOS);
+        model.addAttribute("orderProductDTOS", orderProductDTOS);
+        return "Invoice/showId";
+    }
+    @GetMapping("/showAllInvoices")
+    public String showAllInvoices(Model model) {
+       List<InvoiceDTO>invoiceDTOS= invoiceClient.getAllInvoices();
+        model.addAttribute("invoiceDTOS", invoiceDTOS);
+        return "Invoice/showAllInvoices";
+    }
 
     @PostMapping("/submit")
     public ModelAndView submitInvoice(@RequestParam("paymentMethod") boolean paymentMethod,

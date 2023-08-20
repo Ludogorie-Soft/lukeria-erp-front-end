@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <!--    LINKS  -->
+    <th:block th:include="~{fragments/links}"></th:block>
+
+    <title> Фактура </title>
+    <link href="/css/invoice.css" rel="stylesheet">
+</head>
+<body>
+<div class="wrapper">
+    <!--    HEADER  -->
+    <th:block th:include="~{fragments/header}"></th:block>
+
+    <div class="main">
+        <nav class="navbar navbar-expand navbar-light navbar-bg">
+            <a class="sidebar-toggle js-sidebar-toggle">
+                <i class="hamburger align-self-center"></i>
+            </a>
+        </nav>
+        <main class="content">
+            <div class="row">
+                <div class="col-md-6 text-start">
+                    <button id="printButton" class="btn btn-primary" onclick="printPage()">
+                        Принтирай <i class="fas fa-print"></i>
+                    </button>
+                </div>
+                <div class="col-md-6 text-end">
+                    <a th:if="${orderProductDTOS != null and orderProductDTOS.size() > 0}"
+                       th:href="@{/orderProduct/orderDetails/{orderId}(orderId=${orderProductDTOS[0].orderId})}">
+                        <button id="printButton2" class="btn btn-primary">
+                            Провери поръчката <i class="fas fa-file-alt"></i>
+                        </button>
+                    </a>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-8 mx-auto">
+                    <div class="card custom-card-width-lg">
+                        <div class="card-header">
+                            <div class="container">
+                                <div class="text-container">
+                                    <strong class="underlined" th:text="ПОЛУЧАТЕЛ"></strong>
+                                    <h5><strong
+                                            th:text=" ${clientDTOS[orderDTO.clientId - 1].businessName}"></strong>
+                                    </h5>
+                                    <h5><strong
+                                            th:text="'Ид. номер: ' + ${clientDTOS[orderDTO.clientId - 1].idNumEIK}"></strong>
+                                    </h5>
+                                    <h5><strong th:if="${clientDTOS[orderDTO.clientId - 1].hasIdNumDDS}">
+                                        <span th:text="'Ид. номер по ДДС: BG' + ${clientDTOS[orderDTO.clientId - 1].idNumEIK}"></span>
+                                    </strong></h5>
+                                    <h5><strong
+                                            th:text="'Адрес: ' + ${clientDTOS[orderDTO.clientId - 1].address}"></strong>
+                                    </h5>
+                                    <h5><strong th:text="'МОЛ: ' + ${clientDTOS[orderDTO.clientId - 1].mol}"></strong>
+                                    </h5>
+                                </div>
+
+                                <div class="text-container right">
+                                    <strong class="underlined" th:text="ДОСТАВЧИК"></strong>
+                                    <h5><strong th:text=" 'Лукерия ООД'"></strong></h5>
+                                    <h5>
+
+                                    </h5>
+                                    <h5><strong th:text="'Ид. номер: ' + '200418603'"></strong></h5>
+                                    <h5><strong>
+                                        <span th:text="'Ид. номер по ДДС: BG' + '200418603'"></span>
+                                    </strong></h5>
+                                    <h5><strong th:text="'Адрес: ' + 'Промишлена Зона обл.Търговище 7700'"></strong>
+                                    </h5>
+                                    <h5><strong th:text="'МОЛ: ' +'Кадрия Фейзи Йълдъз'"></strong>
+                                    </h5>
+                                </div>
+                            </div>
+                            <div class="centered">
+                                <h2 th:text="'Фактура: ' + ${invoiceDTO.invoiceNumber}"></h2>
+                                <h2 th:text="'ДАТА: '+ ${invoiceDTO.invoiceDate}"></h2>
+
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row mb-3">
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Наименувание</th>
+                                        <th>Количество</th>
+                                        <th>ЕД.Цена без ДДС</th>
+                                        <th>ДДС %</th>
+                                        <th>Стойност без ДДС</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="orderProductDTO : ${orderProductDTOS}">
+                                        <td th:text="${orderProductDTO.id}"></td>
+                                        <td>
+                                              <span th:each="packageDTO : ${packageDTOS}"
+                                                    th:if="${packageDTO.id == orderProductDTO.packageId}"
+                                                    th:text="${packageDTO.name}"></span>
+                                        </td>
+                                        <td>
+                                            <label>
+                                                <input class="quantity-input" type="number"
+                                                       th:value="${orderProductDTO.number}" min="1">
+                                            </label>
+                                            <span> БР</span>
+                                        </td>
+
+                                        <td>
+                                            <label>
+                                                <input type="number" step="0.01" class="price-input"
+                                                       data-value="${productDTOS[__${orderProductDTO.packageId - 1}__].price}"
+                                                       th:value="${productDTOS[__${orderProductDTO.packageId - 1}__].price}"
+                                                       placeholder="${productDTOS[__${orderProductDTO.packageId - 1}__].price}"
+                                                       size="5">
+                                            </label>
+                                        </td>
+                                        <td th:text="20"></td>
+                                        <td>
+                                            <span th:with="productPrice=${productDTO.price}, orderNumber=${orderProductDTO.number}"
+                                                  th:each="productDTO : ${productDTOS}"
+                                                  th:if="${productDTO.id == orderProductDTO.packageId}"
+                                                  th:id="${'productValue-' + productDTO.id}"
+                                                  th:text="${productPrice * orderNumber}"></span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td>ДАНЪЧНА УСНОВА (BGN):</td>
+                                        <td id="totalPrice"></td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td>Стойност на ДДС (BGN):</td>
+                                        <td id="vatValue"></td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td>СУМА ЗА ПЛАЩАНЕ (BGN):</td>
+                                        <td id="paymentAmount"></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                                <label>
+                                    <strong>СЪГЛАСНО ЧЛ. 7, АЛ. 1 ОТ ЗАКОНА ЗА СЧЕТОВОДСТВОТО, ЧЛ. 114 ОТ ЗДДС И ЧЛ.
+                                        78 ОТ ИИЗДДС, ПЕЧАТЪТ И ПОДПИСЪТ НЕ СА ЗАДЪЛЖИТЕЛЕН РЕКВИЗИТ</strong>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+</body>
+<script src="/js/invoice.js"></script>
+</html>
