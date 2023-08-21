@@ -2,7 +2,7 @@ package com.example.LukeriaFrontendApplication.controllers;
 
 
 import com.example.LukeriaFrontendApplication.config.CartonClient;
-import com.example.LukeriaFrontendApplication.config.ImageService;
+import com.example.LukeriaFrontendApplication.config.ImageClient;
 import com.example.LukeriaFrontendApplication.config.PackageClient;
 import com.example.LukeriaFrontendApplication.config.PlateClient;
 import com.example.LukeriaFrontendApplication.dtos.*;
@@ -26,14 +26,16 @@ public class PackageController {
     private final PlateClient plateClient;
     @Value("${backend.base-url}")
     private String backendBaseUrl;
-    private final ImageService imageService;
+    private final ImageClient imageService;
     private static final String REDIRECTTXT = "redirect:/package/show";
 
     @GetMapping("/package/show")
     public String showPackage(Model model) {
         List<PackageDTO> packages = packageClient.getAllPackages();
-        for (PackageDTO aPackage: packages) {
-            imageService.getImage(aPackage.getPhoto());
+        for (PackageDTO aPackage : packages) {
+            if(aPackage.getPhoto()!=null) {
+                imageService.getImage(aPackage.getPhoto());
+            }
         }
         model.addAttribute("packages", packages);
         model.addAttribute("backendBaseUrl", backendBaseUrl);
@@ -55,7 +57,7 @@ public class PackageController {
     public ModelAndView submitPackage(@ModelAttribute("packageEntity") PackageDTO packageDTO, @RequestParam MultipartFile file) throws IOException {
         packageClient.createPackage(packageDTO);
         if (!file.isEmpty()) {
-            imageService.uploadImage(file);
+            imageService.uploadImageForPackage(file);
         }
         return new ModelAndView(REDIRECTTXT);
     }
@@ -72,8 +74,11 @@ public class PackageController {
     }
 
     @PostMapping("/package/editSubmit/{id}")
-    ModelAndView editPackage(@PathVariable(name = "id") Long id, PackageDTO packageDTO) {
+    ModelAndView editPackage(@PathVariable(name = "id") Long id, PackageDTO packageDTO, @RequestParam("file") MultipartFile file) throws IOException {
         packageClient.updatePackage(id, packageDTO);
+        if (!file.isEmpty()) {
+            imageService.editImageForPackage(file, id);
+        }
         return new ModelAndView(REDIRECTTXT);
     }
 

@@ -78,7 +78,7 @@
                                         <td th:text="${package.plateId}"></td>
                                         <td th:text="${package.piecesCarton}"></td>
                                         <td>
-                                         <img th:src="@{${backendBaseUrl} + '/'+ ${package.photo}}" alt="profile image" height="100" width="100">
+                                         <img th:src="@{${backendBaseUrl} + '/'+ ${package.photo}}" alt="no image" height="100" width="100">
                                         </td>
                                         <td>
                                             <form th:action="@{'/package/delete/' + ${package.id}}" method="post" th:attr="onsubmit='return confirm(\'Сигурни ли сте, че искате да изтриете пакет с име: ' + ${package.name} + '?\');'">
