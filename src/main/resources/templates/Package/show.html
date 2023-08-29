@@ -56,6 +56,7 @@
                                     <table class="table">
                                     <thead>
                                     <tr>
+                                        <th>Снимка</th>
                                         <th>ID</th>
                                         <th>Име</th>
                                         <th>Наличност</th>
@@ -63,11 +64,13 @@
                                         <th>Кашон ID</th>
                                         <th>Тарелка ID</th>
                                         <th>Брой кутии в Кашон</th>
-                                        <th>Снимка</th>
                                     </tr>
                                     </thead>
                                     <tbody>
                                     <tr th:each="package : ${packages}" data-id="${package.id}" class="package-row">
+                                        <td>
+                                            <img th:src="@{${backendBaseUrl} + '/'+ ${package.photo}}" alt="no image" height="100" width="100">
+                                        </td>
                                         <td th:text="${package.id}"></td>
                                         <td th:text="${package.name}"></td>
                                         <td>
@@ -77,9 +80,6 @@
                                         <td th:text="${package.cartonId}"></td>
                                         <td th:text="${package.plateId}"></td>
                                         <td th:text="${package.piecesCarton}"></td>
-                                        <td>
-                                         <img th:src="@{${backendBaseUrl} + '/'+ ${package.photo}}" alt="no image" height="100" width="100">
-                                        </td>
                                         <td>
                                             <form th:action="@{'/package/delete/' + ${package.id}}" method="post" th:attr="onsubmit='return confirm(\'Сигурни ли сте, че искате да изтриете пакет с име: ' + ${package.name} + '?\');'">
                                                 <button type="submit" class="btn btn-danger">Изтрий</button>
