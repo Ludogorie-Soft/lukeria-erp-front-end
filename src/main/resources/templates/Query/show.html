@@ -20,11 +20,6 @@
         </nav>
         <main class="content">
             <div class="row">
-<!--                <div class="col-md-6 text-start">-->
-<!--                    <button id="printButton" class="btn btn-primary" onclick="printPage()">-->
-<!--                        Принтирай <i class="fas fa-print"></i>-->
-<!--                    </button>-->
-<!--                </div>-->
                 <div class="col-md-6 text-end">
                     <a th:if="${orderProductDTOS != null and orderProductDTOS.size() > 0}"
                        th:href="@{/orderProduct/orderDetails/{orderId}(orderId=${orderProductDTOS[0].orderId})}">
@@ -60,9 +55,6 @@
                                 <div class="text-container right">
                                     <strong class="underlined" th:text="ДОСТАВЧИК"></strong>
                                     <h5><strong th:text=" 'Лукерия ООД'"></strong></h5>
-                                    <h5>
-
-                                    </h5>
                                     <h5><strong th:text="'Ид. номер: ' + '200418603'"></strong></h5>
                                     <h5><strong>
                                         <span th:text="'Ид. номер по ДДС: BG' + '200418603'"></span>
@@ -76,7 +68,6 @@
                             <div class="centered">
                                 <h2 th:text="'Фактура: ' + (${lastInvoiceNumber + 1})"></h2>
                                 <h2 th:text="'ДАТА: '+ ${#dates.format(#dates.createNow(), 'dd.MM.yyyy')}"></h2>
-
                             </div>
                         </div>
                         <div class="card-body">
@@ -107,7 +98,7 @@
                                                 <input class="quantity-input" type="number"
                                                        th:value="${orderProductDTO.number}" min="1">
                                             </label>
-                                            <span> БР</span>
+                                            <span>БР</span>
                                         </td>
 
                                         <td>
@@ -121,13 +112,6 @@
                                         </td>
                                         <td th:text="20"></td>
                                         <td id="totalPriceNumber*Price">
-
-<!--                                            <span th:with="productPrice=${productDTO.price}, orderNumber=${orderProductDTO.number}"-->
-<!--                                                  th:each="productDTO : ${productDTOS}"-->
-<!--                                                  th:if="${productDTO.id == orderProductDTO.packageId}"-->
-<!--                                                  th:id="${'productValue-' + productDTO.id}"-->
-<!--                                                  th:text="${productPrice * orderNumber}"></span>-->
-
                                         </td>
                                     </tr>
                                     <tr>
@@ -161,9 +145,6 @@
                                            th:value="${lastInvoiceNumber + 1}">
                                     <input type="hidden" id="currentDateInput" name="currentDate"
                                            th:value="${#dates.format(#dates.createNow(), 'dd.MM.yyyy')}">
-                                    <label>БАНКОВА СМЕТКА:
-                                        <strong>BG56 UNCR 7000 1523215088 УНИКРЕДИТ БУЛБАНК АД BIC:UNCRBGSF</strong>
-                                    </label>
                                     <div class="form-group">
                                         <label for="paymentMethod">Начин на плащане:</label>
                                         <select class="form-control small-input" id="paymentMethod"
@@ -181,11 +162,10 @@
 
                                     <th:block th:each="orderProductDTO : ${orderProductDTOS}">
                                         <input type="hidden" name="orderProductIds" th:value="${orderProductDTO.id}">
+                                        <input type="hidden" name="orderProductNumbers" th:value="${orderProductDTO.number}">
+                                        <input type="hidden" name="orderProductOrderIds" th:value="${orderProductDTO.orderId}">
+                                        <input type="hidden" name="orderProductPackageIds" th:value="${orderProductDTO.packageId}">
                                     </th:block>
-                                    <label>
-                                        <strong>СЪГЛАСНО ЧЛ. 7, АЛ. 1 ОТ ЗАКОНА ЗА СЧЕТОВОДСТВОТО, ЧЛ. 114 ОТ ЗДДС И ЧЛ.
-                                            78 ОТ ИИЗДДС, ПЕЧАТЪТ И ПОДПИСЪТ НЕ СА ЗАДЪЛЖИТЕЛЕН РЕКВИЗИТ</strong>
-                                    </label>
                                     <div>
                                         <button id="printButton3" type="submit">Фактурирай</button>
                                     </div>

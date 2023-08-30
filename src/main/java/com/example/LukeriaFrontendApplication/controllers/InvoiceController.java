@@ -78,9 +78,21 @@ public class InvoiceController {
                                       @RequestParam("paymentAmount") BigDecimal paymentAmountStr,
                                       @RequestParam("invoiceNumber") Long invoiceNumber,
                                       @RequestParam("currentDate") String currentDate,
-                                      @RequestParam("orderProductIds") List<Long> orderProductIds) {
+                                      @RequestParam("orderProductIds") List<Long> orderProductIds,
+                                      @RequestParam("orderProductNumbers") List<Integer> orderProductNumbers,
+                                      @RequestParam("orderProductOrderIds") List<Long> orderProductOrderIds,
+                                      @RequestParam("orderProductPackageIds") List<Long> orderProductPackageIds) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
         LocalDate currentDateSte = LocalDate.parse(currentDate, formatter);
+        List<OrderProductDTO> orderProductDTOs = new ArrayList<>();
+        for (int i = 0; i < orderProductIds.size(); i++) {
+            OrderProductDTO orderProductDTO = new OrderProductDTO();
+            orderProductDTO.setId(orderProductIds.get(i));
+            orderProductDTO.setNumber(orderProductNumbers.get(i));
+            orderProductDTO.setOrderId(orderProductOrderIds.get(i));
+            orderProductDTO.setPackageId(orderProductPackageIds.get(i));
+            orderProductDTOs.add(orderProductDTO);
+        }
         InvoiceDTO invoiceDTO = new InvoiceDTO();
         invoiceDTO.setInvoiceNumber(invoiceNumber);
         invoiceDTO.setInvoiceDate(currentDateSte);
@@ -92,7 +104,6 @@ public class InvoiceController {
         invoiceOrderProductConfigDTO.setInvoiceId(createdInvoice.getId());
         invoiceOrderProductConfigDTO.setOrderProductIds(orderProductIds);
         invoiceOrderProductClient.createInvoiceOrderProductWhitIdsList(invoiceOrderProductConfigDTO);
-
         return new ModelAndView("redirect:/invoice/showId/"+(createdInvoice.getId()));
     }
 
