@@ -63,12 +63,12 @@
                         <button type="submit" class="btn btn-primary">Редактирай</button>
                       </form>
                     </td>
-                    <td>
+                    <td th:if="${!order.invoiced}">
                       <form th:action="@{'/material-order/materials/' + ${order.id}}" method="get">
                         <button type="submit" class="btn btn-warning">Провери налични Материали</button>
                       </form>
                     </td>
-                    <td>
+                    <td th:if="${!order.invoiced}">
                       <form th:action="@{'/invoice/show/' + ${order.id}}" method="get">
                         <button type="submit" class="btn btn-primary"> Фактуриране на тази поръчка </button>
                       </form>

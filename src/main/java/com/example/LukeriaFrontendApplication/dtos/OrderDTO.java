@@ -13,4 +13,5 @@ public class OrderDTO {
     private Long id;
     private Long clientId;
     private LocalDate orderDate;
+    private boolean invoiced;
 }

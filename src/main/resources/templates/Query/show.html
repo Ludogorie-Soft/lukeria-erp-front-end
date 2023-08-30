@@ -20,11 +20,11 @@
         </nav>
         <main class="content">
             <div class="row">
-                <div class="col-md-6 text-start">
-                    <button id="printButton" class="btn btn-primary" onclick="printPage()">
-                        Принтирай <i class="fas fa-print"></i>
-                    </button>
-                </div>
+<!--                <div class="col-md-6 text-start">-->
+<!--                    <button id="printButton" class="btn btn-primary" onclick="printPage()">-->
+<!--                        Принтирай <i class="fas fa-print"></i>-->
+<!--                    </button>-->
+<!--                </div>-->
                 <div class="col-md-6 text-end">
                     <a th:if="${orderProductDTOS != null and orderProductDTOS.size() > 0}"
                        th:href="@{/orderProduct/orderDetails/{orderId}(orderId=${orderProductDTOS[0].orderId})}">
@@ -120,12 +120,14 @@
                                             </label>
                                         </td>
                                         <td th:text="20"></td>
-                                        <td>
-                                            <span th:with="productPrice=${productDTO.price}, orderNumber=${orderProductDTO.number}"
-                                                  th:each="productDTO : ${productDTOS}"
-                                                  th:if="${productDTO.id == orderProductDTO.packageId}"
-                                                  th:id="${'productValue-' + productDTO.id}"
-                                                  th:text="${productPrice * orderNumber}"></span>
+                                        <td id="totalPriceNumber*Price">
+
+<!--                                            <span th:with="productPrice=${productDTO.price}, orderNumber=${orderProductDTO.number}"-->
+<!--                                                  th:each="productDTO : ${productDTOS}"-->
+<!--                                                  th:if="${productDTO.id == orderProductDTO.packageId}"-->
+<!--                                                  th:id="${'productValue-' + productDTO.id}"-->
+<!--                                                  th:text="${productPrice * orderNumber}"></span>-->
+
                                         </td>
                                     </tr>
                                     <tr>
@@ -133,7 +135,7 @@
                                         <td></td>
                                         <td></td>
                                         <td></td>
-                                        <td>ДАНЪЧНА УСНОВА (BGN):</td>
+                                        <td>ДАНЪЧНА OСНОВА (BGN):</td>
                                         <td id="totalPrice"></td>
                                     </tr>
                                     <tr>
@@ -141,7 +143,7 @@
                                         <td></td>
                                         <td></td>
                                         <td></td>
-                                        <td>Стойност на ДДС (BGN):</td>
+                                        <td>СТОЙНОСТ НА ДДС (BGN):</td>
                                         <td id="vatValue"></td>
                                     </tr>
                                     <tr>

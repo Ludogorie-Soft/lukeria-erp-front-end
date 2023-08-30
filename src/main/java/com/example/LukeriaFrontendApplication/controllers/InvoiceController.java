@@ -93,7 +93,7 @@ public class InvoiceController {
         invoiceOrderProductConfigDTO.setOrderProductIds(orderProductIds);
         invoiceOrderProductClient.createInvoiceOrderProductWhitIdsList(invoiceOrderProductConfigDTO);
 
-        return new ModelAndView("redirect:/invoice/showAllInvoices");
+        return new ModelAndView("redirect:/invoice/showId/"+(createdInvoice.getId()));
     }
 
     @GetMapping("/certificate/{id}")
