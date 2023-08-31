@@ -96,7 +96,7 @@
                                         <td>
                                             <label>
                                                 <input class="quantity-input" type="number"
-                                                       th:value="${orderProductDTO.number}" min="1">
+                                                       th:value="${orderProductDTO.number}" min="1" id="quantityInput" name="quantityInput">
                                             </label>
                                             <span>БР</span>
                                         </td>
@@ -104,10 +104,8 @@
                                         <td>
                                             <label>
                                                 <input type="number" step="0.01" class="price-input"
-                                                       data-value="${productDTOS[__${orderProductDTO.packageId - 1}__].price}"
                                                        th:value="${productDTOS[__${orderProductDTO.packageId - 1}__].price}"
-                                                       placeholder="${productDTOS[__${orderProductDTO.packageId - 1}__].price}"
-                                                       size="5">
+                                                       id="priceInput" name="priceInput">
                                             </label>
                                         </td>
                                         <td th:text="20"></td>
@@ -159,12 +157,11 @@
                                                name="dateInput" value="" min="">
                                     </div>
                                     <input type="hidden" id="paymentAmountInput" name="paymentAmount">
+                                    <input type="hidden" id="quantityInput1" name="quantityInput">
+                                    <input type="hidden" id="priceInput1" name="priceInput">
 
                                     <th:block th:each="orderProductDTO : ${orderProductDTOS}">
                                         <input type="hidden" name="orderProductIds" th:value="${orderProductDTO.id}">
-                                        <input type="hidden" name="orderProductNumbers" th:value="${orderProductDTO.number}">
-                                        <input type="hidden" name="orderProductOrderIds" th:value="${orderProductDTO.orderId}">
-                                        <input type="hidden" name="orderProductPackageIds" th:value="${orderProductDTO.packageId}">
                                     </th:block>
                                     <div>
                                         <button id="printButton3" type="submit">Фактурирай</button>

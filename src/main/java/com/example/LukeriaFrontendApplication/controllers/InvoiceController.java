@@ -79,28 +79,20 @@ public class InvoiceController {
                                       @RequestParam("invoiceNumber") Long invoiceNumber,
                                       @RequestParam("currentDate") String currentDate,
                                       @RequestParam("orderProductIds") List<Long> orderProductIds,
-                                      @RequestParam("orderProductNumbers") List<Integer> orderProductNumbers,
-                                      @RequestParam("orderProductOrderIds") List<Long> orderProductOrderIds,
-                                      @RequestParam("orderProductPackageIds") List<Long> orderProductPackageIds) {
+                                      @RequestParam("quantityInput") List<Integer> quantityInput,
+                                      @RequestParam("priceInput") List<BigDecimal> priceInput) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
         LocalDate currentDateSte = LocalDate.parse(currentDate, formatter);
-        List<OrderProductDTO> orderProductDTOs = new ArrayList<>();
-        for (int i = 0; i < orderProductIds.size(); i++) {
-            OrderProductDTO orderProductDTO = new OrderProductDTO();
-            orderProductDTO.setId(orderProductIds.get(i));
-            orderProductDTO.setNumber(orderProductNumbers.get(i));
-            orderProductDTO.setOrderId(orderProductOrderIds.get(i));
-            orderProductDTO.setPackageId(orderProductPackageIds.get(i));
-            orderProductDTOs.add(orderProductDTO);
-        }
+        List<Integer> quantityInputList=quantityInput;
+        List<BigDecimal> priceInputList=priceInput;
         InvoiceDTO invoiceDTO = new InvoiceDTO();
         invoiceDTO.setInvoiceNumber(invoiceNumber);
         invoiceDTO.setInvoiceDate(currentDateSte);
         invoiceDTO.setTotalPrice(paymentAmountStr);
         invoiceDTO.setDeadline(paymentDateStr);
         invoiceDTO.setCashPayment(paymentMethod);
-        InvoiceDTO createdInvoice = invoiceClient.createInvoice(invoiceDTO);
         InvoiceOrderProductConfigDTO invoiceOrderProductConfigDTO = new InvoiceOrderProductConfigDTO();
+        InvoiceDTO createdInvoice = invoiceClient.createInvoice(invoiceDTO);
         invoiceOrderProductConfigDTO.setInvoiceId(createdInvoice.getId());
         invoiceOrderProductConfigDTO.setOrderProductIds(orderProductIds);
         invoiceOrderProductClient.createInvoiceOrderProductWhitIdsList(invoiceOrderProductConfigDTO);
