@@ -76,7 +76,6 @@
                             <div class="centered">
                                 <h2 th:text="'Фактура: ' + ${invoiceDTO.invoiceNumber}"></h2>
                                 <h2 th:text="'ДАТА: '+ ${invoiceDTO.invoiceDate}"></h2>
-
                             </div>
                         </div>
                         <div class="card-body">
@@ -102,8 +101,7 @@
                                                     th:if="${packageDTO.id == orderProductDTO.packageId}"
                                                     th:text="${packageDTO.name}"></span>
                                         </td>
-                                        <td class="quantity-input" th:text="${orderProductDTO.number}">
-                                            <span> БР</span>
+                                        <td class="quantity-input" th:text="${orderProductDTO.number + ' БР'}">
                                         </td>
 
                                         <td  class="price-input" th:text="${productDTOS[__${orderProductDTO.packageId - 1}__].price}">
