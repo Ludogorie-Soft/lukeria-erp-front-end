@@ -26,7 +26,7 @@
                         <h5 class="card-title mb-0">Редактирай тарелка</h5>
                     </div>
                     <div class="card-body">
-                        <form th:action="@{'/plate/edit/' + ${plate.id}}" method="get" th:object="${plate}">
+                        <form th:action="@{'/plate/edit/' + ${plate.id}}" method="post" th:object="${plate}" enctype="multipart/form-data">
                             <div class="form-group">
                                 <label for="name">Име:</label>
                                 <input type="text" id="name" name="name" pattern=".{10,}"
@@ -43,6 +43,10 @@
                                 <label for="price">Цена:</label>
                                 <input type="number" id="price" name="price" step="0.01" min="0.01" required
                                        th:field="*{price}"/>
+                            </div>
+                            <div class="form-group">
+                                <label for="photo">Снимка:</label>
+                                <input type="file" id="photo" name="file" />
                             </div>
                             <div class="text-center">
                                 <button type="submit" class="btn btn-primary">Редактирай</button>
