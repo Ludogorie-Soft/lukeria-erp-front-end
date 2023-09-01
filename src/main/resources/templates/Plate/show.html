@@ -42,15 +42,18 @@
                                     <table class="table">
                                     <thead>
                                     <tr>
+                                        <th>Снимка</th>
                                         <th>ID</th>
                                         <th>Име</th>
                                         <th>Наличност</th>
                                         <th>Цена</th>
-                                        <th>Снимка</th>
                                     </tr>
                                     </thead>
                                     <tbody>
                                     <tr th:each="plate : ${plates}" data-id="${plate.id}" class="plate-row">
+                                        <td>
+                                            <img th:src="@{${backendBaseUrl} + '/'+ ${plate.photo}}" alt="no image" height="100" width="100">
+                                        </td>
                                         <td th:text="${plate.id}"></td>
                                         <td th:text="${plate.name}"></td>
                                         <td>
@@ -58,7 +61,6 @@
                                                   th:class="${plate.availableQuantity <= 20 ? 'red-cell' : (plate.availableQuantity <= 100 ? 'yellow-cell' : '')}"></span>
                                         </td>
                                         <td th:text="${plate.price + ' Лв'}"></td>
-                                        <td th:text="${plate.photo}"></td>
                                         <td>
                                             <form th:action="@{'/plate/delete/' + ${plate.id}}" method="post"
                                                   th:attr="onsubmit='return confirm(\'Сигурни ли сте, че искате да изтриете тарелка с име: ' + ${plate.name} + '?\');'">

@@ -1,11 +1,13 @@
 package com.example.LukeriaFrontendApplication.controllers;
 
+import com.example.LukeriaFrontendApplication.config.ImageClient;
 import com.example.LukeriaFrontendApplication.config.PackageClient;
 import com.example.LukeriaFrontendApplication.config.ProductClient;
 import com.example.LukeriaFrontendApplication.dtos.PackageDTO;
 import com.example.LukeriaFrontendApplication.dtos.ProductDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -21,19 +23,29 @@ import java.util.Map;
 public class ProductController {
     private final ProductClient productClient;
     private final PackageClient packageClient;
-    private static final String REDIRECTTXT ="redirect:/product/show";
+    private static final String REDIRECTTXT = "redirect:/product/show";
+    private final ImageClient imageService;
+    @Value("${backend.base-url}")
+    private String backendBaseUrl;
 
 
     @GetMapping("/show")
     public String showAllProducts(Model model) {
         List<ProductDTO> products = productClient.getAllProducts();
-        List<PackageDTO> packages=packageClient.getAllPackages();
+        List<PackageDTO> packages = packageClient.getAllPackages();
 
         Map<Long, String> productPackageMap = new HashMap<>();
         for (PackageDTO packageDTO : packages) {
             productPackageMap.put(packageDTO.getId(), packageDTO.getName());
         }
+        for (PackageDTO packageDTO : packages) {
+            if (packageDTO.getPhoto() != null) {
+                imageService.getImage(packageDTO.getPhoto());
+            }
+        }
+        model.addAttribute("backendBaseUrl", backendBaseUrl);
         model.addAttribute("products", products);
+        model.addAttribute("packages", packages);
         model.addAttribute("productPackageMap", productPackageMap);
         return "Product/show";
     }
@@ -46,6 +58,7 @@ public class ProductController {
         model.addAttribute("product", product);
         return "Product/create";
     }
+
     @PostMapping("/submit")
     public ModelAndView submitProduct(@ModelAttribute("product") ProductDTO productDTO) {
         productClient.createProduct(productDTO);
@@ -57,6 +70,7 @@ public class ProductController {
         productClient.deleteProductById(id);
         return new ModelAndView(REDIRECTTXT);
     }
+
     @GetMapping("/editProduct/{id}")
     String editProduct(@PathVariable(name = "id") Long id, Model model) {
         ProductDTO existingProduct = productClient.getProductById(id);
@@ -65,6 +79,7 @@ public class ProductController {
         model.addAttribute("product", existingProduct);
         return "Product/edit";
     }
+
     @PostMapping("/editSubmit/{id}")
     ModelAndView editPackage(@PathVariable(name = "id") Long id, ProductDTO productDTO) {
         productClient.updateProduct(id, productDTO);
