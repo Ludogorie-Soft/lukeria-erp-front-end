@@ -1,11 +1,15 @@
 package com.example.LukeriaFrontendApplication.controllers;
 
+import com.example.LukeriaFrontendApplication.config.ImageClient;
 import com.example.LukeriaFrontendApplication.config.OrderClient;
 import com.example.LukeriaFrontendApplication.config.OrderProductClient;
 import com.example.LukeriaFrontendApplication.config.PackageClient;
-import com.example.LukeriaFrontendApplication.dtos.*;
+import com.example.LukeriaFrontendApplication.dtos.OrderDTO;
+import com.example.LukeriaFrontendApplication.dtos.OrderProductDTO;
+import com.example.LukeriaFrontendApplication.dtos.PackageDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -25,6 +29,11 @@ public class OrderProductController {
     private final PackageClient packageClient;
     private static final String CARTONTXT = "orderProduct";
     private static final String REDIRECTTXT = "redirect:/order/show";
+
+    private final ImageClient imageService;
+
+    @Value("${backend.base-url}")
+    private String backendBaseUrl;
 
     @GetMapping("/addProduct")
     String createOrderProduct(Model model) {
@@ -65,6 +74,7 @@ public class OrderProductController {
         List<OrderProductDTO> orderProductDTOS = orderProductClient.getAllOrderProducts().stream().filter(order -> Objects.equals(order.getOrderId(), orderId)).toList();
         List<Long> packageDTOIds = orderProductDTOS.stream().map(OrderProductDTO::getPackageId).toList();
         List<PackageDTO> packageDTOList = packageDTOIds.stream().map(packageClient::getPackageById).collect(Collectors.toList());
+        model.addAttribute("backendBaseUrl", backendBaseUrl);
         model.addAttribute("order", orderClient.getOrderById(orderId));
         model.addAttribute("orderProducts", orderProductDTOS);
         model.addAttribute("products", packageDTOList);
@@ -86,6 +96,7 @@ public class OrderProductController {
         model.addAttribute(CARTONTXT, orderProduct);
         return "OrderProduct/addProductToExistingOrder";
     }
+
     @PostMapping("/submitExistingOrder")
     public ModelAndView submitExistingOrderProduct(@ModelAttribute("orderProduct") OrderProductDTO orderProductDTO, Model model,
                                                    @RequestParam("orderId") Long orderId) {
@@ -93,6 +104,7 @@ public class OrderProductController {
         orderProductClient.createOrderProduct(orderProductDTO);
         return new ModelAndView(REDIRECTTXT);
     }
+
     @PostMapping("/delete/{id}")
     ModelAndView deleteOrderProductById(@PathVariable("id") Long id, Model model) {
         orderProductClient.deleteOrderProductById(id);
