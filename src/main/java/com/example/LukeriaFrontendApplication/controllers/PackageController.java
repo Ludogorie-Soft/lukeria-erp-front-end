@@ -5,7 +5,9 @@ import com.example.LukeriaFrontendApplication.config.CartonClient;
 import com.example.LukeriaFrontendApplication.config.ImageClient;
 import com.example.LukeriaFrontendApplication.config.PackageClient;
 import com.example.LukeriaFrontendApplication.config.PlateClient;
-import com.example.LukeriaFrontendApplication.dtos.*;
+import com.example.LukeriaFrontendApplication.dtos.CartonDTO;
+import com.example.LukeriaFrontendApplication.dtos.PackageDTO;
+import com.example.LukeriaFrontendApplication.dtos.PlateDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,7 +35,7 @@ public class PackageController {
     public String showPackage(Model model) {
         List<PackageDTO> packages = packageClient.getAllPackages();
         for (PackageDTO aPackage : packages) {
-            if(aPackage.getPhoto()!=null) {
+            if (aPackage.getPhoto() != null) {
                 imageService.getImage(aPackage.getPhoto());
             }
         }
