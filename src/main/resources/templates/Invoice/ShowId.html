@@ -99,15 +99,15 @@
                                         <td class="quantity-input" th:text="${orderProductDTO.number + ' БР'}">
                                         </td>
 
-                                        <td  class="price-input" th:text="${productDTOS[__${orderProductDTO.packageId - 1}__].price}">
+                                        <td class="price-input" th:text="${orderProductDTO.sellingPrice}">
                                         </td>
                                         <td th:text="20"></td>
                                         <td>
-                                            <span th:with="productPrice=${productDTO.price}, orderNumber=${orderProductDTO.number}"
-                                                  th:each="productDTO : ${productDTOS}"
-                                                  th:if="${productDTO.id == orderProductDTO.packageId}"
-                                                  th:id="${'productValue-' + productDTO.id}"
-                                                  th:text="${productPrice * orderNumber}"></span>
+                                                  <span th:with="productPrice=${orderProductDTO.sellingPrice}, orderNumber=${orderProductDTO.number}"
+                                                        th:each="productDTO : ${productDTOS}"
+                                                        th:if="${productDTO.id == orderProductDTO.packageId}"
+                                                        th:id="${'productValue-' + productDTO.id}"
+                                                        th:text="${productPrice * orderNumber}"></span>
                                         </td>
                                     </tr>
                                     <tr>
@@ -144,7 +144,8 @@
                                     <span th:if="${invoiceDTO.isCashPayment}"><strong>Брой</strong> </span>
                                     <span th:unless="${invoiceDTO.isCashPayment}"><strong>С Преводно Нареждане</strong></span>
                                 </label><br>
-                                <label>Дата на падеж: <strong><span th:text="${#temporals.format(invoiceDTO.deadline, 'dd.MM.yyyy')}"></span></strong></label><br><br>
+                                <label>Дата на падеж: <strong><span
+                                        th:text="${#temporals.format(invoiceDTO.deadline, 'dd.MM.yyyy')}"></span></strong></label><br><br>
                                 <label>
                                     <strong>СЪГЛАСНО ЧЛ. 7, АЛ. 1 ОТ ЗАКОНА ЗА СЧЕТОВОДСТВОТО, ЧЛ. 114 ОТ ЗДДС И ЧЛ.
                                         78 ОТ ИИЗДДС, ПЕЧАТЪТ И ПОДПИСЪТ НЕ СА ЗАДЪЛЖИТЕЛЕН РЕКВИЗИТ</strong>

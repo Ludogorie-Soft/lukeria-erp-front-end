@@ -24,27 +24,18 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     });
 
+     document.addEventListener("DOMContentLoaded", function () {
+            const printButton = document.getElementById("printButton3");
+            printButton.addEventListener("click", function () {
+                const quantityInputList = document.querySelectorAll(".price-input");
+                const quantityInputListValues = Array.from(quantityInputList).map(input => parseFloat(input.value));
+                const quantityInputListField = document.getElementById("priceInputList");
+                quantityInputListField.value = JSON.stringify(quantityInputListValues);
 
-    document.addEventListener("DOMContentLoaded", function () {
-        // Добавете събитие на бутона "Фактурирай"
-        const printButton = document.getElementById("printButton3");
-        printButton.addEventListener("click", function () {
-            // Обновете стойностите на quantityInputList
-            const quantityInputList = document.querySelectorAll(".quantity-input");
-            const quantityInputListValues = Array.from(quantityInputList).map(input => parseFloat(input.value));
-            const quantityInputListField = document.getElementById("quantityInputList");
-            quantityInputListField.value = JSON.stringify(quantityInputListValues);
-
-            // Обновете стойността на priceInput
-            const priceInput = document.getElementById("priceInputList");
-            const updatedPrice = parseFloat(priceInput.value); // Вземете актуалната стойност
-            // Тук можете да използвате updatedPrice по ваше усмотрение
-
-            // Изпратете формата след обновяване на стойностите
-            const invoiceForm = document.getElementById("invoiceForm");
-            invoiceForm.submit();
+                const invoiceForm = document.getElementById("invoiceForm");
+                invoiceForm.submit();
+            });
         });
-    });
 
 
 document.addEventListener("DOMContentLoaded", function () {

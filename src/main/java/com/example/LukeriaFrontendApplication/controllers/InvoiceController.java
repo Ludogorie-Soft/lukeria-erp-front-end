@@ -28,6 +28,9 @@ public class InvoiceController {
     private final ProductClient productClient;
     private final InvoiceOrderProductClient invoiceOrderProductClient;
     private final OrderProductClient orderProductClient;
+    private static final String ORDERPRODUCT ="orderProductDTOS";
+    private static final String PACKAGE ="packageDTOS";
+    private static final String REGEX = "[\\[\\]]";
 
     @GetMapping("/show/{id}")
     public String invoiceCreateFromOrder(@PathVariable(name = "id") Long id, Model model) {
@@ -43,8 +46,8 @@ public class InvoiceController {
         model.addAttribute("productDTOS", productDTOS);
         model.addAttribute("orderDTO", orderDTO);
         model.addAttribute("clientDTOS", clientDTOS);
-        model.addAttribute("packageDTOS", packageDTOS);
-        model.addAttribute("orderProductDTOS", orderProductDTOS);
+        model.addAttribute(PACKAGE, packageDTOS);
+        model.addAttribute(ORDERPRODUCT, orderProductDTOS);
         return "Query/show";
     }
     @GetMapping("/showId/{id}")
@@ -61,8 +64,8 @@ public class InvoiceController {
         model.addAttribute("productDTOS", productDTOS);
         model.addAttribute("orderDTO", orderDTO);
         model.addAttribute("clientDTOS", clientDTOS);
-        model.addAttribute("packageDTOS", packageDTOS);
-        model.addAttribute("orderProductDTOS", orderProductDTOS);
+        model.addAttribute(PACKAGE, packageDTOS);
+        model.addAttribute(ORDERPRODUCT, orderProductDTOS);
         return "Invoice/showId";
     }
     @GetMapping("/showAllInvoices")
@@ -80,11 +83,15 @@ public class InvoiceController {
                                       @RequestParam("currentDate") String currentDate,
                                       @RequestParam("orderProductIds") List<Long> orderProductIds,
                                       @RequestParam("quantityInputList") List<String> quantityInput,
-                                      @RequestParam("quantityInputList") List<String> priceInputList) {
+                                      @RequestParam("priceInputList") List<String> priceInputList) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
         LocalDate currentDateSte = LocalDate.parse(currentDate, formatter);
-        List<String> quantityInputList=quantityInput;
-        List<String> priceInputList2=priceInputList;
+        List<Integer> quantityInputIntList = quantityInput.stream()
+                .map(s -> s.replaceAll(REGEX, ""))
+                .map(Integer::parseInt).toList();
+        List<BigDecimal> priceInputBigDecimalList = priceInputList.stream()
+                .map(s -> s.replaceAll(REGEX, ""))
+                .map(BigDecimal::new).toList();
         InvoiceDTO invoiceDTO = new InvoiceDTO();
         invoiceDTO.setInvoiceNumber(invoiceNumber);
         invoiceDTO.setInvoiceDate(currentDateSte);
@@ -95,6 +102,8 @@ public class InvoiceController {
         InvoiceDTO createdInvoice = invoiceClient.createInvoice(invoiceDTO);
         invoiceOrderProductConfigDTO.setInvoiceId(createdInvoice.getId());
         invoiceOrderProductConfigDTO.setOrderProductIds(orderProductIds);
+        invoiceOrderProductConfigDTO.setQuantityInputIntList( quantityInputIntList);
+        invoiceOrderProductConfigDTO.setPriceInputBigDecimalList(priceInputBigDecimalList);
         invoiceOrderProductClient.createInvoiceOrderProductWhitIdsList(invoiceOrderProductConfigDTO);
         return new ModelAndView("redirect:/invoice/showId/"+(createdInvoice.getId()));
     }
@@ -132,8 +141,8 @@ public class InvoiceController {
         for (OrderProductDTO order : orderProductDTOS) {
             packageDTOS.add(packageClient.getPackageById(order.getPackageId()));
         }
-        model.addAttribute("packageDTOS", packageDTOS);
-        model.addAttribute("orderProductDTOS", orderProductDTOS);
+        model.addAttribute(PACKAGE, packageDTOS);
+        model.addAttribute(ORDERPRODUCT, orderProductDTOS);
         model.addAttribute("date", invoiceDTO.getInvoiceDate());
         model.addAttribute("invoiceNumber", invoiceDTO.getInvoiceNumber());
         return "Confirmation/confirmation";
