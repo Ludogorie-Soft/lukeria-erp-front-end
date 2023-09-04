@@ -96,7 +96,7 @@
                                         <td>
                                             <label>
                                                 <input class="quantity-input" type="number"
-                                                       th:value="${orderProductDTO.number}" min="1" id="quantityInput" name="quantityInput">
+                                                       th:value="${orderProductDTO.number}" min="1"  id="quantityInput" name="quantityInputList">
                                             </label>
                                             <span>БР</span>
                                         </td>
@@ -157,8 +157,10 @@
                                                name="dateInput" value="" min="">
                                     </div>
                                     <input type="hidden" id="paymentAmountInput" name="paymentAmount">
-                                    <input type="hidden" id="quantityInput1" name="quantityInput">
-                                    <input type="hidden" id="priceInput1" name="priceInput">
+                                    <input type="hidden" id="quantityInputList" name="quantityInputList">
+                                    <input type="hidden" id="priceInputList" name="priceInput">
+
+
 
                                     <th:block th:each="orderProductDTO : ${orderProductDTOS}">
                                         <input type="hidden" name="orderProductIds" th:value="${orderProductDTO.id}">

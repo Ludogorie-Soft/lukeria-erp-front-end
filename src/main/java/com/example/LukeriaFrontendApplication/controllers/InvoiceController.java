@@ -79,12 +79,12 @@ public class InvoiceController {
                                       @RequestParam("invoiceNumber") Long invoiceNumber,
                                       @RequestParam("currentDate") String currentDate,
                                       @RequestParam("orderProductIds") List<Long> orderProductIds,
-                                      @RequestParam("quantityInput") List<Integer> quantityInput,
-                                      @RequestParam("priceInput") List<BigDecimal> priceInput) {
+                                      @RequestParam("quantityInputList") List<String> quantityInput,
+                                      @RequestParam("quantityInputList") List<String> priceInputList) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
         LocalDate currentDateSte = LocalDate.parse(currentDate, formatter);
-        List<Integer> quantityInputList=quantityInput;
-        List<BigDecimal> priceInputList=priceInput;
+        List<String> quantityInputList=quantityInput;
+        List<String> priceInputList2=priceInputList;
         InvoiceDTO invoiceDTO = new InvoiceDTO();
         invoiceDTO.setInvoiceNumber(invoiceNumber);
         invoiceDTO.setInvoiceDate(currentDateSte);

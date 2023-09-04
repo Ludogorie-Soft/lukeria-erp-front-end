@@ -6,8 +6,47 @@ document.addEventListener("DOMContentLoaded", function() {
     if (link.href === currentPageUrl) {
       link.parentNode.classList.add('active');
     }
-  });
+  })
 });
+
+
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const printButton = document.getElementById("printButton3");
+        printButton.addEventListener("click", function () {
+            const quantityInputList = document.querySelectorAll(".quantity-input");
+            const quantityInputListValues = Array.from(quantityInputList).map(input => parseFloat(input.value));
+            const quantityInputListField = document.getElementById("quantityInputList");
+            quantityInputListField.value = JSON.stringify(quantityInputListValues);
+
+            const invoiceForm = document.getElementById("invoiceForm");
+            invoiceForm.submit();
+        });
+    });
+
+
+    document.addEventListener("DOMContentLoaded", function () {
+        // Добавете събитие на бутона "Фактурирай"
+        const printButton = document.getElementById("printButton3");
+        printButton.addEventListener("click", function () {
+            // Обновете стойностите на quantityInputList
+            const quantityInputList = document.querySelectorAll(".quantity-input");
+            const quantityInputListValues = Array.from(quantityInputList).map(input => parseFloat(input.value));
+            const quantityInputListField = document.getElementById("quantityInputList");
+            quantityInputListField.value = JSON.stringify(quantityInputListValues);
+
+            // Обновете стойността на priceInput
+            const priceInput = document.getElementById("priceInputList");
+            const updatedPrice = parseFloat(priceInput.value); // Вземете актуалната стойност
+            // Тук можете да използвате updatedPrice по ваше усмотрение
+
+            // Изпратете формата след обновяване на стойностите
+            const invoiceForm = document.getElementById("invoiceForm");
+            invoiceForm.submit();
+        });
+    });
+
+
 document.addEventListener("DOMContentLoaded", function () {
     var paymentAmountElement = document.getElementById("paymentAmount");
     var paymentAmountInput = document.getElementById("paymentAmountInput");

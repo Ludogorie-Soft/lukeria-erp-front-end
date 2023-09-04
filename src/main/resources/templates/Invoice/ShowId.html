@@ -26,12 +26,7 @@
                     </button>
                 </div>
                 <div class="col-md-6 text-end">
-                    <a th:if="${orderProductDTOS != null and orderProductDTOS.size() > 0}"
-                       th:href="@{/orderProduct/orderDetails/{orderId}(orderId=${orderProductDTOS[0].orderId})}">
-                        <button id="printButton2" class="btn btn-primary">
-                            Провери поръчката <i class="fas fa-file-alt"></i>
-                        </button>
-                    </a>
+
                 </div>
             </div>
             <div class="row">
