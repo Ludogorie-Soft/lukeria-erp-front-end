@@ -15,65 +15,11 @@
     <link rel="canonical" href="https://demo-basic.adminkit.io/"/>
 
     <title> Кутии </title>
-
+    <link href="/css/form.css" rel="stylesheet">
     <link href="/css/app.css" rel="stylesheet">
     <link href="/js/app.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
-<style>
-    .custom-card-width-lg {
-        width: auto; /* Променете стойността на ширината, според вашите нужди */
-        margin: 0 auto; /* Опционално: Центриране на карта хоризонтално */
-    }
-
-    .form-container {
-        max-width: 400px;
-        margin: 0 auto;
-    }
-
-    .form-group {
-        margin-bottom: 20px;
-    }
-
-    .form-group label {
-        display: block;
-        font-weight: bold;
-        margin-bottom: 5px;
-    }
-
-    .form-group input[type="text"],
-    .form-group input[type="number"] {
-        width: 100%;
-        padding: 8px;
-        border-radius: 4px;
-        border: 1px solid #ccc;
-    }
-
-    .form-group input[type="text"]:focus,
-    .form-group input[type="number"]:focus {
-        outline: none;
-        border-color: #4c75f2;
-    }
-
-    .form-group .error-message {
-        color: red;
-        font-size: 12px;
-        margin-top: 5px;
-    }
-
-    .form-group button {
-        padding: 10px 20px;
-        background-color: #4c75f2;
-        color: white;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-    }
-
-    .form-group button:hover {
-        background-color: #3e64e2;
-    }
-</style>
 
 <body>
 <div class="wrapper">
@@ -93,7 +39,7 @@
                         <h5 class="card-title mb-0">Редактирай Кутия</h5>
                     </div>
                     <div class="card-body">
-                        <form th:action="@{'/package/editSubmit/' + ${package.id}}" method="post" th:object="${package}">
+                        <form th:action="@{'/package/editSubmit/' + ${package.id}}" method="post" th:object="${package}"enctype="multipart/form-data">
                             <div class="form-group">
                                 <label for="name">Име:</label>
                                 <input type="text" id="name" name="name" pattern=".{10,}"
@@ -126,15 +72,14 @@
                                 <div class="error-message" th:if="${#fields.hasErrors('piecesCarton')}" th:errors="*{piecesCarton}"></div>
                             </div>
                             <div class="form-group">
-                                <label for="photo">Снимка:</label>
-                                <input type="text" id="photo" name="photo" th:field="*{photo}" />
-                                <div class="error-message" th:if="${#fields.hasErrors('photo')}" th:errors="*{photo}"></div>
-                            </div>
-                            <div class="form-group">
                                 <label for="price">Цена:</label>
                                 <input type="number" id="price" name="price" step="0.01" min="0.01" required
                                        th:field="*{price}" />
                                 <div class="error-message" th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></div>
+                            </div>
+                            <div class="form-group">
+                                <label for="photo">Снимка:</label>
+                                <input type="file" id="photo" name="file" />
                             </div>
                             <div class="text-center">
                                 <button type="submit" class="btn btn-primary">Запази промените</button>

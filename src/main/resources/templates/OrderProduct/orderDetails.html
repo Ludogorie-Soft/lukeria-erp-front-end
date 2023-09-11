@@ -21,9 +21,10 @@
       </a>
     </nav>
     <main class="content">
-      <div class="form-container">
-        <div class="card custom-card-width-lg">
-          <div class="card-header">
+      <div class="row">
+        <div class="col-lg-5 mx-auto">
+          <div class="card custom-card-width-lg">
+            <div class="card-header">
             <h5 class="card-title mb-0">Продукти на поръчката</h5>
             <br>
             <center>
@@ -32,10 +33,11 @@
               </form>
             </center>
           </div>
-          <div class="card-body">
-            <table class="table table-hover">
-              <thead>
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
               <tr>
+                <th>Снимка</th>
                 <th>Номер</th>
                 <th>Име</th>
                 <th>Брой</th>
@@ -43,6 +45,9 @@
               </thead>
               <tbody>
               <tr th:each="product, iter : ${products}">
+                <td>
+                  <img th:src="@{${backendBaseUrl} + '/'+ ${product.photo}}" alt="no image" height="100" width="100">
+                </td>
                 <td th:text="${product.id}"></td>
                 <td th:text="${product.name}"></td>
                 <td th:text="${orderProducts[iter.index]?.number}"></td>
@@ -57,6 +62,7 @@
             </table>
           </div>
         </div>
+      </div>
       </div>
     </main>
   </div>
