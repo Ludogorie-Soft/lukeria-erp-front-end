@@ -1,0 +1,161 @@
+.custom-card-width-lg {
+width: auto; /* Променете стойността на ширината, според вашите нужди */
+margin: 0 auto; /* Опционално: Центриране на карта хоризонтално */
+    }
+
+.yellow-cell {
+  background-color: yellow;
+}
+
+.red-cell {
+  background-color: red;
+}
+  @media print {
+         body {
+             font-family: Arial, sans-serif;
+             margin: 0;
+             padding: 0;
+         }
+
+         .wrapper {
+             width: 210mm;
+             margin: 0 auto;
+             padding: 20px;
+         }
+
+         .card {
+             border: none;
+             box-shadow: none;
+             margin: 0;
+         }
+
+         .card-header {
+             background-color: transparent;
+             border: none;
+         }
+
+         .container {
+             padding: 0;
+         }
+
+         .text-container {
+             margin: 10px 0;
+         }
+
+         .underlined {
+             text-decoration: underline;
+         }
+
+         h5 {
+             font-size: 14px;
+             margin: 5px 0;
+         }
+
+         table {
+             font-size: 12px;
+             width: 100%;
+             border-collapse: collapse;
+         }
+
+         .table th,
+         .table td {
+             padding: 5px;
+             border: 1px solid #ddd;
+         }
+
+         .centered {
+             text-align: center;
+             margin-top: 20px;
+         }
+
+         .form-group {
+             margin: 5px 0;
+         }
+
+         label {
+             display: block;
+             font-weight: bold;
+             margin-bottom: 2px;
+         }
+
+         input[type="number"],
+         select {
+             width: 100%;
+             padding: 4px;
+             font-size: 12px;
+         }
+
+         #printButton,
+         #printButton2,
+         #printButton3 {
+             display: none;
+         }
+
+         @page {
+             size: A4;
+             margin: 0;
+         }
+     }
+.container {
+          display: flex;
+          justify-content: space-between;
+      }
+
+      .text-container {
+          flex-basis: 45%;
+      }
+
+      .underlined {
+          text-decoration: underline;
+      }
+
+      .right-align {
+          text-align: right;
+      }
+
+      .text-container.right {
+          margin-left: auto;
+      }
+
+      .centered {
+          text-align: center;
+          margin-top: 20px;
+      }
+
+      .total {
+          text-align: center;
+          margin-top: 10px;
+      }
+      .price-input {
+          width: 60px; /* Променете тази стойност според вашите предпочитания за ширина */
+          padding: 5px;
+          border: 1px solid #ccc;
+          border-radius: 4px;
+          box-sizing: border-box;
+          text-align: right;
+      }
+      .quantity-input {
+          width: 40px;
+          padding: 3px;
+          border: 1px solid #ccc;
+          border-radius: 4px;
+          box-sizing: border-box;
+          text-align: center;
+      }
+      .form-group {
+              display: flex;
+              flex-direction: column;
+              margin-bottom: 15px;
+      }
+
+
+     #printButton3 {
+                 position: absolute;
+                 background-color: red;
+                 color: white;
+                 border: none;
+                 padding: 5px 10px;
+                 font-size: 12px;
+                 cursor: pointer;
+                 border-radius: 5px;
+             }

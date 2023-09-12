@@ -1,8 +1,10 @@
 package com.example.LukeriaFrontendApplication.config;
 
+import com.example.LukeriaFrontendApplication.dtos.InvoiceOrderProductConfigDTO;
 import com.example.LukeriaFrontendApplication.dtos.InvoiceOrderProductDTO;
 import jakarta.validation.Valid;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,6 +19,9 @@ public interface InvoiceOrderProductClient {
 
     @PostMapping
     InvoiceOrderProductDTO createInvoiceOrderProduct(@Valid @RequestBody InvoiceOrderProductDTO invoiceOrderProductDTO);
+
+    @PostMapping("/withIds")
+     ResponseEntity<String> createInvoiceOrderProductWhitIdsList(InvoiceOrderProductConfigDTO configDTO);
 
     @PutMapping("/{id}")
     void updateInvoiceOrderProduct(@PathVariable("id") Long id, @Valid @RequestBody  InvoiceOrderProductDTO invoiceOrderProductDTO) ;

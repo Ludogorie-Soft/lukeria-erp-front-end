@@ -7,10 +7,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@FeignClient(name = "lukeria-erp-anInvoice", url = "http://localhost:8088/api/v1/invoice")
+@FeignClient(name = "lukeria-erp-invocie", url = "http://localhost:8088/api/v1/invoice")
 public interface InvoiceClient {
 
-    @GetMapping()
+    @GetMapping
     List<InvoiceDTO> getAllInvoices();
 
     @GetMapping("/{id}")
@@ -25,6 +25,6 @@ public interface InvoiceClient {
     @DeleteMapping("/{id}")
     String deleteInvoiceById(@PathVariable("id") Long id);
 
-
+    @GetMapping("/number")
+    Long findLastInvoiceNumberStartingWith();
 }
-
