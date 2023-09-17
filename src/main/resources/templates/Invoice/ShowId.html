@@ -25,17 +25,18 @@
                         Принтирай <i class="fas fa-print"></i>
                     </button>
                 </div>
-                <select id="locales">
-                    <option value=""></option>
-                    <option value="en" th:text="#{lang.eng}"></option>
-                    <option value="bg" th:text="#{lang.bg}"></option>
-                </select>
                 <div class="col-md-6 text-end">
 
                 </div>
             </div>
             <div class="row">
                 <div class="col-lg-8 mx-auto">
+                    <select class="form-select form-select-sm" id="locales" aria-label=".form-select-sm example">
+                        <option selected>Променете езика на фактурата</option>
+                        <option value="en" th:text="#{lang.eng}"></option>
+                        <option value="bg" th:text="#{lang.bg}"></option>
+                    </select>
+
                     <div class="card custom-card-width-lg">
                         <div class="card-header">
                             <div class="container">
@@ -45,15 +46,15 @@
                                             th:text=" ${clientDTOS[orderDTO.clientId - 1].businessName}"></strong>
                                     </h5>
                                     <h5><strong
-                                            th:text="#{label.idNumber} + ${clientDTOS[orderDTO.clientId - 1].idNumEIK}"></strong>
+                                            th:text="#{label.idNumber}+'  ' + ${clientDTOS[orderDTO.clientId - 1].idNumEIK}"></strong>
                                     </h5>
                                     <h5><strong th:if="${clientDTOS[orderDTO.clientId - 1].hasIdNumDDS}">
-                                        <span th:text= "#{label.idNumberDDS} + ' BG' + ${clientDTOS[orderDTO.clientId - 1].idNumEIK}"></span>
+                                        <span th:text= "#{label.idNumberDDS} +'  '+ ' BG' + ${clientDTOS[orderDTO.clientId - 1].idNumEIK}"></span>
                                     </strong></h5>
                                     <h5><strong
-                                            th:text=" #{label.address} + ${clientDTOS[orderDTO.clientId - 1].address}"></strong>
+                                            th:text=" #{label.address}+'  ' + ${clientDTOS[orderDTO.clientId - 1].address}"></strong>
                                     </h5>
-                                    <h5><strong th:text="#{label.MOL} + ${clientDTOS[orderDTO.clientId - 1].mol}"></strong>
+                                    <h5><strong th:text="#{label.MOL} +'  '+ ${clientDTOS[orderDTO.clientId - 1].mol}"></strong>
                                     </h5>
                                 </div>
 
@@ -63,19 +64,19 @@
                                     <h5>
 
                                     </h5>
-                                    <h5><strong th:text="#{label.idNumber} + '200418603'"></strong></h5>
+                                    <h5><strong th:text="#{label.idNumber} + '  ' + '200418603'"></strong></h5>
                                     <h5><strong>
-                                        <span th:text="#{label.idNumberDDS} +'BG'+ '200418603'"></span>
+                                        <span th:text="#{label.idNumberDDS} +'  ' +'BG'+ '200418603'"></span>
                                     </strong></h5>
-                                    <h5><strong th:text="#{label.address} + #{lukeria.address}"></strong>
+                                    <h5><strong th:text="#{label.address} +'  ' + #{lukeria.address}"></strong>
                                     </h5>
-                                    <h5><strong th:text="#{label.MOL} + #{lukeria.MOL}"></strong>
+                                    <h5><strong th:text="#{label.MOL}+'  ' + #{lukeria.MOL}"></strong>
                                     </h5>
                                 </div>
                             </div>
                             <div class="centered">
-                                <h2 th:text="#{title.invoice} + ${invoiceDTO.invoiceNumber}"></h2>
-                                <h2 th:text="#{title.date} + ${invoiceDTO.invoiceDate}"></h2>
+                                <h2 th:text="#{title.invoice}+'  ' + ${invoiceDTO.invoiceNumber}"></h2>
+                                <h2 th:text="#{title.date} +'  '+ ${invoiceDTO.invoiceDate}"></h2>
                             </div>
                         </div>
                         <div class="card-body">
@@ -141,7 +142,7 @@
                                     </tr>
                                     </tbody>
                                 </table>
-                                <label th:text = "#{other.bankAccount} + ' '"></label>
+                                <label th:text = "#{other.bankAccount} + '  '"></label>
                                     <strong th:text = #{other.bankAccountNumber}></strong>
                                 <br>
 
