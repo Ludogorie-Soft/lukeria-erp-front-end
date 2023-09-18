@@ -2,17 +2,20 @@ package com.example.LukeriaFrontendApplication.controllers;
 
 import com.example.LukeriaFrontendApplication.config.*;
 import com.example.LukeriaFrontendApplication.dtos.*;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 @org.springframework.stereotype.Controller
@@ -52,7 +55,7 @@ public class InvoiceController {
     }
 
     @GetMapping("/showId/{id}")
-    public String invoiceShow(@PathVariable(name = "id") Long id, Model model) {
+    public String invoiceShow(@PathVariable(name = "id") Long id, Model model, HttpSession session) {
         Long lastInvoiceNumber = invoiceClient.findLastInvoiceNumberStartingWith();
         List<OrderProductDTO> orderProductDTOS = queryClient.getOrderProductsByOrderId(id);
         List<PackageDTO> packageDTOS = packageClient.getAllPackages();
@@ -60,6 +63,16 @@ public class InvoiceController {
         OrderDTO orderDTO = orderClient.getOrderById(id);
         List<ProductDTO> productDTOS = productClient.getAllProducts();
         InvoiceDTO invoiceDTO = invoiceClient.getInvoiceById(id);
+        ClientDTO clientDTO =  clientClient.getClientById(orderDTO.getClientId());
+        if (invoiceDTO.getInvoiceNumber() >= 2000000000) {
+            session.setAttribute(SessionLocaleResolver.LOCALE_SESSION_ATTRIBUTE_NAME, new Locale("bg"));
+            model.addAttribute("clientName", clientDTO.getBusinessName());
+            model.addAttribute("clientAddress", clientDTO.getAddress());
+        } else {
+            session.setAttribute(SessionLocaleResolver.LOCALE_SESSION_ATTRIBUTE_NAME, Locale.ENGLISH);
+            model.addAttribute("clientName", clientDTO.getEnglishBusinessName());
+            model.addAttribute("clientAddress", clientDTO.getEnglishAddress());
+        }
         model.addAttribute("InvoiceId", id);
         model.addAttribute("invoiceDTO", invoiceDTO);
         model.addAttribute("lastInvoiceNumber", lastInvoiceNumber);
@@ -70,7 +83,6 @@ public class InvoiceController {
         model.addAttribute(ORDERPRODUCT, orderProductDTOS);
         return "Invoice/showId";
     }
-
     @GetMapping("/showAllInvoices")
     public String showAllInvoices(Model model) {
         List<InvoiceDTO> invoiceDTOS = invoiceClient.getAllInvoices();

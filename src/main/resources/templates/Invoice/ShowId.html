@@ -31,19 +31,13 @@
             </div>
             <div class="row">
                 <div class="col-lg-8 mx-auto">
-                    <select class="form-select form-select-sm" id="locales" aria-label=".form-select-sm example">
-                        <option selected>Променете езика на фактурата</option>
-                        <option value="en" th:text="#{lang.eng}"></option>
-                        <option value="bg" th:text="#{lang.bg}"></option>
-                    </select>
-
                     <div class="card custom-card-width-lg">
                         <div class="card-header">
                             <div class="container">
                                 <div class="text-container">
                                     <strong class="underlined" th:text="#{label.receiver}"></strong>
-                                    <h5><strong
-                                            th:text=" ${clientDTOS[orderDTO.clientId - 1].businessName}"></strong>
+                                    <h5>
+                                        <strong th:text="${clientName}"></strong>
                                     </h5>
                                     <h5><strong
                                             th:text="#{label.idNumber}+'  ' + ${clientDTOS[orderDTO.clientId - 1].idNumEIK}"></strong>
@@ -51,8 +45,9 @@
                                     <h5><strong th:if="${clientDTOS[orderDTO.clientId - 1].hasIdNumDDS}">
                                         <span th:text= "#{label.idNumberDDS} +'  '+ ' BG' + ${clientDTOS[orderDTO.clientId - 1].idNumEIK}"></span>
                                     </strong></h5>
-                                    <h5><strong
-                                            th:text=" #{label.address}+'  ' + ${clientDTOS[orderDTO.clientId - 1].address}"></strong>
+                                    <h5>
+                                        <strong th:text=" #{label.address}"></strong>
+                                        <strong th:text="${clientAddress}"></strong>
                                     </h5>
                                     <h5><strong th:text="#{label.MOL} +'  '+ ${clientDTOS[orderDTO.clientId - 1].mol}"></strong>
                                     </h5>
@@ -100,7 +95,7 @@
                                         <td>
                                               <span th:each="packageDTO : ${packageDTOS}"
                                                     th:if="${packageDTO.id == orderProductDTO.packageId}"
-                                                    th:text="${packageDTO.name}"></span>
+                                                    th:text="${InvoiceId >= 2000000000 ? packageDTO.englishName : packageDTO.name}"></span>
                                         </td>
                                         <td class="quantity-input" th:text="${orderProductDTO.number } + #{label.num}">
                                         </td>
@@ -166,14 +161,4 @@
 <script src="/js/invoiceId.js"></script>
 </html>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js">
-</script>
-<script type="text/javascript">
-$(document).ready(function() {
-    $("#locales").change(function () {
-        var selectedOption = $('#locales').val();
-        if (selectedOption != ''){
-            window.location.replace('international?lang=' + selectedOption);
-        }
-    });
-});
 </script>

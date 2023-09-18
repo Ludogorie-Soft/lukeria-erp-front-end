@@ -35,6 +35,13 @@
                 <div class="error-message"></div>
               </div>
               <div class="form-group">
+                <label for="englishName">Име на фирма на английски език:</label>
+                <input type="text" id="englishName" name="englishName" pattern=".{5,}"
+                       title="Моля въведете името на фирмата на английски език с поне 5 символа!" required
+                       th:field="${client.englishBusinessName}"/>
+                <div class="error-message"></div>
+              </div>
+              <div class="form-group">
                 <label for="idNumEIK">Ид. Номер по ЕИК:</label>
                 <input type="text" id="idNumEIK" name="idNumEIK" pattern=".{5,}"
                        title="Номера по ЕИК трябва да бъде последователност от 5 цифри!" required
@@ -57,6 +64,11 @@
                 <label for="address">Адрес:</label>
                 <input type="text" id="address" name="address" required
                        th:field="${client.address}"/>
+              </div>
+              <div class="form-group">
+                <label for="englishAddress">Адрес на англсийски език:</label>
+                <input type="text" id="englishAddress" name="englishAddress" required
+                       th:field="${client.englishAddress}"/>
               </div>
               <div class="form-check">
                 <input class="form-check-input" type="radio" name="isBulgarianClient" value=true id="isBulgarianClient">
