@@ -55,6 +55,7 @@
                                         </td>
                                         <td th:text="${product.id}"></td>
                                         <td th:text="${productPackageMap.get(product.packageId)}"></td>
+                                        <td>
                                             <span th:text="${product.availableQuantity + ' Броя'}"
                                                   th:class="${product.availableQuantity <= 20 ? 'red-cell' : (product.availableQuantity <= 100 ? 'yellow-cell' : '')}"></span>
                                         </td>
