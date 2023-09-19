@@ -21,6 +21,7 @@ public class ClientDTO {
     private String address;
     private String englishAddress;
     private String mol;
+    private String englishMol;
 
     // I did the fiend String because otherwise it always gets value of FALSE from the html form and only this way i could fix it
     private String isBulgarianClient;

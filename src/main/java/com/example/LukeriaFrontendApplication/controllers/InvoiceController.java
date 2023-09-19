@@ -68,10 +68,12 @@ public class InvoiceController {
             session.setAttribute(SessionLocaleResolver.LOCALE_SESSION_ATTRIBUTE_NAME, new Locale("bg"));
             model.addAttribute("clientName", clientDTO.getBusinessName());
             model.addAttribute("clientAddress", clientDTO.getAddress());
+            model.addAttribute("clientMOL", clientDTO.getMol());
         } else {
             session.setAttribute(SessionLocaleResolver.LOCALE_SESSION_ATTRIBUTE_NAME, Locale.ENGLISH);
             model.addAttribute("clientName", clientDTO.getEnglishBusinessName());
             model.addAttribute("clientAddress", clientDTO.getEnglishAddress());
+            model.addAttribute("clientMOL", clientDTO.getEnglishMol());
         }
         model.addAttribute("InvoiceId", id);
         model.addAttribute("invoiceDTO", invoiceDTO);
