@@ -95,12 +95,12 @@
                                         <td>
                                               <span th:each="packageDTO : ${packageDTOS}"
                                                     th:if="${packageDTO.id == orderProductDTO.packageId}"
-                                                    th:text="${InvoiceId >= 2000000000 ? packageDTO.englishName : packageDTO.name}"></span>
+                                                    th:text="${InvoiceId >= 2000000000 ? packageDTO.name : packageDTO.englishName}"></span>
                                         </td>
                                         <td class="quantity-input" th:text="${orderProductDTO.number } + #{label.num}">
                                         </td>
 
-                                        <td class="price-input" th:text="${orderProductDTO.sellingPrice}">
+                                        <td class="price-input" th:text="${InvoiceId >= 2000000000 ? orderProductDTO.sellingPrice : orderProductDTO.sellingPrice * 1.95583}"></td>
                                         </td>
                                         <td th:text="20"></td>
                                         <td>
@@ -108,7 +108,7 @@
                                                         th:each="productDTO : ${productDTOS}"
                                                         th:if="${productDTO.id == orderProductDTO.packageId}"
                                                         th:id="${'productValue-' + productDTO.id}"
-                                                        th:text="${productPrice * orderNumber}"></span>
+                                                        th:text="${InvoiceId >= 2000000000 ? productPrice * orderNumber : productPrice * orderNumber*1.95583}"></span>
                                         </td>
                                     </tr>
                                     <tr>
@@ -158,7 +158,28 @@
     </div>
 </div>
 </body>
-<script src="/js/invoiceId.js"></script>
+
 </html>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script src="/js/invoiceId.js"></script>
+<script>
+var invoiceId = [[${InvoiceId}]];
+    // JavaScript function to round a value to two decimal places
+    function roundValue(value) {
+        return Math.round(value * 100) / 100;
+    }
+
+    // Get the elements you need
+    var tdElement = document.querySelector('.price-input');
+
+    var sellingPrice = [[${sellingPrice}]];
+
+    // Calculate the value based on the condition
+    var calculatedValue = invoiceId >= 2000000000 ? sellingPrice : sellingPrice * 1.95583;
+
+    // Round the calculated value to two decimal places
+    var roundedValue = roundValue(calculatedValue);
+
+    // Set the rounded value as the text content of the <td> element
+    tdElement.textContent = roundedValue.toFixed(2);
 </script>

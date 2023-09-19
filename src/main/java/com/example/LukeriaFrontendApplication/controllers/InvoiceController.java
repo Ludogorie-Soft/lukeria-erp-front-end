@@ -75,7 +75,7 @@ public class InvoiceController {
             model.addAttribute("clientAddress", clientDTO.getEnglishAddress());
             model.addAttribute("clientMOL", clientDTO.getEnglishMol());
         }
-        model.addAttribute("InvoiceId", id);
+        model.addAttribute("InvoiceId", invoiceDTO.getInvoiceNumber());
         model.addAttribute("invoiceDTO", invoiceDTO);
         model.addAttribute("lastInvoiceNumber", lastInvoiceNumber);
         model.addAttribute("productDTOS", productDTOS);
