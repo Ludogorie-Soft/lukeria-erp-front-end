@@ -50,8 +50,8 @@
                             </div>
                             <div class="form-group">
                                 <label for="englishName">Име на английски език:</label>
-                                <input type="text" id="englishName" name="englishName" pattern=".{10,}"
-                                       title="Моля въведете името на кашона с поне 10 символа!" required
+                                <input type="text" id="englishName" name="englishName"  pattern="[a-zA-Z0-9\s]*$"
+                                       title="Моля въведете името на кашона с латински букви!" required
                                        th:value="${package != null ? package.englishName : ''}"/>
                                 <div class="error-message"></div>
                             </div>

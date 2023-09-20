@@ -36,8 +36,8 @@
                             </div>
                             <div class="form-group">
                                 <label for="englishBusinessName">Име на фирма на ангрийски език:</label>
-                                <input type="text" id="englishBusinessName" name="englishBusinessName" pattern=".{5,}"
-                                       title="Моля въведете името на фирмата на английски език с поне 5 символа!" required
+                                <input type="text" id="englishBusinessName" name="englishBusinessName"  pattern="[a-zA-Z0-9\s]*$"
+                                       title="Моля въведете името на фирмата на английски език с латински букви!" required
                                        th:field="*{englishBusinessName}"/>
                                 <div class="error-message"></div>
                             </div>
@@ -89,7 +89,8 @@
                             </div>
                             <div class="form-group">
                                 <label for="englishMol">МОЛ на английски език:</label>
-                                <input type="text" id="englishMol" name="address"
+                                <input type="text" id="englishMol" name="address"  pattern="[a-zA-Z0-9\s]*$"
+                                       title="Моля въведете името на МОЛ-а на английски език с латински букви!" required
                                        th:field="*{englishMol}"/>
                             </div>
                             <div class="text-center">

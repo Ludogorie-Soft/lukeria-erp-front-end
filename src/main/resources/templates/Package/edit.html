@@ -48,10 +48,10 @@
                                 <div class="error-message" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
                             </div>
                             <div class="form-group">
-                                <label for="englishName">Име:</label>
-                                <input type="text" id="englishName" name="englishName" pattern=".{10,}"
-                                       title="Моля въведете името на опаковката на английски език с поне 10 символа!" required
-                                       th:field="*{englishName}" />
+                                <label for="englishName">Име на английски език:</label>
+                                <input type="text" id="englishName" name="englishName"  pattern="[a-zA-Z0-9\s]*$"
+                                       title="Моля въведете името на опаковката на английски език с латински букви!"
+                                       required th:field="*{englishName}" />
                                 <div class="error-message" th:if="${#fields.hasErrors('englishName')}" th:errors="*{englishName}"></div>
                             </div>
                             <div class="form-group">
