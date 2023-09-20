@@ -92,7 +92,7 @@ public class InvoiceController {
         return "Invoice/showAllInvoices";
     }
 
-    @PostMapping("/submit")
+     @PostMapping("/submit")
     public ModelAndView submitInvoice(@RequestParam("paymentMethod") boolean paymentMethod,
                                       @RequestParam("dateInput") LocalDate paymentDateStr,
                                       @RequestParam("paymentAmount") BigDecimal paymentAmountStr,
