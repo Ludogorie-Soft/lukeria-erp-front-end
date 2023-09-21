@@ -66,7 +66,7 @@
                                 </div>
                             </div>
                             <div class="centered">
-                                <h2 th:text="'Фактура: ' + (${lastInvoiceNumber + 1})"></h2>
+                                <h2 th:text="'Фактура: ' + (${lastInvoiceNumber})"></h2>
                                 <h2 th:text="'ДАТА: '+ ${#dates.format(#dates.createNow(), 'dd.MM.yyyy')}"></h2>
                             </div>
                         </div>
@@ -159,8 +159,7 @@
                                     <input type="hidden" id="paymentAmountInput" name="paymentAmount">
                                     <input type="hidden" id="quantityInputList" name="quantityInputList">
                                     <input type="hidden" id="priceInputList" name="priceInputList">
-
-
+                                    <input type="hidden" id="lastInvoiceNumber" name="lastInvoiceNumber" th:value="${lastInvoiceNumber}">
 
                                     <th:block th:each="orderProductDTO : ${orderProductDTOS}">
                                         <input type="hidden" name="orderProductIds" th:value="${orderProductDTO.id}">
