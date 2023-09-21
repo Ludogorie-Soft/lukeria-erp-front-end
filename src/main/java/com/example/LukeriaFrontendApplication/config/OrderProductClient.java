@@ -3,6 +3,7 @@ package com.example.LukeriaFrontendApplication.config;
 import com.example.LukeriaFrontendApplication.dtos.OrderProductDTO;
 import jakarta.validation.Valid;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,5 +24,8 @@ public interface OrderProductClient {
 
     @DeleteMapping("/{id}")
     String deleteOrderProductById(@PathVariable("id") Long id);
+
+    @GetMapping("/lessening")
+     ResponseEntity<Boolean> findInvoiceOrderProductsByInvoiceId(@RequestParam Long invoiceId);
 
 }

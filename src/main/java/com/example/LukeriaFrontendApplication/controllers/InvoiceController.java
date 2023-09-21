@@ -112,6 +112,7 @@ public class InvoiceController {
         invoiceOrderProductConfigDTO.setPriceInputBigDecimalList(priceInputBigDecimalList);
 
         invoiceOrderProductClient.createInvoiceOrderProductWhitIdsList(invoiceOrderProductConfigDTO);
+        orderProductClient.findInvoiceOrderProductsByInvoiceId(createdInvoice.getId());
         return new ModelAndView("redirect:/invoice/showId/"+(createdInvoice.getId()));
     }
 
