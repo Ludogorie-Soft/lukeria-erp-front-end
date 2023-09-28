@@ -35,6 +35,13 @@
                 <div class="error-message"></div>
               </div>
               <div class="form-group">
+                <label for="englishName">Име на фирма на английски език:</label>
+                <input type="text" id="englishName" name="englishName"  pattern="[a-zA-Z0-9\s!@#$%^&*()-_=+]*"
+                       title="Моля въведете името на фирмата на английски език с латински букви, цифри, интервали и специални символи!" required
+                       th:field="${client.englishBusinessName}"/>
+                <div class="error-message"></div>
+              </div>
+              <div class="form-group">
                 <label for="idNumEIK">Ид. Номер по ЕИК:</label>
                 <input type="text" id="idNumEIK" name="idNumEIK" pattern=".{5,}"
                        title="Номера по ЕИК трябва да бъде последователност от 5 цифри!" required
@@ -58,6 +65,12 @@
                 <input type="text" id="address" name="address" required
                        th:field="${client.address}"/>
               </div>
+              <div class="form-group">
+                <label for="englishAddress">Адрес на англсийски език:</label>
+                <input type="text" id="englishAddress" name="englishAddress"   pattern="[a-zA-Z0-9\s]*$"
+                       title="Моля въведете името на адреса на английски език с латински букви!" required
+                       th:field="${client.englishAddress}"/>
+              </div>
               <div class="form-check">
                 <input class="form-check-input" type="radio" name="isBulgarianClient" value=true id="isBulgarianClient">
                 <label class="form-check-label" for="isBulgarianClient">
@@ -74,6 +87,12 @@
                 <label for="mol">МОЛ:</label>
                 <input type="text" id="mol" name="address"
                        th:field="${client.mol}"/>
+              </div>
+              <div class="form-group">
+                <label for="englishMol">МОЛ на английски език:</label>
+                <input type="text" id="englishMol" name="address"   pattern="[a-zA-Z0-9\s]*$"
+                       title="Моля въведете името на МОЛ-а на английски език с латински букви!" required
+                       th:field="${client.englishMol}"/>
               </div>
               <div class="text-center">
                 <button type="submit" class="btn btn-primary">Създай</button>

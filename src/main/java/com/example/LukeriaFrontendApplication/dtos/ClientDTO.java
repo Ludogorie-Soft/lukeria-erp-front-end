@@ -13,12 +13,18 @@ public class ClientDTO {
     private Long id;
     @NotNull(message = "Моля въведете името на бизнеса!")
     private String businessName;
+    @Pattern(regexp = "^[a-zA-Z0-9\\s!@#$%^&*()-_=+]*$", message = "Името на бизнеса на английски трябва да бъде само с латински букви!")
+    private String englishBusinessName;
     @Pattern(regexp = "\\d{5,}", message = "Моля въведете поне 5 цифри за Ид.Номер - ЕИК!")
     private String idNumEIK;
     private boolean hasIdNumDDS;
     @NotNull(message = "Моля въведете адреса!")
     private String address;
+    @Pattern(regexp = "^[a-zA-Z0-9\\s!@#$%^&*()-_=+]*$", message = "Адреса на английски трябва да бъде само с латински букви!")
+    private String englishAddress;
     private String mol;
+    @Pattern(regexp = "^[a-zA-Z0-9\\s!@#$%^&*()-_=+]*$", message = "Името на МОЛ- на английски трябва да бъде само с латински букви!")
+    private String englishMol;
 
     // I did the fiend String because otherwise it always gets value of FALSE from the html form and only this way i could fix it
     private String isBulgarianClient;

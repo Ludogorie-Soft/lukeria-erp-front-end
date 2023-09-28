@@ -2,17 +2,20 @@ package com.example.LukeriaFrontendApplication.controllers;
 
 import com.example.LukeriaFrontendApplication.config.*;
 import com.example.LukeriaFrontendApplication.dtos.*;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 @org.springframework.stereotype.Controller
@@ -28,8 +31,8 @@ public class InvoiceController {
     private final ProductClient productClient;
     private final InvoiceOrderProductClient invoiceOrderProductClient;
     private final OrderProductClient orderProductClient;
-    private static final String ORDERPRODUCT ="orderProductDTOS";
-    private static final String PACKAGE ="packageDTOS";
+    private static final String ORDERPRODUCT = "orderProductDTOS";
+    private static final String PACKAGE = "packageDTOS";
     private static final String REGEX = "[\\[\\]]";
 
     @GetMapping("/show/{id}")
@@ -50,8 +53,9 @@ public class InvoiceController {
         model.addAttribute(ORDERPRODUCT, orderProductDTOS);
         return "Query/show";
     }
+
     @GetMapping("/showId/{id}")
-    public String invoiceShow(@PathVariable(name = "id") Long id, Model model) {
+    public String invoiceShow(@PathVariable(name = "id") Long id, Model model, HttpSession session) {
         Long lastInvoiceNumber = invoiceClient.findLastInvoiceNumberStartingWith();
         List<OrderProductDTO> orderProductDTOS = queryClient.getOrderProductsByOrderId(id);
         List<PackageDTO> packageDTOS = packageClient.getAllPackages();
@@ -59,6 +63,19 @@ public class InvoiceController {
         OrderDTO orderDTO = orderClient.getOrderById(id);
         List<ProductDTO> productDTOS = productClient.getAllProducts();
         InvoiceDTO invoiceDTO = invoiceClient.getInvoiceById(id);
+        ClientDTO clientDTO =  clientClient.getClientById(orderDTO.getClientId());
+        if (invoiceDTO.getInvoiceNumber() >= 2000000000) {
+            session.setAttribute(SessionLocaleResolver.LOCALE_SESSION_ATTRIBUTE_NAME, new Locale("bg"));
+            model.addAttribute("clientName", clientDTO.getBusinessName());
+            model.addAttribute("clientAddress", clientDTO.getAddress());
+            model.addAttribute("clientMOL", clientDTO.getMol());
+        } else {
+            session.setAttribute(SessionLocaleResolver.LOCALE_SESSION_ATTRIBUTE_NAME, Locale.ENGLISH);
+            model.addAttribute("clientName", clientDTO.getEnglishBusinessName());
+            model.addAttribute("clientAddress", clientDTO.getEnglishAddress());
+            model.addAttribute("clientMOL", clientDTO.getEnglishMol());
+        }
+        model.addAttribute("InvoiceId", invoiceDTO.getInvoiceNumber());
         model.addAttribute("invoiceDTO", invoiceDTO);
         model.addAttribute("lastInvoiceNumber", lastInvoiceNumber);
         model.addAttribute("productDTOS", productDTOS);
@@ -70,12 +87,12 @@ public class InvoiceController {
     }
     @GetMapping("/showAllInvoices")
     public String showAllInvoices(Model model) {
-       List<InvoiceDTO>invoiceDTOS= invoiceClient.getAllInvoices();
+        List<InvoiceDTO> invoiceDTOS = invoiceClient.getAllInvoices();
         model.addAttribute("invoiceDTOS", invoiceDTOS);
         return "Invoice/showAllInvoices";
     }
 
-    @PostMapping("/submit")
+     @PostMapping("/submit")
     public ModelAndView submitInvoice(@RequestParam("paymentMethod") boolean paymentMethod,
                                       @RequestParam("dateInput") LocalDate paymentDateStr,
                                       @RequestParam("paymentAmount") BigDecimal paymentAmountStr,
@@ -102,11 +119,10 @@ public class InvoiceController {
         InvoiceDTO createdInvoice = invoiceClient.createInvoice(invoiceDTO);
         invoiceOrderProductConfigDTO.setInvoiceId(createdInvoice.getId());
         invoiceOrderProductConfigDTO.setOrderProductIds(orderProductIds);
-        invoiceOrderProductConfigDTO.setQuantityInputIntList( quantityInputIntList);
+        invoiceOrderProductConfigDTO.setQuantityInputIntList(quantityInputIntList);
         invoiceOrderProductConfigDTO.setPriceInputBigDecimalList(priceInputBigDecimalList);
         invoiceOrderProductClient.createInvoiceOrderProductWhitIdsList(invoiceOrderProductConfigDTO);
-        orderProductClient.findInvoiceOrderProductsByInvoiceId(createdInvoice.getId());
-        return new ModelAndView("redirect:/invoice/showId/"+(createdInvoice.getId()));
+        return new ModelAndView("redirect:/invoice/showId/" + (createdInvoice.getId()));
     }
 
     @GetMapping("/certificate/{id}")
