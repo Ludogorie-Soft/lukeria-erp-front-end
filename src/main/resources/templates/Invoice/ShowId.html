@@ -35,42 +35,43 @@
                         <div class="card-header">
                             <div class="container">
                                 <div class="text-container">
-                                    <strong class="underlined" th:text="ПОЛУЧАТЕЛ"></strong>
-                                    <h5><strong
-                                            th:text=" ${clientDTOS[orderDTO.clientId - 1].businessName}"></strong>
+                                    <strong class="underlined" th:text="#{label.receiver}"></strong>
+                                    <h5>
+                                        <strong th:text="${clientName}"></strong>
                                     </h5>
                                     <h5><strong
-                                            th:text="'Ид. номер: ' + ${clientDTOS[orderDTO.clientId - 1].idNumEIK}"></strong>
+                                            th:text="#{label.idNumber}+'  ' + ${clientDTOS[orderDTO.clientId - 1].idNumEIK}"></strong>
                                     </h5>
                                     <h5><strong th:if="${clientDTOS[orderDTO.clientId - 1].hasIdNumDDS}">
-                                        <span th:text="'Ид. номер по ДДС: BG' + ${clientDTOS[orderDTO.clientId - 1].idNumEIK}"></span>
+                                        <span th:text= "#{label.idNumberDDS} +'  '+ ' BG' + ${clientDTOS[orderDTO.clientId - 1].idNumEIK}"></span>
                                     </strong></h5>
-                                    <h5><strong
-                                            th:text="'Адрес: ' + ${clientDTOS[orderDTO.clientId - 1].address}"></strong>
+                                    <h5>
+                                        <strong th:text=" #{label.address}"></strong>
+                                        <strong th:text="${clientAddress}"></strong>
                                     </h5>
-                                    <h5><strong th:text="'МОЛ: ' + ${clientDTOS[orderDTO.clientId - 1].mol}"></strong>
+                                    <h5><strong th:text="#{label.MOL} +'  '+ ${clientMOL}"></strong>
                                     </h5>
                                 </div>
 
                                 <div class="text-container right">
-                                    <strong class="underlined" th:text="ДОСТАВЧИК"></strong>
-                                    <h5><strong th:text=" 'Лукерия ООД'"></strong></h5>
+                                    <strong class="underlined" th:text="#{label.supplier}"></strong>
+                                    <h5><strong th:text=" #{lukeria.name}"></strong></h5>
                                     <h5>
 
                                     </h5>
-                                    <h5><strong th:text="'Ид. номер: ' + '200418603'"></strong></h5>
+                                    <h5><strong th:text="#{label.idNumber} + '  ' + '200418603'"></strong></h5>
                                     <h5><strong>
-                                        <span th:text="'Ид. номер по ДДС: BG' + '200418603'"></span>
+                                        <span th:text="#{label.idNumberDDS} +'  ' +'BG'+ '200418603'"></span>
                                     </strong></h5>
-                                    <h5><strong th:text="'Адрес: ' + 'Промишлена Зона обл.Търговище 7700'"></strong>
+                                    <h5><strong th:text="#{label.address} +'  ' + #{lukeria.address}"></strong>
                                     </h5>
-                                    <h5><strong th:text="'МОЛ: ' +'Кадрия Фейзи Йълдъз'"></strong>
+                                    <h5><strong th:text="#{label.MOL}+'  ' + #{lukeria.MOL}"></strong>
                                     </h5>
                                 </div>
                             </div>
                             <div class="centered">
-                                <h2 th:text="'Фактура: ' + ${invoiceDTO.invoiceNumber}"></h2>
-                                <h2 th:text="'ДАТА: '+ ${invoiceDTO.invoiceDate}"></h2>
+                                <h2 th:text="#{title.invoice}+'  ' + ${invoiceDTO.invoiceNumber}"></h2>
+                                <h2 th:text="#{title.date} +'  '+ ${invoiceDTO.invoiceDate}"></h2>
                             </div>
                         </div>
                         <div class="card-body">
@@ -80,12 +81,12 @@
                                 <table class="table">
                                     <thead>
                                     <tr>
-                                        <th>ID</th>
-                                        <th>Наименувание</th>
-                                        <th>Количество</th>
-                                        <th>ЕД.Цена без ДДС</th>
-                                        <th>ДДС %</th>
-                                        <th>Стойност без ДДС</th>
+                                        <th th:text="#{label.id}"></th>
+                                        <th th:text="#{label.name}"></th>
+                                        <th th:text="#{label.quantity}"></th>
+                                        <th th:text="#{label.unitPriceWithoutVAT}"></th>
+                                        <th th:text="#{label.vatPercentage}"></th>
+                                        <th th:text="#{label.valueWithoutVAT}"></th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -94,12 +95,12 @@
                                         <td>
                                               <span th:each="packageDTO : ${packageDTOS}"
                                                     th:if="${packageDTO.id == orderProductDTO.packageId}"
-                                                    th:text="${packageDTO.name}"></span>
+                                                    th:text="${InvoiceId >= 2000000000 ? packageDTO.name : packageDTO.englishName}"></span>
                                         </td>
-                                        <td class="quantity-input" th:text="${orderProductDTO.number + ' БР'}">
+                                        <td class="quantity-input" th:text="${orderProductDTO.number } + #{label.num}">
                                         </td>
 
-                                        <td class="price-input" th:text="${orderProductDTO.sellingPrice}">
+                                        <td class="price-input" th:text="${InvoiceId >= 2000000000 ? orderProductDTO.sellingPrice : orderProductDTO.sellingPrice * 1.95583}"></td>
                                         </td>
                                         <td th:text="20"></td>
                                         <td>
@@ -107,7 +108,7 @@
                                                         th:each="productDTO : ${productDTOS}"
                                                         th:if="${productDTO.id == orderProductDTO.packageId}"
                                                         th:id="${'productValue-' + productDTO.id}"
-                                                        th:text="${productPrice * orderNumber}"></span>
+                                                        th:text="${InvoiceId >= 2000000000 ? productPrice * orderNumber : productPrice * orderNumber*1.95583}"></span>
                                         </td>
                                     </tr>
                                     <tr>
@@ -115,7 +116,7 @@
                                         <td></td>
                                         <td></td>
                                         <td></td>
-                                        <td>ДАНЪЧНА ОСНОВА (BGN):</td>
+                                        <td th:text = "#{label.taxBase}"></td>
                                         <td id="totalPrice"></td>
                                     </tr>
                                     <tr>
@@ -123,7 +124,7 @@
                                         <td></td>
                                         <td></td>
                                         <td></td>
-                                        <td>Стойност на ДДС (BGN):</td>
+                                        <td th:text = "#{label.valueOfVAT}"></td>
                                         <td id="vatValue"></td>
                                     </tr>
                                     <tr>
@@ -131,24 +132,22 @@
                                         <td></td>
                                         <td></td>
                                         <td></td>
-                                        <td>СУМА ЗА ПЛАЩАНЕ (BGN):</td>
+                                        <td th:text = "#{label.paymentAmount}"></td>
                                         <td id="paymentAmount"></td>
                                     </tr>
                                     </tbody>
                                 </table>
-                                <label>БАНКОВА СМЕТКА:
-                                    <strong>BG56 UNCR 7000 1523215088 УНИКРЕДИТ БУЛБАНК АД BIC:UNCRBGSF</strong>
-                                </label><br>
+                                <label th:text = "#{other.bankAccount} + '  '"></label>
+                                    <strong th:text = #{other.bankAccountNumber}></strong>
+                                <br>
 
-                                <label>Начин на плащане:
-                                    <span th:if="${invoiceDTO.isCashPayment}"><strong>Брой</strong> </span>
-                                    <span th:unless="${invoiceDTO.isCashPayment}"><strong>С Преводно Нареждане</strong></span>
-                                </label><br>
-                                <label>Дата на падеж: <strong><span
-                                        th:text="${#temporals.format(invoiceDTO.deadline, 'dd.MM.yyyy')}"></span></strong></label><br><br>
-                                <label>
-                                    <strong>СЪГЛАСНО ЧЛ. 7, АЛ. 1 ОТ ЗАКОНА ЗА СЧЕТОВОДСТВОТО, ЧЛ. 114 ОТ ЗДДС И ЧЛ.
-                                        78 ОТ ИИЗДДС, ПЕЧАТЪТ И ПОДПИСЪТ НЕ СА ЗАДЪЛЖИТЕЛЕН РЕКВИЗИТ</strong>
+                                <label th:text = "#{other.paymentMethod}"></label>
+                                    <span th:if="${invoiceDTO.isCashPayment}"><strong th:text = "#{other.paymentMethodNum}"></strong> </span>
+                                    <span th:unless="${invoiceDTO.isCashPayment}"><strong th:text = "#{other.paymentMehtodWithTranslationOrder}"></strong></span>
+                                <br>
+                                <label th:text = "#{other.maturityDate}">  </label>
+                                    <strong><span th:text="${#temporals.format(invoiceDTO.deadline, 'dd.MM.yyyy')}"></span></strong></label><br><br>
+                                    <strong th:text = "#{other.notice}"></strong>
                                 </label><br>
                             </div>
                         </div>
@@ -159,5 +158,28 @@
     </div>
 </div>
 </body>
-<script src="/js/invoiceId.js"></script>
+
 </html>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script src="/js/invoiceId.js"></script>
+<script>
+var invoiceId = [[${InvoiceId}]];
+    // JavaScript function to round a value to two decimal places
+    function roundValue(value) {
+        return Math.round(value * 100) / 100;
+    }
+
+    // Get the elements you need
+    var tdElement = document.querySelector('.price-input');
+
+    var sellingPrice = [[${sellingPrice}]];
+
+    // Calculate the value based on the condition
+    var calculatedValue = invoiceId >= 2000000000 ? sellingPrice : sellingPrice * 1.95583;
+
+    // Round the calculated value to two decimal places
+    var roundedValue = roundValue(calculatedValue);
+
+    // Set the rounded value as the text content of the <td> element
+    tdElement.textContent = roundedValue.toFixed(2);
+</script>

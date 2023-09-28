@@ -59,6 +59,7 @@
                                         <th>Снимка</th>
                                         <th>ID</th>
                                         <th>Име</th>
+                                        <th>Английско име</th>
                                         <th>Наличност</th>
                                         <th>Цена</th>
                                         <th>Кашон ID</th>
@@ -73,6 +74,7 @@
                                         </td>
                                         <td th:text="${package.id}"></td>
                                         <td th:text="${package.name}"></td>
+                                        <td th:text="${package.englishName}"></td>
                                         <td>
                                             <span th:text="${package.availableQuantity + ' Броя'}" th:class="${package.availableQuantity <= 20 ? 'red-cell' : (package.availableQuantity <= 100 ? 'yellow-cell' : '')}"></span>
                                         </td>

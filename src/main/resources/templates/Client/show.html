@@ -44,22 +44,28 @@
                   <tr>
                     <th>ID</th>
                     <th>Име на фирма</th>
+                    <th>Име на фирма - англ.ез.</th>
                     <th>Ид. Номер по ЕИК</th>
                     <th>Ид. Номер по ДДС</th>
                     <th>Адрес</th>
+                    <th>Адрес на англ.ез.</th>
                     <th>Български клиент</th>
                     <th>МОЛ</th>
+                    <th>МОЛ - англ.ез.</th>
                   </tr>
                   </thead>
                   <tbody>
                   <tr th:each="client : ${clients}" data-id="${client.id}" class="client-row">
                     <td th:text="${client.id}"></td>
                     <td th:text="${client.businessName}"></td>
+                    <td th:text="${client.englishBusinessName}"></td>
                     <td th:text="${client.idNumEIK}"></td>
                     <td th:text="${client.hasIdNumDDS ? 'BG' + client.idNumEIK : 'няма'}"></td>
                     <td th:text="${client.address}"></td>
+                    <td th:text="${client.englishAddress}"></td>
                     <td th:text="${client.isBulgarianClient ? 'ДА' : 'НЕ'}"></td>
                     <td th:text="${client.mol}"></td>
+                    <td th:text="${client.englishMol}"></td>
                     <td>
                       <form th:action="@{'/client/delete/' + ${client.id}}" method="post"
                             th:attr="onsubmit='return confirm(\'Сигурни ли сте, че искате да изтриете клинет с id: ' + ${client.id} + '?\');'">
