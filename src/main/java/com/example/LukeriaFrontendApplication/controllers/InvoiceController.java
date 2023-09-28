@@ -55,27 +55,14 @@ public class InvoiceController {
     }
 
     @GetMapping("/showId/{id}")
-    public String invoiceShow(@PathVariable(name = "id") Long id, Model model, HttpSession session) {
-        Long lastInvoiceNumber = invoiceClient.findLastInvoiceNumberStartingWith();
+    public String invoiceShow(@PathVariable(name = "id") Long id, Model model) {
         List<OrderProductDTO> orderProductDTOS = queryClient.getOrderProductsByOrderId(id);
         List<PackageDTO> packageDTOS = packageClient.getAllPackages();
         List<ClientDTO> clientDTOS = clientClient.getAllClients();
         OrderDTO orderDTO = orderClient.getOrderById(id);
         List<ProductDTO> productDTOS = productClient.getAllProducts();
         InvoiceDTO invoiceDTO = invoiceClient.getInvoiceById(id);
-        ClientDTO clientDTO =  clientClient.getClientById(orderDTO.getClientId());
-        if (invoiceDTO.getInvoiceNumber() >= 2000000000) {
-            session.setAttribute(SessionLocaleResolver.LOCALE_SESSION_ATTRIBUTE_NAME, new Locale("bg"));
-            model.addAttribute("clientName", clientDTO.getBusinessName());
-            model.addAttribute("clientAddress", clientDTO.getAddress());
-            model.addAttribute("clientMOL", clientDTO.getMol());
-        } else {
-            session.setAttribute(SessionLocaleResolver.LOCALE_SESSION_ATTRIBUTE_NAME, Locale.ENGLISH);
-            model.addAttribute("clientName", clientDTO.getEnglishBusinessName());
-            model.addAttribute("clientAddress", clientDTO.getEnglishAddress());
-            model.addAttribute("clientMOL", clientDTO.getEnglishMol());
-        }
-        model.addAttribute("InvoiceId", invoiceDTO.getInvoiceNumber());
+        Long lastInvoiceNumber = invoiceDTO.getInvoiceNumber();
         model.addAttribute("invoiceDTO", invoiceDTO);
         model.addAttribute("lastInvoiceNumber", lastInvoiceNumber);
         model.addAttribute("productDTOS", productDTOS);
@@ -96,31 +83,38 @@ public class InvoiceController {
     public ModelAndView submitInvoice(@RequestParam("paymentMethod") boolean paymentMethod,
                                       @RequestParam("dateInput") LocalDate paymentDateStr,
                                       @RequestParam("paymentAmount") BigDecimal paymentAmountStr,
-                                      @RequestParam("invoiceNumber") Long invoiceNumber,
+                                      @RequestParam("lastInvoiceNumber") Long invoiceNumber,
                                       @RequestParam("currentDate") String currentDate,
                                       @RequestParam("orderProductIds") List<Long> orderProductIds,
                                       @RequestParam("quantityInputList") List<String> quantityInput,
                                       @RequestParam("priceInputList") List<String> priceInputList) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
         LocalDate currentDateSte = LocalDate.parse(currentDate, formatter);
+
         List<Integer> quantityInputIntList = quantityInput.stream()
                 .map(s -> s.replaceAll(REGEX, ""))
                 .map(Integer::parseInt).toList();
+
         List<BigDecimal> priceInputBigDecimalList = priceInputList.stream()
                 .map(s -> s.replaceAll(REGEX, ""))
                 .map(BigDecimal::new).toList();
+
         InvoiceDTO invoiceDTO = new InvoiceDTO();
+
         invoiceDTO.setInvoiceNumber(invoiceNumber);
         invoiceDTO.setInvoiceDate(currentDateSte);
         invoiceDTO.setTotalPrice(paymentAmountStr);
         invoiceDTO.setDeadline(paymentDateStr);
         invoiceDTO.setCashPayment(paymentMethod);
+
         InvoiceOrderProductConfigDTO invoiceOrderProductConfigDTO = new InvoiceOrderProductConfigDTO();
         InvoiceDTO createdInvoice = invoiceClient.createInvoice(invoiceDTO);
+
         invoiceOrderProductConfigDTO.setInvoiceId(createdInvoice.getId());
         invoiceOrderProductConfigDTO.setOrderProductIds(orderProductIds);
         invoiceOrderProductConfigDTO.setQuantityInputIntList(quantityInputIntList);
         invoiceOrderProductConfigDTO.setPriceInputBigDecimalList(priceInputBigDecimalList);
+
         invoiceOrderProductClient.createInvoiceOrderProductWhitIdsList(invoiceOrderProductConfigDTO);
         return new ModelAndView("redirect:/invoice/showId/" + (createdInvoice.getId()));
     }
