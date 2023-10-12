@@ -38,11 +38,18 @@ public class ProductController {
         for (PackageDTO packageDTO : packages) {
             productPackageMap.put(packageDTO.getId(), packageDTO.getName());
         }
+        Map<Long, String> productPackageMapImages = new HashMap<>();
+        for (PackageDTO packageDTO : packages) {
+            if(packageDTO.getPhoto()!=null) {
+                productPackageMapImages.put(packageDTO.getId(), packageDTO.getPhoto());
+            }
+        }
         for (PackageDTO packageDTO : packages) {
             if (packageDTO.getPhoto() != null) {
                 imageService.getImage(packageDTO.getPhoto());
             }
         }
+        model.addAttribute("productPackageMapImages", productPackageMapImages);
         model.addAttribute("backendBaseUrl", backendBaseUrl);
         model.addAttribute("products", products);
         model.addAttribute("packages", packages);
