@@ -36,7 +36,7 @@
               </div>
               <div class="form-group">
                 <label for="englishName">Име на фирма на английски език:</label>
-                <input type="text" id="englishName" name="englishName"  pattern="[a-zA-Z0-9\s!@#$%^&*()-_=+]*"
+                <input type="text" id="englishName" name="englishName"  pattern="[a-zA-Z0-9\s!@#$%^&*()_+-=[{]};:'|,<.>?]*$"
                        title="Моля въведете името на фирмата на английски език с латински букви, цифри, интервали и специални символи!" required
                        th:field="${client.englishBusinessName}"/>
                 <div class="error-message"></div>
@@ -67,7 +67,8 @@
               </div>
               <div class="form-group">
                 <label for="englishAddress">Адрес на англсийски език:</label>
-                <input type="text" id="englishAddress" name="englishAddress"   pattern="[a-zA-Z0-9\s]*$"
+                <input type="text" id="englishAddress" name="englishAddress"   pattern="[a-zA-Z0-9\s!@#$%^&*()_+-=[{]};:'|,<.>?]*$"
+
                        title="Моля въведете името на адреса на английски език с латински букви!" required
                        th:field="${client.englishAddress}"/>
               </div>
@@ -90,7 +91,8 @@
               </div>
               <div class="form-group">
                 <label for="englishMol">МОЛ на английски език:</label>
-                <input type="text" id="englishMol" name="address"   pattern="[a-zA-Z0-9\s]*$"
+                <input type="text" id="englishMol" name="address"  pattern="[a-zA-Z0-9\s!@#$%^&*()_+-=[{]};:'|,<.>?]*$"
+
                        title="Моля въведете името на МОЛ-а на английски език с латински букви!" required
                        th:field="${client.englishMol}"/>
               </div>

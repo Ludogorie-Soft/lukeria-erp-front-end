@@ -11,13 +11,9 @@ public class MenuController {
     public String index(){
         return "index";
     }
-    @GetMapping("/login")
-    public String signin(){
-        return "login";
-    }
     @GetMapping("/register")
     public String register(){
-        return "register";
+        return "/register";
     }
     @GetMapping("/blank")
     public String blank(){
