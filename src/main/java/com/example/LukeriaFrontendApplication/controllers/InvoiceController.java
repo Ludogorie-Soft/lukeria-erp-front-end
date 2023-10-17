@@ -55,14 +55,25 @@ public class InvoiceController {
     }
 
     @GetMapping("/showId/{id}")
-    public String invoiceShow(@PathVariable(name = "id") Long id, Model model) {
+    public String invoiceShow(@PathVariable(name = "id") Long id, Model model, HttpSession session) {
+        Long lastInvoiceNumber = invoiceClient.findLastInvoiceNumberStartingWith();
         List<OrderProductDTO> orderProductDTOS = queryClient.getOrderProductsByOrderId(id);
         List<PackageDTO> packageDTOS = packageClient.getAllPackages();
         List<ClientDTO> clientDTOS = clientClient.getAllClients();
         OrderDTO orderDTO = orderClient.getOrderById(id);
         List<ProductDTO> productDTOS = productClient.getAllProducts();
         InvoiceDTO invoiceDTO = invoiceClient.getInvoiceById(id);
-        Long lastInvoiceNumber = invoiceDTO.getInvoiceNumber();
+        ClientDTO clientDTO = clientClient.getClientById(orderDTO.getClientId());
+        if (invoiceDTO.getInvoiceNumber() >= 2000000000) {
+            session.setAttribute(SessionLocaleResolver.LOCALE_SESSION_ATTRIBUTE_NAME, new Locale("bg"));
+            model.addAttribute("clientName", clientDTO.getBusinessName());
+            model.addAttribute("clientAddress", clientDTO.getAddress());
+        } else {
+            session.setAttribute(SessionLocaleResolver.LOCALE_SESSION_ATTRIBUTE_NAME, Locale.ENGLISH);
+            model.addAttribute("clientName", clientDTO.getEnglishBusinessName());
+            model.addAttribute("clientAddress", clientDTO.getEnglishAddress());
+        }
+        model.addAttribute("InvoiceId", id);
         model.addAttribute("invoiceDTO", invoiceDTO);
         model.addAttribute("lastInvoiceNumber", lastInvoiceNumber);
         model.addAttribute("productDTOS", productDTOS);
@@ -72,6 +83,7 @@ public class InvoiceController {
         model.addAttribute(ORDERPRODUCT, orderProductDTOS);
         return "Invoice/showId";
     }
+
     @GetMapping("/showAllInvoices")
     public String showAllInvoices(Model model) {
         List<InvoiceDTO> invoiceDTOS = invoiceClient.getAllInvoices();
@@ -79,7 +91,7 @@ public class InvoiceController {
         return "Invoice/showAllInvoices";
     }
 
-     @PostMapping("/submit")
+    @PostMapping("/submit")
     public ModelAndView submitInvoice(@RequestParam("paymentMethod") boolean paymentMethod,
                                       @RequestParam("dateInput") LocalDate paymentDateStr,
                                       @RequestParam("paymentAmount") BigDecimal paymentAmountStr,

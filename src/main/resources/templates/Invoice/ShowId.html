@@ -93,22 +93,27 @@
                                     <tr th:each="orderProductDTO : ${orderProductDTOS}">
                                         <td th:text="${orderProductDTO.id}"></td>
                                         <td>
-                                              <span th:each="packageDTO : ${packageDTOS}"
-                                                    th:if="${packageDTO.id == orderProductDTO.packageId}"
-                                                    th:text="${InvoiceId >= 2000000000 ? packageDTO.name : packageDTO.englishName}"></span>
+                                          <span th:each="packageDTO : ${packageDTOS}" th:if="${packageDTO.id == orderProductDTO.packageId}">
+                                          <span th:if="${invoiceDTO.invoiceNumber  >= 2000000000}" th:text="${packageDTO.name}"></span>
+                                         <span th:unless="${invoiceDTO.invoiceNumber  >= 2000000000}" th:text="${packageDTO.englishName}"></span>
+                                       </span>
                                         </td>
                                         <td class="quantity-input" th:text="${orderProductDTO.number } + #{label.num}">
                                         </td>
 
-                                        <td class="price-input" th:text="${InvoiceId >= 2000000000 ? orderProductDTO.sellingPrice : orderProductDTO.sellingPrice * 1.95583}"></td>
+                                        <td class="price-input">
+                                            <span th:if="${invoiceDTO.invoiceNumber >= 2000000000}" th:text="${orderProductDTO.sellingPrice}"></span>
+                                            <span th:if="${invoiceDTO.invoiceNumber < 2000000000}" th:text="${orderProductDTO.sellingPrice * 1.95583}"></span>
+                                        </td>
                                         </td>
                                         <td th:text="20"></td>
                                         <td>
-                                                  <span th:with="productPrice=${orderProductDTO.sellingPrice}, orderNumber=${orderProductDTO.number}"
-                                                        th:each="productDTO : ${productDTOS}"
-                                                        th:if="${productDTO.id == orderProductDTO.packageId}"
-                                                        th:id="${'productValue-' + productDTO.id}"
-                                                        th:text="${InvoiceId >= 2000000000 ? productPrice * orderNumber : productPrice * orderNumber*1.95583}"></span>
+                                            <span th:with="productPrice=${orderProductDTO.sellingPrice}, orderNumber=${orderProductDTO.number}"
+                                             th:each="productDTO : ${productDTOS}" th:if="${productDTO.id == orderProductDTO.packageId}"
+                                             th:id="${'productValue-' + productDTO.id}">
+                                             <span th:if="${invoiceDTO.invoiceNumber >= 2000000000}" th:text="${productPrice * orderNumber}"></span>
+                                             <span th:unless="${invoiceDTO.invoiceNumber >= 2000000000}" th:text="${productPrice * orderNumber * 1.95583}"></span>
+                                             </span>
                                         </td>
                                     </tr>
                                     <tr>
