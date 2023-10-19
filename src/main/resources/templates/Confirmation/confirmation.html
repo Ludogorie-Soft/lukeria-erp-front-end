@@ -28,6 +28,7 @@
                     <button id="printButton" class="btn btn-primary" onclick="printPage()">
                         Принтирай <i class="fas fa-print"></i>
                     </button>
+                    <h6 style="color:red;"> Цените се определят по курс на евро 1.95583</h6>
                     <div class="card custom-card-width-lg">
                         <center>
                             <img class="card-img-top" src="/img/photos/logo.png" alt="Logo" style="width: 250px; height: 220px; float: left;">
@@ -57,19 +58,17 @@
                                         <tbody>
                                         <tr th:each="orderProductDTO : ${orderProductDTOS}">
                                             <td th:text="${orderProductDTO.id}"></td>
-                                            <td th:text="${orderProductDTO.number}"></td>
                                             <td>
                                             <span th:each="packageDTO : ${packageDTOS}"
                                                   th:if="${packageDTO.id == orderProductDTO.packageId}"
                                                   th:text="${packageDTO.englishName}"></span>
                                             </td>
+                                            <td th:text="${orderProductDTO.number}"></td>
                                             <td>
-                                                <span th:each="packageDTO : ${packageDTOS}"
-                                                      th:text="${packageDTO.price} * 1.95583"></span>
+                                                <span th:text="${packageDTOS[orderProductDTO.packageId]?.price} * 1.95583 "></span >
                                             </td>
                                             <td>
-                                                <span th:each="packageDTO : ${packageDTOS}"
-                                                      th:text="${packageDTO.price * orderProductDTO.number} * 1.95583"></span>
+                                                <span th:text="${packageDTOS[orderProductDTO.packageId]?.price * orderProductDTO.number} * 1.95583"></span>
                                             </td>
                                         </tr>
                                         </tbody>
