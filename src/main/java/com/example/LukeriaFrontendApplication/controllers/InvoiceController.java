@@ -37,8 +37,15 @@ public class InvoiceController {
 
     @GetMapping("/show/{id}")
     public String invoiceCreateFromOrder(@PathVariable(name = "id") Long id, Model model) {
-        Long lastInvoiceNumber = invoiceClient.findLastInvoiceNumberStartingWith();
+        Long lastInvoiceNumber = 0L;
         List<OrderProductDTO> orderProductDTOS = queryClient.getOrderProductsByOrderId(id);
+        OrderDTO order = orderClient.getOrderById(orderProductDTOS.get(0).getOrderId());
+        ClientDTO client = clientClient.getClientById(order.getClientId()) ;
+        if(client.isBulgarianClient()){
+            lastInvoiceNumber = invoiceClient.findLastInvoiceNumberStartingWith();
+        } else{
+            lastInvoiceNumber = invoiceClient.findLastInvoiceNumberStartingWithOne();
+        }
         List<PackageDTO> packageDTOS = packageClient.getAllPackages();
         List<ClientDTO> clientDTOS = clientClient.getAllClients();
         OrderDTO orderDTO = orderClient.getOrderById(id);
@@ -60,7 +67,7 @@ public class InvoiceController {
         List<OrderProductDTO> orderProductDTOS = queryClient.getOrderProductsByOrderId(id);
         List<PackageDTO> packageDTOS = packageClient.getAllPackages();
         List<ClientDTO> clientDTOS = clientClient.getAllClients();
-        OrderDTO orderDTO = orderClient.getOrderById(id);
+        OrderDTO orderDTO = orderClient.getOrderById(orderProductDTOS.get(0).getOrderId());
         List<ProductDTO> productDTOS = productClient.getAllProducts();
         InvoiceDTO invoiceDTO = invoiceClient.getInvoiceById(id);
         ClientDTO clientDTO = clientClient.getClientById(orderDTO.getClientId());

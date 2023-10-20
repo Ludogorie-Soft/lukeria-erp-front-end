@@ -27,4 +27,6 @@ public interface InvoiceClient {
 
     @GetMapping("/number")
     Long findLastInvoiceNumberStartingWith();
+    @GetMapping("/number/abroad")
+    Long findLastInvoiceNumberStartingWithOne();
 }
