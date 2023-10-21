@@ -35,47 +35,91 @@
               <div class="text-center">
                 <a href="/material-order/all-materials" class="btn btn-warning">Провери налични Материали за Всички Поръчки</a>
               </div>
+
               <div class="card-body">
-                <div class="table-responsive">
-                  <table class="table">
-                  <thead>
-                  <tr>
-                    <th>Поръчка</th>
-                    <th>Клиент</th>
-                    <th>Дата на поръчка</th>
-                    <th>Виж повече</th>
-                  </tr>
-                  </thead>
-                  <tbody>
-                  <tr th:each="order, iter : ${orders}">
-                    <td th:text="${order.id}"></td>
-                    <td th:text="${clients[iter.index]?.businessName}"></td>
-                    <td th:text="${order.orderDate}"></td>
-                    <td><a th:href="@{/orderProduct/orderDetails/{orderId}(orderId=${order.id})}">Повече информация</a></td>
-                    <td>
-                      <form th:action="@{'/order/delete/' + ${order.id}}" method="post"
-                            th:attr="onsubmit='return confirm(\'Сигурни ли сте, че искате да изтриете поръчка с номер: ' + ${order.id} + '?\');'">
-                        <button type="submit" class="btn btn-danger">Изтрий</button>
-                      </form>
-                    </td>
-                    <td>
-                      <form th:action="@{'/order/editOrder/' + ${order.id}}" method="get">
-                        <button type="submit" class="btn btn-primary">Редактирай</button>
-                      </form>
-                    </td>
-                    <td th:if="${!order.invoiced}">
-                      <form th:action="@{'/material-order/materials/' + ${order.id}}" method="get">
-                        <button type="submit" class="btn btn-warning">Провери налични Материали</button>
-                      </form>
-                    </td>
-                    <td th:if="${!order.invoiced}">
-                      <form th:action="@{'/invoice/show/' + ${order.id}}" method="get">
-                        <button type="submit" class="btn btn-primary"> Фактуриране на тази поръчка </button>
-                      </form>
-                    </td>
-                  </tr>
-                  </tbody>
-                </table>
+                <h6 class="card-title mb-0">Актични поръчки</h6>
+                  <div class="table-responsive">
+                    <table class="table">
+                      <thead>
+                      <tr>
+                        <th>Поръчка</th>
+                        <th>Клиент</th>
+                        <th>Дата на поръчка</th>
+                        <th>Виж повече</th>
+                      </tr>
+                      </thead>
+                      <tbody>
+                      <tr th:each="order : ${orders}" th:if="${!order.invoiced}">
+                        <td th:text="${order.id}"></td>
+                        <td th:text="${clients[__${orderStat.index}__]?.businessName}"></td>
+                        <td th:text="${order.orderDate}"></td>
+                        <td><a th:href="@{/orderProduct/orderDetails/{orderId}(orderId=${order.id})}">Повече информация</a></td>
+                        <td>
+                          <form th:action="@{'/order/delete/' + ${order.id}}" method="post" th:attr="onsubmit='return confirm(\'Сигурни ли сте, че искате да изтриете поръчка с номер: ' + ${order.id} + '?\');'">
+                            <button type="submit" class="btn btn-danger">Изтрий</button>
+                          </form>
+                        </td>
+                        <td>
+                          <form th:action="@{'/order/editOrder/' + ${order.id}}" method="get">
+                            <button type="submit" class="btn btn-primary">Редактирай</button>
+                          </form>
+                        </td>
+                        <td>
+                          <form th:action="@{'/material-order/materials/' + ${order.id}}" method="get">
+                            <button type="submit" class="btn btn-warning">Провери налични Материали</button>
+                          </form>
+                        </td>
+                        <td>
+                          <form th:action="@{'/invoice/show/' + ${order.id}}" method="get">
+                            <button type="submit" class="btn btn-primary"> Фактуриране на тази поръчка </button>
+                          </form>
+                        </td>
+                      </tr>
+                      </tbody>
+                    </table>
+                    <br><br>
+                    <h6 class="card-title mb-0">Доставени поръчки</h6>
+                    <div class="table-responsive">
+                      <table class="table">
+                        <thead>
+                        <tr>
+                          <th>Поръчка</th>
+                          <th>Клиент</th>
+                          <th>Дата на поръчка</th>
+                          <th>Виж повече</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="order, iter : ${orders}" th:if="${order.invoiced}">
+                          <td th:text="${order.id}"></td>
+                          <td th:text="${clients[iter.index]?.businessName}"></td>
+                          <td th:text="${order.orderDate}"></td>
+                          <td><a th:href="@{/orderProduct/orderDetails/{orderId}(orderId=${order.id})}">Повече информация</a></td>
+                          <td th:if="${!order.invoiced}">
+                            <form th:action="@{'/order/delete/' + ${order.id}}" method="post"
+                                  th:attr="onsubmit='return confirm(\'Сигурни ли сте, че искате да изтриете поръчка с номер: ' + ${order.id} + '?\');'">
+                              <button type="submit" class="btn btn-danger">Изтрий</button>
+                            </form>
+                          </td>
+                          <td th:if="${!order.invoiced}">
+                            <form th:action="@{'/order/editOrder/' + ${order.id}}" method="get">
+                              <button type="submit" class="btn btn-primary">Редактирай</button>
+                            </form>
+                          </td>
+                          <td th:if="${!order.invoiced}">
+                            <form th:action="@{'/material-order/materials/' + ${order.id}}" method="get">
+                              <button type="submit" class="btn btn-warning">Провери налични Материали</button>
+                            </form>
+                          </td>
+                          <td th:if="${!order.invoiced}">
+                            <form th:action="@{'/invoice/show/' + ${order.id}}" method="get">
+                              <button type="submit" class="btn btn-primary"> Фактуриране на тази поръчка </button>
+                            </form>
+                          </td>
+                        </tr>
+                        </tbody>
+                      </table>
+                  </div>
               </div>
             </div>
           </div>

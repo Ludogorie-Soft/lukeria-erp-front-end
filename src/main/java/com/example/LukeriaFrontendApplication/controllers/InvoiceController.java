@@ -88,6 +88,8 @@ public class InvoiceController {
             model.addAttribute("clientName", clientDTO.getEnglishBusinessName());
             model.addAttribute("clientAddress", clientDTO.getEnglishAddress());
         }
+        orderDTO.setInvoiced(true);
+        orderClient.updateOrder(orderId, orderDTO);
         model.addAttribute("InvoiceId", id);
         model.addAttribute("invoiceDTO", invoiceDTO);
         model.addAttribute("lastInvoiceNumber", lastInvoiceNumber);

@@ -28,7 +28,7 @@
             <h5 class="card-title mb-0">Продукти на поръчката</h5>
             <br>
             <center>
-              <form th:action="@{'/orderProduct/addProductToExistingOrder/' + ${order.id}}" method="get">
+              <form th:if="${!order.invoiced}" th:action="@{'/orderProduct/addProductToExistingOrder/' + ${order.id}}" method="get">
                 <button type="submit" class="btn btn-primary">Добави продукт към поръчка</button>
               </form>
             </center>
