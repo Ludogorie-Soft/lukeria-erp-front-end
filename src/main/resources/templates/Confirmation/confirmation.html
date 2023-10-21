@@ -65,10 +65,10 @@
                                             </td>
                                             <td th:text="${orderProductDTO.number}"></td>
                                             <td>
-                                                <span th:text="${packageDTOS[orderProductDTO.packageId]?.price} * 1.95583 "></span >
+                                                <span th:text="${packageDTOS[orderProductDTO.packageId-1]?.price} * 1.95583 "></span >
                                             </td>
                                             <td>
-                                                <span th:text="${packageDTOS[orderProductDTO.packageId]?.price * orderProductDTO.number} * 1.95583"></span>
+                                                <span th:text="${packageDTOS[orderProductDTO.packageId-1]?.price * orderProductDTO.number} * 1.95583"></span>
                                             </td>
                                         </tr>
                                         </tbody>

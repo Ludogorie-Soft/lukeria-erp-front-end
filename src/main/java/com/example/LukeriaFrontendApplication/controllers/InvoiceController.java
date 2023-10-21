@@ -64,10 +64,18 @@ public class InvoiceController {
     @GetMapping("/showId/{id}")
     public String invoiceShow(@PathVariable(name = "id") Long id, Model model, HttpSession session) {
         Long lastInvoiceNumber = invoiceClient.findLastInvoiceNumberStartingWith();
-        List<OrderProductDTO> orderProductDTOS = queryClient.getOrderProductsByOrderId(id);
+        Long orderId = 0L;
+        for (InvoiceOrderProductDTO invoiceOrderProductDTO: invoiceOrderProductClient.getAllInvoiceOrderProduct()) {
+            if(invoiceOrderProductDTO.getInvoiceId() == id){
+                OrderProductDTO orderProductDTO = orderProductClient.getOrderProductById(invoiceOrderProductDTO.getOrderProductId());
+                orderId = orderProductDTO.getOrderId();
+                break;
+            }
+        }
+        List<OrderProductDTO> orderProductDTOS = queryClient.getOrderProductsByOrderId(orderId);
         List<PackageDTO> packageDTOS = packageClient.getAllPackages();
         List<ClientDTO> clientDTOS = clientClient.getAllClients();
-        OrderDTO orderDTO = orderClient.getOrderById(orderProductDTOS.get(0).getOrderId());
+        OrderDTO orderDTO = orderClient.getOrderById(orderId);
         List<ProductDTO> productDTOS = productClient.getAllProducts();
         InvoiceDTO invoiceDTO = invoiceClient.getInvoiceById(id);
         ClientDTO clientDTO = clientClient.getClientById(orderDTO.getClientId());
