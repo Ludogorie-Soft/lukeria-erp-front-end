@@ -7,6 +7,16 @@
     <title> Confirmations </title>
     <link href="/css/show.css" rel="stylesheet">
 </head>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const navbar = document.getElementById("sidebar");
+    console.log(navbar);
+    const toggler = document.querySelector("a.sidebar-toggle");
+    toggler.addEventListener("click", () => {
+    navbar.classList.toggle("collapsed");
+    });
+});
+</script>
 <body>
 <div class="wrapper">
     <!--    HEADER  -->
@@ -21,7 +31,7 @@
         </nav>
         <main class="content">
             <div class="row">
-                <div class="col-lg-3 mx-auto">
+                <div class="col-lg-4 mx-auto">
                     <div class="card custom-card-width-lg">
                         <div class="card-header">
                             <h5 class="card-title mb-0">Confirmations</h5>
