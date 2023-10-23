@@ -105,17 +105,17 @@ document.addEventListener("DOMContentLoaded", function() {
                                         <td th:text="${order.receivedQuantity}"></td>
                                         <td th:text="${order.materialPrice}"></td>
                                         <td th:text="${order.arrivalDate}"></td>
-<!--                                        <td>-->
-<!--                                            <form th:action="@{'/material-order/delete/' + ${order.id}}" method="post"-->
-<!--                                                  th:attr="onsubmit='return confirm(\'Сигурни ли сте, че искате да изтриете поръчка с номер: ' + ${order.id} + '?\');'">-->
-<!--                                                <button type="submit" class="btn btn-danger">Изтрий</button>-->
-<!--                                            </form>-->
-<!--                                        </td>-->
-<!--                                        <td>-->
-<!--                                            <form th:action="@{'/material-order/edit/' + ${order.id}}" method="get">-->
-<!--                                                <button type="submit" class="btn btn-primary">Редактирай</button>-->
-<!--                                            </form>-->
-<!--                                        </td>-->
+                                        <td>
+                                            <form th:action="@{'/material-order/delete/' + ${order.id}}" method="post"
+                                                  th:attr="onsubmit='return confirm(\'Сигурни ли сте, че искате да изтриете поръчка с номер: ' + ${order.id} + '?\');'">
+                                                <button type="submit" class="btn btn-danger">Изтрий</button>
+                                            </form>
+                                        </td>
+                                        <td>
+                                            <form th:action="@{'/material-order/edit/' + ${order.id}}" method="get">
+                                                <button type="submit" class="btn btn-primary">Редактирай</button>
+                                            </form>
+                                        </td>
                                     </tr>
                                     </tbody>
                                 </table>

@@ -112,11 +112,10 @@ document.addEventListener("DOMContentLoaded", function() {
                                         </td>
 
                                         <td>
-                                            <label>
-                                                <input type="number" step="0.01" class="price-input"
-                                                       th:value="${productDTOS[__${orderProductDTO.packageId - 1}__].price}"
-                                                       id="priceInput" name="priceInput">
-                                            </label>
+                                            //-2 ???????
+                                            <input type="number" step="0.01" class="price-input"
+                                                   th:value="${productDTOS[__${orderProductDTO.packageId - 2}__].price}"
+                                                   id="priceInput" name="priceInput">
                                         </td>
                                         <td th:text="20"></td>
                                         <td id="totalPriceNumber*Price">
