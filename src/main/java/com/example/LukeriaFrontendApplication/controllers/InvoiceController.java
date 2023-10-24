@@ -13,10 +13,7 @@ import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Objects;
+import java.util.*;
 
 @org.springframework.stereotype.Controller
 @RequiredArgsConstructor
@@ -106,6 +103,7 @@ public class InvoiceController {
     @GetMapping("/showAllInvoices")
     public String showAllInvoices(Model model) {
         List<InvoiceDTO> invoiceDTOS = invoiceClient.getAllInvoices();
+        Collections.reverse(invoiceDTOS);
         model.addAttribute("invoiceDTOS", invoiceDTOS);
         return "Invoice/showAllInvoices";
     }
@@ -194,6 +192,7 @@ public class InvoiceController {
     @GetMapping("/certificate/show")
     public String certificateShow(Model model) {
         List<InvoiceDTO> invoiceDTOS = invoiceClient.getAllInvoices();
+        Collections.reverse(invoiceDTOS);
         model.addAttribute("invoices", invoiceDTOS);
         return "Certificate/show";
     }
@@ -201,6 +200,7 @@ public class InvoiceController {
     @GetMapping("/confirmation/show")
     public String confirmationShow(Model model) {
         List<InvoiceDTO> invoiceDTOS = invoiceClient.getAllInvoices();
+        Collections.reverse(invoiceDTOS);
         model.addAttribute("invoices", invoiceDTOS);
         return "Confirmation/show";
     }

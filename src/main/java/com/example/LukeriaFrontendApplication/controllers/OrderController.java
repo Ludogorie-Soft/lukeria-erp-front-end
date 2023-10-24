@@ -10,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.Collections;
 import java.util.List;
 
 @org.springframework.stereotype.Controller
@@ -40,7 +41,9 @@ public class OrderController {
     public String index(Model model) {
         List<OrderDTO> orders = orderClient.getAllOrders();
         List<Long> clientIds = orders.stream().map(OrderDTO::getClientId).toList();
-        List<ClientDTO> clients = clientIds.stream().map(clientClient::getClientById).toList();
+        List<ClientDTO> clients = new java.util.ArrayList<>(clientIds.stream().map(clientClient::getClientById).toList());
+        Collections.reverse(orders);
+        Collections.reverse(clients);
         model.addAttribute("orders", orders);
         model.addAttribute("clients", clients);
         return "OrderProduct/show";

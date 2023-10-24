@@ -37,6 +37,10 @@ document.addEventListener("DOMContentLoaded", function() {
                             <h5 class="card-title mb-0">Confirmations</h5>
                         </div>
                         <div class="card-body">
+                            <div class="row mb-3">
+                                    <input type="text" id="searchInput1" class="form-control" placeholder="Търсене по номер на потвърждение...">
+                                    <input type="text" id="searchInput2" class="form-control" placeholder="Търсене по дата на потвърждение...">
+                            </div>
                             <div class="table-responsive">
                                 <table class="table">
                                     <thead>
@@ -51,6 +55,12 @@ document.addEventListener("DOMContentLoaded", function() {
                                         <td>
                                             <a th:href="@{'/invoice/confirmation/' + ${invoice.id}}" th:text="${invoice.invoiceNumber} +' - ' + ${invoice.invoiceDate}"></a>
                                         </td>
+                                        <td style="display:none;">
+                                            <a th:text="${invoice.invoiceNumber}"></a>
+                                        </td>
+                                        <td style="display:none;">
+                                            <a th:text="${invoice.invoiceDate}"></a>
+                                        </td>
                                     </tr>
                                     </tbody>
                                 </table>
@@ -63,5 +73,47 @@ document.addEventListener("DOMContentLoaded", function() {
     </div>
 </div>
 <script src="/js/app.js"></script>
+<script>
+    document.getElementById('searchInput1').addEventListener('input', function () {
+        var input, filter, table, tr, td, i, txtValue;
+        input = document.getElementById('searchInput1');
+        filter = input.value.toUpperCase();
+        table = document.querySelector('table');
+        tr = table.getElementsByTagName('tr');
+
+        for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName('td')[2]; //
+            if (td) {
+                txtValue = td.textContent || td.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = '';
+                } else {
+                    tr[i].style.display = 'none';
+                }
+            }
+        }
+    });
+</script>
+<script>
+    document.getElementById('searchInput2').addEventListener('input', function () {
+        var input, filter, table, tr, td, i, txtValue;
+        input = document.getElementById('searchInput2');
+        filter = input.value.toUpperCase();
+        table = document.querySelector('table');
+        tr = table.getElementsByTagName('tr');
+
+        for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName('td')[3]; //
+            if (td) {
+                txtValue = td.textContent || td.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = '';
+                } else {
+                    tr[i].style.display = 'none';
+                }
+            }
+        }
+    });
+</script>
 </body>
 </html>

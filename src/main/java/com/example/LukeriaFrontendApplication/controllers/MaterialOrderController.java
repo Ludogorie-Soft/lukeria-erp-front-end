@@ -14,6 +14,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.Collections;
 import java.util.List;
 
 @org.springframework.stereotype.Controller
@@ -44,6 +45,7 @@ public class MaterialOrderController {
     @GetMapping("/show")
     public String index(Model model) {
         List<MaterialOrderDTO> materialOrderDTOS = materialOrderClient.getAllMaterialOrders();
+        Collections.reverse(materialOrderDTOS);
         model.addAttribute(ORDERTXT, materialOrderDTOS);
         return MATERIALSORDERSHOW;
     }
