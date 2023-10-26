@@ -3,6 +3,7 @@ package com.example.LukeriaFrontendApplication.config;
 import com.example.LukeriaFrontendApplication.dtos.ProductDTO;
 import jakarta.validation.Valid;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,4 +25,6 @@ public interface ProductClient {
 
     @DeleteMapping("/{id}")
     String deleteProductById(@PathVariable("id") Long id);
+    @PostMapping("/produce")
+    ResponseEntity<ProductDTO> produceProduct(@RequestParam("productId") Long productId, @RequestParam("producedQuantity") int producedQuantity);
 }

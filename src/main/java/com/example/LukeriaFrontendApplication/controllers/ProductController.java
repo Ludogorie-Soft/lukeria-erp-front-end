@@ -12,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,7 +41,7 @@ public class ProductController {
         }
         Map<Long, String> productPackageMapImages = new HashMap<>();
         for (PackageDTO packageDTO : packages) {
-            if(packageDTO.getPhoto()!=null) {
+            if (packageDTO.getPhoto() != null) {
                 productPackageMapImages.put(packageDTO.getId(), packageDTO.getPhoto());
             }
         }
@@ -90,6 +91,27 @@ public class ProductController {
     @PostMapping("/editSubmit/{id}")
     ModelAndView editPackage(@PathVariable(name = "id") Long id, ProductDTO productDTO) {
         productClient.updateProduct(id, productDTO);
+        return new ModelAndView(REDIRECTTXT);
+    }
+
+    @GetMapping("/produce")
+    public String produceProduct(Model model) {
+        List<ProductDTO> products = productClient.getAllProducts();
+        List<PackageDTO> packages = packageClient.getAllPackages();
+
+        Map<Long, String> productPackageMap = new HashMap<>();
+        for (PackageDTO packageDTO : packages) {
+            productPackageMap.put(packageDTO.getId(), packageDTO.getName());
+        }
+        model.addAttribute("products", products);
+        model.addAttribute("productPackageMap", productPackageMap);
+        return "Product/produce";
+    }
+
+    @PostMapping("/produce")
+    ModelAndView produceProduct(@RequestParam("productId") Long productId, @RequestParam("producedQuantity") int producedQuantity) {
+
+        productClient.produceProduct(productId, producedQuantity);
         return new ModelAndView(REDIRECTTXT);
     }
 }

@@ -26,7 +26,10 @@
                             <h5 class="card-title mb-0">Всички Потребители</h5>
                         </div>
                         <div class="text-center">
-                            <a href="/product/create" class="btn btn-primary">Добави Продукт</a>
+                            <a href="/product/create" class="btn btn-primary">Добави нов Продукт</a>
+                        </div><br>
+                        <div class="text-center">
+                            <a href="/product/produce" class="btn btn-warning">Добави производство на продукт</a>
                         </div>
                         <div class="card-body">
                             <div class="row mb-3">
@@ -84,5 +87,10 @@
     </div>
 </div>
 <script src="/js/app.js"></script>
+<script>
+$(document).ready(function() {
+$('#packageId').select2();
+});
+</script>
 </body>
 </html>
