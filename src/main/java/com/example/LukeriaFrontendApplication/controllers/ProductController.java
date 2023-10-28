@@ -104,8 +104,14 @@ public class ProductController {
         for (PackageDTO packageDTO : packages) {
             productPackageMap.put(packageDTO.getId(), packageDTO.getName());
         }
+        Map<Long, String> productPackageMapImages = new HashMap<>();
+        for (PackageDTO packageDTO : packages) {
+            productPackageMapImages.put(packageDTO.getId(), packageDTO.getPhoto());
+        }
         model.addAttribute("products", products);
+        model.addAttribute("backendBaseUrl", backendBaseUrl);
         model.addAttribute("productPackageMap", productPackageMap);
+        model.addAttribute("productPackageMapImages", productPackageMapImages);
         return "Product/produce";
     }
 
