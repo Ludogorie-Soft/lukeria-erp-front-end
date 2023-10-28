@@ -10,6 +10,7 @@ import com.example.LukeriaFrontendApplication.dtos.PackageDTO;
 import com.example.LukeriaFrontendApplication.dtos.PlateDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -26,6 +27,8 @@ public class MaterialOrderController {
     private final CartonClient cartonClient;
     private final PackageClient packageClient;
     private final PlateClient plateClient;
+    @Value("${backend.base-url}")
+    private String backendBaseUrl;
     private static final String ORDERTXT = "orders";
     private static final String PLATETXT = "plates";
     private static final String PACKAGETXT = "packages";
@@ -40,6 +43,7 @@ public class MaterialOrderController {
         model.addAttribute(PACKAGETXT, packageClient.getAllPackages());
         model.addAttribute(PLATETXT, plateClient.getAllPlates());
         model.addAttribute("order", materialOrderDTO);
+        model.addAttribute("backendBaseUrl", backendBaseUrl);
         return "MaterialOrder/create";
     }
     @GetMapping("/show")
@@ -91,7 +95,7 @@ public class MaterialOrderController {
     @PostMapping("/submit")
     public ModelAndView submitMaterialOrder(@ModelAttribute("order") MaterialOrderDTO materialOrderDTO) {
         materialOrderClient.createMaterialOrder(materialOrderDTO);
-        return new ModelAndView("redirect:/index");
+        return new ModelAndView(REDIRECTTXT);
     }
     @PostMapping("/delete/{id}")
     ModelAndView deleteMaterialOrderById(@PathVariable("id") Long id, Model model) {

@@ -62,6 +62,7 @@ public class ProductController {
     public String createProduct(Model model) {
         ProductDTO product = new ProductDTO();
         List<PackageDTO> packages = packageClient.getAllPackages();
+        model.addAttribute("backendBaseUrl", backendBaseUrl);
         model.addAttribute("packages", packages);
         model.addAttribute("product", product);
         return "Product/create";

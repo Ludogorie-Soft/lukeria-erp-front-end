@@ -72,8 +72,12 @@ document.addEventListener("DOMContentLoaded", function() {
                             </div>
                                 <div id="packageDropdown" style="display: none;">
                                     <label for="materialId">Кутии:</label>
-                                    <select class="js-example-basic-single" id="packageId" name="materialId">
-                                        <option th:each="package : ${packages}" th:value="${package.id}" th:text="${package.id} + ' - ' + ${package.name}"></option>
+                                    <select id="packageId" name="packageId" style="width: 100%;">
+                                        <option th:each="package : ${packages}" th:value="${package.id}"
+                                                th:data-image-url="@{${backendBaseUrl} + '/' + ${package.photo}}" >
+                                            <img th:src="@{'${backendBaseUrl}' + '/' + ${package.photo}}"  width="50" height="50">
+                                            <span th:text = "${package.name}"></span>
+                                        </option>
                                     </select>
                                 </div>
                             </div>
@@ -106,9 +110,6 @@ document.addEventListener("DOMContentLoaded", function() {
     </script>
 
 <script>
-       $(document).ready(function() {
-           $('#packageId').select2();
-       });
 
        $(document).ready(function() {
            $('#materialId').select2();
@@ -118,5 +119,23 @@ document.addEventListener("DOMContentLoaded", function() {
            $('#plateId').select2();
        });
    </script>
+<script>
+$(document).ready(function() {
+    $('#packageId').select2({
+        templateResult: formatState
+    });
+});
+
+function formatState(state) {
+    if (!state.id) {
+        return state.text;
+    }
+    var imageUrl = state.element.getAttribute('data-image-url');
+    var $state = $(
+        '<span><img src="' + imageUrl + '" width="50" height="50" /> ' + state.text + '</span>'
+    );
+    return $state;
+}
+</script>
 </body>
 </html>
