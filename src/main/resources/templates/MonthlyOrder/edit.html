@@ -33,22 +33,26 @@ document.addEventListener("DOMContentLoaded", function() {
       <div class="form-container">
         <div class="card custom-card-width-lg">
           <div class="card-header">
-            <h5 class="card-title mb-0">Редактирай поръчка</h5>
+            <h5 class="card-title mb-0">Редактирай месечна поръчка</h5>
           </div>
           <div class="card-body">
-            <form th:action="@{'/order/edit/' + ${order.id}}" method="get" th:object="${order}">
+            <form th:action="@{'/monthlyOrder/edit/' + ${order.id}}" method="get" th:object="${order}">
               <center>
-              <div class="form-group">
+                <div class="form-group">
 
-                <label for="clientId" style="width: 100%;">Клинети:</label>
-                <select id="clientId" name="clientId" style="width: 80%;" required>
-                  <option th:each="client : ${clients}" th:value="${client.id}" th:text="${client.businessName}"></option>
-                </select>
-              </div>
-              <div class="form-group">
-                  <label for="orderDate">Дата на поръчка:</label>
-                  <input type="date" name="orderDate" id="orderDate"  th:field="*{orderDate}" required>
-              </div>
+                  <label for="clientId" style="width: 100%;">Клинети:</label>
+                  <select id="clientId" name="clientId" style="width: 80%;" required>
+                    <option th:each="client : ${clients}" th:value="${client.id}" th:text="${client.businessName}"></option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="startDate">Дата на поръчка:</label>
+                  <input type="date" name="startDate" id="startDate"  th:field="*{startDate}" required>
+                </div>
+                <div class="form-group">
+                  <label for="endDate">Краен срок на поръчка:</label>
+                  <input type="date" name="endDate" id="endDate"  th:field="*{endDate}" required>
+                </div>
               </center>
               <div class="text-center">
                 <button type="submit" class="btn btn-primary">Запази</button>

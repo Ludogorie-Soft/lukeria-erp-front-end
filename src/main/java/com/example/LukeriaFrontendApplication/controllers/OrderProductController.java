@@ -94,6 +94,7 @@ public class OrderProductController {
         model.addAttribute("products", packageDTOList);
         model.addAttribute("order", orderDTO);
         model.addAttribute("packages", packageClient.getAllPackages());
+        model.addAttribute("backendBaseUrl", backendBaseUrl);
         model.addAttribute(CARTONTXT, orderProduct);
         return "OrderProduct/addProductToExistingOrder";
     }
