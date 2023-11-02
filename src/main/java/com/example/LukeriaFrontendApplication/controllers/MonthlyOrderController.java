@@ -23,7 +23,11 @@ public class MonthlyOrderController {
     private final MonthlyOrderClient monthlyOrderClient;
     private final MonthlyOrderProductClient monthlyOrderProductClient;
     private final PackageClient packageClient;
+    private final InvoiceClient invoiceClient;
+    private final InvoiceOrderProductClient invoiceOrderProductClient;
+    private final OrderProductClient orderProductClient;
     private final ClientClient clientClient;
+    private final OrderClient orderClient;
     private static final String ORDERTXT = "monthlyOrder";
     private static final String REDIRECTTXT = "redirect:/monthlyOrder/show";
     private final ImageClient imageService;
@@ -45,6 +49,7 @@ public class MonthlyOrderController {
         monthlyOrderClient.createMonthlyOrder(orderDTO);
         return new ModelAndView("redirect:/monthlyOrder/addProduct");
     }
+
     @GetMapping("/editOrder/{id}")
     String editMonthlyOrder(@PathVariable(name = "id") Long id, Model model) {
         MonthlyOrderDTO existingOrder = monthlyOrderClient.getMonthlyOrderById(id);
@@ -53,11 +58,13 @@ public class MonthlyOrderController {
         model.addAttribute("order", existingOrder);
         return "MonthlyOrder/edit";
     }
+
     @GetMapping("/edit/{id}")
     ModelAndView editOrder(@PathVariable(name = "id") Long id, MonthlyOrderDTO orderDTO) {
         monthlyOrderClient.updateMonthlyOrder(id, orderDTO);
         return new ModelAndView(REDIRECTTXT);
     }
+
     @GetMapping("/addProduct")
     String createMonthlyOrderProduct(Model model) {
         MonthlyOrderProductDTO orderProduct = new MonthlyOrderProductDTO();
@@ -73,9 +80,10 @@ public class MonthlyOrderController {
         model.addAttribute("orderProduct", orderProduct);
         return "MonthlyOrder/addProduct";
     }
+
     @PostMapping("/addProduct/submit")
     public ModelAndView submitMonthlyOrderProduct(@ModelAttribute("orderProduct") MonthlyOrderProductDTO monthlyOrderProductDTO,
-                                           @RequestParam(value = "addAnotherDish", required = false) boolean addAnotherDish, Model model) {
+                                                  @RequestParam(value = "addAnotherDish", required = false) boolean addAnotherDish, Model model) {
         monthlyOrderProductDTO.setMonthlyOrderId(monthlyOrderClient.findFirstByOrderByIdDesc().getId());
         monthlyOrderProductDTO.setSentQuantity(0);
         monthlyOrderProductClient.createMonthlyProductOrder(monthlyOrderProductDTO);
@@ -93,6 +101,7 @@ public class MonthlyOrderController {
         }
         return new ModelAndView(REDIRECTTXT);
     }
+
     @GetMapping("/addProductToExistingOrder/{orderId}")
     public String addProductToExistingOrder(@PathVariable("orderId") Long orderId, Model model) {
         MonthlyOrderProductDTO monthlyOrderProductDTO = new MonthlyOrderProductDTO();
@@ -108,6 +117,7 @@ public class MonthlyOrderController {
         model.addAttribute("backendBaseUrl", backendBaseUrl);
         return "MonthlyOrder/addProductToExistingOrder";
     }
+
     @PostMapping("/submitExistingOrder")
     public ModelAndView submitExistingOrderProduct(@ModelAttribute("orderProduct") MonthlyOrderProductDTO monthlyOrderProductDTO, Model model,
                                                    @RequestParam("orderId") Long orderId) {
@@ -116,6 +126,7 @@ public class MonthlyOrderController {
         monthlyOrderProductClient.createMonthlyProductOrder(monthlyOrderProductDTO);
         return new ModelAndView(REDIRECTTXT);
     }
+
     @GetMapping("/show")
     public String index(Model model) {
         List<MonthlyOrderDTO> orders = monthlyOrderClient.getAllMonthlyOrders();
@@ -132,8 +143,26 @@ public class MonthlyOrderController {
     public String orderDetails(@PathVariable("orderId") Long id, Model model) {
         MonthlyOrderDTO monthlyOrderDTO = monthlyOrderClient.getMonthlyOrderById(id);
         List<MonthlyOrderProductDTO> monthlyOrderProductDTOS = new ArrayList<>();
+        List<InvoiceOrderProductDTO> invoiceOrderProductDTOS = invoiceOrderProductClient.getAllInvoiceOrderProduct();
         for (MonthlyOrderProductDTO order : monthlyOrderProductClient.getAllMonthlyProductOrders()) {
             if (Objects.equals(order.getMonthlyOrderId(), id)) {
+                for (InvoiceOrderProductDTO invoiceOrderProductDTO1 : invoiceOrderProductDTOS) {
+                    InvoiceDTO invoiceDTO = invoiceClient.getInvoiceById(invoiceOrderProductDTO1.getInvoiceId());
+                    if ((invoiceDTO.getInvoiceDate().isBefore(monthlyOrderDTO.getEndDate()) || invoiceDTO.getInvoiceDate().equals(monthlyOrderDTO.getEndDate())) && (invoiceDTO.getInvoiceDate().isAfter(monthlyOrderDTO.getStartDate()) || invoiceDTO.getInvoiceDate().equals(monthlyOrderDTO.getStartDate()))) {
+                        Integer sent = 0;
+                        order.setSentQuantity(sent);
+                        System.out.println(monthlyOrderProductClient.getAllMonthlyProductOrders());
+                        for (OrderProductDTO orderProduct : orderProductClient.getAllOrderProducts()) {
+                            if (Objects.equals(orderClient.getOrderById(orderProduct.getOrderId()).getClientId(), monthlyOrderDTO.getClientId())) {
+                                if (Objects.equals(order.getPackageId(), orderProduct.getPackageId())) {
+                                    sent += orderProduct.getNumber();
+                                }
+                            }
+                        }
+                        order.setSentQuantity(order.getSentQuantity() + sent);
+                        monthlyOrderProductClient.updateMonthlyProductOrder(order.getId(), order);
+                    }
+                }
                 monthlyOrderProductDTOS.add(order);
             }
         }
@@ -143,6 +172,7 @@ public class MonthlyOrderController {
         model.addAttribute("orderProducts", monthlyOrderProductDTOS);
         model.addAttribute("products", packageDTOList);
         model.addAttribute("order", monthlyOrderDTO);
+        model.addAttribute("backendBaseUrl", backendBaseUrl);
         return "MonthlyOrder/orderDetails";
     }
 
@@ -151,6 +181,7 @@ public class MonthlyOrderController {
         monthlyOrderClient.deleteMonthlyOrder(id);
         return new ModelAndView(REDIRECTTXT);
     }
+
     @PostMapping("/deleteMonthlyOrderProduct/delete/{id}")
     ModelAndView deleteMonthlyOrderProduct(@PathVariable("id") Long id, Model model) {
         monthlyOrderProductClient.deleteMonthlyProductOrder(id);

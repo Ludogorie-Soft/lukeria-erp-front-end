@@ -65,6 +65,7 @@ public class OrderProductController {
             List<PackageDTO> packageDTOList = packageDTOIds.stream().map(packageClient::getPackageById).collect(Collectors.toList());
             model.addAttribute("orderProducts", orderProductDTOS);
             model.addAttribute("products", packageDTOList);
+            model.addAttribute("backendBaseUrl", backendBaseUrl);
             return new ModelAndView("OrderProduct/addProduct");
         }
         return new ModelAndView(REDIRECTTXT);
