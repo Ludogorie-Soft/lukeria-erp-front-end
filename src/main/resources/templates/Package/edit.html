@@ -20,7 +20,16 @@
     <link href="/js/app.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
-
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const navbar = document.getElementById("sidebar");
+    console.log(navbar);
+    const toggler = document.querySelector("a.sidebar-toggle");
+    toggler.addEventListener("click", () => {
+    navbar.classList.toggle("collapsed");
+    });
+});
+</script>
 <body>
 <div class="wrapper">
     <!--    HEADER  -->
@@ -49,7 +58,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="englishName">Име на английски език:</label>
-                                <input type="text" id="englishName" name="englishName"  pattern="[a-zA-Z0-9\s]*$"
+                                <input type="text" id="englishName" name="englishName"  pattern="[a-zA-Z0-9\s!@#$%^&*()_+-=[{]};:'|,<.>?]*$"
                                        title="Моля въведете името на опаковката на английски език с латински букви!"
                                        required th:field="*{englishName}" />
                                 <div class="error-message" th:if="${#fields.hasErrors('englishName')}" th:errors="*{englishName}"></div>

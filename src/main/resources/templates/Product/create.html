@@ -7,6 +7,16 @@
     <title>Продукти Лукерия</title>
     <link href="/css/form.css" rel="stylesheet">
 </head>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const navbar = document.getElementById("sidebar");
+    console.log(navbar);
+    const toggler = document.querySelector("a.sidebar-toggle");
+    toggler.addEventListener("click", () => {
+    navbar.classList.toggle("collapsed");
+    });
+});
+</script>
 <body>
 <div class="wrapper">
     <!--    HEADER  -->
@@ -30,6 +40,11 @@
                                 <div class="card-body">
                                     <form th:action="@{/product/submit}" method="post" th:object="${product}">
                                         <div class="form-group">
+                                            <label for="productCode">Код на продукта</label>
+                                            <input type="text" class="form-control" id="productCode" name="productCode" th:field="*{productCode}"
+                                                   th:value="${product.productCode}" minlength="2" maxlength="10">
+                                        </div>
+                                        <div class="form-group">
                                             <label for="price">Цена</label>
                                             <input type="number" class="form-control" id="price" name="price"
                                                    th:field="*{price}" required min="0" step="0.01" th:value="${product.price}">
@@ -37,8 +52,12 @@
                                         <div class="form-group" th:if="${packages}">
                                             <label for="packageId" style="width: 100%;">Кутия на Продукта:</label>
                                             <select id="packageId" name="packageId" style="width: 100%;">
-                                                <option th:each="package : ${packages}" th:value="${package.id}"
-                                                        th:text="${package.name}"></option>
+                                                    <option th:each="package : ${packages}" th:value="${package.id}"
+                                                            th:data-image-url="@{${backendBaseUrl} + '/' + ${package.photo}}" >
+                                                        <img th:src="@{'${backendBaseUrl}' + '/' + ${package.photo}}"  width="50" height="50">
+                                                        <span th:text = "${package.name}"></span>
+                                                    </option>
+                                                </select>
                                             </select>
                                         </div>
                                         <div class="form-group">
@@ -60,5 +79,23 @@
     </div>
 </div>
 <script src="/js/app.js"></script>
+<script>
+$(document).ready(function() {
+    $('#packageId').select2({
+        templateResult: formatState
+    });
+});
+
+function formatState(state) {
+    if (!state.id) {
+        return state.text;
+    }
+    var imageUrl = state.element.getAttribute('data-image-url');
+    var $state = $(
+        '<span><img src="' + imageUrl + '" width="50" height="50" /> ' + state.text + '</span>'
+    );
+    return $state;
+}
+</script>
 </body>
 </html>

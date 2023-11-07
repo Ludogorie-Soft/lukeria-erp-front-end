@@ -26,6 +26,6 @@ public interface OrderProductClient {
     String deleteOrderProductById(@PathVariable("id") Long id);
 
     @GetMapping("/lessening")
-    ResponseEntity<Boolean> findInvoiceOrderProductsByInvoiceId(@RequestParam Long invoiceId);
+    ResponseEntity<Boolean> findInvoiceOrderProductsByInvoiceIdLessening(@RequestParam Long invoiceId);
 
 }

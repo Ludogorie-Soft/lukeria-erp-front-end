@@ -7,6 +7,16 @@
     <title> Confirmation </title>
     <link href="/css/show.css" rel="stylesheet">
 </head>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const navbar = document.getElementById("sidebar");
+    console.log(navbar);
+    const toggler = document.querySelector("a.sidebar-toggle");
+    toggler.addEventListener("click", () => {
+    navbar.classList.toggle("collapsed");
+    });
+});
+</script>
 <body>
 <div class="wrapper">
     <!--    HEADER  -->
@@ -25,7 +35,10 @@
                     <button onclick="generatePDF()">
                         Свали PDF
                     </button>
-
+                    <button id="printButton" class="btn btn-primary" onclick="printPage()">
+                        Принтирай <i class="fas fa-print"></i>
+                    </button>
+                    <h6 style="color:red;"> Цените се определят по курс на евро 1.95583</h6>
                     <div class="card custom-card-width-lg">
                         <center>
                             <img class="card-img-top" src="/img/photos/logo.png" alt="Logo" style="width: 250px; height: 220px; float: left;">
@@ -36,10 +49,10 @@
                             </center>
                             <br>
                             <div class="card-body">
-                                <h5> Today:............... </span>.(date),      ……………………………………………………… (name), as ............. (position) of "DAMAK" GbR, GERMANY, 47800 Krefeld, EMIL
-                                    SCHAEFER STR.18, VAT № DE  181 791 338, accept goods on the invoice <span th:text="${invoiceNumber}"></span> / 23.06.2023 from ......................................
-                                    position – driver, with truck  ........ with reg plates № ,  ………………………… from “ LUKERIA “ LTD with Vat ID №: 200418603,
-                                    in the city Krefeld, Germany,as follows:	</h5>
+                                <h6> Today:............................(date),   ............................... (name), as ....................... (position) of ...........
+                                    ....................,accept goods on the invoice <span th:text="${invoiceNumber}"></span> / .............. from ...............................
+                                    position – driver, with truck  ............. with reg plates № , ....................... from “ LUKERIA “ LTD with Vat ID №: ....................,
+                                    in ..............................,as follows:	</h6>
                                 <br><br>
                                 <div class="table-responsive">
                                     <table class="table table-bordered">
@@ -55,19 +68,17 @@
                                         <tbody>
                                         <tr th:each="orderProductDTO : ${orderProductDTOS}">
                                             <td th:text="${orderProductDTO.id}"></td>
-                                            <td th:text="${orderProductDTO.number}"></td>
                                             <td>
                                             <span th:each="packageDTO : ${packageDTOS}"
                                                   th:if="${packageDTO.id == orderProductDTO.packageId}"
-                                                  th:text="${packageDTO.name}"></span>
+                                                  th:text="${packageDTO.englishName}"></span>
+                                            </td>
+                                            <td th:text="${orderProductDTO.number}"></td>
+                                            <td>
+                                                <span th:text="${packageDTOS[orderProductDTO.packageId-1]?.price} * 1.95583 "></span >
                                             </td>
                                             <td>
-                                                <span th:each="packageDTO : ${packageDTOS}"
-                                                      th:text="${packageDTO.price}"></span>
-                                            </td>
-                                            <td>
-                                                <span th:each="packageDTO : ${packageDTOS}"
-                                                      th:text="${packageDTO.price * orderProductDTO.number}"></span>
+                                                <span th:text="${packageDTOS[orderProductDTO.packageId-1]?.price * orderProductDTO.number} * 1.95583"></span>
                                             </td>
                                         </tr>
                                         </tbody>
@@ -127,6 +138,16 @@
         html2pdf().from(element).set(opt).save();
     }
 </script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+const printButton = document.getElementById("printButton");
 
+function printPage() {
+window.print();
+}
+
+printButton.addEventListener("click", printPage);
+});
+</script>
 </body>
 </html>

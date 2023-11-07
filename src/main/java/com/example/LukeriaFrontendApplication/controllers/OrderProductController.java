@@ -42,6 +42,7 @@ public class OrderProductController {
         List<OrderProductDTO> orderProductDTOS = orderProductClient.getAllOrderProducts().stream().filter(order -> Objects.equals(order.getOrderId(), orderDTO.getId())).toList();
         List<Long> packageDTOIds = orderProductDTOS.stream().map(OrderProductDTO::getPackageId).toList();
         List<PackageDTO> packageDTOList = packageDTOIds.stream().map(packageClient::getPackageById).collect(Collectors.toList());
+        model.addAttribute("backendBaseUrl", backendBaseUrl);
         model.addAttribute("orderProducts", orderProductDTOS);
         model.addAttribute("products", packageDTOList);
         model.addAttribute("order", orderDTO);
@@ -64,6 +65,7 @@ public class OrderProductController {
             List<PackageDTO> packageDTOList = packageDTOIds.stream().map(packageClient::getPackageById).collect(Collectors.toList());
             model.addAttribute("orderProducts", orderProductDTOS);
             model.addAttribute("products", packageDTOList);
+            model.addAttribute("backendBaseUrl", backendBaseUrl);
             return new ModelAndView("OrderProduct/addProduct");
         }
         return new ModelAndView(REDIRECTTXT);
@@ -93,6 +95,7 @@ public class OrderProductController {
         model.addAttribute("products", packageDTOList);
         model.addAttribute("order", orderDTO);
         model.addAttribute("packages", packageClient.getAllPackages());
+        model.addAttribute("backendBaseUrl", backendBaseUrl);
         model.addAttribute(CARTONTXT, orderProduct);
         return "OrderProduct/addProductToExistingOrder";
     }

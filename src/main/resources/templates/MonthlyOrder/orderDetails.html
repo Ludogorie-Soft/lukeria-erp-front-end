@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <!--    LINKS  -->
+    <th:block th:include="~{fragments/links}"></th:block>
+
+    <title> Поръчки </title>
+    <link href="/css/show.css" rel="stylesheet">
+</head>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const navbar = document.getElementById("sidebar");
+    console.log(navbar);
+    const toggler = document.querySelector("a.sidebar-toggle");
+    toggler.addEventListener("click", () => {
+    navbar.classList.toggle("collapsed");
+    });
+});
+</script>
+<body>
+<div class="wrapper">
+    <!--    HEADER  -->
+    <th:block th:include="~{fragments/header}"></th:block>
+
+
+    <div class="main">
+        <nav class="navbar navbar-expand navbar-light navbar-bg">
+            <a class="sidebar-toggle js-sidebar-toggle">
+                <i class="hamburger align-self-center"></i>
+            </a>
+        </nav>
+        <main class="content">
+            <div class="row">
+                <div class="col-lg-10 mx-auto">
+                    <div class="card custom-card-width-lg">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">Месечни поръчки</h5>
+                        </div>
+                        <div class="text-center">
+                            <form th:action="@{'/monthlyOrder/addProductToExistingOrder/' + ${order.id}}" method="get">
+                                <button type="submit" class="btn btn-primary">Добави продукт към поръчка</button>
+                            </form>
+                        </div>
+                        <div>
+                        </div>
+                        <div class="card-body">
+                            <h4 class="card-title mb-0"> Клиент: <span th:text = "${client.businessName}"></span></h4>
+                            <h4 class="card-title mb-0"> Срок на поръчка: <span th:text = "${order.startDate} + ' - ' + ${order.endDate}"></span></h4>
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                    <tr>
+                                        <th>Снимка</th>
+                                        <th>Продукт</th>
+                                        <th>Поръчан брой</th>
+                                        <th>Доставен брой</th>
+                                        <th>Остатък</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="orderProduct, iter : ${orderProducts}">
+                                        <td>
+                                            <img th:src="@{${backendBaseUrl} + '/'+ ${products[iter.index]?.photo}}" alt="no image" height="100" width="100">
+                                        </td>
+                                        <td th:text="${products[iter.index]?.name}"></td>
+                                        <td th:text="${orderProduct.orderedQuantity}"></td>
+                                        <td th:text="${orderProduct.sentQuantity}"></td>
+                                        <td th:text="${orderProduct.orderedQuantity - orderProduct.sentQuantity}"></td>
+                                        <td>
+                                            <form th:action="@{'/monthlyOrder/deleteMonthlyOrderProduct/delete/' + ${orderProduct.id}}" method="post" th:attr="onsubmit='return confirm(\'Сигурни ли сте, че искате да изтриете поръчка с номер: ' + ${order.id} + '?\');'">
+                                                <button type="submit" class="btn btn-danger">Изтрий</button>
+                                            </form>
+                                        </td>
+<!--                                        <td>-->
+<!--                                            <form th:action="@{'/order/editOrder/' + ${orderProduct.id}}" method="get">-->
+<!--                                                <button type="submit" class="btn btn-primary">Редактирай</button>-->
+<!--                                            </form>-->
+<!--                                        </td>-->
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+<script src="/js/app.js"></script>
+</body>
+</html>

@@ -12,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,11 +39,18 @@ public class ProductController {
         for (PackageDTO packageDTO : packages) {
             productPackageMap.put(packageDTO.getId(), packageDTO.getName());
         }
+        Map<Long, String> productPackageMapImages = new HashMap<>();
+        for (PackageDTO packageDTO : packages) {
+            if (packageDTO.getPhoto() != null) {
+                productPackageMapImages.put(packageDTO.getId(), packageDTO.getPhoto());
+            }
+        }
         for (PackageDTO packageDTO : packages) {
             if (packageDTO.getPhoto() != null) {
                 imageService.getImage(packageDTO.getPhoto());
             }
         }
+        model.addAttribute("productPackageMapImages", productPackageMapImages);
         model.addAttribute("backendBaseUrl", backendBaseUrl);
         model.addAttribute("products", products);
         model.addAttribute("packages", packages);
@@ -54,6 +62,7 @@ public class ProductController {
     public String createProduct(Model model) {
         ProductDTO product = new ProductDTO();
         List<PackageDTO> packages = packageClient.getAllPackages();
+        model.addAttribute("backendBaseUrl", backendBaseUrl);
         model.addAttribute("packages", packages);
         model.addAttribute("product", product);
         return "Product/create";
@@ -83,6 +92,33 @@ public class ProductController {
     @PostMapping("/editSubmit/{id}")
     ModelAndView editPackage(@PathVariable(name = "id") Long id, ProductDTO productDTO) {
         productClient.updateProduct(id, productDTO);
+        return new ModelAndView(REDIRECTTXT);
+    }
+
+    @GetMapping("/produce")
+    public String produceProduct(Model model) {
+        List<ProductDTO> products = productClient.getAllProducts();
+        List<PackageDTO> packages = packageClient.getAllPackages();
+
+        Map<Long, String> productPackageMap = new HashMap<>();
+        for (PackageDTO packageDTO : packages) {
+            productPackageMap.put(packageDTO.getId(), packageDTO.getName());
+        }
+        Map<Long, String> productPackageMapImages = new HashMap<>();
+        for (PackageDTO packageDTO : packages) {
+            productPackageMapImages.put(packageDTO.getId(), packageDTO.getPhoto());
+        }
+        model.addAttribute("products", products);
+        model.addAttribute("backendBaseUrl", backendBaseUrl);
+        model.addAttribute("productPackageMap", productPackageMap);
+        model.addAttribute("productPackageMapImages", productPackageMapImages);
+        return "Product/produce";
+    }
+
+    @PostMapping("/produce")
+    ModelAndView produceProduct(@RequestParam("productId") Long productId, @RequestParam("producedQuantity") int producedQuantity) {
+
+        productClient.produceProduct(productId, producedQuantity);
         return new ModelAndView(REDIRECTTXT);
     }
 }

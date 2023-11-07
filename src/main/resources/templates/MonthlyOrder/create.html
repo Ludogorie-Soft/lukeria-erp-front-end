@@ -33,24 +33,28 @@ document.addEventListener("DOMContentLoaded", function() {
             <div class="form-container">
                 <div class="card custom-card-width-lg">
                     <div class="card-header">
-                        <h5 class="card-title mb-0">Създай поръчка</h5>
+                        <h5 class="card-title mb-0">Създай месечна поръчка</h5>
                     </div>
                     <div class="card-body">
-                        <form action="/order/submit" method="post">
+                        <form action="/monthlyOrder/submit" method="post">
                             <center>
-                            <div class="form-group">
-                                <label for="clientId" style="width: 100%;">Клинети:</label>
-                                <select class="form-select" id="clientId" name="clientId" style="width: 80%;" required>
-                                    <option th:each="client : ${clients}" th:value="${client.id}" th:text="${client.businessName}"></option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                            <label for="orderDate">Дата на поръчка:</label>
-                            <input type="date" name="orderDate" id="orderDate"  th:field="${order.orderDate}" required>
-                            </div>
+                                <div class="form-group">
+                                    <label for="clientId" style="width: 100%;">Клинети:</label>
+                                    <select class="form-select" id="clientId" name="clientId" style="width: 80%;" required>
+                                        <option th:each="client : ${clients}" th:value="${client.id}" th:text="${client.businessName}"></option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="startDate">Дата на поръчка:</label>
+                                    <input type="date" name="startDate" id="startDate"  th:field="${monthlyOrder.startDate}" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="endDate">Краен срок на поръчка:</label>
+                                    <input type="date" name="endDate" id="endDate"  th:field="${monthlyOrder.endDate}" required>
+                                </div>
                             </center>
                             <div class="text-center">
-                                <button type="submit" class="btn btn-primary">Запази и добави продукти</button>
+                                <button type="submit" class="btn btn-primary">Запази</button>
                             </div>
                         </form>
                     </div>

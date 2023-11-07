@@ -7,6 +7,16 @@
     <title> Поръчки на материали </title>
     <link href="/css/show.css" rel="stylesheet">
 </head>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const navbar = document.getElementById("sidebar");
+    console.log(navbar);
+    const toggler = document.querySelector("a.sidebar-toggle");
+    toggler.addEventListener("click", () => {
+    navbar.classList.toggle("collapsed");
+    });
+});
+</script>
 <body>
 <div class="wrapper">
     <!--    HEADER  -->
@@ -19,7 +29,7 @@
         </nav>
         <main class="content">
                 <div class="row">
-                    <div class="col-lg-9 mx-auto">
+                    <div class="col-lg-11 mx-auto">
                         <div class="card custom-card-width-lg">
                             <div class="card-header">
                                 <h5 class="card-title mb-0">Всички поръчки на материали, които НЕ са доставени</h5>
@@ -39,7 +49,7 @@
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    <tr th:each="order : ${orders}" th:unless="${order.arrivalDate}">
+                                    <tr th:each="order : ${orders}" th:unless="${order.receivedQuantity}">
                                         <td th:text="${order.id}"></td>
                                         <td th:text="${order.materialId}"></td>
                                         <td>
@@ -83,7 +93,7 @@
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    <tr th:each="order : ${orders}" th:if="${order.arrivalDate}">
+                                    <tr th:each="order : ${orders}" th:if="${order.receivedQuantity}">
                                         <td th:text="${order.id}"></td>
                                         <td th:text="${order.materialId}"></td>
                                         <td>

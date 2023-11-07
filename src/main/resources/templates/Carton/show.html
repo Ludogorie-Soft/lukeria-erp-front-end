@@ -8,6 +8,16 @@
     <title> Кашони </title>
     <link href="/css/show.css" rel="stylesheet">
 </head>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const navbar = document.getElementById("sidebar");
+    console.log(navbar);
+    const toggler = document.querySelector("a.sidebar-toggle");
+    toggler.addEventListener("click", () => {
+    navbar.classList.toggle("collapsed");
+    });
+});
+</script>
 <style>
 .custom-card-width-lg {
 width: auto; /* Променете стойността на ширината, според вашите нужди */
@@ -38,7 +48,7 @@ margin: 0 auto; /* Опционално: Центриране на карта х
         </nav>
         <main class="content">
             <div class="row">
-                <div class="col-lg-8 mx-auto">
+                <div class="col-lg-11 mx-auto">
                     <div class="card custom-card-width-lg">
                         <div class="card-header">
                             <h5 class="card-title mb-0">Всички кашони</h5>
@@ -49,10 +59,7 @@ margin: 0 auto; /* Опционално: Центриране на карта х
                         <div class="card-body">
                             <div class="row mb-3">
                                 <div class="col">
-                                    <input type="text" id="searchInput1" class="form-control" placeholder="Търсене по номер ID...">
-                                </div>
-                                <div class="col">
-                                    <input type="text" id="searchInput" class="form-control" placeholder="Търсене по име...">
+                                    <input type="text" id="searchInput2" class="form-control" placeholder="Търсене по име">
                                 </div>
                             </div>
                             <div class="table-responsive">
@@ -102,5 +109,26 @@ margin: 0 auto; /* Опционално: Центриране на карта х
     </div>
 </div>
 <script src="js/app.js"></script>
+<script>
+    document.getElementById('searchInput2').addEventListener('input', function () {
+        var input, filter, table, tr, td, i, txtValue;
+        input = document.getElementById('searchInput2');
+        filter = input.value.toUpperCase();
+        table = document.querySelector('table');
+        tr = table.getElementsByTagName('tr');
+
+        for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName('td')[1];
+            if (td) {
+                txtValue = td.textContent || td.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = '';
+                } else {
+                    tr[i].style.display = 'none';
+                }
+            }
+        }
+    });
+</script>
 </body>
 </html>

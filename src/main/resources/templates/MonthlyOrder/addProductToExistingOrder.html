@@ -5,7 +5,7 @@
     <!--    LINKS  -->
     <th:block th:include="~{fragments/links}"></th:block>
 
-    <title> Добави продукти на поръчка </title>
+    <title> Добави продукти към месечна поръчка </title>
     <link href="/css/form.css" rel="stylesheet">
     <link href="/css/checkbox.css" rel="stylesheet">
 </head>
@@ -33,10 +33,11 @@ document.addEventListener("DOMContentLoaded", function() {
             <div class="form-container">
                 <div class="card custom-card-width-lg">
                     <div class="card-header">
-                        <h5 class="card-title mb-0">Добави продукти на поръчка</h5>
+                        <h5 class="card-title mb-0">Добави продукти към месечна поръчка</h5>
                     </div>
                     <div class="card-body">
-                        <form action="/orderProduct/submit" method="post">
+                        <form action="/monthlyOrder/submitExistingOrder" method="post">
+                            <input type="hidden" th:name="orderId" th:value="${order.id}" />
                             <div class="form-group">
                                 <p>Номер на поръчка: <span th:text="${order.id}"></span></p>
                             </div>
@@ -45,19 +46,14 @@ document.addEventListener("DOMContentLoaded", function() {
                                 <select class="form-select" size="6" aria-label="size 6 select example" id="packageId" name="packageId" style="width: 100%;" required>
                                     <option th:each="packageId : ${packages}" th:value="${packageId.id}"
                                             th:text="${packageId.id} + ' - ' +${packageId.name}"  th:data-image-url="@{${backendBaseUrl} + '/' + ${packageId.photo}}">
-                                    <img th:src="@{'${backendBaseUrl}' + '/' + ${package.photo}}"  width="50" height="50">
+                                        <img th:src="@{'${backendBaseUrl}' + '/' + ${package.photo}}"  width="50" height="50">
                                     </option>
                                 </select>
                             </div>
                             <div class="form-group">
                                 <label for="number" style="width: 100%;">Брой:</label>
-                                <input type="number" id="number"  th:field="${orderProduct.number}" name="number" required min="1">
+                                <input type="number" id="number"  th:field="${orderProduct.orderedQuantity}" name="number" required min="1">
                             </div>
-                            <div class="checkbox-wrapper-19">
-                                <label>Добави още продукти към поръчката: </label>
-                                <input id="addAnotherDish" type="checkbox" name="addAnotherDish">
-                                <label class="check-box" for="addAnotherDish">
-                                </label></div>
                             <div class="text-center">
                                 <button type="submit" class="btn btn-primary">Запази</button>
                             </div>
@@ -69,14 +65,14 @@ document.addEventListener("DOMContentLoaded", function() {
                             <tr>
                                 <th>Номер</th>
                                 <th>Име</th>
-                                <th>Брой</th><!-- Replace with the actual name of the third column -->
+                                <th>Брой</th>
                             </tr>
                             </thead>
                             <tbody>
                             <tr th:each="product, iter : ${products}">
                                 <td th:text="${product.id}"></td>
                                 <td th:text="${product.name}"></td>
-                                <td th:text="${orderProducts[iter.index]?.number}"></td>
+                                <td th:text="${orderProducts[iter.index]?.orderedQuantity}"></td>
                             </tr>
                             </tbody>
                         </table>

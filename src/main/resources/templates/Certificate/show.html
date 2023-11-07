@@ -8,6 +8,16 @@
     <link href="/css/show.css" rel="stylesheet">
 </head>
 <body>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const navbar = document.getElementById("sidebar");
+    console.log(navbar);
+    const toggler = document.querySelector("a.sidebar-toggle");
+    toggler.addEventListener("click", () => {
+    navbar.classList.toggle("collapsed");
+    });
+});
+</script>
 <div class="wrapper">
     <!--    HEADER  -->
     <th:block th:include="~{fragments/header}"></th:block>
@@ -21,12 +31,16 @@
         </nav>
         <main class="content">
             <div class="row">
-                <div class="col-lg-3 mx-auto">
+                <div class="col-lg-4 mx-auto">
                     <div class="card custom-card-width-lg">
                         <div class="card-header">
                             <h5 class="card-title mb-0">Всички сертификати</h5>
                         </div>
                         <div class="card-body">
+                            <div class="row mb-3">
+                                <input type="text" id="searchInput1" class="form-control" placeholder="Търсене по номер на сертификат...">
+                                <input type="text" id="searchInput2" class="form-control" placeholder="Търсене по дата на сертификат...">
+                            </div>
                             <div class="table-responsive">
                                 <table class="table">
                                     <thead>
@@ -41,6 +55,12 @@
                                         <td>
                                             <a th:href="@{'/invoice/certificate/' + ${invoice.id}}" th:text="${invoice.invoiceNumber} +' - ' + ${invoice.invoiceDate}"></a>
                                         </td>
+                                        <td style="display:none;">
+                                            <a th:text="${invoice.invoiceNumber}"></a>
+                                        </td>
+                                        <td style="display:none;">
+                                            <a th:text="${invoice.invoiceDate}"></a>
+                                        </td>
                                     </tr>
                                     </tbody>
                                 </table>
@@ -54,4 +74,46 @@
 </div>
 <script src="/js/app.js"></script>
 </body>
+<script>
+    document.getElementById('searchInput1').addEventListener('input', function () {
+        var input, filter, table, tr, td, i, txtValue;
+        input = document.getElementById('searchInput1');
+        filter = input.value.toUpperCase();
+        table = document.querySelector('table');
+        tr = table.getElementsByTagName('tr');
+
+        for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName('td')[2]; //
+            if (td) {
+                txtValue = td.textContent || td.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = '';
+                } else {
+                    tr[i].style.display = 'none';
+                }
+            }
+        }
+    });
+</script>
+<script>
+    document.getElementById('searchInput2').addEventListener('input', function () {
+        var input, filter, table, tr, td, i, txtValue;
+        input = document.getElementById('searchInput2');
+        filter = input.value.toUpperCase();
+        table = document.querySelector('table');
+        tr = table.getElementsByTagName('tr');
+
+        for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName('td')[3]; //
+            if (td) {
+                txtValue = td.textContent || td.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = '';
+                } else {
+                    tr[i].style.display = 'none';
+                }
+            }
+        }
+    });
+</script>
 </html>

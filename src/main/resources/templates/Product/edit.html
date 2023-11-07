@@ -7,6 +7,16 @@
     <title>Редактирай продукт</title>
     <link href="/css/form.css" rel="stylesheet">
 </head>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const navbar = document.getElementById("sidebar");
+    console.log(navbar);
+    const toggler = document.querySelector("a.sidebar-toggle");
+    toggler.addEventListener("click", () => {
+    navbar.classList.toggle("collapsed");
+    });
+});
+</script>
 <body>
 <div class="wrapper">
     <!-- HEADER -->
@@ -30,6 +40,11 @@
                                 <div class="card-body">
                                     <form th:action="@{/product/submit}" method="post" th:object="${product}">
                                         <input type="hidden" name="id" th:value="${product.id}" />
+                                        <div class="form-group">
+                                            <label for="productCode">Код на продукта</label>
+                                            <input type="text" class="form-control" id="productCode" name="productCode" th:field="*{productCode}"
+                                                   th:value="${product.productCode}" minlength="2" maxlength="10">
+                                        </div>
                                         <div class="form-group">
                                             <label for="price">Цена</label>
                                             <input type="number" class="form-control" id="price" name="price"
