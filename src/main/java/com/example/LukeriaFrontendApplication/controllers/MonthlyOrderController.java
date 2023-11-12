@@ -2,6 +2,7 @@ package com.example.LukeriaFrontendApplication.controllers;
 
 import com.example.LukeriaFrontendApplication.config.*;
 import com.example.LukeriaFrontendApplication.dtos.*;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -66,34 +67,40 @@ public class MonthlyOrderController {
     }
 
     @GetMapping("/addProduct")
-    String createMonthlyOrderProduct(Model model) {
+    String createMonthlyOrderProduct(Model model, HttpServletRequest request) {
+        String token = (String) request.getSession().getAttribute("sessionToken");
         MonthlyOrderProductDTO orderProduct = new MonthlyOrderProductDTO();
         MonthlyOrderDTO orderDTO = monthlyOrderClient.getMonthlyOrderById(monthlyOrderClient.findFirstByOrderByIdDesc().getId());
         List<MonthlyOrderProductDTO> orderProductDTOS = monthlyOrderProductClient.getAllMonthlyProductOrders().stream().filter(order -> Objects.equals(order.getMonthlyOrderId(), orderDTO.getId())).toList();
         List<Long> packageDTOIds = orderProductDTOS.stream().map(MonthlyOrderProductDTO::getPackageId).toList();
-        List<PackageDTO> packageDTOList = packageDTOIds.stream().map(packageClient::getPackageById).collect(Collectors.toList());
+        List<PackageDTO> packageDTOList = packageDTOIds.stream()
+                .map(id1 -> packageClient.getPackageById(id1, token))
+                .collect(Collectors.toList());
         model.addAttribute("backendBaseUrl", backendBaseUrl);
         model.addAttribute("orderProducts", orderProductDTOS);
         model.addAttribute("products", packageDTOList);
         model.addAttribute("order", orderDTO);
-        model.addAttribute("packages", packageClient.getAllPackages());
+        model.addAttribute("packages", packageClient.getAllPackages(token));
         model.addAttribute("orderProduct", orderProduct);
         return "MonthlyOrder/addProduct";
     }
 
     @PostMapping("/addProduct/submit")
     public ModelAndView submitMonthlyOrderProduct(@ModelAttribute("orderProduct") MonthlyOrderProductDTO monthlyOrderProductDTO,
-                                                  @RequestParam(value = "addAnotherDish", required = false) boolean addAnotherDish, Model model) {
+                                                  @RequestParam(value = "addAnotherDish", required = false) boolean addAnotherDish, Model model, HttpServletRequest request) {
+        String token = (String) request.getSession().getAttribute("sessionToken");
         monthlyOrderProductDTO.setMonthlyOrderId(monthlyOrderClient.findFirstByOrderByIdDesc().getId());
         monthlyOrderProductDTO.setSentQuantity(0);
         monthlyOrderProductClient.createMonthlyProductOrder(monthlyOrderProductDTO);
         if (addAnotherDish) {
             MonthlyOrderDTO monthlyOrderDTO = monthlyOrderClient.getMonthlyOrderById(monthlyOrderClient.findFirstByOrderByIdDesc().getId());
             model.addAttribute("order", monthlyOrderDTO);
-            model.addAttribute("packages", packageClient.getAllPackages());
+            model.addAttribute("packages", packageClient.getAllPackages(token));
             List<MonthlyOrderProductDTO> monthlyOrderProductDTOS = monthlyOrderProductClient.getAllMonthlyProductOrders().stream().filter(order -> Objects.equals(order.getMonthlyOrderId(), monthlyOrderDTO.getId())).toList();
             List<Long> packageDTOIds = monthlyOrderProductDTOS.stream().map(MonthlyOrderProductDTO::getPackageId).toList();
-            List<PackageDTO> packageDTOList = packageDTOIds.stream().map(packageClient::getPackageById).collect(Collectors.toList());
+            List<PackageDTO> packageDTOList = packageDTOIds.stream()
+                    .map(id1 -> packageClient.getPackageById(id1, token))
+                    .collect(Collectors.toList());
             model.addAttribute("orderProducts", monthlyOrderProductDTOS);
             model.addAttribute("products", packageDTOList);
             model.addAttribute("backendBaseUrl", backendBaseUrl);
@@ -103,16 +110,19 @@ public class MonthlyOrderController {
     }
 
     @GetMapping("/addProductToExistingOrder/{orderId}")
-    public String addProductToExistingOrder(@PathVariable("orderId") Long orderId, Model model) {
+    public String addProductToExistingOrder(@PathVariable("orderId") Long orderId, Model model, HttpServletRequest request) {
+        String token = (String) request.getSession().getAttribute("sessionToken");
         MonthlyOrderProductDTO monthlyOrderProductDTO = new MonthlyOrderProductDTO();
         MonthlyOrderDTO orderDTO = monthlyOrderClient.getMonthlyOrderById(orderId);
         List<MonthlyOrderProductDTO> monthlyOrderProductDTOS = monthlyOrderProductClient.getAllMonthlyProductOrders().stream().filter(order -> Objects.equals(order.getMonthlyOrderId(), orderDTO.getId())).toList();
         List<Long> packageDTOIds = monthlyOrderProductDTOS.stream().map(MonthlyOrderProductDTO::getPackageId).toList();
-        List<PackageDTO> packageDTOList = packageDTOIds.stream().map(packageClient::getPackageById).toList();
+        List<PackageDTO> packageDTOList = packageDTOIds.stream()
+                .map(id1 -> packageClient.getPackageById(id1, token))
+                .collect(Collectors.toList());
         model.addAttribute("orderProducts", monthlyOrderProductDTOS);
         model.addAttribute("products", packageDTOList);
         model.addAttribute("order", orderDTO);
-        model.addAttribute("packages", packageClient.getAllPackages());
+        model.addAttribute("packages", packageClient.getAllPackages(token));
         model.addAttribute("orderProduct", monthlyOrderProductDTO);
         model.addAttribute("backendBaseUrl", backendBaseUrl);
         return "MonthlyOrder/addProductToExistingOrder";
@@ -140,7 +150,8 @@ public class MonthlyOrderController {
     }
 
     @GetMapping("/orderDetails/{orderId}")
-    public String orderDetails(@PathVariable("orderId") Long id, Model model) {
+    public String orderDetails(@PathVariable("orderId") Long id, Model model, HttpServletRequest request) {
+        String token = (String) request.getSession().getAttribute("sessionToken");
         MonthlyOrderDTO monthlyOrderDTO = monthlyOrderClient.getMonthlyOrderById(id);
         List<MonthlyOrderProductDTO> monthlyOrderProductDTOS = new ArrayList<>();
         List<InvoiceOrderProductDTO> invoiceOrderProductDTOS = invoiceOrderProductClient.getAllInvoiceOrderProduct();
@@ -167,7 +178,9 @@ public class MonthlyOrderController {
             }
         }
         List<Long> packageDTOIds = monthlyOrderProductDTOS.stream().map(MonthlyOrderProductDTO::getPackageId).toList();
-        List<PackageDTO> packageDTOList = packageDTOIds.stream().map(packageClient::getPackageById).collect(Collectors.toList());
+        List<PackageDTO> packageDTOList = packageDTOIds.stream()
+                .map(id1 -> packageClient.getPackageById(id1, token))
+                .collect(Collectors.toList());
         model.addAttribute("client", clientClient.getClientById(monthlyOrderDTO.getClientId()));
         model.addAttribute("orderProducts", monthlyOrderProductDTOS);
         model.addAttribute("products", packageDTOList);

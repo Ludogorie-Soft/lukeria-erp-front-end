@@ -8,6 +8,7 @@ import com.example.LukeriaFrontendApplication.dtos.CartonDTO;
 import com.example.LukeriaFrontendApplication.dtos.MaterialOrderDTO;
 import com.example.LukeriaFrontendApplication.dtos.PackageDTO;
 import com.example.LukeriaFrontendApplication.dtos.PlateDTO;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -37,10 +38,11 @@ public class MaterialOrderController {
     private static final String MATERIALSORDERSHOW = "MaterialOrder/show";
 
     @GetMapping("/create")
-    String createMaterialOrder(Model model) {
+    String createMaterialOrder(Model model, HttpServletRequest request) {
+        String token = (String) request.getSession().getAttribute("sessionToken");
         MaterialOrderDTO materialOrderDTO = new MaterialOrderDTO();
         model.addAttribute(CARTONTXT, cartonClient.getAllCartons());
-        model.addAttribute(PACKAGETXT, packageClient.getAllPackages());
+        model.addAttribute(PACKAGETXT, packageClient.getAllPackages(token));
         model.addAttribute(PLATETXT, plateClient.getAllPlates());
         model.addAttribute("order", materialOrderDTO);
         model.addAttribute("backendBaseUrl", backendBaseUrl);
@@ -55,14 +57,15 @@ public class MaterialOrderController {
     }
 
     @GetMapping("/materials/{id}")
-    public String showMaterialForOrderId(@PathVariable("id") Long id,Model model) {
+    public String showMaterialForOrderId(@PathVariable("id") Long id,Model model, HttpServletRequest request) {
+        String token = (String) request.getSession().getAttribute("sessionToken");
         List<MaterialOrderDTO> materialsForOrder = materialOrderClient.getAllProductsByOrderId(id);
         if (materialsForOrder.isEmpty()) {
             model.addAttribute("materialAvailability",true);
             model.addAttribute("materialsForOrder",materialsForOrder);
             return MATERIALSORDERSHOW;
         }
-        List<PackageDTO> packages=packageClient.getAllPackages();
+        List<PackageDTO> packages=packageClient.getAllPackages(token);
         List<CartonDTO> cartons =cartonClient.getAllCartons();
         List<PlateDTO> plates=plateClient.getAllPlates();
 
@@ -74,14 +77,15 @@ public class MaterialOrderController {
     }
 
     @GetMapping("/all-materials")
-    public String showMaterialForAllOrders(Model model) {
+    public String showMaterialForAllOrders(Model model, HttpServletRequest request) {
+        String token = (String) request.getSession().getAttribute("sessionToken");
         List<MaterialOrderDTO> materialsForOrder = materialOrderClient.allAvailableProducts();
         if (materialsForOrder.isEmpty()) {
             model.addAttribute("materialAvailability",true);
             model.addAttribute("materialsForOrder",materialsForOrder);
             return MATERIALSORDERSHOW;
         }
-        List<PackageDTO> packages=packageClient.getAllPackages();
+        List<PackageDTO> packages=packageClient.getAllPackages(token);
         List<CartonDTO> cartons =cartonClient.getAllCartons();
         List<PlateDTO> plates=plateClient.getAllPlates();
 
@@ -103,10 +107,11 @@ public class MaterialOrderController {
         return new ModelAndView(REDIRECTTXT);
     }
     @GetMapping("/edit/{id}")
-    String editMaterialOrder(@PathVariable(name = "id") Long id, Model model) {
+    String editMaterialOrder(@PathVariable(name = "id") Long id, Model model, HttpServletRequest request) {
+        String token = (String) request.getSession().getAttribute("sessionToken");
         MaterialOrderDTO existingOrder = materialOrderClient.getMaterialOrderById(id);
         model.addAttribute(CARTONTXT, cartonClient.getAllCartons());
-        model.addAttribute(PACKAGETXT, packageClient.getAllPackages());
+        model.addAttribute(PACKAGETXT, packageClient.getAllPackages(token));
         model.addAttribute(PLATETXT, plateClient.getAllPlates());
         model.addAttribute("order", existingOrder);
         return "MaterialOrder/edit";
@@ -117,7 +122,8 @@ public class MaterialOrderController {
         return new ModelAndView(REDIRECTTXT);
     }
     @GetMapping("/material/{materialId}")
-    public String viewMaterial(@PathVariable Long materialId, @RequestParam("materialType") String materialType, Model model) {
+    public String viewMaterial(@PathVariable Long materialId, @RequestParam("materialType") String materialType, Model model, HttpServletRequest request) {
+        String token = (String) request.getSession().getAttribute("sessionToken");
         if(materialType.equals("CARTON")){
             model.addAttribute("material", cartonClient.getCartonById(materialId));
             model.addAttribute("type", "Кашон");
@@ -125,7 +131,7 @@ public class MaterialOrderController {
             model.addAttribute("material", plateClient.getPlateById(materialId));
             model.addAttribute("type", "Тарелка");
         } else{
-            model.addAttribute("material", packageClient.getPackageById(materialId));
+            model.addAttribute("material", packageClient.getPackageById(materialId, token));
             model.addAttribute("type", "Кутия");
         }
         return "MaterialOrder/material";

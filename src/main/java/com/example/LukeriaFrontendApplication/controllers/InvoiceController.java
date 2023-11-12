@@ -2,6 +2,7 @@ package com.example.LukeriaFrontendApplication.controllers;
 
 import com.example.LukeriaFrontendApplication.config.*;
 import com.example.LukeriaFrontendApplication.dtos.*;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,7 +34,9 @@ public class InvoiceController {
     private static final String REGEX = "[\\[\\]]";
 
     @GetMapping("/show/{id}")
-    public String invoiceCreateFromOrder(@PathVariable(name = "id") Long id, Model model) {
+    public String invoiceCreateFromOrder(@PathVariable(name = "id") Long id, Model model, HttpServletRequest request) {
+        String token = (String) request.getSession().getAttribute("sessionToken");
+        List<PackageDTO> packages = packageClient.getAllPackages(token);
         Long lastInvoiceNumber = 0L;
         List<OrderProductDTO> orderProductDTOS = queryClient.getOrderProductsByOrderId(id);
         OrderDTO order = orderClient.getOrderById(orderProductDTOS.get(0).getOrderId());
@@ -43,7 +46,7 @@ public class InvoiceController {
         } else{
             lastInvoiceNumber = invoiceClient.findLastInvoiceNumberStartingWithOne();
         }
-        List<PackageDTO> packageDTOS = packageClient.getAllPackages();
+        List<PackageDTO> packageDTOS = packageClient.getAllPackages(token);
         List<ClientDTO> clientDTOS = clientClient.getAllClients();
         OrderDTO orderDTO = orderClient.getOrderById(id);
         List<ProductDTO> productDTOS = productClient.getAllProducts();
@@ -59,7 +62,8 @@ public class InvoiceController {
     }
 
     @GetMapping("/showId/{id}")
-    public String invoiceShow(@PathVariable(name = "id") Long id, Model model, HttpSession session) {
+    public String invoiceShow(@PathVariable(name = "id") Long id, Model model, HttpSession session, HttpServletRequest request) {
+        String token = (String) request.getSession().getAttribute("sessionToken");
         Long lastInvoiceNumber = invoiceClient.findLastInvoiceNumberStartingWith();
         Long orderId = 0L;
         for (InvoiceOrderProductDTO invoiceOrderProductDTO: invoiceOrderProductClient.getAllInvoiceOrderProduct()) {
@@ -70,7 +74,7 @@ public class InvoiceController {
             }
         }
         List<OrderProductDTO> orderProductDTOS = queryClient.getOrderProductsByOrderId(orderId);
-        List<PackageDTO> packageDTOS = packageClient.getAllPackages();
+        List<PackageDTO> packageDTOS = packageClient.getAllPackages(token);
         List<ClientDTO> clientDTOS = clientClient.getAllClients();
         OrderDTO orderDTO = orderClient.getOrderById(orderId);
         List<ProductDTO> productDTOS = productClient.getAllProducts();
@@ -169,7 +173,9 @@ public class InvoiceController {
     }
 
     @GetMapping("/confirmation/{id}")
-    public String confirmation(@PathVariable(name = "id") Long id, Model model) {
+    public String confirmation(@PathVariable(name = "id") Long id, Model model, HttpServletRequest request) {
+        String token = (String) request.getSession().getAttribute("sessionToken");
+        List<PackageDTO> packages = packageClient.getAllPackages(token);
         InvoiceDTO invoiceDTO = invoiceClient.getInvoiceById(id);
         List<OrderProductDTO> orderProductDTOS = new ArrayList<>();
         for (InvoiceOrderProductDTO invoiceOrderProductDTO : invoiceOrderProductClient.getAllInvoiceOrderProduct()) {
@@ -180,7 +186,7 @@ public class InvoiceController {
         }
         List<PackageDTO> packageDTOS = new ArrayList<>();
         for (OrderProductDTO order : orderProductDTOS) {
-            packageDTOS.add(packageClient.getPackageById(order.getPackageId()));
+            packageDTOS.add(packageClient.getPackageById(order.getPackageId(), token));
         }
         model.addAttribute(PACKAGE, packageDTOS);
         model.addAttribute(ORDERPRODUCT, orderProductDTOS);

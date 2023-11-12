@@ -5,6 +5,7 @@ import com.example.LukeriaFrontendApplication.config.PackageClient;
 import com.example.LukeriaFrontendApplication.config.ProductClient;
 import com.example.LukeriaFrontendApplication.dtos.PackageDTO;
 import com.example.LukeriaFrontendApplication.dtos.ProductDTO;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,9 +32,10 @@ public class ProductController {
 
 
     @GetMapping("/show")
-    public String showAllProducts(Model model) {
+    public String showAllProducts(Model model, HttpServletRequest request) {
+        String token = (String) request.getSession().getAttribute("sessionToken");
         List<ProductDTO> products = productClient.getAllProducts();
-        List<PackageDTO> packages = packageClient.getAllPackages();
+        List<PackageDTO> packages = packageClient.getAllPackages(token);
 
         Map<Long, String> productPackageMap = new HashMap<>();
         for (PackageDTO packageDTO : packages) {
@@ -59,9 +61,10 @@ public class ProductController {
     }
 
     @GetMapping("/create")
-    public String createProduct(Model model) {
+    public String createProduct(Model model, HttpServletRequest request) {
+        String token = (String) request.getSession().getAttribute("sessionToken");
         ProductDTO product = new ProductDTO();
-        List<PackageDTO> packages = packageClient.getAllPackages();
+        List<PackageDTO> packages = packageClient.getAllPackages(token);
         model.addAttribute("backendBaseUrl", backendBaseUrl);
         model.addAttribute("packages", packages);
         model.addAttribute("product", product);
@@ -81,9 +84,10 @@ public class ProductController {
     }
 
     @GetMapping("/editProduct/{id}")
-    String editProduct(@PathVariable(name = "id") Long id, Model model) {
+    String editProduct(@PathVariable(name = "id") Long id, Model model, HttpServletRequest request) {
+        String token = (String) request.getSession().getAttribute("sessionToken");
         ProductDTO existingProduct = productClient.getProductById(id);
-        List<PackageDTO> packages = packageClient.getAllPackages();
+        List<PackageDTO> packages = packageClient.getAllPackages(token);
         model.addAttribute("packages", packages);
         model.addAttribute("product", existingProduct);
         return "Product/edit";
@@ -96,9 +100,10 @@ public class ProductController {
     }
 
     @GetMapping("/produce")
-    public String produceProduct(Model model) {
+    public String produceProduct(Model model, HttpServletRequest request) {
+        String token = (String) request.getSession().getAttribute("sessionToken");
         List<ProductDTO> products = productClient.getAllProducts();
-        List<PackageDTO> packages = packageClient.getAllPackages();
+        List<PackageDTO> packages = packageClient.getAllPackages(token);
 
         Map<Long, String> productPackageMap = new HashMap<>();
         for (PackageDTO packageDTO : packages) {

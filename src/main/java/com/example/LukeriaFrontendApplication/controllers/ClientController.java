@@ -2,6 +2,7 @@ package com.example.LukeriaFrontendApplication.controllers;
 
 import com.example.LukeriaFrontendApplication.config.ClientClient;
 import com.example.LukeriaFrontendApplication.dtos.ClientDTO;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ui.Model;
@@ -51,8 +52,10 @@ public class ClientController {
     }
 
     @PostMapping("/submit")
-    public ModelAndView submitClient(@ModelAttribute("client") ClientDTO clientDTO) {
-        clientClient.createClient(clientDTO);
+    public ModelAndView submitClient(@ModelAttribute("client") ClientDTO clientDTO, HttpServletRequest request) {
+        String token = (String) request.getSession().getAttribute("sessionToken");
+        System.out.println(clientDTO);
+        clientClient.createClient(clientDTO, token);
         return new ModelAndView(REDIRECTTXT);
     }
 

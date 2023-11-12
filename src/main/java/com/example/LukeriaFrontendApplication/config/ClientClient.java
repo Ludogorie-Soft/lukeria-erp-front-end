@@ -16,7 +16,7 @@ public interface ClientClient {
     ClientDTO getClientById(@PathVariable(name = "id") Long id);
 
     @PostMapping
-    ClientDTO createClient(@Valid @RequestBody ClientDTO clientDTO);
+    ClientDTO createClient(@Valid @RequestBody ClientDTO clientDTO, @RequestHeader("Authorization") String auth);
 
     @PutMapping("/{id}")
     void updateClient(@PathVariable("id") Long id, @Valid @RequestBody ClientDTO clientDTO) ;

@@ -7,6 +7,7 @@ import com.example.LukeriaFrontendApplication.config.PackageClient;
 import com.example.LukeriaFrontendApplication.dtos.OrderDTO;
 import com.example.LukeriaFrontendApplication.dtos.OrderProductDTO;
 import com.example.LukeriaFrontendApplication.dtos.PackageDTO;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -36,33 +37,39 @@ public class OrderProductController {
     private String backendBaseUrl;
 
     @GetMapping("/addProduct")
-    String createOrderProduct(Model model) {
+    String createOrderProduct(Model model, HttpServletRequest request) {
+        String token = (String) request.getSession().getAttribute("sessionToken");
         OrderProductDTO orderProduct = new OrderProductDTO();
         OrderDTO orderDTO = orderClient.getOrderById(orderClient.findFirstByOrderByIdDesc().getId());
         List<OrderProductDTO> orderProductDTOS = orderProductClient.getAllOrderProducts().stream().filter(order -> Objects.equals(order.getOrderId(), orderDTO.getId())).toList();
         List<Long> packageDTOIds = orderProductDTOS.stream().map(OrderProductDTO::getPackageId).toList();
-        List<PackageDTO> packageDTOList = packageDTOIds.stream().map(packageClient::getPackageById).collect(Collectors.toList());
+        List<PackageDTO> packageDTOList = packageDTOIds.stream()
+                .map(id1 -> packageClient.getPackageById(id1, token))
+                .collect(Collectors.toList());
         model.addAttribute("backendBaseUrl", backendBaseUrl);
         model.addAttribute("orderProducts", orderProductDTOS);
         model.addAttribute("products", packageDTOList);
         model.addAttribute("order", orderDTO);
-        model.addAttribute("packages", packageClient.getAllPackages());
+        model.addAttribute("packages", packageClient.getAllPackages(token));
         model.addAttribute(CARTONTXT, orderProduct);
         return "OrderProduct/addProduct";
     }
 
     @PostMapping("/submit")
     public ModelAndView submitOrderProduct(@ModelAttribute("orderProduct") OrderProductDTO orderProductDTO,
-                                           @RequestParam(value = "addAnotherDish", required = false) boolean addAnotherDish, Model model) {
+                                           @RequestParam(value = "addAnotherDish", required = false) boolean addAnotherDish, Model model, HttpServletRequest request) {
+        String token = (String) request.getSession().getAttribute("sessionToken");
         orderProductDTO.setOrderId(orderClient.findFirstByOrderByIdDesc().getId());
         orderProductClient.createOrderProduct(orderProductDTO);
         if (addAnotherDish) {
             OrderDTO orderDTO = orderClient.getOrderById(orderClient.findFirstByOrderByIdDesc().getId());
             model.addAttribute("order", orderDTO);
-            model.addAttribute("packages", packageClient.getAllPackages());
+            model.addAttribute("packages", packageClient.getAllPackages(token));
             List<OrderProductDTO> orderProductDTOS = orderProductClient.getAllOrderProducts().stream().filter(order -> Objects.equals(order.getOrderId(), orderDTO.getId())).toList();
             List<Long> packageDTOIds = orderProductDTOS.stream().map(OrderProductDTO::getPackageId).toList();
-            List<PackageDTO> packageDTOList = packageDTOIds.stream().map(packageClient::getPackageById).collect(Collectors.toList());
+            List<PackageDTO> packageDTOList = packageDTOIds.stream().map
+                            (id1 -> packageClient.getPackageById(id1, token))
+                    .collect(Collectors.toList());
             model.addAttribute("orderProducts", orderProductDTOS);
             model.addAttribute("products", packageDTOList);
             model.addAttribute("backendBaseUrl", backendBaseUrl);
@@ -72,29 +79,35 @@ public class OrderProductController {
     }
 
     @GetMapping("/orderDetails/{orderId}")
-    public String showOrderDetails(@PathVariable(name = "orderId") Long orderId, Model model) {
+    public String showOrderDetails(@PathVariable(name = "orderId") Long orderId, Model model, HttpServletRequest request) {
+        String token = (String) request.getSession().getAttribute("sessionToken");
         List<OrderProductDTO> orderProductDTOS = orderProductClient.getAllOrderProducts().stream().filter(order -> Objects.equals(order.getOrderId(), orderId)).toList();
         List<Long> packageDTOIds = orderProductDTOS.stream().map(OrderProductDTO::getPackageId).toList();
-        List<PackageDTO> packageDTOList = packageDTOIds.stream().map(packageClient::getPackageById).collect(Collectors.toList());
+        List<PackageDTO> packageDTOList = packageDTOIds.stream()
+                .map(id1 -> packageClient.getPackageById(id1, token))
+                .collect(Collectors.toList());
         model.addAttribute("backendBaseUrl", backendBaseUrl);
         model.addAttribute("order", orderClient.getOrderById(orderId));
         model.addAttribute("orderProducts", orderProductDTOS);
         model.addAttribute("products", packageDTOList);
-        model.addAttribute("packages", packageClient.getAllPackages());
+        model.addAttribute("packages", packageClient.getAllPackages(token));
         return "OrderProduct/orderDetails";
     }
 
     @GetMapping("/addProductToExistingOrder/{orderId}")
-    public String addProductToExistingOrder(@PathVariable("orderId") Long orderId, Model model) {
+    public String addProductToExistingOrder(@PathVariable("orderId") Long orderId, Model model, HttpServletRequest request) {
+        String token = (String) request.getSession().getAttribute("sessionToken");
         OrderProductDTO orderProduct = new OrderProductDTO();
         OrderDTO orderDTO = orderClient.getOrderById(orderId);
         List<OrderProductDTO> orderProductDTOS = orderProductClient.getAllOrderProducts().stream().filter(order -> Objects.equals(order.getOrderId(), orderDTO.getId())).toList();
         List<Long> packageDTOIds = orderProductDTOS.stream().map(OrderProductDTO::getPackageId).toList();
-        List<PackageDTO> packageDTOList = packageDTOIds.stream().map(packageClient::getPackageById).toList();
+        List<PackageDTO> packageDTOList = packageDTOIds.stream()
+                .map(id1 -> packageClient.getPackageById(id1, token))
+                .collect(Collectors.toList());
         model.addAttribute("orderProducts", orderProductDTOS);
         model.addAttribute("products", packageDTOList);
         model.addAttribute("order", orderDTO);
-        model.addAttribute("packages", packageClient.getAllPackages());
+        model.addAttribute("packages", packageClient.getAllPackages(token));
         model.addAttribute("backendBaseUrl", backendBaseUrl);
         model.addAttribute(CARTONTXT, orderProduct);
         return "OrderProduct/addProductToExistingOrder";

@@ -8,6 +8,7 @@ import com.example.LukeriaFrontendApplication.config.PlateClient;
 import com.example.LukeriaFrontendApplication.dtos.CartonDTO;
 import com.example.LukeriaFrontendApplication.dtos.PackageDTO;
 import com.example.LukeriaFrontendApplication.dtos.PlateDTO;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,8 +33,9 @@ public class PackageController {
     private static final String REDIRECTTXT = "redirect:/package/show";
 
     @GetMapping("/package/show")
-    public String showPackage(Model model) {
-        List<PackageDTO> packages = packageClient.getAllPackages();
+    public String showPackage(Model model, HttpServletRequest request) {
+        String token = (String) request.getSession().getAttribute("sessionToken");
+        List<PackageDTO> packages = packageClient.getAllPackages(token);
         for (PackageDTO aPackage : packages) {
             if (aPackage.getPhoto() != null) {
                 imageService.getImage(aPackage.getPhoto());
@@ -56,8 +58,10 @@ public class PackageController {
     }
 
     @PostMapping("/package/submit")
-    public ModelAndView submitPackage(@ModelAttribute("packageEntity") PackageDTO packageDTO, @RequestParam MultipartFile file) throws IOException {
-        packageClient.createPackage(packageDTO);
+    public ModelAndView submitPackage(@ModelAttribute("packageEntity") PackageDTO packageDTO, @RequestParam MultipartFile file, HttpServletRequest request) throws IOException {
+        String token = (String) request.getSession().getAttribute("sessionToken");
+        List<PackageDTO> packages = packageClient.getAllPackages(token);
+        packageClient.createPackage(packageDTO, token);
         if (!file.isEmpty()) {
             imageService.uploadImageForPackage(file);
         }
@@ -65,8 +69,10 @@ public class PackageController {
     }
 
     @GetMapping("/package/editPackage/{id}")
-    String editPackage(@PathVariable(name = "id") Long id, Model model) {
-        PackageDTO existingPackage = packageClient.getPackageById(id);
+    String editPackage(@PathVariable(name = "id") Long id, Model model, HttpServletRequest request) {
+        String token = (String) request.getSession().getAttribute("sessionToken");
+        List<PackageDTO> packages = packageClient.getAllPackages(token);
+        PackageDTO existingPackage = packageClient.getPackageById(id, token);
         List<CartonDTO> cartons = cartonClient.getAllCartons();
         List<PlateDTO> plates = plateClient.getAllPlates();
         model.addAttribute("plates", plates);
@@ -76,8 +82,10 @@ public class PackageController {
     }
 
     @PostMapping("/package/editSubmit/{id}")
-    ModelAndView editPackage(@PathVariable(name = "id") Long id, PackageDTO packageDTO, @RequestParam("file") MultipartFile file) throws IOException {
-        packageClient.updatePackage(id, packageDTO);
+    ModelAndView editPackage(@PathVariable(name = "id") Long id, PackageDTO packageDTO, @RequestParam("file") MultipartFile file, HttpServletRequest request) throws IOException {
+        String token = (String) request.getSession().getAttribute("sessionToken");
+        List<PackageDTO> packages = packageClient.getAllPackages(token);
+        packageClient.updatePackage(id, packageDTO, token);
         if (!file.isEmpty()) {
             imageService.editImageForPackage(file, id);
         }
@@ -85,8 +93,10 @@ public class PackageController {
     }
 
     @PostMapping("/package/delete/{id}")
-    ModelAndView deletePackageById(@PathVariable("id") Long id, Model model) {
-        packageClient.deletePackageById(id);
+    ModelAndView deletePackageById(@PathVariable("id") Long id, Model model, HttpServletRequest request) {
+        String token = (String) request.getSession().getAttribute("sessionToken");
+        List<PackageDTO> packages = packageClient.getAllPackages(token);
+        packageClient.deletePackageById(id, token);
         return new ModelAndView(REDIRECTTXT);
     }
 }
