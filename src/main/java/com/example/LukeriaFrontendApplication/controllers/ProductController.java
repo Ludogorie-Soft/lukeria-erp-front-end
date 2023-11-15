@@ -34,7 +34,7 @@ public class ProductController {
     @GetMapping("/show")
     public String showAllProducts(Model model, HttpServletRequest request) {
         String token = (String) request.getSession().getAttribute("sessionToken");
-        List<ProductDTO> products = productClient.getAllProducts();
+        List<ProductDTO> products = productClient.getAllProducts(token);
         List<PackageDTO> packages = packageClient.getAllPackages(token);
 
         Map<Long, String> productPackageMap = new HashMap<>();
@@ -72,21 +72,23 @@ public class ProductController {
     }
 
     @PostMapping("/submit")
-    public ModelAndView submitProduct(@ModelAttribute("product") ProductDTO productDTO) {
-        productClient.createProduct(productDTO);
+    public ModelAndView submitProduct(@ModelAttribute("product") ProductDTO productDTO, HttpServletRequest request) {
+        String token = (String) request.getSession().getAttribute("sessionToken");
+        productClient.createProduct(productDTO, token);
         return new ModelAndView(REDIRECTTXT);
     }
 
     @PostMapping("/delete/{id}")
-    ModelAndView deleteProductById(@PathVariable("id") Long id, Model model) {
-        productClient.deleteProductById(id);
+    ModelAndView deleteProductById(@PathVariable("id") Long id, Model model, HttpServletRequest request) {
+        String token = (String) request.getSession().getAttribute("sessionToken");
+        productClient.deleteProductById(id, token);
         return new ModelAndView(REDIRECTTXT);
     }
 
     @GetMapping("/editProduct/{id}")
     String editProduct(@PathVariable(name = "id") Long id, Model model, HttpServletRequest request) {
         String token = (String) request.getSession().getAttribute("sessionToken");
-        ProductDTO existingProduct = productClient.getProductById(id);
+        ProductDTO existingProduct = productClient.getProductById(id, token);
         List<PackageDTO> packages = packageClient.getAllPackages(token);
         model.addAttribute("packages", packages);
         model.addAttribute("product", existingProduct);
@@ -94,15 +96,16 @@ public class ProductController {
     }
 
     @PostMapping("/editSubmit/{id}")
-    ModelAndView editPackage(@PathVariable(name = "id") Long id, ProductDTO productDTO) {
-        productClient.updateProduct(id, productDTO);
+    ModelAndView editPackage(@PathVariable(name = "id") Long id, ProductDTO productDTO, HttpServletRequest request) {
+        String token = (String) request.getSession().getAttribute("sessionToken");
+        productClient.updateProduct(id, productDTO, token);
         return new ModelAndView(REDIRECTTXT);
     }
 
     @GetMapping("/produce")
     public String produceProduct(Model model, HttpServletRequest request) {
         String token = (String) request.getSession().getAttribute("sessionToken");
-        List<ProductDTO> products = productClient.getAllProducts();
+        List<ProductDTO> products = productClient.getAllProducts(token);
         List<PackageDTO> packages = packageClient.getAllPackages(token);
 
         Map<Long, String> productPackageMap = new HashMap<>();
@@ -121,9 +124,9 @@ public class ProductController {
     }
 
     @PostMapping("/produce")
-    ModelAndView produceProduct(@RequestParam("productId") Long productId, @RequestParam("producedQuantity") int producedQuantity) {
-
-        productClient.produceProduct(productId, producedQuantity);
+    ModelAndView produceProduct(@RequestParam("productId") Long productId, @RequestParam("producedQuantity") int producedQuantity, HttpServletRequest request) {
+        String token = (String) request.getSession().getAttribute("sessionToken");
+        productClient.produceProduct(productId, producedQuantity, token);
         return new ModelAndView(REDIRECTTXT);
     }
 }

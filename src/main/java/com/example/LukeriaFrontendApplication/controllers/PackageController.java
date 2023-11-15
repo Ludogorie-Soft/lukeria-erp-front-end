@@ -47,10 +47,11 @@ public class PackageController {
     }
 
     @GetMapping("/package/create")
-    String createPackage(Model model) {
+    String createPackage(Model model, HttpServletRequest request) {
+        String token = (String) request.getSession().getAttribute("sessionToken");
         PackageDTO packageEntity = new PackageDTO();
-        List<CartonDTO> cartons = cartonClient.getAllCartons();
-        List<PlateDTO> plates = plateClient.getAllPlates();
+        List<CartonDTO> cartons = cartonClient.getAllCartons(token);
+        List<PlateDTO> plates = plateClient.getAllPlates(token);
         model.addAttribute("plates", plates);
         model.addAttribute("cartons", cartons);
         model.addAttribute("packageEntity", packageEntity);
@@ -73,8 +74,8 @@ public class PackageController {
         String token = (String) request.getSession().getAttribute("sessionToken");
         List<PackageDTO> packages = packageClient.getAllPackages(token);
         PackageDTO existingPackage = packageClient.getPackageById(id, token);
-        List<CartonDTO> cartons = cartonClient.getAllCartons();
-        List<PlateDTO> plates = plateClient.getAllPlates();
+        List<CartonDTO> cartons = cartonClient.getAllCartons(token);
+        List<PlateDTO> plates = plateClient.getAllPlates(token);
         model.addAttribute("plates", plates);
         model.addAttribute("cartons", cartons);
         model.addAttribute("package", existingPackage);

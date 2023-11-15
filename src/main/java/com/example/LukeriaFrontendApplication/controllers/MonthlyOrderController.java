@@ -37,32 +37,36 @@ public class MonthlyOrderController {
     private String backendBaseUrl;
 
     @GetMapping("/create")
-    String createOrder(Model model) {
+    String createOrder(Model model, HttpServletRequest request) {
+        String token = (String) request.getSession().getAttribute("sessionToken");
         MonthlyOrderDTO monthlyOrderDTO = new MonthlyOrderDTO();
-        List<ClientDTO> clientDTOS = clientClient.getAllClients();
+        List<ClientDTO> clientDTOS = clientClient.getAllClients(token);
         model.addAttribute("clients", clientDTOS);
         model.addAttribute(ORDERTXT, monthlyOrderDTO);
         return "MonthlyOrder/create";
     }
 
     @PostMapping("/submit")
-    public ModelAndView submitOrder(@ModelAttribute("monthlyOrder") MonthlyOrderDTO orderDTO) {
-        monthlyOrderClient.createMonthlyOrder(orderDTO);
+    public ModelAndView submitOrder(@ModelAttribute("monthlyOrder") MonthlyOrderDTO orderDTO, HttpServletRequest request) {
+        String token = (String) request.getSession().getAttribute("sessionToken");
+        monthlyOrderClient.createMonthlyOrder(orderDTO, token);
         return new ModelAndView("redirect:/monthlyOrder/addProduct");
     }
 
     @GetMapping("/editOrder/{id}")
-    String editMonthlyOrder(@PathVariable(name = "id") Long id, Model model) {
-        MonthlyOrderDTO existingOrder = monthlyOrderClient.getMonthlyOrderById(id);
-        List<ClientDTO> clientDTOS = clientClient.getAllClients();
+    String editMonthlyOrder(@PathVariable(name = "id") Long id, Model model, HttpServletRequest request) {
+        String token = (String) request.getSession().getAttribute("sessionToken");
+        MonthlyOrderDTO existingOrder = monthlyOrderClient.getMonthlyOrderById(id, token);
+        List<ClientDTO> clientDTOS = clientClient.getAllClients(token);
         model.addAttribute("clients", clientDTOS);
         model.addAttribute("order", existingOrder);
         return "MonthlyOrder/edit";
     }
 
     @GetMapping("/edit/{id}")
-    ModelAndView editOrder(@PathVariable(name = "id") Long id, MonthlyOrderDTO orderDTO) {
-        monthlyOrderClient.updateMonthlyOrder(id, orderDTO);
+    ModelAndView editOrder(@PathVariable(name = "id") Long id, MonthlyOrderDTO orderDTO, HttpServletRequest request) {
+        String token = (String) request.getSession().getAttribute("sessionToken");
+        monthlyOrderClient.updateMonthlyOrder(id, orderDTO, token);
         return new ModelAndView(REDIRECTTXT);
     }
 
@@ -70,8 +74,8 @@ public class MonthlyOrderController {
     String createMonthlyOrderProduct(Model model, HttpServletRequest request) {
         String token = (String) request.getSession().getAttribute("sessionToken");
         MonthlyOrderProductDTO orderProduct = new MonthlyOrderProductDTO();
-        MonthlyOrderDTO orderDTO = monthlyOrderClient.getMonthlyOrderById(monthlyOrderClient.findFirstByOrderByIdDesc().getId());
-        List<MonthlyOrderProductDTO> orderProductDTOS = monthlyOrderProductClient.getAllMonthlyProductOrders().stream().filter(order -> Objects.equals(order.getMonthlyOrderId(), orderDTO.getId())).toList();
+        MonthlyOrderDTO orderDTO = monthlyOrderClient.getMonthlyOrderById(monthlyOrderClient.findFirstByOrderByIdDesc(token).getId(), token);
+        List<MonthlyOrderProductDTO> orderProductDTOS = monthlyOrderProductClient.getAllMonthlyProductOrders(token).stream().filter(order -> Objects.equals(order.getMonthlyOrderId(), orderDTO.getId())).toList();
         List<Long> packageDTOIds = orderProductDTOS.stream().map(MonthlyOrderProductDTO::getPackageId).toList();
         List<PackageDTO> packageDTOList = packageDTOIds.stream()
                 .map(id1 -> packageClient.getPackageById(id1, token))
@@ -89,14 +93,14 @@ public class MonthlyOrderController {
     public ModelAndView submitMonthlyOrderProduct(@ModelAttribute("orderProduct") MonthlyOrderProductDTO monthlyOrderProductDTO,
                                                   @RequestParam(value = "addAnotherDish", required = false) boolean addAnotherDish, Model model, HttpServletRequest request) {
         String token = (String) request.getSession().getAttribute("sessionToken");
-        monthlyOrderProductDTO.setMonthlyOrderId(monthlyOrderClient.findFirstByOrderByIdDesc().getId());
+        monthlyOrderProductDTO.setMonthlyOrderId(monthlyOrderClient.findFirstByOrderByIdDesc(token).getId());
         monthlyOrderProductDTO.setSentQuantity(0);
-        monthlyOrderProductClient.createMonthlyProductOrder(monthlyOrderProductDTO);
+        monthlyOrderProductClient.createMonthlyProductOrder(monthlyOrderProductDTO, token);
         if (addAnotherDish) {
-            MonthlyOrderDTO monthlyOrderDTO = monthlyOrderClient.getMonthlyOrderById(monthlyOrderClient.findFirstByOrderByIdDesc().getId());
+            MonthlyOrderDTO monthlyOrderDTO = monthlyOrderClient.getMonthlyOrderById(monthlyOrderClient.findFirstByOrderByIdDesc(token).getId(), token);
             model.addAttribute("order", monthlyOrderDTO);
             model.addAttribute("packages", packageClient.getAllPackages(token));
-            List<MonthlyOrderProductDTO> monthlyOrderProductDTOS = monthlyOrderProductClient.getAllMonthlyProductOrders().stream().filter(order -> Objects.equals(order.getMonthlyOrderId(), monthlyOrderDTO.getId())).toList();
+            List<MonthlyOrderProductDTO> monthlyOrderProductDTOS = monthlyOrderProductClient.getAllMonthlyProductOrders(token).stream().filter(order -> Objects.equals(order.getMonthlyOrderId(), monthlyOrderDTO.getId())).toList();
             List<Long> packageDTOIds = monthlyOrderProductDTOS.stream().map(MonthlyOrderProductDTO::getPackageId).toList();
             List<PackageDTO> packageDTOList = packageDTOIds.stream()
                     .map(id1 -> packageClient.getPackageById(id1, token))
@@ -113,8 +117,8 @@ public class MonthlyOrderController {
     public String addProductToExistingOrder(@PathVariable("orderId") Long orderId, Model model, HttpServletRequest request) {
         String token = (String) request.getSession().getAttribute("sessionToken");
         MonthlyOrderProductDTO monthlyOrderProductDTO = new MonthlyOrderProductDTO();
-        MonthlyOrderDTO orderDTO = monthlyOrderClient.getMonthlyOrderById(orderId);
-        List<MonthlyOrderProductDTO> monthlyOrderProductDTOS = monthlyOrderProductClient.getAllMonthlyProductOrders().stream().filter(order -> Objects.equals(order.getMonthlyOrderId(), orderDTO.getId())).toList();
+        MonthlyOrderDTO orderDTO = monthlyOrderClient.getMonthlyOrderById(orderId, token);
+        List<MonthlyOrderProductDTO> monthlyOrderProductDTOS = monthlyOrderProductClient.getAllMonthlyProductOrders(token).stream().filter(order -> Objects.equals(order.getMonthlyOrderId(), orderDTO.getId())).toList();
         List<Long> packageDTOIds = monthlyOrderProductDTOS.stream().map(MonthlyOrderProductDTO::getPackageId).toList();
         List<PackageDTO> packageDTOList = packageDTOIds.stream()
                 .map(id1 -> packageClient.getPackageById(id1, token))
@@ -130,18 +134,22 @@ public class MonthlyOrderController {
 
     @PostMapping("/submitExistingOrder")
     public ModelAndView submitExistingOrderProduct(@ModelAttribute("orderProduct") MonthlyOrderProductDTO monthlyOrderProductDTO, Model model,
-                                                   @RequestParam("orderId") Long orderId) {
+                                                   @RequestParam("orderId") Long orderId, HttpServletRequest request) {
+        String token = (String) request.getSession().getAttribute("sessionToken");
         monthlyOrderProductDTO.setMonthlyOrderId(orderId);
         monthlyOrderProductDTO.setSentQuantity(0);
-        monthlyOrderProductClient.createMonthlyProductOrder(monthlyOrderProductDTO);
+        monthlyOrderProductClient.createMonthlyProductOrder(monthlyOrderProductDTO, token);
         return new ModelAndView(REDIRECTTXT);
     }
 
     @GetMapping("/show")
-    public String index(Model model) {
-        List<MonthlyOrderDTO> orders = monthlyOrderClient.getAllMonthlyOrders();
+    public String index(Model model, HttpServletRequest request) {
+        String token = (String) request.getSession().getAttribute("sessionToken");
+        List<MonthlyOrderDTO> orders = monthlyOrderClient.getAllMonthlyOrders(token);
         List<Long> clientIds = orders.stream().map(MonthlyOrderDTO::getClientId).toList();
-        List<ClientDTO> clients = new java.util.ArrayList<>(clientIds.stream().map(clientClient::getClientById).toList());
+        List<ClientDTO> clients = new java.util.ArrayList<>(clientIds.stream()
+                .map(id1 -> clientClient.getClientById(id1, token))
+                .collect(Collectors.toList()));
         Collections.reverse(orders);
         Collections.reverse(clients);
         model.addAttribute("orders", orders);
@@ -152,26 +160,26 @@ public class MonthlyOrderController {
     @GetMapping("/orderDetails/{orderId}")
     public String orderDetails(@PathVariable("orderId") Long id, Model model, HttpServletRequest request) {
         String token = (String) request.getSession().getAttribute("sessionToken");
-        MonthlyOrderDTO monthlyOrderDTO = monthlyOrderClient.getMonthlyOrderById(id);
+        MonthlyOrderDTO monthlyOrderDTO = monthlyOrderClient.getMonthlyOrderById(id, token);
         List<MonthlyOrderProductDTO> monthlyOrderProductDTOS = new ArrayList<>();
-        List<InvoiceOrderProductDTO> invoiceOrderProductDTOS = invoiceOrderProductClient.getAllInvoiceOrderProduct();
-        for (MonthlyOrderProductDTO order : monthlyOrderProductClient.getAllMonthlyProductOrders()) {
+        List<InvoiceOrderProductDTO> invoiceOrderProductDTOS = invoiceOrderProductClient.getAllInvoiceOrderProduct(token);
+        for (MonthlyOrderProductDTO order : monthlyOrderProductClient.getAllMonthlyProductOrders(token)) {
             if (Objects.equals(order.getMonthlyOrderId(), id)) {
                 for (InvoiceOrderProductDTO invoiceOrderProductDTO1 : invoiceOrderProductDTOS) {
-                    InvoiceDTO invoiceDTO = invoiceClient.getInvoiceById(invoiceOrderProductDTO1.getInvoiceId());
+                    InvoiceDTO invoiceDTO = invoiceClient.getInvoiceById(invoiceOrderProductDTO1.getInvoiceId(), token);
                     if ((invoiceDTO.getInvoiceDate().isBefore(monthlyOrderDTO.getEndDate()) || invoiceDTO.getInvoiceDate().equals(monthlyOrderDTO.getEndDate())) && (invoiceDTO.getInvoiceDate().isAfter(monthlyOrderDTO.getStartDate()) || invoiceDTO.getInvoiceDate().equals(monthlyOrderDTO.getStartDate()))) {
                         Integer sent = 0;
                         order.setSentQuantity(sent);
-                        System.out.println(monthlyOrderProductClient.getAllMonthlyProductOrders());
-                        for (OrderProductDTO orderProduct : orderProductClient.getAllOrderProducts()) {
-                            if (Objects.equals(orderClient.getOrderById(orderProduct.getOrderId()).getClientId(), monthlyOrderDTO.getClientId())) {
+                        System.out.println(monthlyOrderProductClient.getAllMonthlyProductOrders(token));
+                        for (OrderProductDTO orderProduct : orderProductClient.getAllOrderProducts(token)) {
+                            if (Objects.equals(orderClient.getOrderById(orderProduct.getOrderId(), token).getClientId(), monthlyOrderDTO.getClientId())) {
                                 if (Objects.equals(order.getPackageId(), orderProduct.getPackageId())) {
                                     sent += orderProduct.getNumber();
                                 }
                             }
                         }
                         order.setSentQuantity(order.getSentQuantity() + sent);
-                        monthlyOrderProductClient.updateMonthlyProductOrder(order.getId(), order);
+                        monthlyOrderProductClient.updateMonthlyProductOrder(order.getId(), order, token);
                     }
                 }
                 monthlyOrderProductDTOS.add(order);
@@ -181,7 +189,7 @@ public class MonthlyOrderController {
         List<PackageDTO> packageDTOList = packageDTOIds.stream()
                 .map(id1 -> packageClient.getPackageById(id1, token))
                 .collect(Collectors.toList());
-        model.addAttribute("client", clientClient.getClientById(monthlyOrderDTO.getClientId()));
+        model.addAttribute("client", clientClient.getClientById(monthlyOrderDTO.getClientId(), token));
         model.addAttribute("orderProducts", monthlyOrderProductDTOS);
         model.addAttribute("products", packageDTOList);
         model.addAttribute("order", monthlyOrderDTO);
@@ -190,14 +198,16 @@ public class MonthlyOrderController {
     }
 
     @PostMapping("/delete/{id}")
-    ModelAndView deleteOrderById(@PathVariable("id") Long id, Model model) {
-        monthlyOrderClient.deleteMonthlyOrder(id);
+    ModelAndView deleteOrderById(@PathVariable("id") Long id, Model model, HttpServletRequest request) {
+        String token = (String) request.getSession().getAttribute("sessionToken");
+        monthlyOrderClient.deleteMonthlyOrder(id, token);
         return new ModelAndView(REDIRECTTXT);
     }
 
     @PostMapping("/deleteMonthlyOrderProduct/delete/{id}")
-    ModelAndView deleteMonthlyOrderProduct(@PathVariable("id") Long id, Model model) {
-        monthlyOrderProductClient.deleteMonthlyProductOrder(id);
+    ModelAndView deleteMonthlyOrderProduct(@PathVariable("id") Long id, Model model, HttpServletRequest request) {
+        String token = (String) request.getSession().getAttribute("sessionToken");
+        monthlyOrderProductClient.deleteMonthlyProductOrder(id, token);
         return new ModelAndView(REDIRECTTXT);
     }
 }

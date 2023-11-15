@@ -41,16 +41,17 @@ public class MaterialOrderController {
     String createMaterialOrder(Model model, HttpServletRequest request) {
         String token = (String) request.getSession().getAttribute("sessionToken");
         MaterialOrderDTO materialOrderDTO = new MaterialOrderDTO();
-        model.addAttribute(CARTONTXT, cartonClient.getAllCartons());
+        model.addAttribute(CARTONTXT, cartonClient.getAllCartons(token));
         model.addAttribute(PACKAGETXT, packageClient.getAllPackages(token));
-        model.addAttribute(PLATETXT, plateClient.getAllPlates());
+        model.addAttribute(PLATETXT, plateClient.getAllPlates(token));
         model.addAttribute("order", materialOrderDTO);
         model.addAttribute("backendBaseUrl", backendBaseUrl);
         return "MaterialOrder/create";
     }
     @GetMapping("/show")
-    public String index(Model model) {
-        List<MaterialOrderDTO> materialOrderDTOS = materialOrderClient.getAllMaterialOrders();
+    public String index(Model model, HttpServletRequest request) {
+        String token = (String) request.getSession().getAttribute("sessionToken");
+        List<MaterialOrderDTO> materialOrderDTOS = materialOrderClient.getAllMaterialOrders(token);
         Collections.reverse(materialOrderDTOS);
         model.addAttribute(ORDERTXT, materialOrderDTOS);
         return MATERIALSORDERSHOW;
@@ -59,15 +60,15 @@ public class MaterialOrderController {
     @GetMapping("/materials/{id}")
     public String showMaterialForOrderId(@PathVariable("id") Long id,Model model, HttpServletRequest request) {
         String token = (String) request.getSession().getAttribute("sessionToken");
-        List<MaterialOrderDTO> materialsForOrder = materialOrderClient.getAllProductsByOrderId(id);
+        List<MaterialOrderDTO> materialsForOrder = materialOrderClient.getAllProductsByOrderId(id, token);
         if (materialsForOrder.isEmpty()) {
             model.addAttribute("materialAvailability",true);
             model.addAttribute("materialsForOrder",materialsForOrder);
             return MATERIALSORDERSHOW;
         }
         List<PackageDTO> packages=packageClient.getAllPackages(token);
-        List<CartonDTO> cartons =cartonClient.getAllCartons();
-        List<PlateDTO> plates=plateClient.getAllPlates();
+        List<CartonDTO> cartons =cartonClient.getAllCartons(token);
+        List<PlateDTO> plates=plateClient.getAllPlates(token);
 
         model.addAttribute(PACKAGETXT, packages);
         model.addAttribute(CARTONTXT, cartons);
@@ -79,15 +80,15 @@ public class MaterialOrderController {
     @GetMapping("/all-materials")
     public String showMaterialForAllOrders(Model model, HttpServletRequest request) {
         String token = (String) request.getSession().getAttribute("sessionToken");
-        List<MaterialOrderDTO> materialsForOrder = materialOrderClient.allAvailableProducts();
+        List<MaterialOrderDTO> materialsForOrder = materialOrderClient.allAvailableProducts(token);
         if (materialsForOrder.isEmpty()) {
             model.addAttribute("materialAvailability",true);
             model.addAttribute("materialsForOrder",materialsForOrder);
             return MATERIALSORDERSHOW;
         }
         List<PackageDTO> packages=packageClient.getAllPackages(token);
-        List<CartonDTO> cartons =cartonClient.getAllCartons();
-        List<PlateDTO> plates=plateClient.getAllPlates();
+        List<CartonDTO> cartons =cartonClient.getAllCartons(token);
+        List<PlateDTO> plates=plateClient.getAllPlates(token);
 
         model.addAttribute(PACKAGETXT, packages);
         model.addAttribute(CARTONTXT, cartons);
@@ -97,38 +98,41 @@ public class MaterialOrderController {
     }
 
     @PostMapping("/submit")
-    public ModelAndView submitMaterialOrder(@ModelAttribute("order") MaterialOrderDTO materialOrderDTO) {
-        materialOrderClient.createMaterialOrder(materialOrderDTO);
+    public ModelAndView submitMaterialOrder(@ModelAttribute("order") MaterialOrderDTO materialOrderDTO, HttpServletRequest request) {
+        String token = (String) request.getSession().getAttribute("sessionToken");
+        materialOrderClient.createMaterialOrder(materialOrderDTO, token);
         return new ModelAndView(REDIRECTTXT);
     }
     @PostMapping("/delete/{id}")
-    ModelAndView deleteMaterialOrderById(@PathVariable("id") Long id, Model model) {
-        materialOrderClient.deleteMaterialOrderById(id);
+    ModelAndView deleteMaterialOrderById(@PathVariable("id") Long id, Model model, HttpServletRequest request) {
+        String token = (String) request.getSession().getAttribute("sessionToken");
+        materialOrderClient.deleteMaterialOrderById(id, token);
         return new ModelAndView(REDIRECTTXT);
     }
     @GetMapping("/edit/{id}")
     String editMaterialOrder(@PathVariable(name = "id") Long id, Model model, HttpServletRequest request) {
         String token = (String) request.getSession().getAttribute("sessionToken");
-        MaterialOrderDTO existingOrder = materialOrderClient.getMaterialOrderById(id);
-        model.addAttribute(CARTONTXT, cartonClient.getAllCartons());
+        MaterialOrderDTO existingOrder = materialOrderClient.getMaterialOrderById(id, token);
+        model.addAttribute(CARTONTXT, cartonClient.getAllCartons(token));
         model.addAttribute(PACKAGETXT, packageClient.getAllPackages(token));
-        model.addAttribute(PLATETXT, plateClient.getAllPlates());
+        model.addAttribute(PLATETXT, plateClient.getAllPlates(token));
         model.addAttribute("order", existingOrder);
         return "MaterialOrder/edit";
     }
     @PostMapping("/editSubmit/{id}")
-    ModelAndView editMaterialOrder(@PathVariable(name = "id") Long id, MaterialOrderDTO materialOrderDTO) {
-        materialOrderClient.updateMaterialOrder(id, materialOrderDTO);
+    ModelAndView editMaterialOrder(@PathVariable(name = "id") Long id, MaterialOrderDTO materialOrderDTO, HttpServletRequest request) {
+        String token = (String) request.getSession().getAttribute("sessionToken");
+        materialOrderClient.updateMaterialOrder(id, materialOrderDTO, token);
         return new ModelAndView(REDIRECTTXT);
     }
     @GetMapping("/material/{materialId}")
     public String viewMaterial(@PathVariable Long materialId, @RequestParam("materialType") String materialType, Model model, HttpServletRequest request) {
         String token = (String) request.getSession().getAttribute("sessionToken");
         if(materialType.equals("CARTON")){
-            model.addAttribute("material", cartonClient.getCartonById(materialId));
+            model.addAttribute("material", cartonClient.getCartonById(materialId, token));
             model.addAttribute("type", "Кашон");
         } else if(materialType.equals("PLATE")){
-            model.addAttribute("material", plateClient.getPlateById(materialId));
+            model.addAttribute("material", plateClient.getPlateById(materialId, token));
             model.addAttribute("type", "Тарелка");
         } else{
             model.addAttribute("material", packageClient.getPackageById(materialId, token));

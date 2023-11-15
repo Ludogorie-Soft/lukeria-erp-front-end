@@ -10,20 +10,20 @@ import java.util.List;
 @FeignClient(name = "lukeria-erp-order", url = "http://localhost:8088/api/v1/order")
 public interface OrderClient {
     @GetMapping()
-    List<OrderDTO> getAllOrders();
+    List<OrderDTO> getAllOrders(@RequestHeader("Authorization") String auth);
     @GetMapping("/findLastOrder")
-    OrderDTO findFirstByOrderByIdDesc();
+    OrderDTO findFirstByOrderByIdDesc(@RequestHeader("Authorization") String auth);
 
     @GetMapping("/{id}")
-    OrderDTO getOrderById(@PathVariable(name = "id") Long id);
+    OrderDTO getOrderById(@PathVariable(name = "id") Long id, @RequestHeader("Authorization") String auth);
 
     @PostMapping
-    OrderDTO createOrder(@Valid @RequestBody OrderDTO orderDTO);
+    OrderDTO createOrder(@Valid @RequestBody OrderDTO orderDTO, @RequestHeader("Authorization") String auth);
 
     @PutMapping("/{id}")
-    void updateOrder(@PathVariable("id") Long id, @Valid @RequestBody OrderDTO orderDTO) ;
+    void updateOrder(@PathVariable("id") Long id, @Valid @RequestBody OrderDTO orderDTO, @RequestHeader("Authorization") String auth) ;
 
     @DeleteMapping("/{id}")
-    String deleteOrderById(@PathVariable("id") Long id);
+    String deleteOrderById(@PathVariable("id") Long id, @RequestHeader("Authorization") String auth);
 
 }

@@ -11,21 +11,21 @@ import java.util.List;
 @FeignClient(name = "lukeria-erp-orderProduct", url = "http://localhost:8088/api/v1/orderProduct")
 public interface OrderProductClient {
     @GetMapping()
-    List<OrderProductDTO> getAllOrderProducts();
+    List<OrderProductDTO> getAllOrderProducts(@RequestHeader("Authorization") String auth);
 
     @GetMapping("/{id}")
-    OrderProductDTO getOrderProductById(@PathVariable(name = "id") Long id);
+    OrderProductDTO getOrderProductById(@PathVariable(name = "id") Long id, @RequestHeader("Authorization") String auth);
 
     @PostMapping
-    OrderProductDTO createOrderProduct(@Valid @RequestBody OrderProductDTO orderProductDTO);
+    OrderProductDTO createOrderProduct(@Valid @RequestBody OrderProductDTO orderProductDTO, @RequestHeader("Authorization") String auth);
 
     @PutMapping("/{id}")
-    void updateOrderProduct(@PathVariable("id") Long id, @Valid @RequestBody OrderProductDTO orderProductDTO) ;
+    void updateOrderProduct(@PathVariable("id") Long id, @Valid @RequestBody OrderProductDTO orderProductDTO, @RequestHeader("Authorization") String auth) ;
 
     @DeleteMapping("/{id}")
-    String deleteOrderProductById(@PathVariable("id") Long id);
+    String deleteOrderProductById(@PathVariable("id") Long id, @RequestHeader("Authorization") String auth);
 
     @GetMapping("/lessening")
-    ResponseEntity<Boolean> findInvoiceOrderProductsByInvoiceIdLessening(@RequestParam Long invoiceId);
+    ResponseEntity<Boolean> findInvoiceOrderProductsByInvoiceIdLessening(@RequestParam Long invoiceId, @RequestHeader("Authorization") String auth);
 
 }
