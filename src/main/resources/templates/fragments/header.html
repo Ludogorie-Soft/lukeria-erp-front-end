@@ -1,4 +1,5 @@
-<script>
+<th:block xmlns:th="http://www.w3.org/1999/xhtml">
+<script xmlns:th="http://www.w3.org/1999/xhtml">
 document.addEventListener("DOMContentLoaded", function() {
   var currentPageUrl = window.location.href;
   var sidebarLinks = document.querySelectorAll('.sidebar-link');
@@ -22,11 +23,9 @@ document.addEventListener("DOMContentLoaded", function() {
                     <i class="fas fa-ellipsis-h align-middle"></i> <span class="align-middle">Главна страница</span>
                 </a>
             </li>
-
-
             <li class="sidebar-item">
-                <a id="nav-register" class="sidebar-link" href="/register">
-                    <i class="fas fa-registered align-middle"></i> <span class="align-middle">Регистрирай се</span>
+                <a id="nav-login" class="sidebar-link" href="/login">
+                    <i class="fas fa-registered align-middle"></i> <span class="align-middle">Впиши се</span>
                 </a>
             </li>
             <li class="sidebar-item">
@@ -94,3 +93,4 @@ document.addEventListener("DOMContentLoaded", function() {
         </ul>
     </div>
 </nav>
+</th:block>

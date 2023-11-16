@@ -1,5 +1,6 @@
 package com.example.LukeriaFrontendApplication.controllers;
 
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +20,5 @@ public class MenuController {
     public String blank(){
         return "pages-blank";
     }
-
 
 }
