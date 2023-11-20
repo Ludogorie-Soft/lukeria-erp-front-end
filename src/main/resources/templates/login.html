@@ -49,6 +49,7 @@ document.addEventListener("DOMContentLoaded", function() {
                                                 <label class="form-label" style="font-size: 18px;">Парола</label>
                                                 <input class="form-control form-control-lg" type="password" name="password" placeholder="Въведете паролата си" style="height: 50px; font-size: 16px;" />
                                             </div>
+                                            <p th:if="${param.error}" class="text-danger" style="margin-top: 15px;">Невалиден имейл или парола!</p>
                                             <div class="d-grid gap-2 mt-3">
                                                <input type="submit" class="btn btn-block btn-primary text-white py-3 px-5" value="Влез">
                                             </div>

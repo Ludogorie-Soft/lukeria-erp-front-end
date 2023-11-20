@@ -35,12 +35,21 @@ document.addEventListener("DOMContentLoaded", function() {
                         <div class="card-header">
                             <h5 class="card-title mb-0">Всички продукти</h5>
                         </div>
+                        <th:block th:if="${session.sessionToken != null and session.sessionRole == 'ADMIN'}">
                         <div class="text-center">
                             <a href="/product/create" class="btn btn-primary">Добави нов Продукт</a>
                         </div><br>
+                        </th:block>
+                        <th:block th:if="${session.sessionToken != null and session.sessionRole == 'ADMIN'}">
                         <div class="text-center">
                             <a href="/product/produce" class="btn btn-warning">Добави производство на продукт</a>
                         </div>
+                        </th:block>
+                        <th:block th:if="${session.sessionToken != null and session.sessionRole == 'PRODUCTION_MANAGER'}">
+                            <div class="text-center">
+                                <a href="/product/produce" class="btn btn-warning">Добави производство на продукт</a>
+                            </div>
+                        </th:block>
                         <div class="card-body">
                             <div class="row mb-3">
                                 <div class="col">
@@ -58,7 +67,9 @@ document.addEventListener("DOMContentLoaded", function() {
                                         <th>Код на продукта</th>
                                         <th>Име на Продукт</th>
                                         <th>Наличност</th>
+                                        <th:block th:if="${session.sessionToken != null and session.sessionRole == 'ADMIN'}">
                                         <th>Цена за брой</th>
+                                        </th:block>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -72,6 +83,8 @@ document.addEventListener("DOMContentLoaded", function() {
                                             <span th:text="${product.availableQuantity + ' Броя'}"
                                                   th:class="${product.availableQuantity <= 20 ? 'red-cell' : (product.availableQuantity <= 100 ? 'yellow-cell' : '')}"></span>
                                         </td>
+                                        <th:block
+                                                th:if="${session.sessionToken != null and session.sessionRole == 'ADMIN'}">
                                         <td th:text="${product.price + ' Лв'}"></td>
                                         <td>
                                             <form th:action="@{'/product/delete/' + ${product.id}}" method="post"
@@ -85,6 +98,7 @@ document.addEventListener("DOMContentLoaded", function() {
                                                 <button type="submit" class="btn btn-primary">Редактирай</button>
                                             </form>
                                         </td>
+                                        </th:block>
                                     </tr>
                                     </tbody>
                                 </table>

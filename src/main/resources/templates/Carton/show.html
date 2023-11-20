@@ -53,9 +53,11 @@ margin: 0 auto; /* Опционално: Центриране на карта х
                         <div class="card-header">
                             <h5 class="card-title mb-0">Всички кашони</h5>
                         </div>
+                        <th:block th:if="${session.sessionToken != null and session.sessionRole == 'ADMIN'}">
                         <div class="text-center">
                             <a href="/create" class="btn btn-primary">Добави Кашон</a>
                         </div>
+                        </th:block>
                         <div class="card-body">
                             <div class="row mb-3">
                                 <div class="col">
@@ -70,9 +72,11 @@ margin: 0 auto; /* Опционално: Центриране на карта х
                                         <th>Име</th>
                                         <th>Размери</th>
                                         <th>Наличност</th>
+                                        <th:block th:if="${session.sessionToken != null and session.sessionRole == 'ADMIN'}">
                                         <th>Цена</th>
                                         <th>Изтрий</th>
                                         <th>Редактирай</th>
+                                        </th:block>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -84,7 +88,10 @@ margin: 0 auto; /* Опционално: Центриране на карта х
                                         <span th:text="${carton.availableQuantity + ' Броя'}"
                                               th:class="${carton.availableQuantity <= 20 ? 'red-cell' : (carton.availableQuantity <= 100 ? 'yellow-cell' : '')}"></span>
                                         </td>
+                                        <th:block th:if="${session.sessionToken != null and session.sessionRole == 'ADMIN'}">
                                         <td th:text="${carton.price + ' Лв'}"></td>
+                                        </th:block>
+                                        <th:block th:if="${session.sessionToken != null and session.sessionRole == 'ADMIN'}">
                                         <td>
                                             <form th:action="@{'/delete/' + ${carton.id}}" method="post"
                                                   th:attr="onsubmit='return confirm(\'Сигурни ли сте, че искате да изтриете кашон с име: ' + ${carton.name} + '?\');'">
@@ -97,6 +104,7 @@ margin: 0 auto; /* Опционално: Центриране на карта х
                                                 <button type="submit" class="btn btn-primary">Редактирай</button>
                                             </form>
                                         </td>
+                                        </th:block>
                                     </tr>
                                     </tbody>
                                 </table>

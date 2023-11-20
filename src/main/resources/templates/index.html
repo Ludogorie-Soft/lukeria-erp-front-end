@@ -41,7 +41,6 @@ document.addEventListener("DOMContentLoaded", function() {
                             </div>
                         </div>
                     </div>
-
                     <div class="col-12 col-md-4">
                         <div class="card custom-card-width">
                             <img class="card-img-top" src="img/photos/logo.png" alt="Logo">
@@ -54,7 +53,7 @@ document.addEventListener("DOMContentLoaded", function() {
                             </div>
                         </div>
                     </div>
-
+                    <th:block th:if="${session.sessionToken != null and session.sessionRole == 'ADMIN'}">
                     <div class="col-12 col-md-4">
                         <div class="card custom-card-width">
                             <img class="card-img-top" src="img/photos/logo.png" alt="Logo">
@@ -67,6 +66,7 @@ document.addEventListener("DOMContentLoaded", function() {
                             </div>
                         </div>
                     </div>
+                    </th:block>
                 </div>
             </div>
         </main>

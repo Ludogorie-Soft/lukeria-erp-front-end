@@ -9,11 +9,12 @@ import org.springframework.stereotype.Component;
 @Getter
 public class SessionManager {
 
-    public void setSessionToken(HttpServletRequest request, String sessionToken) {
+    public void setSessionToken(HttpServletRequest request, String sessionToken, String role) {
         String token = "Bearer " + sessionToken;
 
         HttpSession session = request.getSession(true);
         session.setAttribute("sessionToken", token);
+        session.setAttribute("sessionRole", role);
     }
 
     public void invalidateSession(HttpServletRequest request ){

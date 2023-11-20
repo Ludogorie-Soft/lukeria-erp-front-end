@@ -16,6 +16,7 @@ document.addEventListener("DOMContentLoaded", function() {
     navbar.classList.toggle("collapsed");
     });
 });
+
 </script>
 <body>
 <div class="wrapper">
@@ -30,36 +31,43 @@ document.addEventListener("DOMContentLoaded", function() {
             </a>
         </nav>
         <main class="content">
-                <div class="row">
-                    <div class="col-lg-11 mx-auto">
-                        <div class="card custom-card-width-lg">
-                            <div class="card-header">
-                                <h5 class="card-title mb-0">Всички тарелки</h5>
-                            </div>
+            <div class="row">
+                <div class="col-lg-11 mx-auto">
+                    <div class="card custom-card-width-lg">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">Всички тарелки</h5>
+                        </div>
+                        <th:block th:if="${session.sessionToken != null and session.sessionRole == 'ADMIN'}">
                             <div class="text-center">
                                 <a href="/plate/create" class="btn btn-primary">Добави Тарелка</a>
                             </div>
-                            <div class="card-body">
-                                <div class="row mb-3">
-                                    <div class="col">
-                                        <input type="text" id="searchInput2" class="form-control" placeholder="Търсене по име">
-                                    </div>
+                        </th:block>
+                        <div class="card-body">
+                            <div class="row mb-3">
+                                <div class="col">
+                                    <input type="text" id="searchInput2" class="form-control"
+                                           placeholder="Търсене по име">
                                 </div>
-                                <div class="table-responsive">
-                                    <table class="table">
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table">
                                     <thead>
                                     <tr>
                                         <th>Снимка</th>
                                         <th>ID</th>
                                         <th>Име</th>
                                         <th>Наличност</th>
-                                        <th>Цена</th>
+                                        <th:block
+                                                th:if="${session.sessionToken != null and session.sessionRole == 'ADMIN'}">
+                                            <th>Цена</th>
+                                        </th:block>
                                     </tr>
                                     </thead>
                                     <tbody>
                                     <tr th:each="plate : ${plates}" data-id="${plate.id}" class="plate-row">
                                         <td>
-                                            <img th:src="@{${backendBaseUrl} + '/'+ ${plate.photo}}" alt="no image" height="100" width="100">
+                                            <img th:src="@{${backendBaseUrl} + '/'+ ${plate.photo}}" alt="no image"
+                                                 height="100" width="100">
                                         </td>
                                         <td th:text="${plate.id}"></td>
                                         <td th:text="${plate.name}"></td>
@@ -67,19 +75,22 @@ document.addEventListener("DOMContentLoaded", function() {
                                             <span th:text="${plate.availableQuantity + ' Броя'}"
                                                   th:class="${plate.availableQuantity <= 20 ? 'red-cell' : (plate.availableQuantity <= 100 ? 'yellow-cell' : '')}"></span>
                                         </td>
-                                        <td th:text="${plate.price + ' Лв'}"></td>
-                                        <td>
-                                            <form th:action="@{'/plate/delete/' + ${plate.id}}" method="post"
-                                                  th:attr="onsubmit='return confirm(\'Сигурни ли сте, че искате да изтриете тарелка с име: ' + ${plate.name} + '?\');'">
-                                                <button type="submit" class="btn btn-danger">Изтрий</button>
-                                            </form>
-                                        </td>
-                                        <td>
-                                            <form th:action="@{'/plate/editPlate/' + ${plate.id}}" method="get"
-                                                  th:attr="onsubmit='return confirm(\'Сигурни ли сте, че искате да редактирате тарелка с име: ' + ${plate.name} + '?\');'">
-                                                <button type="submit" class="btn btn-primary">Редактирай</button>
-                                            </form>
-                                        </td>
+                                        <th:block
+                                                th:if="${session.sessionToken != null and session.sessionRole == 'ADMIN'}">
+                                            <td th:text="${plate.price + ' Лв'}"></td>
+                                            <td>
+                                                <form th:action="@{'/plate/delete/' + ${plate.id}}" method="post"
+                                                      th:attr="onsubmit='return confirm(\'Сигурни ли сте, че искате да изтриете тарелка с име: ' + ${plate.name} + '?\');'">
+                                                    <button type="submit" class="btn btn-danger">Изтрий</button>
+                                                </form>
+                                            </td>
+                                            <td>
+                                                <form th:action="@{'/plate/editPlate/' + ${plate.id}}" method="get"
+                                                      th:attr="onsubmit='return confirm(\'Сигурни ли сте, че искате да редактирате тарелка с име: ' + ${plate.name} + '?\');'">
+                                                    <button type="submit" class="btn btn-primary">Редактирай</button>
+                                                </form>
+                                            </td>
+                                        </th:block>
                                     </tr>
                                     </tbody>
                                 </table>
@@ -112,6 +123,7 @@ document.addEventListener("DOMContentLoaded", function() {
             }
         }
     });
+
 </script>
 </body>
 </html>

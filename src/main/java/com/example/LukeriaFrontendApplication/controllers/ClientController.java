@@ -62,7 +62,7 @@ public class ClientController {
         return new ModelAndView(REDIRECTTXT);
     }
 
-    @GetMapping("/edit/{id}")
+    @PostMapping("/edit/{id}")
     ModelAndView editClient(@PathVariable(name = "id") Long id, ClientDTO clientDTO, HttpServletRequest request) {
         String token = (String) request.getSession().getAttribute("sessionToken");
         clientClient.updateClient(id, clientDTO, token);

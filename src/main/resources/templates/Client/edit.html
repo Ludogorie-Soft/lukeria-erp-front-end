@@ -4,7 +4,7 @@
     <!--    LINKS  -->
     <th:block th:include="~{fragments/links}"></th:block>
 
-    <title> Тарелки </title>
+    <title> Клиенти </title>
     <link href="/css/form.css" rel="stylesheet">
 </head>
 <script>
@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", function() {
                         <h5 class="card-title mb-0">Редактирай клиент</h5>
                     </div>
                     <div class="card-body">
-                        <form th:action="@{'/client/edit/' + ${client.id}}" method="get" th:object="${client}">
+                        <form th:action="@{'/client/edit/' + ${client.id}}" method="post" th:object="${client}">
                             <div class="form-group">
                                 <label for="name">Име на фирма:</label>
                                 <input type="text" id="name" name="name" pattern=".{5,}"
