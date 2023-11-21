@@ -17,7 +17,7 @@ public interface UserClient {
     UserDTO getUserById(@PathVariable(name = "id") Long id, @RequestHeader("Authorization") String auth);
 
     @PostMapping
-    UserDTO createUser(@Valid @RequestBody User user, @RequestHeader("Authorization") String auth);
+    UserDTO createUser(@Valid @RequestBody UserDTO user, @RequestHeader("Authorization") String auth);
 
     @PutMapping("/{id}")
     UserDTO updateUser(@PathVariable("id") Long id, @Valid @RequestBody UserDTO userDTO, @RequestHeader("Authorization") String auth);

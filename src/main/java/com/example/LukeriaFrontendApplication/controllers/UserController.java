@@ -37,7 +37,7 @@ public class UserController {
     }
 
     @PostMapping("/submit")
-    public ModelAndView submitUser(@ModelAttribute("user") User user, HttpServletRequest request) {
+    public ModelAndView submitUser(@ModelAttribute("user") UserDTO user, HttpServletRequest request) {
         String token = (String) request.getSession().getAttribute("sessionToken");
         userClient.createUser(user, token);
         return new ModelAndView(REDIRECTTXT);

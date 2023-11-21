@@ -2,6 +2,7 @@ package com.example.LukeriaFrontendApplication.dtos;
 
 import com.example.LukeriaFrontendApplication.enums.Role;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,10 +13,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UserDTO {
     private Long id;
-    @Size(min = 4)
+    @NotNull(message = "The name should not be null!")
+    private String firstname;
     private String username;
+    @NotNull(message = "The name should not be null!")
+    private String lastname;
+    private String password;
     @Size(min = 5)
-    private String fullName;
+    private String address;
     @Email
     private String email;
     private Role role;
