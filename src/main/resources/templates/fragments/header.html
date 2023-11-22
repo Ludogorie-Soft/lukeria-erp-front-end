@@ -30,6 +30,13 @@ document.addEventListener("DOMContentLoaded", function() {
                 </a>
             </li>
             </th:block>
+            <th:block th:if="${session.sessionToken != null}">
+                <li class="sidebar-item">
+                    <a id="nav-logout" class="sidebar-link" href="/logout">
+                        <i class="fas fa-registered align-middle"></i> <span class="align-middle">Излез</span>
+                    </a>
+                </li>
+            </th:block>
             <th:block th:if="${session.sessionToken != null and session.sessionRole == 'ADMIN'}">
             <li class="sidebar-item">
                 <a id="nav-show6" class="sidebar-link" href="/user/show">

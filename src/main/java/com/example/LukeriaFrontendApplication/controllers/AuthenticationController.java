@@ -25,6 +25,13 @@ public class AuthenticationController {
     public String login(Model model, AuthenticationRequest authenticationRequest) {
         return "login";
     }
+    @GetMapping("/logout")
+    public ModelAndView logout (HttpServletRequest request){
+        String token = (String) request.getSession().getAttribute("sessionToken");
+        authenticationClient.logout(token);
+        sessionManager.invalidateSession(request);
+        return new ModelAndView("/index");
+    }
 
     @PostMapping("/login")
     public ModelAndView login(AuthenticationRequest authenticationRequest, HttpServletRequest httpServletRequest) {
@@ -38,5 +45,4 @@ public class AuthenticationController {
             return modelAndView;
         }
     }
-
 }
