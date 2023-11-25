@@ -21,9 +21,6 @@ public interface AuthenticationClient {
 
     @PostMapping("/refresh-token")
     AuthenticationResponse refreshToken(@RequestBody RefreshTokenBodyDTO refreshTokenBody) throws IOException;
-
-    @PostMapping("/me")
-    AuthenticationResponse getMe(@RequestBody AccessTokenBodyDTO accessTokenBodyDTO);
     @GetMapping("/logout")
     void logout (@RequestHeader("Authorization") String auth);
 }

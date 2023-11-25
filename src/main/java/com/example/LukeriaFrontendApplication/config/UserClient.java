@@ -24,7 +24,4 @@ public interface UserClient {
 
     @DeleteMapping("/{id}")
     String deleteUserById(@PathVariable("id") Long id, @RequestHeader("Authorization") String auth);
-
-    @PutMapping("restore/{id}")
-    UserDTO restoreUser(@PathVariable("id") Long id, @RequestHeader("Authorization") String auth);
 }
