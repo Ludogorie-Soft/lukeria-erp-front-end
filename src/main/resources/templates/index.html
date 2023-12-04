@@ -6,14 +6,14 @@
     <title> Lukeria меню </title>
 </head>
 <script>
-document.addEventListener("DOMContentLoaded", function() {
-    const navbar = document.getElementById("sidebar");
-    console.log(navbar);
-    const toggler = document.querySelector("a.sidebar-toggle");
-    toggler.addEventListener("click", () => {
-    navbar.classList.toggle("collapsed");
+    document.addEventListener("DOMContentLoaded", function() {
+        const navbar = document.getElementById("sidebar");
+        console.log(navbar);
+        const toggler = document.querySelector("a.sidebar-toggle");
+        toggler.addEventListener("click", () => {
+        navbar.classList.toggle("collapsed");
+        });
     });
-});
 </script>
 <body>
 <div class="wrapper">
@@ -36,11 +36,18 @@ document.addEventListener("DOMContentLoaded", function() {
                                 <center><h1 class="h1">LUKERIA</h1></center>
                             </div>
                             <div class="card-body">
-                                <h4 class="h4">Some quick example text to build on the card title and make up the
-                                    bulk of the card's content.>Some quick example text to build on the card title and make up the
-                                    bulk of the card's content.>Some quick example text to build on the card title and make up the
-                                    bulk of the card's content.>Some quick example text to build on the card title and make up the
-                                    bulk of the card's content.</h4>
+                                <div class="contact-info">
+                                    <h2>Свържете се с нас</h2>
+                                    <p>С радост бихме отговорили на Вашите запитвания, коментари и обратна връзка.</p>
+                                    <p>Адрес: България, Търговище Промишлена зона</p>
+                                    <p>Email: <a href="mailto:office@lukeria.eu">office@lukeria.eu</a>, <a
+                                            href="mailto:lukeria@mail.bg">lukeria@mail.bg</a></p>
+                                    <p>Телефон: 060164664 </p>
+                                    <p>
+                                        За Покупка: <a href="https://supreva.com/bg/lukeriya-ood/?category_id=265"
+                                                       target="_blank">Натиснете тук</a>
+                                    </p>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -53,7 +60,7 @@ document.addEventListener("DOMContentLoaded", function() {
 </div>
 <script src="/js/app.js"></script>
 <style>
-	.custom-card-width {
+    .custom-card-width {
   width: 80%;
   margin: 0 auto; /* Optional: Centers the card horizontally */
 }
