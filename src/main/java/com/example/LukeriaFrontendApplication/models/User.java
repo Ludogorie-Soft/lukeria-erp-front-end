@@ -15,10 +15,11 @@ public class User {
     private Long id;
     @Size(min = 4)
     private String username;
-    @Size(min = 5)
-    private String fullName;
     @Email
     private String email;
+    private String address;
+    private String firstname;
+    private String lastname;
     private String password;
 
     private Role role;

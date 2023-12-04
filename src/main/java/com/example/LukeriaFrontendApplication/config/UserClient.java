@@ -11,20 +11,17 @@ import java.util.List;
 @FeignClient(name = "lukeria-erp-user", url = "http://localhost:8088/api/v1/user")
 public interface UserClient {
     @GetMapping
-    List<UserDTO> getAllUsers();
+    List<UserDTO> getAllUsers(@RequestHeader("Authorization") String auth);
 
     @GetMapping("/{id}")
-    UserDTO getUserById(@PathVariable(name = "id") Long id);
+    UserDTO getUserById(@PathVariable(name = "id") Long id, @RequestHeader("Authorization") String auth);
 
     @PostMapping
-    UserDTO createUser(@Valid @RequestBody User user);
+    UserDTO createUser(@Valid @RequestBody UserDTO user, @RequestHeader("Authorization") String auth);
 
     @PutMapping("/{id}")
-    UserDTO updateUser(@PathVariable("id") Long id, @Valid @RequestBody UserDTO userDTO);
+    UserDTO updateUser(@PathVariable("id") Long id, @Valid @RequestBody UserDTO userDTO, @RequestHeader("Authorization") String auth);
 
     @DeleteMapping("/{id}")
-    String deleteUserById(@PathVariable("id") Long id);
-
-    @PutMapping("restore/{id}")
-    UserDTO restoreUser(@PathVariable("id") Long id);
+    String deleteUserById(@PathVariable("id") Long id, @RequestHeader("Authorization") String auth);
 }

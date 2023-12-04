@@ -36,9 +36,12 @@ document.addEventListener("DOMContentLoaded", function() {
                         <div class="card-header">
                             <h5 class="card-title mb-0">Всички месечни поръчки</h5>
                         </div>
+                        <th:block
+                                th:if="${session.sessionToken != null and session.sessionRole == 'ADMIN'}">
                         <div class="text-center">
                             <a href="/monthlyOrder/create" class="btn btn-primary">Добави месечна поръчка</a>
                         </div>
+                        </th:block>
                         <div>
                         </div>
                         <div class="card-body">
@@ -58,6 +61,8 @@ document.addEventListener("DOMContentLoaded", function() {
                                         <td th:text="${clients[__${orderStat.index}__]?.businessName}"></td>
                                         <td th:text="${order.startDate} + ' - ' + ${order.endDate} "></td>
                                         <td><a th:href="@{/monthlyOrder/orderDetails/{orderId}(orderId=${order.id})}">Повече информация</a></td>
+                                        <th:block
+                                                th:if="${session.sessionToken != null and session.sessionRole == 'ADMIN'}">
                                         <td>
                                             <form th:action="@{'/monthlyOrder/delete/' + ${order.id}}" method="post" th:attr="onsubmit='return confirm(\'Сигурни ли сте, че искате да изтриете поръчка с номер: ' + ${order.id} + '?\');'">
                                                 <button type="submit" class="btn btn-danger">Изтрий</button>
@@ -68,6 +73,7 @@ document.addEventListener("DOMContentLoaded", function() {
                                                 <button type="submit" class="btn btn-primary">Редактирай</button>
                                             </form>
                                         </td>
+                                        </th:block>
                                     </tr>
                                     </tbody>
                                 </table>

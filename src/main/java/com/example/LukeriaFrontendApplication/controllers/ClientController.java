@@ -2,6 +2,7 @@ package com.example.LukeriaFrontendApplication.controllers;
 
 import com.example.LukeriaFrontendApplication.config.ClientClient;
 import com.example.LukeriaFrontendApplication.dtos.ClientDTO;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ui.Model;
@@ -20,8 +21,9 @@ public class ClientController {
     private static final String REDIRECTTXT = "redirect:/client/show";
 
     @GetMapping("/show")
-    public String index(Model model) {
-        List<ClientDTO> clients = clientClient.getAllClients();
+    public String index(Model model, HttpServletRequest request) {
+        String token = (String) request.getSession().getAttribute("sessionToken");
+        List<ClientDTO> clients = clientClient.getAllClients(token);
         model.addAttribute("deleteMessageBoolean", true);
 
         model.addAttribute("clients", clients);
@@ -29,8 +31,9 @@ public class ClientController {
     }
 
     @GetMapping("/show/{id}")
-    String getClientById(@PathVariable(name = "id") Long id, Model model) {
-        ClientDTO client = clientClient.getClientById(id);
+    String getClientById(@PathVariable(name = "id") Long id, Model model, HttpServletRequest request) {
+        String token = (String) request.getSession().getAttribute("sessionToken");
+        ClientDTO client = clientClient.getClientById(id, token);
         model.addAttribute(CARTONTXT, client);
         return "Client/showById";
     }
@@ -44,27 +47,32 @@ public class ClientController {
     }
 
     @GetMapping("/editClient/{id}")
-    String editClient(@PathVariable(name = "id") Long id, Model model) {
-        ClientDTO existingClient = clientClient.getClientById(id);
+    String editClient(@PathVariable(name = "id") Long id, Model model, HttpServletRequest request) {
+        String token = (String) request.getSession().getAttribute("sessionToken");
+        ClientDTO existingClient = clientClient.getClientById(id, token);
         model.addAttribute(CARTONTXT, existingClient);
         return "Client/edit";
     }
 
     @PostMapping("/submit")
-    public ModelAndView submitClient(@ModelAttribute("client") ClientDTO clientDTO) {
-        clientClient.createClient(clientDTO);
+    public ModelAndView submitClient(@ModelAttribute("client") ClientDTO clientDTO, HttpServletRequest request) {
+        String token = (String) request.getSession().getAttribute("sessionToken");
+        System.out.println(clientDTO);
+        clientClient.createClient(clientDTO, token);
         return new ModelAndView(REDIRECTTXT);
     }
 
-    @GetMapping("/edit/{id}")
-    ModelAndView editClient(@PathVariable(name = "id") Long id, ClientDTO clientDTO) {
-        clientClient.updateClient(id, clientDTO);
+    @PostMapping("/edit/{id}")
+    ModelAndView editClient(@PathVariable(name = "id") Long id, ClientDTO clientDTO, HttpServletRequest request) {
+        String token = (String) request.getSession().getAttribute("sessionToken");
+        clientClient.updateClient(id, clientDTO, token);
         return new ModelAndView(REDIRECTTXT);
     }
 
     @PostMapping("/delete/{id}")
-    ModelAndView deleteClientById(@PathVariable("id") Long id, Model model) {
-        clientClient.deleteClientById(id);
+    ModelAndView deleteClientById(@PathVariable("id") Long id, Model model, HttpServletRequest request) {
+        String token = (String) request.getSession().getAttribute("sessionToken");
+        clientClient.deleteClientById(id, token);
         return new ModelAndView(REDIRECTTXT);
     }
 

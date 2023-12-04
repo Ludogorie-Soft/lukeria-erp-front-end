@@ -40,9 +40,11 @@ document.addEventListener("DOMContentLoaded", function() {
                             <div class="card-header">
                                 <h5 class="card-title mb-0">Всички Кутии</h5>
                             </div>
+                            <th:block th:if="${session.sessionToken != null and session.sessionRole == 'ADMIN'}">
                             <div class="text-center">
                                 <a href="/package/create" class="btn btn-primary">Добави Кутия</a>
                             </div>
+                            </th:block>
                             <div class="card-body">
                                 <div class="row mb-3">
                                     <div class="col">
@@ -58,7 +60,9 @@ document.addEventListener("DOMContentLoaded", function() {
                                         <th>Име</th>
                                         <th>Английско име</th>
                                         <th>Наличност</th>
+                                        <th:block th:if="${session.sessionToken != null and session.sessionRole == 'ADMIN'}">
                                         <th>Цена</th>
+                                        </th:block>
                                         <th>Кашон ID</th>
                                         <th>Тарелка ID</th>
                                         <th>Брой кутии в Кашон</th>
@@ -75,10 +79,13 @@ document.addEventListener("DOMContentLoaded", function() {
                                         <td>
                                             <span th:text="${package.availableQuantity + ' Броя'}" th:class="${package.availableQuantity <= 20 ? 'red-cell' : (package.availableQuantity <= 100 ? 'yellow-cell' : '')}"></span>
                                         </td>
+                                        <th:block th:if="${session.sessionToken != null and session.sessionRole == 'ADMIN'}">
                                         <td th:text="${package.price + ' Лв'}"></td>
+                                        </th:block>
                                         <td th:text="${package.cartonId}"></td>
                                         <td th:text="${package.plateId}"></td>
                                         <td th:text="${package.piecesCarton}"></td>
+                                        <th:block th:if="${session.sessionToken != null and session.sessionRole == 'ADMIN'}">
                                         <td>
                                             <form th:action="@{'/package/delete/' + ${package.id}}" method="post" th:attr="onsubmit='return confirm(\'Сигурни ли сте, че искате да изтриете пакет с име: ' + ${package.name} + '?\');'">
                                                 <button type="submit" class="btn btn-danger">Изтрий</button>
@@ -89,6 +96,7 @@ document.addEventListener("DOMContentLoaded", function() {
                                                 <button type="submit" class="btn btn-primary">Редактирай</button>
                                             </form>
                                         </td>
+                                        </th:block>
                                     </tr>
                                     </tbody>
                                 </table>
