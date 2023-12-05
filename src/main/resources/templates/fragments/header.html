@@ -109,21 +109,28 @@ document.addEventListener("DOMContentLoaded", function() {
             <th:block th:if="${session.sessionToken != null}">
             <li class="sidebar-item">
                 <a id="nav-show3" class="sidebar-link" href="/order/show">
-                    <i class="fas fa-shopping-basket align-middle"></i> <span class="align-middle">Поръчки на продукти</span>
+                    <i class="fas fa-shopping-basket align-middle"></i> <span class="align-middle">Транспортиране на продукти</span>
                 </a>
             </li>
             </th:block>
             <th:block th:if="${session.sessionToken != null and session.sessionRole == 'ADMIN'}">
             <li class="sidebar-item">
                 <a id="nav-show93" class="sidebar-link" href="/monthlyOrder/show">
-                    <i class="fas fa-shopping-basket align-middle"></i> <span class="align-middle">Месечни поръчки</span>
+                    <i class="fas fa-shopping-basket align-middle"></i> <span class="align-middle">Поръчки</span>
                 </a>
             </li>
             </th:block>
             <th:block th:if="${session.sessionToken != null and session.sessionRole == 'PRODUCTION_MANAGER'}">
                 <li class="sidebar-item">
                     <a id="nav-show13" class="sidebar-link" href="/monthlyOrder/show">
-                        <i class="fas fa-shopping-basket align-middle"></i> <span class="align-middle">Месечни поръчки</span>
+                        <i class="fas fa-shopping-basket align-middle"></i> <span class="align-middle">Поръчки</span>
+                    </a>
+                </li>
+            </th:block>
+            <th:block th:if="${session.sessionToken != null and session.sessionRole == 'TRANSPORT_MANAGER'}">
+                <li class="sidebar-item">
+                    <a id="nav-show18" class="sidebar-link" href="/monthlyOrder/show">
+                        <i class="fas fa-shopping-basket align-middle"></i> <span class="align-middle">Поръчки</span>
                     </a>
                 </li>
             </th:block>
