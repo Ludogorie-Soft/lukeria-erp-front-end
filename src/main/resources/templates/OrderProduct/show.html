@@ -39,13 +39,22 @@ document.addEventListener("DOMContentLoaded", function() {
                         </div>
                         <th:block th:if="${session.sessionToken != null and session.sessionRole == 'ADMIN'}">
                             <div class="text-center">
-                                <a href="/order/create" class="btn btn-primary">Транспортиране на стоки</a>
+                                <a href="/order/create" class="btn btn-primary">Транспортиране на индивидуална поръчка</a>
+                            </div>
+                            <br>
+                            <div class="text-center">
+                                <a href="/order/monthly/create" class="btn btn-primary">Транспортиране към месечна поръчка</a>
                             </div>
                         </th:block>
+                        <br>
                         <th:block
                                 th:if="${session.sessionToken != null and session.sessionRole == 'TRANSPORT_MANAGER'}">
                             <div class="text-center">
-                                <a href="/order/create" class="btn btn-primary">Транспортиране на стоки</a>
+                                <a href="/order/create" class="btn btn-primary">Транспортиране на индивидуална поръчка</a>
+                            </div>
+                            <br>
+                            <div class="text-center">
+                                <a href="/order/create" class="btn btn-primary">Транспортиране към месечна поръчка</a>
                             </div>
                         </th:block>
                         <th:block th:if="${session.sessionToken != null and session.sessionRole == 'ADMIN'}">
@@ -54,6 +63,7 @@ document.addEventListener("DOMContentLoaded", function() {
                                     Материали за Всички Поръчки</a>
                             </div>
                         </th:block>
+                        <br>
                         <th:block
                                 th:if="${session.sessionToken != null and session.sessionRole == 'PRODUCTION_MANAGER'}">
                             <div class="text-center">

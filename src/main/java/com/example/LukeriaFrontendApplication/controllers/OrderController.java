@@ -1,8 +1,11 @@
 package com.example.LukeriaFrontendApplication.controllers;
 
 import com.example.LukeriaFrontendApplication.config.ClientClient;
+import com.example.LukeriaFrontendApplication.config.MonthlyOrderClient;
+import com.example.LukeriaFrontendApplication.config.MonthlyOrderProductClient;
 import com.example.LukeriaFrontendApplication.config.OrderClient;
 import com.example.LukeriaFrontendApplication.dtos.ClientDTO;
+import com.example.LukeriaFrontendApplication.dtos.MonthlyOrderDTO;
 import com.example.LukeriaFrontendApplication.dtos.OrderDTO;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -11,8 +14,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @org.springframework.stereotype.Controller
@@ -22,6 +27,7 @@ import java.util.stream.Collectors;
 public class OrderController {
     private final OrderClient orderClient;
     private final ClientClient clientClient;
+    private final MonthlyOrderClient monthlyOrderClient;
     private static final String ORDERTXT = "order";
     private static final String REDIRECTTXT = "redirect:/order/show";
 
@@ -30,6 +36,22 @@ public class OrderController {
         String token = (String) request.getSession().getAttribute("sessionToken");
         OrderDTO orderDTO = new OrderDTO();
         List<ClientDTO> clientDTOS = clientClient.getAllClients(token);
+        model.addAttribute("clients", clientDTOS);
+        model.addAttribute(ORDERTXT, orderDTO);
+        return "OrderProduct/create";
+    }
+    @GetMapping("/monthly/create")
+    String createOrderMonthly(Model model, HttpServletRequest request) {
+        String token = (String) request.getSession().getAttribute("sessionToken");
+        OrderDTO orderDTO = new OrderDTO();
+        List<ClientDTO> clientDTOS = new ArrayList<>();
+        for (ClientDTO clientDTO: clientClient.getAllClients(token)) {
+            for (MonthlyOrderDTO monthlyOrder : monthlyOrderClient.getAllMonthlyOrders(token)) {
+                if (Objects.equals(clientDTO.getId(), monthlyOrder.getClientId()) && !monthlyOrder.isInvoiced()) {
+                    clientDTOS.add(clientDTO);
+                }
+            }
+        }
         model.addAttribute("clients", clientDTOS);
         model.addAttribute(ORDERTXT, orderDTO);
         return "OrderProduct/create";
