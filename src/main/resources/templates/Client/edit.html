@@ -17,6 +17,50 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 });
 </script>
+<style>
+        /* Style to hide English fields by default */
+        .english-field {
+            display: none;
+        }
+
+</style>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Trigger the function on page load
+        showHideFields();
+
+        function showHideFields() {
+            var isBulgarianClient = document.querySelector('input[name="isBulgarianClient"]:checked').value;
+            var englishFields = document.querySelectorAll('.english-field');
+            var bulgarianFields = document.querySelectorAll('.bulgarian-field');
+
+            // Check if the client is from Bulgaria
+            if (isBulgarianClient === "true") {
+                // Hide the English fields and show the Bulgarian fields
+                englishFields.forEach(function (field) {
+                    field.style.display = 'none';
+                });
+                bulgarianFields.forEach(function (field) {
+                    field.style.display = 'block';
+                });
+            } else {
+                // Show the English fields and hide the Bulgarian fields
+                englishFields.forEach(function (field) {
+                    field.style.display = 'block';
+                });
+                bulgarianFields.forEach(function (field) {
+                    field.style.display = 'none';
+                });
+            }
+        }
+
+        // Attach an event listener for the radio buttons to update the fields when the user changes the selection
+        var radioButtons = document.getElementsByName("isBulgarianClient");
+        radioButtons.forEach(function(radioButton) {
+            radioButton.addEventListener("change", showHideFields);
+        });
+    });
+</script>
 <body>
 <div class="wrapper">
     <!--    HEADER  -->
@@ -36,28 +80,62 @@ document.addEventListener("DOMContentLoaded", function() {
                     </div>
                     <div class="card-body">
                         <form th:action="@{'/client/edit/' + ${client.id}}" method="post" th:object="${client}">
-                            <div class="form-group">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" th:field="*{isBulgarianClient}" name="isBulgarianClient" value=true id="isBulgarianClient" onclick="showHideFields()">
+                                <label class="form-check-label" for="isBulgarianClient">
+                                    Клиента е от България
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" th:field="*{isBulgarianClient}" name="isBulgarianClient"  value=false id="isBulgarianClient2" onclick="showHideFields()">
+                                <label class="form-check-label" for="isBulgarianClient2">
+                                    Клиента НЕ е от България
+                                </label>
+                            </div>
+                            <div class="form-group bulgarian-field">
                                 <label for="name">Име на фирма:</label>
                                 <input type="text" id="name" name="name" pattern=".{5,}"
-                                       title="Моля въведете името на фирмата с поне 5 символа!" required
+                                       title="Моля въведете името на фирмата с поне 5 символа!"
                                        th:field="*{businessName}"/>
                                 <div class="error-message"></div>
                             </div>
-                            <div class="form-group">
+                            <div class="form-group english-field">
                                 <label for="englishBusinessName">Име на фирма на ангрийски език:</label>
                                 <input type="text" id="englishBusinessName" name="englishBusinessName"  pattern="[a-zA-Z0-9\s!@#$%^&*()_+-=[{]};:'|,<.>?]*$"
 
-                                       title="Моля въведете името на фирмата на английски език с латински букви!" required
+                                       title="Моля въведете името на фирмата на английски език с латински букви!"
                                        th:field="*{englishBusinessName}"/>
                                 <div class="error-message"></div>
                             </div>
-                            <div class="form-group">
-                                <label for="idNumEIK">Ид. Номер по ЕИК:</label>
-                                <input type="text" id="idNumEIK" name="idNumEIK" pattern=".{5,}"
-                                       title="Номера по ЕИК трябва да бъде последователност от 5 цифри!" required
-                                       th:field="*{idNumEIK}"/>
-                                <div class="error-message"></div>
+
+                            <div class="form-group bulgarian-field">
+                                <label for="address">Адрес:</label>
+                                <input type="text" id="address" name="address"
+                                       th:field="*{address}"/>
                             </div>
+                            <div class="form-group english-field">
+                                <label for="englishAddress">Адрес на английски език:</label>
+                                <input type="text" id="englishAddress" name="englishAddress" pattern="[a-zA-Z0-9\s!@#$%^&*()_+-=[{]};:'|,<.>?]*$"
+                                       th:field="*{englishAddress}"/>
+                            </div>
+                            <div class="form-group bulgarian-field">
+                                <label for="mol">МОЛ:</label>
+                                <input type="text" id="mol" name="address"
+                                       th:field="*{mol}"/>
+                            </div>
+                            <div class="form-group english-field">
+                                <label for="englishMol">МОЛ на английски език:</label>
+                                <input type="text" id="englishMol" name="address" pattern="[a-zA-Z0-9\s!@#$%^&*()_+-=[{]};:'|,<.>?]*$"
+                                       title="Моля въведете името на МОЛ-а на английски език с латински букви!"
+                                       th:field="*{englishMol}"/>
+                            </div>
+                            <div class="form-group">
+                            <label for="idNumEIK">Ид. Номер по ЕИК:</label>
+                            <input type="text" id="idNumEIK" name="idNumEIK" pattern=".{5,}"
+                                   title="Номера по ЕИК трябва да бъде последователност от 5 цифри!"
+                                   th:field="*{idNumEIK}"/>
+                            <div class="error-message"></div>
+                        </div>
                             <div class="form-check">
                                 <input class="form-check-input" type="radio"  th:field="*{hasIdNumDDS}" name="hasIdNumDDS" th:value= true id="hasIdNumDDS">
                                 <label class="form-check-label" for="hasIdNumDDS">
@@ -69,39 +147,6 @@ document.addEventListener("DOMContentLoaded", function() {
                                 <label class="form-check-label" for="hasIdNumDDS2">
                                     Няма Ид. номер по ДДС
                                 </label>
-                            </div>
-                            <div class="form-group">
-                                <label for="address">Адрес:</label>
-                                <input type="text" id="address" name="address" required
-                                       th:field="*{address}"/>
-                            </div>
-                            <div class="form-group">
-                                <label for="englishAddress">Адрес на английски език:</label>
-                                <input type="text" id="englishAddress" name="englishAddress" pattern="[a-zA-Z0-9\s!@#$%^&*()_+-=[{]};:'|,<.>?]*$" required
-                                       th:field="*{englishAddress}"/>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" th:field="*{isBulgarianClient}" name="isBulgarianClient" value=true id="isBulgarianClient">
-                                <label class="form-check-label" for="isBulgarianClient">
-                                    Клиента е от България
-                                </label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" th:field="*{isBulgarianClient}" name="isBulgarianClient"  value=false id="isBulgarianClient2">
-                                <label class="form-check-label" for="isBulgarianClient2">
-                                    Клиента НЕ е от България
-                                </label>
-                            </div>
-                            <div class="form-group">
-                                <label for="mol">МОЛ:</label>
-                                <input type="text" id="mol" name="address"
-                                       th:field="*{mol}"/>
-                            </div>
-                            <div class="form-group">
-                                <label for="englishMol">МОЛ на английски език:</label>
-                                <input type="text" id="englishMol" name="address" pattern="[a-zA-Z0-9\s!@#$%^&*()_+-=[{]};:'|,<.>?]*$"
-                                       title="Моля въведете името на МОЛ-а на английски език с латински букви!" required
-                                       th:field="*{englishMol}"/>
                             </div>
                             <div class="text-center">
                                 <button type="submit" class="btn btn-primary">Редактирай</button>
