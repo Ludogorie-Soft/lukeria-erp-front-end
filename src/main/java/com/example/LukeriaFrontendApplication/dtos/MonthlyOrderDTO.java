@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
+import java.sql.Date;
 
 @Data
 @AllArgsConstructor
@@ -12,7 +12,7 @@ import java.time.LocalDate;
 public class MonthlyOrderDTO {
     private Long id;
     private Long clientId;
-    private LocalDate startDate;
-    private LocalDate endDate;
+    private Date startDate;
+    private Date endDate;
     private boolean invoiced;
 }

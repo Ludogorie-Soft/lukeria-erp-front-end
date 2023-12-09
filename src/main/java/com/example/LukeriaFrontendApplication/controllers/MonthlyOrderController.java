@@ -167,7 +167,7 @@ public class MonthlyOrderController {
             if (Objects.equals(order.getMonthlyOrderId(), id)) {
                 for (InvoiceOrderProductDTO invoiceOrderProductDTO1 : invoiceOrderProductDTOS) {
                     InvoiceDTO invoiceDTO = invoiceClient.getInvoiceById(invoiceOrderProductDTO1.getInvoiceId(), token);
-                    if ((invoiceDTO.getInvoiceDate().isBefore(monthlyOrderDTO.getEndDate()) || invoiceDTO.getInvoiceDate().equals(monthlyOrderDTO.getEndDate())) && (invoiceDTO.getInvoiceDate().isAfter(monthlyOrderDTO.getStartDate()) || invoiceDTO.getInvoiceDate().equals(monthlyOrderDTO.getStartDate()))) {
+                    if ((invoiceDTO.getInvoiceDate().isBefore(monthlyOrderDTO.getEndDate().toLocalDate()) || invoiceDTO.getInvoiceDate().equals(monthlyOrderDTO.getEndDate())) && (invoiceDTO.getInvoiceDate().isAfter(monthlyOrderDTO.getStartDate().toLocalDate()) || invoiceDTO.getInvoiceDate().equals(monthlyOrderDTO.getStartDate()))) {
                         Integer sent = 0;
                         order.setSentQuantity(sent);
                         System.out.println(monthlyOrderProductClient.getAllMonthlyProductOrders(token));

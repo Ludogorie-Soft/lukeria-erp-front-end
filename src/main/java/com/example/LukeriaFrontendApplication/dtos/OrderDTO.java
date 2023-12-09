@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
+import java.sql.Date;
 
 @Data
 @AllArgsConstructor
@@ -12,6 +12,6 @@ import java.time.LocalDate;
 public class OrderDTO {
     private Long id;
     private Long clientId;
-    private LocalDate orderDate;
+    private Date orderDate;
     private boolean invoiced;
 }
