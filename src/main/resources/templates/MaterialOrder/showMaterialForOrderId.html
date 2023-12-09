@@ -67,6 +67,11 @@ document.addEventListener("DOMContentLoaded", function() {
                                             <span th:if="${order.materialType == 'PLATE'}">Тарелка</span>
                                         </td>
                                         <td th:text="${order.orderedQuantity}"></td>
+                                        <td>
+                                            <span th:if="${order.materialType == 'CARTON'}"  th:text="${cartons[order.materialId-1].availableQuantity}"></span>
+                                            <span th:if="${order.materialType == 'PACKAGE'}" th:text="${packages[order.materialId-1].availableQuantity}"></span>
+                                            <span th:if="${order.materialType == 'PLATE'}" th:text="${plates[order.materialId-1].availableQuantity}"></span>
+                                        </td>
                                     </tr>
                                     </tbody>
                                 </table>
