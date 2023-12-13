@@ -1,10 +1,7 @@
 package com.example.LukeriaFrontendApplication.controllers;
 
 import com.example.LukeriaFrontendApplication.config.*;
-import com.example.LukeriaFrontendApplication.dtos.OrderDTO;
-import com.example.LukeriaFrontendApplication.dtos.OrderProductDTO;
-import com.example.LukeriaFrontendApplication.dtos.PackageDTO;
-import com.example.LukeriaFrontendApplication.dtos.ProductDTO;
+import com.example.LukeriaFrontendApplication.dtos.*;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,8 +24,11 @@ public class OrderProductController {
     private final OrderProductClient orderProductClient;
     private final OrderClient orderClient;
     private final ProductClient productClient;
+    private final ClientClient clientClient;
+    private final MonthlyOrderClient monthlyOrderClient;
+    private final MonthlyOrderProductClient monthlyOrderProductClient;
     private final PackageClient packageClient;
-    private static final String CARTONTXT = "orderProduct";
+    private static final String ORDERPRODUCT = "orderProduct";
     private static final String REDIRECTTXT = "redirect:/order/show";
 
     private final ImageClient imageService;
@@ -42,8 +42,8 @@ public class OrderProductController {
         OrderProductDTO orderProduct = new OrderProductDTO();
         OrderDTO orderDTO = orderClient.getOrderById(orderClient.findFirstByOrderByIdDesc(token).getId(), token);
         List<OrderProductDTO> orderProductDTOS = orderProductClient.getAllOrderProducts(token).stream().filter(order -> Objects.equals(order.getOrderId(), orderDTO.getId())).toList();
-        List<Long> packageDTOIds = orderProductDTOS.stream().map(OrderProductDTO::getPackageId).toList();
-        List<PackageDTO> packageDTOList = packageDTOIds.stream()
+        List<Long> packageDTOIds = packageDTOIds = orderProductDTOS.stream().map(OrderProductDTO::getPackageId).toList();
+        List<PackageDTO> packageDTOList = packageDTOList = packageDTOIds.stream()
                 .map(id1 -> packageClient.getPackageById(id1, token))
                 .collect(Collectors.toList());
         model.addAttribute("backendBaseUrl", backendBaseUrl);
@@ -51,15 +51,28 @@ public class OrderProductController {
         model.addAttribute("products", packageDTOList);
         model.addAttribute("order", orderDTO);
         List<PackageDTO> packageDTOS = new ArrayList<>();
-        for (PackageDTO aPackage : packageClient.getAllPackages(token)) {
-            for (ProductDTO productDTO : productClient.getAllProducts(token)) {
-                if (Objects.equals(productDTO.getPackageId(), aPackage.getId()) && productDTO.getAvailableQuantity() > 0) {
-                    packageDTOS.add(aPackage);
+        for (MonthlyOrderDTO monthlyOrder : monthlyOrderClient.getAllMonthlyOrders(token)) {
+            if (Objects.equals(orderDTO.getClientId(), monthlyOrder.getClientId()) && !orderDTO.isInvoiced()) {
+                for (MonthlyOrderProductDTO monthlyOrderProductDTO : monthlyOrderProductClient.getAllMonthlyProductOrders(token)) {
+                    for (ProductDTO productDTO : productClient.getAllProducts(token)) {
+                        if (Objects.equals(productDTO.getPackageId(), monthlyOrderProductDTO.getPackageId()) && productDTO.getAvailableQuantity() > 0) {
+                            packageDTOS.add(packageClient.getPackageById(monthlyOrderProductDTO.getPackageId(), token));
+                        }
+                    }
+                }
+            }
+        }
+        if (packageDTOS.isEmpty()) {
+            for (PackageDTO aPackage : packageClient.getAllPackages(token)) {
+                for (ProductDTO productDTO : productClient.getAllProducts(token)) {
+                    if (Objects.equals(productDTO.getPackageId(), aPackage.getId()) && productDTO.getAvailableQuantity() > 0) {
+                        packageDTOS.add(aPackage);
+                    }
                 }
             }
         }
         model.addAttribute("packages", packageDTOS);
-        model.addAttribute(CARTONTXT, orderProduct);
+        model.addAttribute(ORDERPRODUCT, orderProduct);
         return "OrderProduct/addProduct";
     }
 
@@ -78,6 +91,28 @@ public class OrderProductController {
             List<PackageDTO> packageDTOList = packageDTOIds.stream().map
                             (id1 -> packageClient.getPackageById(id1, token))
                     .collect(Collectors.toList());
+            List<PackageDTO> packageDTOS = new ArrayList<>();
+            for (MonthlyOrderDTO monthlyOrder : monthlyOrderClient.getAllMonthlyOrders(token)) {
+                if (Objects.equals(orderDTO.getClientId(), monthlyOrder.getClientId()) && !orderDTO.isInvoiced()) {
+                    for (MonthlyOrderProductDTO monthlyOrderProductDTO : monthlyOrderProductClient.getAllMonthlyProductOrders(token)) {
+                        for (ProductDTO productDTO : productClient.getAllProducts(token)) {
+                            if (Objects.equals(productDTO.getPackageId(), monthlyOrderProductDTO.getPackageId()) && productDTO.getAvailableQuantity() > 0) {
+                                packageDTOS.add(packageClient.getPackageById(monthlyOrderProductDTO.getPackageId(), token));
+                            }
+                        }
+                    }
+                }
+            }
+            if (packageDTOS.isEmpty()) {
+                for (PackageDTO aPackage : packageClient.getAllPackages(token)) {
+                    for (ProductDTO productDTO : productClient.getAllProducts(token)) {
+                        if (Objects.equals(productDTO.getPackageId(), aPackage.getId()) && productDTO.getAvailableQuantity() > 0) {
+                            packageDTOS.add(aPackage);
+                        }
+                    }
+                }
+            }
+            model.addAttribute("packages", packageDTOS);
             model.addAttribute("orderProducts", orderProductDTOS);
             model.addAttribute("products", packageDTOList);
             model.addAttribute("backendBaseUrl", backendBaseUrl);
@@ -112,12 +147,33 @@ public class OrderProductController {
         List<PackageDTO> packageDTOList = packageDTOIds.stream()
                 .map(id1 -> packageClient.getPackageById(id1, token))
                 .collect(Collectors.toList());
+        List<PackageDTO> packageDTOS = new ArrayList<>();
+        for (MonthlyOrderDTO monthlyOrder : monthlyOrderClient.getAllMonthlyOrders(token)) {
+            if (Objects.equals(orderDTO.getClientId(), monthlyOrder.getClientId()) && !orderDTO.isInvoiced()) {
+                for (MonthlyOrderProductDTO monthlyOrderProductDTO : monthlyOrderProductClient.getAllMonthlyProductOrders(token)) {
+                    for (ProductDTO productDTO : productClient.getAllProducts(token)) {
+                        if (Objects.equals(productDTO.getPackageId(), monthlyOrderProductDTO.getPackageId()) && productDTO.getAvailableQuantity() > 0) {
+                            packageDTOS.add(packageClient.getPackageById(monthlyOrderProductDTO.getPackageId(), token));
+                        }
+                    }
+                }
+            }
+        }
+        if (packageDTOS.isEmpty()) {
+            for (PackageDTO aPackage : packageClient.getAllPackages(token)) {
+                for (ProductDTO productDTO : productClient.getAllProducts(token)) {
+                    if (Objects.equals(productDTO.getPackageId(), aPackage.getId()) && productDTO.getAvailableQuantity() > 0) {
+                        packageDTOS.add(aPackage);
+                    }
+                }
+            }
+        }
         model.addAttribute("orderProducts", orderProductDTOS);
         model.addAttribute("products", packageDTOList);
         model.addAttribute("order", orderDTO);
-        model.addAttribute("packages", packageClient.getAllPackages(token));
+        model.addAttribute("packages", packageDTOS);
         model.addAttribute("backendBaseUrl", backendBaseUrl);
-        model.addAttribute(CARTONTXT, orderProduct);
+        model.addAttribute(ORDERPRODUCT, orderProduct);
         return "OrderProduct/addProductToExistingOrder";
     }
 

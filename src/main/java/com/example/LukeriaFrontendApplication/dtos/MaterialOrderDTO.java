@@ -7,7 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.sql.Date;
 
 @Data
 @AllArgsConstructor
@@ -23,5 +23,5 @@ public class MaterialOrderDTO {
     @NotBlank
     private String materialType;
     private BigDecimal materialPrice;
-    private LocalDate arrivalDate;
+    private Date arrivalDate;
 }

@@ -4,7 +4,7 @@
     <!--    LINKS  -->
     <th:block th:include="~{fragments/links}"></th:block>
 
-    <title> Всички Нужни брой Материали </title>
+    <title> Всички нужни материали </title>
     <link href="/css/show.css" rel="stylesheet">
 </head>
 <script>
@@ -36,7 +36,7 @@ document.addEventListener("DOMContentLoaded", function() {
                         <div class="card custom-card-width-lg">
                             <div class="card-header">
                                 <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
-                                    <h5 class="card-title mb-0">Всички Нужни брой Материали</h5>
+                                    <h5 class="card-title mb-0">Всички нужни материали</h5>
                                     <button onclick="printPage()">
                                         <i class="fas fa-print"></i>
                                     </button>
@@ -50,6 +50,7 @@ document.addEventListener("DOMContentLoaded", function() {
                                         <th>Материал</th>
                                         <th>Вид материал</th>
                                         <th>Нужен брой Материали</th>
+                                        <th>Брой материали в склад</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -66,7 +67,11 @@ document.addEventListener("DOMContentLoaded", function() {
                                             <span th:if="${order.materialType == 'PLATE'}">Тарелка</span>
                                         </td>
                                         <td th:text="${order.orderedQuantity}"></td>
-
+                                        <td>
+                                            <span th:if="${order.materialType == 'CARTON'}"  th:text="${cartons[order.materialId-1].availableQuantity}"></span>
+                                            <span th:if="${order.materialType == 'PACKAGE'}" th:text="${packages[order.materialId-1].availableQuantity}"></span>
+                                            <span th:if="${order.materialType == 'PLATE'}" th:text="${plates[order.materialId-1].availableQuantity}"></span>
+                                        </td>
                                     </tr>
                                     </tbody>
                                 </table>

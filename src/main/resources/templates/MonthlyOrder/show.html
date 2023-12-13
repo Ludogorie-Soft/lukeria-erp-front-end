@@ -34,12 +34,12 @@ document.addEventListener("DOMContentLoaded", function() {
                 <div class="col-lg-11 mx-auto">
                     <div class="card custom-card-width-lg">
                         <div class="card-header">
-                            <h5 class="card-title mb-0">Всички месечни поръчки</h5>
+                            <h5 class="card-title mb-0">Всички поръчки</h5>
                         </div>
                         <th:block
                                 th:if="${session.sessionToken != null and session.sessionRole == 'ADMIN'}">
                         <div class="text-center">
-                            <a href="/monthlyOrder/create" class="btn btn-primary">Добави месечна поръчка</a>
+                            <a href="/monthlyOrder/create" class="btn btn-primary">Добави поръчка</a>
                         </div>
                         </th:block>
                         <div>
