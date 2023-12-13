@@ -28,7 +28,7 @@ public class OrderProductController {
     private final MonthlyOrderClient monthlyOrderClient;
     private final MonthlyOrderProductClient monthlyOrderProductClient;
     private final PackageClient packageClient;
-    private static final String CARTONTXT = "orderProduct";
+    private static final String ORDERPRODUCT = "orderProduct";
     private static final String REDIRECTTXT = "redirect:/order/show";
 
     private final ImageClient imageService;
@@ -72,7 +72,7 @@ public class OrderProductController {
             }
         }
         model.addAttribute("packages", packageDTOS);
-        model.addAttribute(CARTONTXT, orderProduct);
+        model.addAttribute(ORDERPRODUCT, orderProduct);
         return "OrderProduct/addProduct";
     }
 
@@ -173,7 +173,7 @@ public class OrderProductController {
         model.addAttribute("order", orderDTO);
         model.addAttribute("packages", packageDTOS);
         model.addAttribute("backendBaseUrl", backendBaseUrl);
-        model.addAttribute(CARTONTXT, orderProduct);
+        model.addAttribute(ORDERPRODUCT, orderProduct);
         return "OrderProduct/addProductToExistingOrder";
     }
 
