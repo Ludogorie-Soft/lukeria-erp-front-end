@@ -51,6 +51,7 @@ public class InvoiceController {
         OrderDTO orderDTO = orderClient.getOrderById(id, token);
         List<ProductDTO> productDTOS = productClient.getAllProducts(token);
         InvoiceDTO invoiceDTO = new InvoiceDTO();
+        model.addAttribute("bankAccount", "");
         model.addAttribute("invoiceDTO", invoiceDTO);
         model.addAttribute("lastInvoiceNumber", lastInvoiceNumber);
         model.addAttribute("productDTOS", productDTOS);
@@ -122,6 +123,7 @@ public class InvoiceController {
                                       @RequestParam("orderProductIds") List<Long> orderProductIds,
                                       @RequestParam("quantityInputList") List<String> quantityInput,
                                       @RequestParam("priceInputList") List<String> priceInputList,
+                                      @RequestParam("bankAccount") String bankAccount,
                                       HttpServletRequest request) {
         String token = (String) request.getSession().getAttribute("sessionToken");
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
@@ -142,7 +144,15 @@ public class InvoiceController {
         invoiceDTO.setTotalPrice(paymentAmountStr);
         invoiceDTO.setDeadline(paymentDateStr);
         invoiceDTO.setCashPayment(paymentMethod);
-
+        if(invoiceDTO.getInvoiceNumber()>=2000000000) {
+            invoiceDTO.setBankAccount(bankAccount);
+        } else if(bankAccount.equals("BG56-UNCR-7000-1523215088 УНИКРЕДИТ БУЛБАНК АД")){
+            invoiceDTO.setBankAccount("BG56-UNCR-7000-1523215088 UNICREDIT BULBANK AD");
+        } else if(bankAccount.equals("BG84-BPBI-7943-1076363002 ЮРОБАНК БЪЛГАРИЯ АД")){
+            invoiceDTO.setBankAccount("BG84-BPBI-7943-1076363002 EUROBANK BULGARIA AD");
+        } else if(bankAccount.equals("BG06-DEMI-9240-1000326433 ТЪРГОВСКА БАНКА Д АД")){
+            invoiceDTO.setBankAccount("BG06-DEMI-9240-1000326433 COMMERCIAL BANK D AD");
+        }
         InvoiceOrderProductConfigDTO invoiceOrderProductConfigDTO = new InvoiceOrderProductConfigDTO();
         InvoiceDTO createdInvoice = invoiceClient.createInvoice(invoiceDTO, token);
 

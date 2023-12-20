@@ -169,10 +169,9 @@ document.addEventListener("DOMContentLoaded", function() {
                                     </tr>
                                     </tbody>
                                 </table>
-                                <label th:text = "#{other.bankAccount} + '  '"></label>
-                                    <strong th:text = #{other.bankAccountNumber}></strong>
+                                <label th:unless="${invoiceDTO.isCashPayment}" th:text = "#{other.bankAccount} + '  '"></label>
+                                    <strong th:unless="${invoiceDTO.isCashPayment}" th:text = "${invoiceDTO.bankAccount}"></strong>
                                 <br>
-
                                 <label th:text = "#{other.paymentMethod}"></label>
                                     <span th:if="${invoiceDTO.isCashPayment}"><strong th:text = "#{other.paymentMethodNum}"></strong> </span>
                                     <span th:unless="${invoiceDTO.isCashPayment}"><strong th:text = "#{other.paymentMehtodWithTranslationOrder}"></strong></span>
