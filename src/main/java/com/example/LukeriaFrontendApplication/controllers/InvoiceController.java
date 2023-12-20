@@ -40,10 +40,10 @@ public class InvoiceController {
         Long lastInvoiceNumber = 0L;
         List<OrderProductDTO> orderProductDTOS = queryClient.getOrderProductsByOrderId(id);
         OrderDTO order = orderClient.getOrderById(orderProductDTOS.get(0).getOrderId(), token);
-        ClientDTO client = clientClient.getClientById(order.getClientId(), token) ;
-        if(client.isBulgarianClient()){
+        ClientDTO client = clientClient.getClientById(order.getClientId(), token);
+        if (client.isBulgarianClient()) {
             lastInvoiceNumber = invoiceClient.findLastInvoiceNumberStartingWith(token);
-        } else{
+        } else {
             lastInvoiceNumber = invoiceClient.findLastInvoiceNumberStartingWithOne(token);
         }
         List<PackageDTO> packageDTOS = packageClient.getAllPackages(token);
@@ -66,8 +66,8 @@ public class InvoiceController {
         String token = (String) request.getSession().getAttribute("sessionToken");
         Long lastInvoiceNumber = invoiceClient.findLastInvoiceNumberStartingWith(token);
         Long orderId = 0L;
-        for (InvoiceOrderProductDTO invoiceOrderProductDTO: invoiceOrderProductClient.getAllInvoiceOrderProduct(token)) {
-            if(invoiceOrderProductDTO.getInvoiceId() == id){
+        for (InvoiceOrderProductDTO invoiceOrderProductDTO : invoiceOrderProductClient.getAllInvoiceOrderProduct(token)) {
+            if (invoiceOrderProductDTO.getInvoiceId() == id) {
                 OrderProductDTO orderProductDTO = orderProductClient.getOrderProductById(invoiceOrderProductDTO.getOrderProductId(), token);
                 orderId = orderProductDTO.getOrderId();
                 break;
@@ -212,8 +212,14 @@ public class InvoiceController {
     public String confirmationShow(Model model, HttpServletRequest request) {
         String token = (String) request.getSession().getAttribute("sessionToken");
         List<InvoiceDTO> invoiceDTOS = invoiceClient.getAllInvoices(token);
-        Collections.reverse(invoiceDTOS);
-        model.addAttribute("invoices", invoiceDTOS);
+        List<InvoiceDTO> invoicesAbroad = new ArrayList<>();
+        for (InvoiceDTO invoice : invoiceDTOS) {
+            if (invoice.getInvoiceNumber() < 2000000000) {
+                invoicesAbroad.add(invoice);
+            }
+        }
+        Collections.reverse(invoicesAbroad);
+        model.addAttribute("invoices", invoicesAbroad);
         return "Confirmation/show";
     }
 }
