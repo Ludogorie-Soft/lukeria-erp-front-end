@@ -74,9 +74,18 @@ document.addEventListener("DOMContentLoaded", function() {
                                     </thead>
                                     <tbody>
                                     <tr th:each="product, iter : ${products}" data-id="${product.id}" class="plate-row">
-                                        <td >
-                                            <img th:src="@{${backendBaseUrl} + '/'+ ${productPackageMapImages.get(product.packageId)}}" alt="no image" height="100" width="100">
+                                        <td>
+                                            <img th:if="${productPackageMapImages.containsKey(product.packageId)}"
+                                                 th:src="@{${backendBaseUrl} + '/' + ${productPackageMapImages.get(product.packageId)}}"
+                                                 height="100"
+                                                 width="100">
+                                            <img th:unless="${productPackageMapImages.containsKey(product.packageId)}"
+                                                 class="card-img-top"
+                                                 src="/img/photos/noImage.png"
+                                                 height="100"
+                                                 width="100">
                                         </td>
+
                                         <td th:text="${product.productCode}"></td>
                                         <td th:text="${productPackageMap.get(product.packageId)}"></td>
                                         <td>

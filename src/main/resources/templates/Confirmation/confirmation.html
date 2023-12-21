@@ -75,10 +75,20 @@ document.addEventListener("DOMContentLoaded", function() {
                                             </td>
                                             <td th:text="${orderProductDTO.number}"></td>
                                             <td>
-                                                <span th:text="${packageDTOS[orderProductDTO.packageId-1]?.price} * 1.95583 "></span >
+<!--                                                <span th:text="${orderProductDTO.sellingPrice} * 1.95583 "></span >-->
+                                                <script th:inline="javascript">
+                                                  var originalValue = /*[[${orderProductDTO.sellingPrice * 1.95583}]]*/ 0;
+                                                  var roundedValue = originalValue.toFixed(2);
+                                                  document.write(roundedValue);
+                                                </script>
                                             </td>
                                             <td>
-                                                <span th:text="${packageDTOS[orderProductDTO.packageId-1]?.price * orderProductDTO.number} * 1.95583"></span>
+<!--                                                <span th:text="${orderProductDTO.sellingPrice * orderProductDTO.number} * 1.95583"></span>-->
+                                                <script th:inline="javascript">
+                                                  var originalValue = /*[[${orderProductDTO.sellingPrice * orderProductDTO.number  * 1.95583}]]*/ 0;
+                                                  var roundedValue = originalValue.toFixed(2);
+                                                  document.write(roundedValue);
+                                                </script>
                                             </td>
                                         </tr>
                                         </tbody>

@@ -71,7 +71,17 @@ document.addEventListener("DOMContentLoaded", function() {
                                     <tbody>
                                     <tr th:each="package : ${packages}" data-id="${package.id}" class="package-row">
                                         <td>
-                                            <img th:src="@{${backendBaseUrl} + '/'+ ${package.photo}}" alt="no image" height="100" width="100">
+                                            <img th:if="${package.photo != null}"
+                                                 th:src="@{${backendBaseUrl} + '/' + ${package.photo}}"
+                                                 alt="no image"
+                                                 height="100"
+                                                 width="100">
+                                            <img th:unless="${package.photo != null}"
+                                                 class="card-img-top"
+                                                 src="/img/photos/noImage.png"
+                                                 alt="Default Image"
+                                                 height="100"
+                                                 width="100">
                                         </td>
                                         <td th:text="${package.id}"></td>
                                         <td th:text="${package.name}"></td>

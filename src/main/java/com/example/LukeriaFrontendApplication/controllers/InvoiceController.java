@@ -40,10 +40,10 @@ public class InvoiceController {
         Long lastInvoiceNumber = 0L;
         List<OrderProductDTO> orderProductDTOS = queryClient.getOrderProductsByOrderId(id);
         OrderDTO order = orderClient.getOrderById(orderProductDTOS.get(0).getOrderId(), token);
-        ClientDTO client = clientClient.getClientById(order.getClientId(), token) ;
-        if(client.isBulgarianClient()){
+        ClientDTO client = clientClient.getClientById(order.getClientId(), token);
+        if (client.isBulgarianClient()) {
             lastInvoiceNumber = invoiceClient.findLastInvoiceNumberStartingWith(token);
-        } else{
+        } else {
             lastInvoiceNumber = invoiceClient.findLastInvoiceNumberStartingWithOne(token);
         }
         List<PackageDTO> packageDTOS = packageClient.getAllPackages(token);
@@ -51,6 +51,7 @@ public class InvoiceController {
         OrderDTO orderDTO = orderClient.getOrderById(id, token);
         List<ProductDTO> productDTOS = productClient.getAllProducts(token);
         InvoiceDTO invoiceDTO = new InvoiceDTO();
+        model.addAttribute("bankAccount", "");
         model.addAttribute("invoiceDTO", invoiceDTO);
         model.addAttribute("lastInvoiceNumber", lastInvoiceNumber);
         model.addAttribute("productDTOS", productDTOS);
@@ -66,8 +67,8 @@ public class InvoiceController {
         String token = (String) request.getSession().getAttribute("sessionToken");
         Long lastInvoiceNumber = invoiceClient.findLastInvoiceNumberStartingWith(token);
         Long orderId = 0L;
-        for (InvoiceOrderProductDTO invoiceOrderProductDTO: invoiceOrderProductClient.getAllInvoiceOrderProduct(token)) {
-            if(invoiceOrderProductDTO.getInvoiceId() == id){
+        for (InvoiceOrderProductDTO invoiceOrderProductDTO : invoiceOrderProductClient.getAllInvoiceOrderProduct(token)) {
+            if (invoiceOrderProductDTO.getInvoiceId() == id) {
                 OrderProductDTO orderProductDTO = orderProductClient.getOrderProductById(invoiceOrderProductDTO.getOrderProductId(), token);
                 orderId = orderProductDTO.getOrderId();
                 break;
@@ -122,6 +123,7 @@ public class InvoiceController {
                                       @RequestParam("orderProductIds") List<Long> orderProductIds,
                                       @RequestParam("quantityInputList") List<String> quantityInput,
                                       @RequestParam("priceInputList") List<String> priceInputList,
+                                      @RequestParam("bankAccount") String bankAccount,
                                       HttpServletRequest request) {
         String token = (String) request.getSession().getAttribute("sessionToken");
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
@@ -142,7 +144,15 @@ public class InvoiceController {
         invoiceDTO.setTotalPrice(paymentAmountStr);
         invoiceDTO.setDeadline(paymentDateStr);
         invoiceDTO.setCashPayment(paymentMethod);
-
+        if(invoiceDTO.getInvoiceNumber()>=2000000000) {
+            invoiceDTO.setBankAccount(bankAccount);
+        } else if(bankAccount.equals("BG56-UNCR-7000-1523215088 УНИКРЕДИТ БУЛБАНК АД")){
+            invoiceDTO.setBankAccount("BG56-UNCR-7000-1523215088 UNICREDIT BULBANK AD");
+        } else if(bankAccount.equals("BG84-BPBI-7943-1076363002 ЮРОБАНК БЪЛГАРИЯ АД")){
+            invoiceDTO.setBankAccount("BG84-BPBI-7943-1076363002 EUROBANK BULGARIA AD");
+        } else if(bankAccount.equals("BG06-DEMI-9240-1000326433 ТЪРГОВСКА БАНКА Д АД")){
+            invoiceDTO.setBankAccount("BG06-DEMI-9240-1000326433 COMMERCIAL BANK D AD");
+        }
         InvoiceOrderProductConfigDTO invoiceOrderProductConfigDTO = new InvoiceOrderProductConfigDTO();
         InvoiceDTO createdInvoice = invoiceClient.createInvoice(invoiceDTO, token);
 
@@ -212,8 +222,14 @@ public class InvoiceController {
     public String confirmationShow(Model model, HttpServletRequest request) {
         String token = (String) request.getSession().getAttribute("sessionToken");
         List<InvoiceDTO> invoiceDTOS = invoiceClient.getAllInvoices(token);
-        Collections.reverse(invoiceDTOS);
-        model.addAttribute("invoices", invoiceDTOS);
+        List<InvoiceDTO> invoicesAbroad = new ArrayList<>();
+        for (InvoiceDTO invoice : invoiceDTOS) {
+            if (invoice.getInvoiceNumber() < 2000000000) {
+                invoicesAbroad.add(invoice);
+            }
+        }
+        Collections.reverse(invoicesAbroad);
+        model.addAttribute("invoices", invoicesAbroad);
         return "Confirmation/show";
     }
 }

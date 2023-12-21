@@ -76,14 +76,14 @@ document.addEventListener("DOMContentLoaded", function() {
                         <form action="/client/submit" method="post">
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="isBulgarianClient" value="true"
-                                       id="isBulgarianClient" onclick="showHideFields()">
+                                       id="isBulgarianClient" onclick="showHideFields()" required>
                                 <label class="form-check-label" for="isBulgarianClient">
                                     Клиента е от България
                                 </label>
                             </div>
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="isBulgarianClient" value="false"
-                                       id="isBulgarianClient2" onclick="showHideFields()">
+                                       id="isBulgarianClient2" onclick="showHideFields()" required>
                                 <label class="form-check-label" for="isBulgarianClient2">
                                     Клиента НЕ е от България
                                 </label>

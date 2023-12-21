@@ -16,6 +16,7 @@ document.addEventListener("DOMContentLoaded", function() {
     navbar.classList.toggle("collapsed");
     });
 });
+
 </script>
 <body>
 <div class="wrapper">
@@ -35,14 +36,44 @@ document.addEventListener("DOMContentLoaded", function() {
                     <div class="col-12">
                         <div class="card custom-card-width-lg">
                             <div class="card-header">
-                                <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+                                <div class="card-header"
+                                     style="display: flex; justify-content: space-between; align-items: center;">
                                     <h5 class="card-title mb-0">Всички нужни материали</h5>
                                     <button onclick="printPage()">
                                         <i class="fas fa-print"></i>
                                     </button>
                                 </div>
                             </div>
-
+                            <div class="modal fade" id="messageModal" tabindex="-1" role="dialog"
+                                 aria-labelledby="messageModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="messageModalLabel">Няма неначилни
+                                                материали!</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <h4 th:text="${message}"></h4>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                                                Затвори
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <script th:if="${message}">
+                            $(document).ready(function () {
+                               $('#messageModal').modal('show');
+                                 setTimeout(function() {
+                                  history.back();
+                               }, 2000);
+                             });
+                            </script>
                             <div class="card-body">
                                 <table class="table">
                                     <thead>
@@ -56,9 +87,12 @@ document.addEventListener("DOMContentLoaded", function() {
                                     <tbody>
                                     <tr th:each="order : ${orders}">
                                         <td>
-                                            <span th:if="${order.materialType == 'CARTON'}"  th:text="${cartons[order.materialId-1].name}"></span>
-                                            <span th:if="${order.materialType == 'PACKAGE'}" th:text="${packages[order.materialId-1].name}"></span>
-                                            <span th:if="${order.materialType == 'PLATE'}" th:text="${plates[order.materialId-1].name}"></span>
+                                            <span th:if="${order.materialType == 'CARTON'}"
+                                                  th:text="${cartons[order.materialId-1].name}"></span>
+                                            <span th:if="${order.materialType == 'PACKAGE'}"
+                                                  th:text="${packages[order.materialId-1].name}"></span>
+                                            <span th:if="${order.materialType == 'PLATE'}"
+                                                  th:text="${plates[order.materialId-1].name}"></span>
 
                                         </td>
                                         <td>
@@ -68,9 +102,12 @@ document.addEventListener("DOMContentLoaded", function() {
                                         </td>
                                         <td th:text="${order.orderedQuantity}"></td>
                                         <td>
-                                            <span th:if="${order.materialType == 'CARTON'}"  th:text="${cartons[order.materialId-1].availableQuantity}"></span>
-                                            <span th:if="${order.materialType == 'PACKAGE'}" th:text="${packages[order.materialId-1].availableQuantity}"></span>
-                                            <span th:if="${order.materialType == 'PLATE'}" th:text="${plates[order.materialId-1].availableQuantity}"></span>
+                                            <span th:if="${order.materialType == 'CARTON'}"
+                                                  th:text="${cartons[order.materialId-1].availableQuantity}"></span>
+                                            <span th:if="${order.materialType == 'PACKAGE'}"
+                                                  th:text="${packages[order.materialId-1].availableQuantity}"></span>
+                                            <span th:if="${order.materialType == 'PLATE'}"
+                                                  th:text="${plates[order.materialId-1].availableQuantity}"></span>
                                         </td>
                                     </tr>
                                     </tbody>
@@ -87,7 +124,10 @@ document.addEventListener("DOMContentLoaded", function() {
     function printPage() {
         window.print();
     }
+
 </script>
 <script src="/js/app.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 </body>
 </html>

@@ -31,9 +31,6 @@ document.addEventListener("DOMContentLoaded", function() {
         <main class="content">
             <div class="row">
                 <div class="col-md-6 text-start">
-                    <button id="printButton" class="btn btn-primary" onclick="printPage()">
-                        Принтирай <i class="fas fa-print"></i>
-                    </button>
                     <h6 style="color:red;"> Цените се определят по курс на евро 1.95583</h6>
                 </div>
                 <div class="col-md-6 text-end">
@@ -42,6 +39,12 @@ document.addEventListener("DOMContentLoaded", function() {
             </div>
             <div class="row">
                 <div class="col-lg-8 mx-auto">
+                    <button id="printButton" class="btn btn-primary" onclick="printPage()">
+                        Принтирай <i class="fas fa-print"></i>
+                    </button>
+                    <button class="btn btn-primary" onclick="generatePDF()">
+                        Свали PDF
+                    </button>
                     <div class="card custom-card-width-lg">
                         <div class="card-header">
                             <div class="container">
@@ -166,10 +169,9 @@ document.addEventListener("DOMContentLoaded", function() {
                                     </tr>
                                     </tbody>
                                 </table>
-                                <label th:text = "#{other.bankAccount} + '  '"></label>
-                                    <strong th:text = #{other.bankAccountNumber}></strong>
+                                <label th:unless="${invoiceDTO.isCashPayment}" th:text = "#{other.bankAccount} + '  '"></label>
+                                    <strong th:unless="${invoiceDTO.isCashPayment}" th:text = "${invoiceDTO.bankAccount}"></strong>
                                 <br>
-
                                 <label th:text = "#{other.paymentMethod}"></label>
                                     <span th:if="${invoiceDTO.isCashPayment}"><strong th:text = "#{other.paymentMethodNum}"></strong> </span>
                                     <span th:unless="${invoiceDTO.isCashPayment}"><strong th:text = "#{other.paymentMehtodWithTranslationOrder}"></strong></span>
@@ -190,6 +192,8 @@ document.addEventListener("DOMContentLoaded", function() {
 
 </html>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
 <script src="/js/invoiceId.js"></script>
 <script>
 var invoiceId = [[${InvoiceId}]];
@@ -211,4 +215,20 @@ var invoiceId = [[${InvoiceId}]];
 
     // Set the rounded value as the text content of the <td> element
     tdElement.textContent = roundedValue.toFixed(2);
+</script>
+
+<script>
+    function generatePDF() {
+        const element = document.querySelector('.custom-card-width-lg'); // Select the element to convert to PDF
+        const opt = {
+            margin: 10,
+            filename: 'invoice.pdf', // Set the PDF file name
+            image: { type: 'jpeg', quality: 0.40 }, // Image settings
+            html2canvas: { scale: 2 }, // Higher scale for better resolution
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } // PDF settings
+        };
+
+        // Use html2pdf to generate the PDF
+        html2pdf().from(element).set(opt).save();
+    }
 </script>

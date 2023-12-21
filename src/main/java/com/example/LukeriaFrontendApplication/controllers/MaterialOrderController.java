@@ -64,7 +64,7 @@ public class MaterialOrderController {
         if (materialsForOrder.isEmpty()) {
             model.addAttribute("materialAvailability",true);
             model.addAttribute("materialsForOrder",materialsForOrder);
-            return MATERIALSORDERSHOW;
+            model.addAttribute("message","Всички материални са налични!");
         }
         List<PackageDTO> packages=packageClient.getAllPackages(token);
         List<CartonDTO> cartons =cartonClient.getAllCartons(token);
@@ -84,7 +84,7 @@ public class MaterialOrderController {
         if (materialsForOrder.isEmpty()) {
             model.addAttribute("materialAvailability",true);
             model.addAttribute("materialsForOrder",materialsForOrder);
-            return MATERIALSORDERSHOW;
+            model.addAttribute("message","Всички материални са налични!");
         }
         List<PackageDTO> packages=packageClient.getAllPackages(token);
         List<CartonDTO> cartons =cartonClient.getAllCartons(token);
