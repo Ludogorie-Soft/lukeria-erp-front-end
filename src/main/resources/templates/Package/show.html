@@ -48,6 +48,9 @@ document.addEventListener("DOMContentLoaded", function() {
                             <div class="card-body">
                                 <div class="row mb-3">
                                     <div class="col">
+                                        <input type="text" id="searchInput1" class="form-control" placeholder="Търсене по номер код на продукт">
+                                    </div>
+                                    <div class="col">
                                         <input type="text" id="searchInput2" class="form-control" placeholder="Търсене по име на кутия">
                                     </div>
                                 </div>
@@ -56,7 +59,7 @@ document.addEventListener("DOMContentLoaded", function() {
                                     <thead>
                                     <tr>
                                         <th>Снимка</th>
-                                        <th>ID</th>
+                                        <th>Код на кутията</th>
                                         <th>Име</th>
                                         <th>Английско име</th>
                                         <th>Наличност</th>
@@ -83,7 +86,7 @@ document.addEventListener("DOMContentLoaded", function() {
                                                  height="100"
                                                  width="100">
                                         </td>
-                                        <td th:text="${package.id}"></td>
+                                        <td th:text="${package.productCode}"></td>
                                         <td th:text="${package.name}"></td>
                                         <td th:text="${package.englishName}"></td>
                                         <td>
@@ -139,6 +142,26 @@ document.addEventListener("DOMContentLoaded", function() {
             }
         }
     });
+    document.getElementById('searchInput1').addEventListener('input', function () {
+        var input, filter, table, tr, td, i, txtValue;
+        input = document.getElementById('searchInput1');
+        filter = input.value.toUpperCase();
+        table = document.querySelector('table');
+        tr = table.getElementsByTagName('tr');
+
+        for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName('td')[1]; //
+            if (td) {
+                txtValue = td.textContent || td.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = '';
+                } else {
+                    tr[i].style.display = 'none';
+                }
+            }
+        }
+    });
+
 </script>
 
 </body>

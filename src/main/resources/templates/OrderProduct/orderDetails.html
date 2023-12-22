@@ -75,7 +75,7 @@ document.addEventListener("DOMContentLoaded", function() {
                                         <img th:src="@{${backendBaseUrl} + '/'+ ${product.photo}}" alt="no image"
                                              height="100" width="100">
                                     </td>
-                                    <td th:text="${product.id}"></td>
+                                    <td th:text="${product.productCode}"></td>
                                     <td th:text="${product.name}"></td>
                                     <td th:text="${orderProducts[iter.index]?.number}"></td>
                                     <th:block
