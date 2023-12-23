@@ -42,10 +42,16 @@ document.addEventListener("DOMContentLoaded", function() {
               <div class="card-body">
                 <div class="row mb-3">
                   <div class="col">
-                    <input type="text" id="searchInput1" class="form-control" placeholder="Търсене по номер ID...">
+                    <input type="text" id="searchInput1" class="form-control" placeholder="Търсене по колона Български клиент"><br>
+                    <div class="alert alert-primary" role="alert">
+                      <label>Резултати от търсенето: <span id="resultsCount"></span></label>
+                    </div>
                   </div>
                   <div class="col">
-                    <input type="text" id="searchInput" class="form-control" placeholder="Търсене по име на фирма...">
+                    <input type="text" id="searchInput2" class="form-control" placeholder="Търсене по име на фирма"><br>
+                    <div class="alert alert-primary" role="alert">
+                      <label>Резултати от търсенето: <span id="resultsCount2"></span></label>
+                    </div>
                   </div>
                 </div>
                 <div class="table-responsive">
@@ -94,5 +100,73 @@ document.addEventListener("DOMContentLoaded", function() {
   </div>
 </div>
 <script src="/js/app.js"></script>
+<script>
+      document.getElementById('searchInput2').addEventListener('input', function () {
+    var input, filter, table, tr, td, i, txtValue;
+    input = document.getElementById('searchInput2');
+    filter = input.value.toUpperCase();
+    table = document.querySelector('table');
+    tr = table.getElementsByTagName('tr');
+    var count = 0; // Initialize the count variable
+
+    for (i = 0; i < tr.length; i++) {
+        td = tr[i].getElementsByTagName('td')[1];
+        if (td) {
+            txtValue = td.textContent || td.innerText;
+            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                tr[i].style.display = '';
+                count++; // Increment the count when a match is found
+            } else {
+                tr[i].style.display = 'none';
+            }
+        }
+    }
+
+    // Display the results count for the second search input
+    var resultsCountElement = document.getElementById('resultsCount2');
+    if (resultsCountElement) {
+        resultsCountElement.textContent = count;
+    } else {
+        // If the element doesn't exist, you can create and append it
+        resultsCountElement = document.createElement('div');
+        resultsCountElement.id = 'resultsCount2';
+        resultsCountElement.textContent = count;
+        input.parentNode.appendChild(resultsCountElement); // Appending to the parent of the input
+    }
+});
+    document.getElementById('searchInput1').addEventListener('input', function () {
+    var input, filter, table, tr, td, i, txtValue;
+    input = document.getElementById('searchInput1');
+    filter = input.value.toUpperCase();
+    table = document.querySelector('table');
+    tr = table.getElementsByTagName('tr');
+    var count = 0; // Initialize the count variable
+
+    for (i = 0; i < tr.length; i++) {
+        td = tr[i].getElementsByTagName('td')[5];
+        if (td) {
+            txtValue = td.textContent || td.innerText;
+            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                tr[i].style.display = '';
+                count++; // Increment the count when a match is found
+            } else {
+                tr[i].style.display = 'none';
+            }
+        }
+    }
+
+    // Display the results count
+    var resultsCountElement = document.getElementById('resultsCount');
+    if (resultsCountElement) {
+        resultsCountElement.textContent = count;
+    } else {
+        // If the element doesn't exist, you can create and append it
+        resultsCountElement = document.createElement('div');
+        resultsCountElement.id = 'resultsCount';
+        resultsCountElement.textContent = count;
+        input.parentNode.appendChild(resultsCountElement); // Appending to the parent of the input
+    }
+});
+</script>
 </body>
 </html>

@@ -1,13 +1,11 @@
 package com.example.LukeriaFrontendApplication.controllers;
 
 import com.example.LukeriaFrontendApplication.config.UploadFileClient;
-import com.example.LukeriaFrontendApplication.dtos.PackageDTO;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,10 +18,12 @@ import java.io.IOException;
 @Slf4j
 public class UploadFileController {
     private final UploadFileClient uploadFileClient;
+
     @GetMapping("/upload/file")
     String createPackage(Model model, HttpServletRequest request) {
         return "uploadFile";
     }
+
     @PostMapping("/upload/file/submit")
     public ModelAndView uploadFromFile(@RequestParam MultipartFile file) throws IOException {
         uploadFileClient.uploadFromFile(file);
