@@ -25,8 +25,8 @@ public interface MaterialOrderClient {
     String deleteMaterialOrderById(@PathVariable("id") Long id, @RequestHeader("Authorization") String auth);
 
     @GetMapping("products/{id}")
-     List<MaterialOrderDTO> getAllProductsByOrderId(@PathVariable(name = "id") Long id, @RequestHeader("Authorization") String auth);
+    List<MaterialOrderDTO> getAllProductsByOrderId(@PathVariable(name = "id") Long id, @RequestHeader("Authorization") String auth);
 
     @GetMapping("/all-missing-materials")
-     List<MaterialOrderDTO>  allAvailableProducts(@RequestHeader("Authorization") String auth);
+    List<MaterialOrderDTO> allAvailableProducts(@RequestHeader("Authorization") String auth);
 }

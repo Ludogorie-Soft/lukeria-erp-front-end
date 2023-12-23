@@ -11,6 +11,7 @@ import java.util.List;
 public interface OrderClient {
     @GetMapping()
     List<OrderDTO> getAllOrders(@RequestHeader("Authorization") String auth);
+
     @GetMapping("/findLastOrder")
     OrderDTO findFirstByOrderByIdDesc(@RequestHeader("Authorization") String auth);
 
@@ -21,7 +22,7 @@ public interface OrderClient {
     OrderDTO createOrder(@Valid @RequestBody OrderDTO orderDTO, @RequestHeader("Authorization") String auth);
 
     @PutMapping("/{id}")
-    void updateOrder(@PathVariable("id") Long id, @Valid @RequestBody OrderDTO orderDTO, @RequestHeader("Authorization") String auth) ;
+    void updateOrder(@PathVariable("id") Long id, @Valid @RequestBody OrderDTO orderDTO, @RequestHeader("Authorization") String auth);
 
     @DeleteMapping("/{id}")
     String deleteOrderById(@PathVariable("id") Long id, @RequestHeader("Authorization") String auth);

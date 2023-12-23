@@ -1,7 +1,9 @@
 package com.example.LukeriaFrontendApplication.config;
 
-import com.example.LukeriaFrontendApplication.dtos.*;
-import org.apache.coyote.Response;
+import com.example.LukeriaFrontendApplication.dtos.AuthenticationRequest;
+import com.example.LukeriaFrontendApplication.dtos.AuthenticationResponse;
+import com.example.LukeriaFrontendApplication.dtos.RefreshTokenBodyDTO;
+import com.example.LukeriaFrontendApplication.dtos.RegisterRequest;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,6 +23,7 @@ public interface AuthenticationClient {
 
     @PostMapping("/refresh-token")
     AuthenticationResponse refreshToken(@RequestBody RefreshTokenBodyDTO refreshTokenBody) throws IOException;
+
     @GetMapping("/logout")
-    void logout (@RequestHeader("Authorization") String auth);
+    void logout(@RequestHeader("Authorization") String auth);
 }

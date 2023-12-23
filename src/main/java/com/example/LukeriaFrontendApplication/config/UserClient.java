@@ -1,6 +1,5 @@
 package com.example.LukeriaFrontendApplication.config;
 
-import com.example.LukeriaFrontendApplication.models.User;
 import com.example.LukeriaFrontendApplication.dtos.UserDTO;
 import jakarta.validation.Valid;
 import org.springframework.cloud.openfeign.FeignClient;

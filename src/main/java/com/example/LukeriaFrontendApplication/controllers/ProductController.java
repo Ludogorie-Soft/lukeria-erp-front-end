@@ -24,9 +24,9 @@ import java.util.stream.Collectors;
 @Slf4j
 @RequestMapping("/product")
 public class ProductController {
+    private static final String REDIRECTTXT = "redirect:/product/show";
     private final ProductClient productClient;
     private final PackageClient packageClient;
-    private static final String REDIRECTTXT = "redirect:/product/show";
     private final ImageClient imageService;
     @Value("${backend.base-url}")
     private String backendBaseUrl;

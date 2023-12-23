@@ -2,7 +2,6 @@ package com.example.LukeriaFrontendApplication.controllers;
 
 import com.example.LukeriaFrontendApplication.config.ClientClient;
 import com.example.LukeriaFrontendApplication.config.MonthlyOrderClient;
-import com.example.LukeriaFrontendApplication.config.MonthlyOrderProductClient;
 import com.example.LukeriaFrontendApplication.config.OrderClient;
 import com.example.LukeriaFrontendApplication.dtos.ClientDTO;
 import com.example.LukeriaFrontendApplication.dtos.MonthlyOrderDTO;
@@ -25,11 +24,11 @@ import java.util.stream.Collectors;
 @Slf4j
 @RequestMapping("/order")
 public class OrderController {
+    private static final String ORDERTXT = "order";
+    private static final String REDIRECTTXT = "redirect:/order/show";
     private final OrderClient orderClient;
     private final ClientClient clientClient;
     private final MonthlyOrderClient monthlyOrderClient;
-    private static final String ORDERTXT = "order";
-    private static final String REDIRECTTXT = "redirect:/order/show";
 
     @GetMapping("/create")
     String createOrder(Model model, HttpServletRequest request) {
@@ -40,12 +39,13 @@ public class OrderController {
         model.addAttribute(ORDERTXT, orderDTO);
         return "OrderProduct/create";
     }
+
     @GetMapping("/monthly/create")
     String createOrderMonthly(Model model, HttpServletRequest request) {
         String token = (String) request.getSession().getAttribute("sessionToken");
         OrderDTO orderDTO = new OrderDTO();
         List<ClientDTO> clientDTOS = new ArrayList<>();
-        for (ClientDTO clientDTO: clientClient.getAllClients(token)) {
+        for (ClientDTO clientDTO : clientClient.getAllClients(token)) {
             for (MonthlyOrderDTO monthlyOrder : monthlyOrderClient.getAllMonthlyOrders(token)) {
                 if (Objects.equals(clientDTO.getId(), monthlyOrder.getClientId()) && !monthlyOrder.isInvoiced()) {
                     clientDTOS.add(clientDTO);

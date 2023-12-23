@@ -17,9 +17,8 @@ import java.util.List;
 @Slf4j
 @RequestMapping("/user")
 public class UserController {
-    private final UserClient userClient;
     private static final String REDIRECTTXT = "redirect:/user/show";
-
+    private final UserClient userClient;
 
     @GetMapping("/show")
     public String index(Model model, HttpServletRequest request) {
@@ -50,12 +49,14 @@ public class UserController {
         model.addAttribute("user", existingCarton);
         return "User/edit";
     }
+
     @GetMapping("/edit/{id}")
     ModelAndView editSubmitUser(@PathVariable(name = "id") Long id, UserDTO userDTO, HttpServletRequest request) {
         String token = (String) request.getSession().getAttribute("sessionToken");
         userClient.updateUser(id, userDTO, token);
         return new ModelAndView(REDIRECTTXT);
     }
+
     @PostMapping("/delete/{id}")
     ModelAndView deleteClientById(@PathVariable("id") Long id, Model model, HttpServletRequest request) {
         String token = (String) request.getSession().getAttribute("sessionToken");

@@ -3,14 +3,15 @@ package com.example.LukeriaFrontendApplication.config;
 import com.example.LukeriaFrontendApplication.dtos.MonthlyOrderProductDTO;
 import jakarta.validation.Valid;
 import org.springframework.cloud.openfeign.FeignClient;
-
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
 @FeignClient(name = "lukeria-erp-monthlyOrderProduct", url = "http://localhost:8088/api/v1/monthlyOrderProduct")
 public interface MonthlyOrderProductClient {
     @GetMapping
     List<MonthlyOrderProductDTO> getAllMonthlyProductOrders(@RequestHeader("Authorization") String auth);
+
     @GetMapping("/{id}")
     MonthlyOrderProductDTO getMonthlyOrderProductById(@PathVariable(name = "id") Long id, @RequestHeader("Authorization") String auth);
 

@@ -21,6 +21,8 @@ import java.util.stream.Collectors;
 @Slf4j
 @RequestMapping("/orderProduct")
 public class OrderProductController {
+    private static final String ORDERPRODUCT = "orderProduct";
+    private static final String REDIRECTTXT = "redirect:/order/show";
     private final OrderProductClient orderProductClient;
     private final OrderClient orderClient;
     private final ProductClient productClient;
@@ -28,9 +30,6 @@ public class OrderProductController {
     private final MonthlyOrderClient monthlyOrderClient;
     private final MonthlyOrderProductClient monthlyOrderProductClient;
     private final PackageClient packageClient;
-    private static final String ORDERPRODUCT = "orderProduct";
-    private static final String REDIRECTTXT = "redirect:/order/show";
-
     private final ImageClient imageService;
 
     @Value("${backend.base-url}")

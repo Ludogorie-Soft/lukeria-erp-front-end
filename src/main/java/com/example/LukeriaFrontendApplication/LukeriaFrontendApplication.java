@@ -8,8 +8,8 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 @EnableFeignClients
 public class LukeriaFrontendApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(LukeriaFrontendApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(LukeriaFrontendApplication.class, args);
+    }
 
 }

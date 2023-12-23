@@ -17,9 +17,9 @@ public class SessionManager {
         session.setAttribute("sessionRole", role);
     }
 
-    public void invalidateSession(HttpServletRequest request ){
+    public void invalidateSession(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
-        if(session!= null){
+        if (session != null) {
             session.invalidate();
         }
     }

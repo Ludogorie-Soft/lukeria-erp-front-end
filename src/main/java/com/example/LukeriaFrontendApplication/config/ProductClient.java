@@ -25,6 +25,7 @@ public interface ProductClient {
 
     @DeleteMapping("/{id}")
     String deleteProductById(@PathVariable("id") Long id, @RequestHeader("Authorization") String auth);
+
     @PostMapping("/produce")
     ResponseEntity<ProductDTO> produceProduct(@RequestParam("productId") Long productId, @RequestParam("producedQuantity") int producedQuantity, @RequestHeader("Authorization") String auth);
 }

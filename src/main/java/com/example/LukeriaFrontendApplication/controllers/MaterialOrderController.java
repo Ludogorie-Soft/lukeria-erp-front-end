@@ -24,18 +24,18 @@ import java.util.List;
 @Slf4j
 @RequestMapping("/material-order")
 public class MaterialOrderController {
-    private final MaterialOrderClient materialOrderClient;
-    private final CartonClient cartonClient;
-    private final PackageClient packageClient;
-    private final PlateClient plateClient;
-    @Value("${backend.base-url}")
-    private String backendBaseUrl;
     private static final String ORDERTXT = "orders";
     private static final String PLATETXT = "plates";
     private static final String PACKAGETXT = "packages";
     private static final String CARTONTXT = "cartons";
     private static final String REDIRECTTXT = "redirect:/material-order/show";
     private static final String MATERIALSORDERSHOW = "MaterialOrder/show";
+    private final MaterialOrderClient materialOrderClient;
+    private final CartonClient cartonClient;
+    private final PackageClient packageClient;
+    private final PlateClient plateClient;
+    @Value("${backend.base-url}")
+    private String backendBaseUrl;
 
     @GetMapping("/create")
     String createMaterialOrder(Model model, HttpServletRequest request) {
@@ -48,6 +48,7 @@ public class MaterialOrderController {
         model.addAttribute("backendBaseUrl", backendBaseUrl);
         return "MaterialOrder/create";
     }
+
     @GetMapping("/show")
     public String index(Model model, HttpServletRequest request) {
         String token = (String) request.getSession().getAttribute("sessionToken");
@@ -58,17 +59,17 @@ public class MaterialOrderController {
     }
 
     @GetMapping("/materials/{id}")
-    public String showMaterialForOrderId(@PathVariable("id") Long id,Model model, HttpServletRequest request) {
+    public String showMaterialForOrderId(@PathVariable("id") Long id, Model model, HttpServletRequest request) {
         String token = (String) request.getSession().getAttribute("sessionToken");
         List<MaterialOrderDTO> materialsForOrder = materialOrderClient.getAllProductsByOrderId(id, token);
         if (materialsForOrder.isEmpty()) {
-            model.addAttribute("materialAvailability",true);
-            model.addAttribute("materialsForOrder",materialsForOrder);
-            model.addAttribute("message","Всички материални са налични!");
+            model.addAttribute("materialAvailability", true);
+            model.addAttribute("materialsForOrder", materialsForOrder);
+            model.addAttribute("message", "Всички материални са налични!");
         }
-        List<PackageDTO> packages=packageClient.getAllPackages(token);
-        List<CartonDTO> cartons =cartonClient.getAllCartons(token);
-        List<PlateDTO> plates=plateClient.getAllPlates(token);
+        List<PackageDTO> packages = packageClient.getAllPackages(token);
+        List<CartonDTO> cartons = cartonClient.getAllCartons(token);
+        List<PlateDTO> plates = plateClient.getAllPlates(token);
 
         model.addAttribute(PACKAGETXT, packages);
         model.addAttribute(CARTONTXT, cartons);
@@ -82,13 +83,13 @@ public class MaterialOrderController {
         String token = (String) request.getSession().getAttribute("sessionToken");
         List<MaterialOrderDTO> materialsForOrder = materialOrderClient.allAvailableProducts(token);
         if (materialsForOrder.isEmpty()) {
-            model.addAttribute("materialAvailability",true);
-            model.addAttribute("materialsForOrder",materialsForOrder);
-            model.addAttribute("message","Всички материални са налични!");
+            model.addAttribute("materialAvailability", true);
+            model.addAttribute("materialsForOrder", materialsForOrder);
+            model.addAttribute("message", "Всички материални са налични!");
         }
-        List<PackageDTO> packages=packageClient.getAllPackages(token);
-        List<CartonDTO> cartons =cartonClient.getAllCartons(token);
-        List<PlateDTO> plates=plateClient.getAllPlates(token);
+        List<PackageDTO> packages = packageClient.getAllPackages(token);
+        List<CartonDTO> cartons = cartonClient.getAllCartons(token);
+        List<PlateDTO> plates = plateClient.getAllPlates(token);
 
         model.addAttribute(PACKAGETXT, packages);
         model.addAttribute(CARTONTXT, cartons);
@@ -103,12 +104,14 @@ public class MaterialOrderController {
         materialOrderClient.createMaterialOrder(materialOrderDTO, token);
         return new ModelAndView(REDIRECTTXT);
     }
+
     @PostMapping("/delete/{id}")
     ModelAndView deleteMaterialOrderById(@PathVariable("id") Long id, Model model, HttpServletRequest request) {
         String token = (String) request.getSession().getAttribute("sessionToken");
         materialOrderClient.deleteMaterialOrderById(id, token);
         return new ModelAndView(REDIRECTTXT);
     }
+
     @GetMapping("/edit/{id}")
     String editMaterialOrder(@PathVariable(name = "id") Long id, Model model, HttpServletRequest request) {
         String token = (String) request.getSession().getAttribute("sessionToken");
@@ -119,22 +122,24 @@ public class MaterialOrderController {
         model.addAttribute("order", existingOrder);
         return "MaterialOrder/edit";
     }
+
     @PostMapping("/editSubmit/{id}")
     ModelAndView editMaterialOrder(@PathVariable(name = "id") Long id, MaterialOrderDTO materialOrderDTO, HttpServletRequest request) {
         String token = (String) request.getSession().getAttribute("sessionToken");
         materialOrderClient.updateMaterialOrder(id, materialOrderDTO, token);
         return new ModelAndView(REDIRECTTXT);
     }
+
     @GetMapping("/material/{materialId}")
     public String viewMaterial(@PathVariable Long materialId, @RequestParam("materialType") String materialType, Model model, HttpServletRequest request) {
         String token = (String) request.getSession().getAttribute("sessionToken");
-        if(materialType.equals("CARTON")){
+        if (materialType.equals("CARTON")) {
             model.addAttribute("material", cartonClient.getCartonById(materialId, token));
             model.addAttribute("type", "Кашон");
-        } else if(materialType.equals("PLATE")){
+        } else if (materialType.equals("PLATE")) {
             model.addAttribute("material", plateClient.getPlateById(materialId, token));
             model.addAttribute("type", "Тарелка");
-        } else{
+        } else {
             model.addAttribute("material", packageClient.getPackageById(materialId, token));
             model.addAttribute("type", "Кутия");
         }

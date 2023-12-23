@@ -20,7 +20,7 @@ public interface OrderProductClient {
     OrderProductDTO createOrderProduct(@Valid @RequestBody OrderProductDTO orderProductDTO, @RequestHeader("Authorization") String auth);
 
     @PutMapping("/{id}")
-    void updateOrderProduct(@PathVariable("id") Long id, @Valid @RequestBody OrderProductDTO orderProductDTO, @RequestHeader("Authorization") String auth) ;
+    void updateOrderProduct(@PathVariable("id") Long id, @Valid @RequestBody OrderProductDTO orderProductDTO, @RequestHeader("Authorization") String auth);
 
     @DeleteMapping("/{id}")
     String deleteOrderProductById(@PathVariable("id") Long id, @RequestHeader("Authorization") String auth);

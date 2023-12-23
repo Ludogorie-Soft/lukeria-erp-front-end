@@ -16,9 +16,9 @@ import java.util.List;
 @Slf4j
 @RequestMapping("/client")
 public class ClientController {
-    private final ClientClient clientClient;
-    private  static final String CARTONTXT = "client";
+    private static final String CARTONTXT = "client";
     private static final String REDIRECTTXT = "redirect:/client/show";
+    private final ClientClient clientClient;
 
     @GetMapping("/show")
     public String index(Model model, HttpServletRequest request) {
