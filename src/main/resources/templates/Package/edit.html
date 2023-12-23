@@ -55,7 +55,7 @@ document.addEventListener("DOMContentLoaded", function() {
                                 <label for="englishName">Име на английски език:</label>
                                 <input type="text" id="englishName" name="englishName"  pattern="[a-zA-Z0-9\s!@#$%^&*()_+-=[{]};:'|,<.>?]*$"
                                        title="Моля въведете името на опаковката на английски език с латински букви!"
-                                       required th:field="*{englishName}" />
+                                       th:field="*{englishName}" />
                                 <div class="error-message" th:if="${#fields.hasErrors('englishName')}" th:errors="*{englishName}"></div>
                             </div>
                             <div class="form-group">

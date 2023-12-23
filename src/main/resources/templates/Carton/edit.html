@@ -92,15 +92,13 @@ document.addEventListener("DOMContentLoaded", function() {
                         <form th:action="@{'/edit/' + ${carton.id}}" method="get" th:object="${carton}">
                             <div class="form-group">
                                 <label for="name">Име:</label>
-                                <input type="text" id="name" name="name" pattern=".{10,}"
-                                       title="Моля въведете името на кашона с поне 10 символа!" required
+                                <input type="text" id="name" name="name" required
                                        th:field="*{name}"/>
                                 <div class="error-message"></div>
                             </div>
                             <div class="form-group">
                                 <label for="size">Размери:</label>
-                                <input type="text" id="size" name="size" pattern=".{10,}"
-                                       title="Моля въведете размерите на кашона с поне 10 символа!" required
+                                <input type="text" id="size" name="size" required
                                        th:field="*{size}"/>
                                 <div class="error-message"></div>
                             </div>
