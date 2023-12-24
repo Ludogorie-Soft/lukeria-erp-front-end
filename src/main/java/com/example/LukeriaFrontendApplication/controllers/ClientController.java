@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
+import java.util.Objects;
 
 @org.springframework.stereotype.Controller
 @RequiredArgsConstructor
@@ -57,7 +58,11 @@ public class ClientController {
     @PostMapping("/submit")
     public ModelAndView submitClient(@ModelAttribute("client") ClientDTO clientDTO, HttpServletRequest request) {
         String token = (String) request.getSession().getAttribute("sessionToken");
-        System.out.println(clientDTO);
+        if (Objects.equals(clientDTO.getBusinessName(), "")) {
+            clientDTO.setBusinessName(clientDTO.getEnglishBusinessName());
+            clientDTO.setAddress(clientDTO.getEnglishAddress());
+            clientDTO.setMol(clientDTO.getEnglishMol());
+        }
         clientClient.createClient(clientDTO, token);
         return new ModelAndView(REDIRECTTXT);
     }

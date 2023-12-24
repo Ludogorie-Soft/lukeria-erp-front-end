@@ -51,6 +51,7 @@ public class InvoiceController {
         OrderDTO orderDTO = orderClient.getOrderById(id, token);
         List<ProductDTO> productDTOS = productClient.getAllProducts(token);
         InvoiceDTO invoiceDTO = new InvoiceDTO();
+        model.addAttribute("client", client);
         model.addAttribute("bankAccount", "");
         model.addAttribute("invoiceDTO", invoiceDTO);
         model.addAttribute("lastInvoiceNumber", lastInvoiceNumber);
@@ -94,6 +95,7 @@ public class InvoiceController {
         }
         orderDTO.setInvoiced(true);
         orderClient.updateOrder(orderId, orderDTO, token);
+        model.addAttribute("client", clientDTO);
         model.addAttribute("InvoiceId", id);
         model.addAttribute("invoiceDTO", invoiceDTO);
         model.addAttribute("lastInvoiceNumber", lastInvoiceNumber);
