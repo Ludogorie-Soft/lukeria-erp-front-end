@@ -94,12 +94,22 @@ document.addEventListener("DOMContentLoaded", function() {
 <script>
     function generatePDF() {
         const element = document.querySelector('.custom-card-width-lg'); // Select the element to convert to PDF
+        const invoiceNumberElement = document.querySelector('h3'); // Assuming the invoice number is in an h2 element
+
+        if (!invoiceNumberElement) {
+            alert('Invoice number element not found.');
+            return;
+        }
+
+        const invoiceNumber = invoiceNumberElement.innerText.trim();
+        const filename = invoiceNumber ? `${invoiceNumber}.pdf` : 'invoice.pdf'; // Use the invoice number in the filename if available
+
         const opt = {
             margin: 10,
-            filename: 'certificate.pdf', // Set the PDF file name
-            image: { type: 'jpeg', quality: 0.98 }, // Image settings
-            html2canvas: { scale: 2 }, // Higher scale for better resolution
-            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } // PDF settings
+            filename: filename,
+            image: { type: 'jpeg', quality: 0.40 },
+            html2canvas: { scale: 2 },
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
         };
 
         // Use html2pdf to generate the PDF
