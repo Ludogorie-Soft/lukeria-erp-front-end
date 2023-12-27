@@ -25,8 +25,9 @@ public class UploadFileController {
     }
 
     @PostMapping("/upload/file/submit")
-    public ModelAndView uploadFromFile(@RequestParam MultipartFile file) throws IOException {
-        uploadFileClient.uploadFromFile(file);
+    public ModelAndView uploadFromFile(@RequestParam MultipartFile file, HttpServletRequest request) throws IOException {
+        String token = (String) request.getSession().getAttribute("sessionToken");
+        uploadFileClient.uploadFromFile(file, token);
         return new ModelAndView("redirect:/package/show");
     }
 }
