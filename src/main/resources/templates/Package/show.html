@@ -107,8 +107,16 @@ document.addEventListener("DOMContentLoaded", function() {
                                                 th:if="${session.sessionToken != null and session.sessionRole == 'ADMIN'}">
                                             <td th:text="${package.price + ' Лв'}"></td>
                                         </th:block>
-                                        <td th:text="${package.cartonId}"></td>
-                                        <td th:text="${package.plateId}"></td>
+                                        <td>
+                                            <a th:href="@{/carton/{cartonId}(cartonId=${package.cartonId})}">
+                                                <span th:text="${package.cartonId}"></span>
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a th:href="@{/plate/{plateId}(plateId=${package.plateId})}">
+                                                <span th:text="${package.plateId}"></span>
+                                            </a>
+                                        </td>
                                         <td th:text="${package.piecesCarton}"></td>
                                         <th:block
                                                 th:if="${session.sessionToken != null and session.sessionRole == 'ADMIN'}">
