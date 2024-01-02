@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.io.IOException;
+import java.util.Comparator;
 import java.util.List;
 
 @org.springframework.stereotype.Controller
@@ -36,9 +37,12 @@ public class PlateController {
                 imageService.getImage(plate.getPhoto());
             }
         }
+        List<PlateDTO> sortedPlates = plates.stream()
+                .sorted(Comparator.comparingInt(PlateDTO::getAvailableQuantity).reversed())
+                .toList();
         model.addAttribute("backendBaseUrl", backendBaseUrl);
         model.addAttribute("deleteMessageBoolean", true);
-        model.addAttribute("plates", plates);
+        model.addAttribute("plates", sortedPlates);
         return "Plate/show";
     }
 

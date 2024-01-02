@@ -13,10 +13,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @org.springframework.stereotype.Controller
@@ -35,7 +32,9 @@ public class ProductController {
     @GetMapping("/show")
     public String showAllProducts(Model model, HttpServletRequest request) {
         String token = (String) request.getSession().getAttribute("sessionToken");
-        List<ProductDTO> products = productClient.getAllProducts(token);
+        List<ProductDTO> sortedProducts = productClient.getAllProducts(token).stream()
+                .sorted(Comparator.comparingInt(ProductDTO::getAvailableQuantity).reversed())
+                .toList();
         List<PackageDTO> packages = packageClient.getAllPackages(token);
 
         Map<Long, String> productPackageMap = new HashMap<>();
@@ -55,7 +54,7 @@ public class ProductController {
         }
         model.addAttribute("productPackageMapImages", productPackageMapImages);
         model.addAttribute("backendBaseUrl", backendBaseUrl);
-        model.addAttribute("products", products);
+        model.addAttribute("products", sortedProducts);
         model.addAttribute("packages", packages);
         model.addAttribute("productPackageMap", productPackageMap);
         return "Product/show";

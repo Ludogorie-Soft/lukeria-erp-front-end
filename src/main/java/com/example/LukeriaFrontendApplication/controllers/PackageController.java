@@ -18,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.io.IOException;
+import java.util.Comparator;
 import java.util.List;
 
 @org.springframework.stereotype.Controller
@@ -41,7 +42,10 @@ public class PackageController {
                 imageService.getImage(aPackage.getPhoto());
             }
         }
-        model.addAttribute("packages", packages);
+        List<PackageDTO> sortedPackage = packages.stream()
+                .sorted(Comparator.comparingInt(PackageDTO::getAvailableQuantity).reversed())
+                .toList();
+        model.addAttribute("packages", sortedPackage);
         model.addAttribute("backendBaseUrl", backendBaseUrl);
         return "Package/show";
     }

@@ -3,6 +3,8 @@ package com.example.LukeriaFrontendApplication.controllers;
 import com.example.LukeriaFrontendApplication.config.CartonClient;
 import com.example.LukeriaFrontendApplication.dtos.CartonDTO;
 import jakarta.servlet.http.HttpServletRequest;
+import java.util.Comparator;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ui.Model;
@@ -11,8 +13,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
-
-import java.util.List;
 
 @org.springframework.stereotype.Controller
 @RequiredArgsConstructor
@@ -25,9 +25,11 @@ public class CartonController {
     @GetMapping("/show")
     public String index(Model model, HttpServletRequest request) {
         String token = (String) request.getSession().getAttribute("sessionToken");
-        List<CartonDTO> cartons = cartonClient.getAllCartons(token);
+        List<CartonDTO> sortedCartons = cartonClient.getAllCartons(token).stream()
+                .sorted(Comparator.comparingInt(CartonDTO::getAvailableQuantity).reversed())
+                .toList();
         model.addAttribute("deleteMessageBoolean", true);
-        model.addAttribute("cartons", cartons);
+        model.addAttribute("cartons", sortedCartons);
         return "Carton/show";
     }
 
