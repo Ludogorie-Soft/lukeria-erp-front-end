@@ -18,9 +18,9 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 public class CartonController {
-    private final CartonClient cartonClient;
-    private  static final String CARTONTXT = "carton";
+    private static final String CARTONTXT = "carton";
     private static final String REDIRECTTXT = "redirect:/show";
+    private final CartonClient cartonClient;
 
     @GetMapping("/show")
     public String index(Model model, HttpServletRequest request) {
@@ -30,7 +30,6 @@ public class CartonController {
         model.addAttribute("cartons", cartons);
         return "Carton/show";
     }
-
 
 
     @GetMapping("/create")

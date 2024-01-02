@@ -47,9 +47,16 @@ document.addEventListener("DOMContentLoaded", function() {
                                 <div class="error-message"></div>
                             </div>
                             <div class="form-group">
+                                <label for="productCode">Код на кутията:</label>
+                                <input type="text" id="productCode" name="productCode"
+                                       title="Моля въведете кода на кутията!" required
+                                       th:value="${package != null ? package.productCode : ''}"/>
+                                <div class="error-message"></div>
+                            </div>
+                            <div class="form-group">
                                 <label for="englishName">Име на английски език:</label>
                                 <input type="text" id="englishName" name="englishName"  pattern="[a-zA-Z0-9\s!@#$%^&*()_+-=[{]};:'|,<.>?]*$"
-                                       title="Моля въведете името на кашона с латински букви!" required
+                                       title="Моля въведете името на кашона с латински букви!"
                                        th:value="${package != null ? package.englishName : ''}"/>
                                 <div class="error-message"></div>
 

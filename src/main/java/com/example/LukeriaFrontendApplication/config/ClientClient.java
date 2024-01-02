@@ -19,7 +19,7 @@ public interface ClientClient {
     ClientDTO createClient(@Valid @RequestBody ClientDTO clientDTO, @RequestHeader("Authorization") String auth);
 
     @PutMapping("/{id}")
-    void updateClient(@PathVariable("id") Long id, @Valid @RequestBody ClientDTO clientDTO, @RequestHeader("Authorization") String auth) ;
+    void updateClient(@PathVariable("id") Long id, @Valid @RequestBody ClientDTO clientDTO, @RequestHeader("Authorization") String auth);
 
     @DeleteMapping("/{id}")
     String deleteClientById(@PathVariable("id") Long id, @RequestHeader("Authorization") String auth);

@@ -13,16 +13,20 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @org.springframework.stereotype.Controller
 @RequiredArgsConstructor
 @Slf4j
 @RequestMapping("/product")
 public class ProductController {
+    private static final String REDIRECTTXT = "redirect:/product/show";
     private final ProductClient productClient;
     private final PackageClient packageClient;
-    private static final String REDIRECTTXT = "redirect:/product/show";
     private final ImageClient imageService;
     @Value("${backend.base-url}")
     private String backendBaseUrl;
@@ -63,17 +67,10 @@ public class ProductController {
         ProductDTO product = new ProductDTO();
         List<PackageDTO> packages = packageClient.getAllPackages(token);
         List<ProductDTO> productDTOS = productClient.getAllProducts(token);
-        List<PackageDTO> emptyPackages = new ArrayList<>();
-        for (PackageDTO packageDTO : packages) {
-            for (ProductDTO productDTO : productDTOS) {
-                if (!Objects.equals(packageDTO.getId(), productDTO.getPackageId())) {
-                    emptyPackages.add(packageDTO);
-                }
-            }
-            if(productDTOS.isEmpty()){
-                emptyPackages.add(packageDTO);
-            }
-        }
+        List<PackageDTO> emptyPackages = packages.stream()
+                .filter(packageDTO -> productDTOS.stream()
+                        .noneMatch(productDTO -> Objects.equals(packageDTO.getId(), productDTO.getPackageId())))
+                .collect(Collectors.toList());
         model.addAttribute("backendBaseUrl", backendBaseUrl);
         model.addAttribute("packages", emptyPackages);
         model.addAttribute("product", product);

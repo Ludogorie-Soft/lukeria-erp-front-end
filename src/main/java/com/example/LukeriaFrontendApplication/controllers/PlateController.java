@@ -2,7 +2,6 @@ package com.example.LukeriaFrontendApplication.controllers;
 
 import com.example.LukeriaFrontendApplication.config.ImageClient;
 import com.example.LukeriaFrontendApplication.config.PlateClient;
-import com.example.LukeriaFrontendApplication.dtos.PackageDTO;
 import com.example.LukeriaFrontendApplication.dtos.PlateDTO;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -21,19 +20,19 @@ import java.util.List;
 @Slf4j
 @RequestMapping("/plate")
 public class PlateController {
+    private static final String CARTONTXT = "plate";
+    private static final String REDIRECTTXT = "redirect:/plate/show";
     private final PlateClient plateClient;
     private final ImageClient imageService;
     @Value("${backend.base-url}")
     private String backendBaseUrl;
-    private  static final String CARTONTXT = "plate";
-    private static final String REDIRECTTXT = "redirect:/plate/show";
 
     @GetMapping("/show")
     public String index(Model model, HttpServletRequest request) {
         String token = (String) request.getSession().getAttribute("sessionToken");
         List<PlateDTO> plates = plateClient.getAllPlates(token);
         for (PlateDTO plate : plates) {
-            if(plate.getPhoto()!=null) {
+            if (plate.getPhoto() != null) {
                 imageService.getImage(plate.getPhoto());
             }
         }
@@ -66,6 +65,7 @@ public class PlateController {
         model.addAttribute(CARTONTXT, existingPlate);
         return "Plate/edit";
     }
+
     @PostMapping("/edit/{id}")
     ModelAndView editPlate(@PathVariable(name = "id") Long id, PlateDTO plateDTO, @RequestParam("file") MultipartFile file, HttpServletRequest request) throws IOException {
         String token = (String) request.getSession().getAttribute("sessionToken");
@@ -75,6 +75,7 @@ public class PlateController {
         }
         return new ModelAndView(REDIRECTTXT);
     }
+
     @PostMapping("/submit")
     public ModelAndView submitPlate(@ModelAttribute("plate") PlateDTO plateDTO, @RequestParam MultipartFile file, HttpServletRequest request) throws IOException {
         String token = (String) request.getSession().getAttribute("sessionToken");
@@ -84,6 +85,7 @@ public class PlateController {
         }
         return new ModelAndView(REDIRECTTXT);
     }
+
     @PostMapping("/delete/{id}")
     ModelAndView deletePlateById(@PathVariable("id") Long id, Model model, HttpServletRequest request) {
         String token = (String) request.getSession().getAttribute("sessionToken");

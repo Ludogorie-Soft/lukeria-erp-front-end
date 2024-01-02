@@ -20,13 +20,14 @@ public interface InvoiceClient {
     InvoiceDTO createInvoice(@Valid @RequestBody InvoiceDTO invoiceDTO, @RequestHeader("Authorization") String auth);
 
     @PutMapping("/{id}")
-    void updateInvoice(@PathVariable("id") Long id, @Valid @RequestBody InvoiceDTO invoiceDTO, @RequestHeader("Authorization") String auth) ;
+    void updateInvoice(@PathVariable("id") Long id, @Valid @RequestBody InvoiceDTO invoiceDTO, @RequestHeader("Authorization") String auth);
 
     @DeleteMapping("/{id}")
     String deleteInvoiceById(@PathVariable("id") Long id, @RequestHeader("Authorization") String auth);
 
     @GetMapping("/number")
     Long findLastInvoiceNumberStartingWith(@RequestHeader("Authorization") String auth);
+
     @GetMapping("/number/abroad")
     Long findLastInvoiceNumberStartingWithOne(@RequestHeader("Authorization") String auth);
 }

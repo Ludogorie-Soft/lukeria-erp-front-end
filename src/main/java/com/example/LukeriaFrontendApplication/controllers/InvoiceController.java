@@ -21,6 +21,9 @@ import java.util.*;
 @Slf4j
 @RequestMapping("/invoice")
 public class InvoiceController {
+    private static final String ORDERPRODUCT = "orderProductDTOS";
+    private static final String PACKAGE = "packageDTOS";
+    private static final String REGEX = "[\\[\\]]";
     private final InvoiceClient invoiceClient;
     private final QueryClient queryClient;
     private final PackageClient packageClient;
@@ -29,9 +32,6 @@ public class InvoiceController {
     private final ProductClient productClient;
     private final InvoiceOrderProductClient invoiceOrderProductClient;
     private final OrderProductClient orderProductClient;
-    private static final String ORDERPRODUCT = "orderProductDTOS";
-    private static final String PACKAGE = "packageDTOS";
-    private static final String REGEX = "[\\[\\]]";
 
     @GetMapping("/show/{id}")
     public String invoiceCreateFromOrder(@PathVariable(name = "id") Long id, Model model, HttpServletRequest request) {
@@ -51,6 +51,7 @@ public class InvoiceController {
         OrderDTO orderDTO = orderClient.getOrderById(id, token);
         List<ProductDTO> productDTOS = productClient.getAllProducts(token);
         InvoiceDTO invoiceDTO = new InvoiceDTO();
+        model.addAttribute("client", client);
         model.addAttribute("bankAccount", "");
         model.addAttribute("invoiceDTO", invoiceDTO);
         model.addAttribute("lastInvoiceNumber", lastInvoiceNumber);
@@ -94,6 +95,7 @@ public class InvoiceController {
         }
         orderDTO.setInvoiced(true);
         orderClient.updateOrder(orderId, orderDTO, token);
+        model.addAttribute("client", clientDTO);
         model.addAttribute("InvoiceId", id);
         model.addAttribute("invoiceDTO", invoiceDTO);
         model.addAttribute("lastInvoiceNumber", lastInvoiceNumber);
@@ -144,13 +146,13 @@ public class InvoiceController {
         invoiceDTO.setTotalPrice(paymentAmountStr);
         invoiceDTO.setDeadline(paymentDateStr);
         invoiceDTO.setCashPayment(paymentMethod);
-        if(invoiceDTO.getInvoiceNumber()>=2000000000) {
+        if (invoiceDTO.getInvoiceNumber() >= 2000000000) {
             invoiceDTO.setBankAccount(bankAccount);
-        } else if(bankAccount.equals("BG56-UNCR-7000-1523215088 УНИКРЕДИТ БУЛБАНК АД")){
+        } else if (bankAccount.equals("BG56-UNCR-7000-1523215088 УНИКРЕДИТ БУЛБАНК АД")) {
             invoiceDTO.setBankAccount("BG56-UNCR-7000-1523215088 UNICREDIT BULBANK AD");
-        } else if(bankAccount.equals("BG84-BPBI-7943-1076363002 ЮРОБАНК БЪЛГАРИЯ АД")){
+        } else if (bankAccount.equals("BG84-BPBI-7943-1076363002 ЮРОБАНК БЪЛГАРИЯ АД")) {
             invoiceDTO.setBankAccount("BG84-BPBI-7943-1076363002 EUROBANK BULGARIA AD");
-        } else if(bankAccount.equals("BG06-DEMI-9240-1000326433 ТЪРГОВСКА БАНКА Д АД")){
+        } else if (bankAccount.equals("BG06-DEMI-9240-1000326433 ТЪРГОВСКА БАНКА Д АД")) {
             invoiceDTO.setBankAccount("BG06-DEMI-9240-1000326433 COMMERCIAL BANK D AD");
         }
         InvoiceOrderProductConfigDTO invoiceOrderProductConfigDTO = new InvoiceOrderProductConfigDTO();

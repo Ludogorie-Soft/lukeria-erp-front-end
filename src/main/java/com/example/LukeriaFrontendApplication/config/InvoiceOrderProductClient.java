@@ -21,10 +21,10 @@ public interface InvoiceOrderProductClient {
     InvoiceOrderProductDTO createInvoiceOrderProduct(@Valid @RequestBody InvoiceOrderProductDTO invoiceOrderProductDTO, @RequestHeader("Authorization") String auth);
 
     @PostMapping("/withIds")
-     ResponseEntity<String> createInvoiceOrderProductWhitIdsList(InvoiceOrderProductConfigDTO configDTO, @RequestHeader("Authorization") String auth);
+    ResponseEntity<String> createInvoiceOrderProductWhitIdsList(InvoiceOrderProductConfigDTO configDTO, @RequestHeader("Authorization") String auth);
 
     @PutMapping("/{id}")
-    void updateInvoiceOrderProduct(@PathVariable("id") Long id, @Valid @RequestBody  InvoiceOrderProductDTO invoiceOrderProductDTO, @RequestHeader("Authorization") String auth) ;
+    void updateInvoiceOrderProduct(@PathVariable("id") Long id, @Valid @RequestBody InvoiceOrderProductDTO invoiceOrderProductDTO, @RequestHeader("Authorization") String auth);
 
     @DeleteMapping("/{id}")
     String deleteInvoiceOrderProductById(@PathVariable("id") Long id, @RequestHeader("Authorization") String auth);

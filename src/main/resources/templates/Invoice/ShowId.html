@@ -54,10 +54,10 @@ document.addEventListener("DOMContentLoaded", function() {
                                         <strong th:text="${clientName}"></strong>
                                     </h5>
                                     <h5><strong
-                                            th:text="#{label.idNumber}+'  ' + ${clientDTOS[orderDTO.clientId - 1].idNumEIK}"></strong>
+                                            th:text="#{label.idNumber}+'  ' + ${client.idNumEIK}"></strong>
                                     </h5>
-                                    <h5><strong th:if="${clientDTOS[orderDTO.clientId - 1].hasIdNumDDS}">
-                                        <span th:text= "#{label.idNumberDDS} +'  '+ ' BG' + ${clientDTOS[orderDTO.clientId - 1].idNumEIK}"></span>
+                                    <h5><strong th:if="${client.hasIdNumDDS}">
+                                        <span th:text= "#{label.idNumberDDS} +'  '+ ' BG' + ${client.idNumEIK}"></span>
                                     </strong></h5>
                                     <h5>
                                         <strong th:text=" #{label.address}"></strong>
@@ -220,15 +220,35 @@ var invoiceId = [[${InvoiceId}]];
 <script>
     function generatePDF() {
         const element = document.querySelector('.custom-card-width-lg'); // Select the element to convert to PDF
+        const invoiceNumberElement = document.querySelector('h2'); // Assuming the invoice number is in an h2 element
+
+        if (!invoiceNumberElement) {
+            alert('Invoice number element not found.');
+            return;
+        }
+
+        const invoiceNumber = invoiceNumberElement.innerText.trim();
+        const filename = invoiceNumber ? `${invoiceNumber}.pdf` : 'invoice.pdf'; // Use the invoice number in the filename if available
+
         const opt = {
             margin: 10,
-            filename: 'invoice.pdf', // Set the PDF file name
-            image: { type: 'jpeg', quality: 0.40 }, // Image settings
-            html2canvas: { scale: 2 }, // Higher scale for better resolution
-            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } // PDF settings
+            filename: filename,
+            image: { type: 'jpeg', quality: 0.40 },
+            html2canvas: { scale: 2 },
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
         };
 
         // Use html2pdf to generate the PDF
         html2pdf().from(element).set(opt).save();
     }
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const navbar = document.getElementById("sidebar");
+    console.log(navbar);
+    const toggler = document.querySelector("a.sidebar-toggle");
+    toggler.addEventListener("click", () => {
+    navbar.classList.toggle("collapsed");
+    });
+});
 </script>

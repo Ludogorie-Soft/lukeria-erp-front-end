@@ -11,17 +11,17 @@ import java.util.List;
 
 public interface PackageClient {
     @GetMapping
-    List<PackageDTO> getAllPackages(@RequestHeader("Authorization") String auth) ;
+    List<PackageDTO> getAllPackages(@RequestHeader("Authorization") String auth);
 
     @GetMapping("/{id}")
     PackageDTO getPackageById(@PathVariable(name = "id") Long id, @RequestHeader("Authorization") String auth);
 
     @PostMapping
-    PackageDTO createPackage(@Valid @RequestBody PackageDTO packageDTO, @RequestHeader("Authorization") String auth) ;
+    PackageDTO createPackage(@Valid @RequestBody PackageDTO packageDTO, @RequestHeader("Authorization") String auth);
 
     @PutMapping("/{id}")
     void updatePackage(@PathVariable("id") Long id, @RequestBody PackageDTO packageDTO, @RequestHeader("Authorization") String auth);
 
     @DeleteMapping("/{id}")
-   String deletePackageById(@PathVariable("id") Long id, @RequestHeader("Authorization") String auth);
+    String deletePackageById(@PathVariable("id") Long id, @RequestHeader("Authorization") String auth);
 }

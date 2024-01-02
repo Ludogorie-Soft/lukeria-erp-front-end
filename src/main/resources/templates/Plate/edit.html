@@ -38,8 +38,7 @@ document.addEventListener("DOMContentLoaded", function() {
                         <form th:action="@{'/plate/edit/' + ${plate.id}}" method="post" th:object="${plate}" enctype="multipart/form-data">
                             <div class="form-group">
                                 <label for="name">Име:</label>
-                                <input type="text" id="name" name="name" pattern=".{10,}"
-                                       title="Моля въведете името на кашона с поне 10 символа!" required
+                                <input type="text" id="name" name="name" required
                                        th:field="*{name}"/>
                                 <div class="error-message"></div>
                             </div>

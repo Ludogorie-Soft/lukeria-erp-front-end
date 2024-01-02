@@ -71,7 +71,7 @@ document.addEventListener("DOMContentLoaded", function() {
                                         <td>
                                             <img th:src="@{${backendBaseUrl} + '/'+ ${products[iter.index]?.photo}}" alt="no image" height="100" width="100">
                                         </td>
-                                        <td th:text="${products[iter.index]?.name}"></td>
+                                        <td th:text="${products[iter.index]?.productCode} + ' ' + ${products[iter.index]?.name}"></td>
                                         <td th:text="${orderProduct.orderedQuantity}"></td>
                                         <td th:text="${orderProduct.sentQuantity}"></td>
                                         <td th:text="${orderProduct.orderedQuantity - orderProduct.sentQuantity}"></td>

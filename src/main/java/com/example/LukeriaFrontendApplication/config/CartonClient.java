@@ -20,10 +20,10 @@ public interface CartonClient {
     CartonDTO createCarton(@Valid @RequestBody CartonDTO cartonDTO, @RequestHeader("Authorization") String auth);
 
     @PutMapping("/{id}")
-    void updateCarton(@PathVariable("id") Long id, @Valid @RequestBody CartonDTO cartonDTO, @RequestHeader("Authorization") String auth) ;
+    void updateCarton(@PathVariable("id") Long id, @Valid @RequestBody CartonDTO cartonDTO, @RequestHeader("Authorization") String auth);
 
     @DeleteMapping("/{id}")
-     String deleteCartonById(@PathVariable("id") Long id, @RequestHeader("Authorization") String auth);
+    String deleteCartonById(@PathVariable("id") Long id, @RequestHeader("Authorization") String auth);
 
 
 }

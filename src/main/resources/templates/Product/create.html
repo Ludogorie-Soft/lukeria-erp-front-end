@@ -55,7 +55,7 @@ document.addEventListener("DOMContentLoaded", function() {
                                                     <option th:each="package : ${packages}" th:value="${package.id}"
                                                             th:data-image-url="@{${backendBaseUrl} + '/' + ${package.photo}}" >
                                                         <img th:src="@{'${backendBaseUrl}' + '/' + ${package.photo}}"  width="50" height="50">
-                                                        <span th:text = "${package.name}"></span>
+                                                        <span th:text = "${package.productCode} + ' - ' +${package.name}"></span>
                                                     </option>
                                                 </select>
                                             </select>

@@ -24,13 +24,13 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 public class PackageController {
+    private static final String REDIRECTTXT = "redirect:/package/show";
     private final PackageClient packageClient;
     private final CartonClient cartonClient;
     private final PlateClient plateClient;
+    private final ImageClient imageService;
     @Value("${backend.base-url}")
     private String backendBaseUrl;
-    private final ImageClient imageService;
-    private static final String REDIRECTTXT = "redirect:/package/show";
 
     @GetMapping("/package/show")
     public String showPackage(Model model, HttpServletRequest request) {

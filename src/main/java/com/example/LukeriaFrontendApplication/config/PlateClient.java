@@ -19,7 +19,7 @@ public interface PlateClient {
     PlateDTO createPlate(@Valid @RequestBody PlateDTO plateDTO, @RequestHeader("Authorization") String auth);
 
     @PutMapping("/{id}")
-    void updatePlate(@PathVariable("id") Long id, @Valid @RequestBody PlateDTO plateDTO, @RequestHeader("Authorization") String auth) ;
+    void updatePlate(@PathVariable("id") Long id, @Valid @RequestBody PlateDTO plateDTO, @RequestHeader("Authorization") String auth);
 
     @DeleteMapping("/{id}")
     String deletePlateById(@PathVariable("id") Long id, @RequestHeader("Authorization") String auth);

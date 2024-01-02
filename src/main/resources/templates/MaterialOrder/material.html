@@ -51,6 +51,8 @@ document.addEventListener("DOMContentLoaded", function() {
                       <hr>
                       <h4 class="material-id" th:text="'Номер: ' + ${material.id}"></h4>
                       <hr>
+                      <h4 th:if="${type eq 'Кутия'}" class="material-name" th:text="'Код на кутията: ' + ${productCode}"></h4>
+                      <hr th:if="${type eq 'Кутия'}">
                       <h4 class="material-name" th:text="'Име: ' + ${material.name}"></h4>
                       <hr>
                       <h4 class="material-quantity" th:text="'Наличност: ' + ${material.availableQuantity} + ' бр.'"></h4>
