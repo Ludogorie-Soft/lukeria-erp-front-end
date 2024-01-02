@@ -100,4 +100,16 @@ public class PackageController {
         packageClient.deletePackageById(id, token);
         return new ModelAndView(REDIRECTTXT);
     }
+    @GetMapping("/plate/{plateId}")
+    public String getPlateInfo(@PathVariable Long plateId, Model model, HttpServletRequest request) {
+        String token = (String) request.getSession().getAttribute("sessionToken");
+        model.addAttribute("plate", plateClient.getPlateById(plateId, token));
+        return "Package/plateInfoPage";
+    }
+    @GetMapping("/carton/{cartonId}")
+    public String getCartonInfo(@PathVariable Long cartonId, Model model, HttpServletRequest request) {
+        String token = (String) request.getSession().getAttribute("sessionToken");
+        model.addAttribute("carton", cartonClient.getCartonById(cartonId, token));
+        return "Package/cartonInfoPage";
+    }
 }

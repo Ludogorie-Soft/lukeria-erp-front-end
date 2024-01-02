@@ -62,6 +62,8 @@ public class ClientController {
             clientDTO.setBusinessName(clientDTO.getEnglishBusinessName());
             clientDTO.setAddress(clientDTO.getEnglishAddress());
             clientDTO.setMol(clientDTO.getEnglishMol());
+        } else {
+            clientDTO.setHasIdNumDDS(true);
         }
         clientClient.createClient(clientDTO, token);
         return new ModelAndView(REDIRECTTXT);

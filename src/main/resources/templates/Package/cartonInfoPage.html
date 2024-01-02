@@ -4,7 +4,7 @@
   <!--    LINKS  -->
   <th:block th:include="~{fragments/links}"></th:block>
 
-  <title> Материал </title>
+  <title> Кашон </title>
   <link href="/css/show.css" rel="stylesheet">
 </head>
 <script>
@@ -36,7 +36,7 @@ document.addEventListener("DOMContentLoaded", function() {
             <div class="card custom-card-width-lg">
               <div class="card-header">
                 <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
-                  <h5 class="card-title mb-0">Материал</h5>
+                  <h5 class="card-title mb-0">Кашон</h5>
                   <button onclick="printPage()">
                     <i class="fas fa-print"></i>
                   </button>
@@ -47,17 +47,15 @@ document.addEventListener("DOMContentLoaded", function() {
                 <div class="card">
                   <div class="card-body">
                     <div class="material-info">
-                      <h4 class="material-id" th:text="'Вид: ' + ${type}"></h4>
+                      <h4 class="material-id" th:text="'Номер: ' + ${carton.id}"></h4>
                       <hr>
-                      <h4 class="material-id" th:text="'Номер: ' + ${material.id}"></h4>
+                      <h4 class="material-name" th:text="'Име: ' + ${carton.name}"></h4>
                       <hr>
-                      <h4 th:if="${type eq 'Кутия'}" class="material-name" th:text="'Код на кутията: ' + ${productCode}"></h4>
-                      <hr th:if="${type eq 'Кутия'}">
-                      <h4 class="material-name" th:text="'Име: ' + ${material.name}"></h4>
+                      <h4 class="material-quantity" th:text="'Наличност: ' + ${carton.availableQuantity} + ' бр.'"></h4>
                       <hr>
-                      <h4 class="material-quantity" th:text="'Наличност: ' + ${material.availableQuantity} + ' бр.'"></h4>
+                      <h4 class="material-name" th:text="'Размери: ' + ${carton.size}"></h4>
                       <hr>
-                      <h4 class="material-price" th:text="'Цена: ' + ${material.price} + ' лв.'"></h4>
+                      <h4 class="material-price" th:text="'Цена: ' + ${carton.price} + ' лв.'"></h4>
                       <hr>
                     </div>
                   </div>
