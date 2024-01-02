@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 @org.springframework.stereotype.Controller
 @RequiredArgsConstructor
@@ -70,8 +69,7 @@ public class OrderController {
         List<OrderDTO> orders = orderClient.getAllOrders(token);
         List<Long> clientIds = orders.stream().map(OrderDTO::getClientId).toList();
         List<ClientDTO> clients = new java.util.ArrayList<>(clientIds.stream()
-                .map(id1 -> clientClient.getClientById(id1, token))
-                .collect(Collectors.toList()));
+                .map(id1 -> clientClient.getClientById(id1, token)).toList());
         Collections.reverse(orders);
         Collections.reverse(clients);
         model.addAttribute("orders", orders);

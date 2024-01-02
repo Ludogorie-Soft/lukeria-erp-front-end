@@ -41,10 +41,9 @@ public class OrderProductController {
         OrderProductDTO orderProduct = new OrderProductDTO();
         OrderDTO orderDTO = orderClient.getOrderById(orderClient.findFirstByOrderByIdDesc(token).getId(), token);
         List<OrderProductDTO> orderProductDTOS = orderProductClient.getAllOrderProducts(token).stream().filter(order -> Objects.equals(order.getOrderId(), orderDTO.getId())).toList();
-        List<Long> packageDTOIds = packageDTOIds = orderProductDTOS.stream().map(OrderProductDTO::getPackageId).toList();
-        List<PackageDTO> packageDTOList = packageDTOList = packageDTOIds.stream()
-                .map(id1 -> packageClient.getPackageById(id1, token))
-                .collect(Collectors.toList());
+        List<Long> packageDTOIds = orderProductDTOS.stream().map(OrderProductDTO::getPackageId).toList();
+        List<PackageDTO> packageDTOList = packageDTOIds.stream()
+                .map(id1 -> packageClient.getPackageById(id1, token)).toList();
         model.addAttribute("backendBaseUrl", backendBaseUrl);
         model.addAttribute("orderProducts", orderProductDTOS);
         model.addAttribute("products", packageDTOList);
@@ -88,8 +87,7 @@ public class OrderProductController {
             List<OrderProductDTO> orderProductDTOS = orderProductClient.getAllOrderProducts(token).stream().filter(order -> Objects.equals(order.getOrderId(), orderDTO.getId())).toList();
             List<Long> packageDTOIds = orderProductDTOS.stream().map(OrderProductDTO::getPackageId).toList();
             List<PackageDTO> packageDTOList = packageDTOIds.stream().map
-                            (id1 -> packageClient.getPackageById(id1, token))
-                    .collect(Collectors.toList());
+                            (id1 -> packageClient.getPackageById(id1, token)).toList();
             List<PackageDTO> packageDTOS = new ArrayList<>();
             for (MonthlyOrderDTO monthlyOrder : monthlyOrderClient.getAllMonthlyOrders(token)) {
                 if (Objects.equals(orderDTO.getClientId(), monthlyOrder.getClientId()) && !orderDTO.isInvoiced()) {
@@ -126,8 +124,7 @@ public class OrderProductController {
         List<OrderProductDTO> orderProductDTOS = orderProductClient.getAllOrderProducts(token).stream().filter(order -> Objects.equals(order.getOrderId(), orderId)).toList();
         List<Long> packageDTOIds = orderProductDTOS.stream().map(OrderProductDTO::getPackageId).toList();
         List<PackageDTO> packageDTOList = packageDTOIds.stream()
-                .map(id1 -> packageClient.getPackageById(id1, token))
-                .collect(Collectors.toList());
+                .map(id1 -> packageClient.getPackageById(id1, token)).toList();
         model.addAttribute("backendBaseUrl", backendBaseUrl);
         model.addAttribute("order", orderClient.getOrderById(orderId, token));
         model.addAttribute("orderProducts", orderProductDTOS);
@@ -144,8 +141,7 @@ public class OrderProductController {
         List<OrderProductDTO> orderProductDTOS = orderProductClient.getAllOrderProducts(token).stream().filter(order -> Objects.equals(order.getOrderId(), orderDTO.getId())).toList();
         List<Long> packageDTOIds = orderProductDTOS.stream().map(OrderProductDTO::getPackageId).toList();
         List<PackageDTO> packageDTOList = packageDTOIds.stream()
-                .map(id1 -> packageClient.getPackageById(id1, token))
-                .collect(Collectors.toList());
+                .map(id1 -> packageClient.getPackageById(id1, token)).toList();
         List<PackageDTO> packageDTOS = new ArrayList<>();
         for (MonthlyOrderDTO monthlyOrder : monthlyOrderClient.getAllMonthlyOrders(token)) {
             if (Objects.equals(orderDTO.getClientId(), monthlyOrder.getClientId()) && !orderDTO.isInvoiced()) {

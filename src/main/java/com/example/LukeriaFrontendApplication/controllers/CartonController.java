@@ -19,12 +19,14 @@ import org.springframework.web.servlet.ModelAndView;
 @Slf4j
 public class CartonController {
     private static final String CARTONTXT = "carton";
+    private static final String SESSION_TOKEN="sessionToken";
+
     private static final String REDIRECTTXT = "redirect:/show";
     private final CartonClient cartonClient;
 
     @GetMapping("/show")
     public String index(Model model, HttpServletRequest request) {
-        String token = (String) request.getSession().getAttribute("sessionToken");
+        String token = (String) request.getSession().getAttribute(SESSION_TOKEN);
         List<CartonDTO> sortedCartons = cartonClient.getAllCartons(token).stream()
                 .sorted(Comparator.comparingInt(CartonDTO::getAvailableQuantity).reversed())
                 .toList();
@@ -43,7 +45,7 @@ public class CartonController {
 
     @GetMapping("/editCarton/{id}")
     String editCarton(@PathVariable(name = "id") Long id, Model model, HttpServletRequest request) {
-        String token = (String) request.getSession().getAttribute("sessionToken");
+        String token = (String) request.getSession().getAttribute(SESSION_TOKEN);
         CartonDTO existingCarton = cartonClient.getCartonById(id, token);
         model.addAttribute(CARTONTXT, existingCarton);
         return "Carton/edit";
@@ -51,21 +53,21 @@ public class CartonController {
 
     @PostMapping("/submit")
     public ModelAndView submitCarton(@ModelAttribute("carton") CartonDTO cartonDTO, HttpServletRequest request) {
-        String token = (String) request.getSession().getAttribute("sessionToken");
+        String token = (String) request.getSession().getAttribute(SESSION_TOKEN);
         cartonClient.createCarton(cartonDTO, token);
         return new ModelAndView(REDIRECTTXT);
     }
 
     @GetMapping("/edit/{id}")
     ModelAndView editCarton(@PathVariable(name = "id") Long id, CartonDTO cartonDTO, HttpServletRequest request) {
-        String token = (String) request.getSession().getAttribute("sessionToken");
+        String token = (String) request.getSession().getAttribute(SESSION_TOKEN);
         cartonClient.updateCarton(id, cartonDTO, token);
         return new ModelAndView(REDIRECTTXT);
     }
 
     @PostMapping("/delete/{id}")
     ModelAndView deleteCartonById(@PathVariable("id") Long id, Model model, HttpServletRequest request) {
-        String token = (String) request.getSession().getAttribute("sessionToken");
+        String token = (String) request.getSession().getAttribute(SESSION_TOKEN);
         cartonClient.deleteCartonById(id, token);
         return new ModelAndView(REDIRECTTXT);
     }
