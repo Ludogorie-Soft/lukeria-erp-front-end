@@ -18,7 +18,7 @@ import java.util.Objects;
 @RequestMapping("/client")
 public class ClientController {
     private static final String CARTONTXT = "client";
-    private static final String SESSION_TOKEN="sessionToken";
+    private static final String SESSION_TOKEN = "sessionToken";
 
     private static final String REDIRECTTXT = "redirect:/client/show";
     private final ClientClient clientClient;

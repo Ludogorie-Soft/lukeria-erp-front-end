@@ -18,7 +18,7 @@ import java.util.List;
 @RequestMapping("/user")
 public class UserController {
     private static final String REDIRECTTXT = "redirect:/user/show";
-    private static final String SESSION_TOKEN="sessionToken";
+    private static final String SESSION_TOKEN = "sessionToken";
 
     private final UserClient userClient;
 

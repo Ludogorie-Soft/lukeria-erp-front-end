@@ -3,8 +3,6 @@ package com.example.LukeriaFrontendApplication.controllers;
 import com.example.LukeriaFrontendApplication.config.CartonClient;
 import com.example.LukeriaFrontendApplication.dtos.CartonDTO;
 import jakarta.servlet.http.HttpServletRequest;
-import java.util.Comparator;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ui.Model;
@@ -14,12 +12,15 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.Comparator;
+import java.util.List;
+
 @org.springframework.stereotype.Controller
 @RequiredArgsConstructor
 @Slf4j
 public class CartonController {
     private static final String CARTONTXT = "carton";
-    private static final String SESSION_TOKEN="sessionToken";
+    private static final String SESSION_TOKEN = "sessionToken";
 
     private static final String REDIRECTTXT = "redirect:/show";
     private final CartonClient cartonClient;

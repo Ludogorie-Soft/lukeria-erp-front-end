@@ -25,11 +25,11 @@ import java.util.List;
 @Slf4j
 public class PackageController {
     private static final String REDIRECTTXT = "redirect:/package/show";
+    private static final String SESSION_TOKEN = "sessionToken";
     private final PackageClient packageClient;
     private final CartonClient cartonClient;
     private final PlateClient plateClient;
     private final ImageClient imageService;
-    private static final String SESSION_TOKEN="sessionToken";
     @Value("${backend.base-url}")
     private String backendBaseUrl;
 
@@ -100,12 +100,14 @@ public class PackageController {
         packageClient.deletePackageById(id, token);
         return new ModelAndView(REDIRECTTXT);
     }
+
     @GetMapping("/plate/{plateId}")
     public String getPlateInfo(@PathVariable Long plateId, Model model, HttpServletRequest request) {
         String token = (String) request.getSession().getAttribute(SESSION_TOKEN);
         model.addAttribute("plate", plateClient.getPlateById(plateId, token));
         return "Package/plateInfoPage";
     }
+
     @GetMapping("/carton/{cartonId}")
     public String getCartonInfo(@PathVariable Long cartonId, Model model, HttpServletRequest request) {
         String token = (String) request.getSession().getAttribute(SESSION_TOKEN);

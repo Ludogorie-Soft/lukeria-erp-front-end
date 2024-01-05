@@ -140,7 +140,7 @@ public class MaterialOrderController {
             model.addAttribute("material", plateClient.getPlateById(materialId, token));
             model.addAttribute("type", "Тарелка");
         } else {
-            PackageDTO packageDTO =  packageClient.getPackageById(materialId, token);
+            PackageDTO packageDTO = packageClient.getPackageById(materialId, token);
             model.addAttribute("material", packageDTO);
             model.addAttribute("productCode", packageDTO.getProductCode());
             model.addAttribute("type", "Кутия");

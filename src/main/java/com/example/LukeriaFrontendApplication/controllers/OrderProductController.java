@@ -13,7 +13,6 @@ import org.springframework.web.servlet.ModelAndView;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 
 @org.springframework.stereotype.Controller
@@ -87,7 +86,7 @@ public class OrderProductController {
             List<OrderProductDTO> orderProductDTOS = orderProductClient.getAllOrderProducts(token).stream().filter(order -> Objects.equals(order.getOrderId(), orderDTO.getId())).toList();
             List<Long> packageDTOIds = orderProductDTOS.stream().map(OrderProductDTO::getPackageId).toList();
             List<PackageDTO> packageDTOList = packageDTOIds.stream().map
-                            (id1 -> packageClient.getPackageById(id1, token)).toList();
+                    (id1 -> packageClient.getPackageById(id1, token)).toList();
             List<PackageDTO> packageDTOS = new ArrayList<>();
             for (MonthlyOrderDTO monthlyOrder : monthlyOrderClient.getAllMonthlyOrders(token)) {
                 if (Objects.equals(orderDTO.getClientId(), monthlyOrder.getClientId()) && !orderDTO.isInvoiced()) {

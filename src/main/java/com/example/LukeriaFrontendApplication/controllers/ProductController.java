@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/product")
 public class ProductController {
     private static final String REDIRECTTXT = "redirect:/product/show";
-    private static final String SESSION_TOKEN="sessionToken";
+    private static final String SESSION_TOKEN = "sessionToken";
     private final ProductClient productClient;
     private final PackageClient packageClient;
     private final ImageClient imageService;
