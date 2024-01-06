@@ -23,6 +23,7 @@ import java.util.Objects;
 @Slf4j
 @RequestMapping("/order")
 public class OrderController {
+    public static boolean isMonthlyOrder;
     private static final String ORDERTXT = "order";
     private static final String REDIRECTTXT = "redirect:/order/show";
     private final OrderClient orderClient;
@@ -31,6 +32,7 @@ public class OrderController {
 
     @GetMapping("/create")
     String createOrder(Model model, HttpServletRequest request) {
+        isMonthlyOrder = false;
         String token = (String) request.getSession().getAttribute("sessionToken");
         OrderDTO orderDTO = new OrderDTO();
         List<ClientDTO> clientDTOS = clientClient.getAllClients(token);
@@ -41,6 +43,7 @@ public class OrderController {
 
     @GetMapping("/monthly/create")
     String createOrderMonthly(Model model, HttpServletRequest request) {
+        isMonthlyOrder = true;
         String token = (String) request.getSession().getAttribute("sessionToken");
         OrderDTO orderDTO = new OrderDTO();
         List<ClientDTO> clientDTOS = new ArrayList<>();

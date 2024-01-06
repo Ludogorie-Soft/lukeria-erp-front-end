@@ -44,8 +44,12 @@ public class OrderProductController {
         model.addAttribute("orderProducts", orderProductDTOS);
         model.addAttribute("products", packageDTOList);
         model.addAttribute("order", orderDTO);
-
-        List<PackageDTO> packageDTOS = getAvailablePackagesForOrder(orderDTO, token);
+        List<PackageDTO> packageDTOS;
+        if (OrderController.isMonthlyOrder) {
+            packageDTOS = getAvailablePackagesForOrder(orderDTO, token);
+        } else {
+            packageDTOS = getAvailablePackagesFromAllPackages(token);
+        }
         model.addAttribute("packages", packageDTOS);
 
         OrderProductDTO orderProduct = new OrderProductDTO();
@@ -67,8 +71,12 @@ public class OrderProductController {
             model.addAttribute("packages", packageClient.getAllPackages(token));
             List<OrderProductDTO> orderProductDTOS = getOrderProductsForOrder(orderDTO, token);
             List<PackageDTO> packageDTOList = getPackageDTOListForOrderProducts(orderProductDTOS, token);
-            List<PackageDTO> packageDTOS = getAvailablePackagesForOrder(orderDTO, token);
-
+            List<PackageDTO> packageDTOS;
+            if (OrderController.isMonthlyOrder) {
+                packageDTOS = getAvailablePackagesForOrder(orderDTO, token);
+            } else {
+                packageDTOS = getAvailablePackagesFromAllPackages(token);
+            }
             model.addAttribute("packages", packageDTOS);
             model.addAttribute("orderProducts", orderProductDTOS);
             model.addAttribute("products", packageDTOList);
@@ -100,8 +108,7 @@ public class OrderProductController {
         OrderDTO orderDTO = orderClient.getOrderById(orderId, token);
         List<OrderProductDTO> orderProductDTOS = getOrderProductsForOrder(orderDTO, token);
         List<PackageDTO> packageDTOList = getPackageDTOListForOrderProducts(orderProductDTOS, token);
-        List<PackageDTO> packageDTOS = getAvailablePackagesForOrder(orderDTO, token);
-
+        List<PackageDTO> packageDTOS = getAvailablePackagesFromAllPackages(token);
         model.addAttribute("orderProducts", orderProductDTOS);
         model.addAttribute("products", packageDTOList);
         model.addAttribute("order", orderDTO);
@@ -146,7 +153,10 @@ public class OrderProductController {
         for (MonthlyOrderProductDTO monthlyOrderProductDTO : monthlyOrderProductClient.getAllMonthlyProductOrders(token)) {
             for (ProductDTO productDTO : productClient.getAllProducts(token)) {
                 if (Objects.equals(productDTO.getPackageId(), monthlyOrderProductDTO.getPackageId()) && productDTO.getAvailableQuantity() > 0) {
-                    packageDTOS.add(packageClient.getPackageById(monthlyOrderProductDTO.getPackageId(), token));
+                    PackageDTO packageDTO = packageClient.getPackageById(monthlyOrderProductDTO.getPackageId(), token);
+                    if (!packageDTOS.contains(packageDTO)) {
+                        packageDTOS.add(packageDTO);
+                    }
                 }
             }
         }
