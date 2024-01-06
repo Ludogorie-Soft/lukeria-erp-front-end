@@ -13,7 +13,6 @@ import org.springframework.web.servlet.ModelAndView;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 
 @org.springframework.stereotype.Controller
@@ -38,40 +37,24 @@ public class OrderProductController {
     @GetMapping("/addProduct")
     String createOrderProduct(Model model, HttpServletRequest request) {
         String token = (String) request.getSession().getAttribute("sessionToken");
-        OrderProductDTO orderProduct = new OrderProductDTO();
         OrderDTO orderDTO = orderClient.getOrderById(orderClient.findFirstByOrderByIdDesc(token).getId(), token);
-        List<OrderProductDTO> orderProductDTOS = orderProductClient.getAllOrderProducts(token).stream().filter(order -> Objects.equals(order.getOrderId(), orderDTO.getId())).toList();
-        List<Long> packageDTOIds = packageDTOIds = orderProductDTOS.stream().map(OrderProductDTO::getPackageId).toList();
-        List<PackageDTO> packageDTOList = packageDTOList = packageDTOIds.stream()
-                .map(id1 -> packageClient.getPackageById(id1, token))
-                .collect(Collectors.toList());
+        List<OrderProductDTO> orderProductDTOS = getOrderProductsForOrder(orderDTO, token);
+        List<PackageDTO> packageDTOList = getPackageDTOListForOrderProducts(orderProductDTOS, token);
         model.addAttribute("backendBaseUrl", backendBaseUrl);
         model.addAttribute("orderProducts", orderProductDTOS);
         model.addAttribute("products", packageDTOList);
         model.addAttribute("order", orderDTO);
-        List<PackageDTO> packageDTOS = new ArrayList<>();
-        for (MonthlyOrderDTO monthlyOrder : monthlyOrderClient.getAllMonthlyOrders(token)) {
-            if (Objects.equals(orderDTO.getClientId(), monthlyOrder.getClientId()) && !orderDTO.isInvoiced()) {
-                for (MonthlyOrderProductDTO monthlyOrderProductDTO : monthlyOrderProductClient.getAllMonthlyProductOrders(token)) {
-                    for (ProductDTO productDTO : productClient.getAllProducts(token)) {
-                        if (Objects.equals(productDTO.getPackageId(), monthlyOrderProductDTO.getPackageId()) && productDTO.getAvailableQuantity() > 0) {
-                            packageDTOS.add(packageClient.getPackageById(monthlyOrderProductDTO.getPackageId(), token));
-                        }
-                    }
-                }
-            }
-        }
-        if (packageDTOS.isEmpty()) {
-            for (PackageDTO aPackage : packageClient.getAllPackages(token)) {
-                for (ProductDTO productDTO : productClient.getAllProducts(token)) {
-                    if (Objects.equals(productDTO.getPackageId(), aPackage.getId()) && productDTO.getAvailableQuantity() > 0) {
-                        packageDTOS.add(aPackage);
-                    }
-                }
-            }
+        List<PackageDTO> packageDTOS;
+        if (OrderController.isMonthlyOrder) {
+            packageDTOS = getAvailablePackagesForOrder(orderDTO, token);
+        } else {
+            packageDTOS = getAvailablePackagesFromAllPackages(token);
         }
         model.addAttribute("packages", packageDTOS);
+
+        OrderProductDTO orderProduct = new OrderProductDTO();
         model.addAttribute(ORDERPRODUCT, orderProduct);
+
         return "OrderProduct/addProduct";
     }
 
@@ -81,35 +64,18 @@ public class OrderProductController {
         String token = (String) request.getSession().getAttribute("sessionToken");
         orderProductDTO.setOrderId(orderClient.findFirstByOrderByIdDesc(token).getId());
         orderProductClient.createOrderProduct(orderProductDTO, token);
+
         if (addAnotherDish) {
             OrderDTO orderDTO = orderClient.getOrderById(orderClient.findFirstByOrderByIdDesc(token).getId(), token);
             model.addAttribute("order", orderDTO);
             model.addAttribute("packages", packageClient.getAllPackages(token));
-            List<OrderProductDTO> orderProductDTOS = orderProductClient.getAllOrderProducts(token).stream().filter(order -> Objects.equals(order.getOrderId(), orderDTO.getId())).toList();
-            List<Long> packageDTOIds = orderProductDTOS.stream().map(OrderProductDTO::getPackageId).toList();
-            List<PackageDTO> packageDTOList = packageDTOIds.stream().map
-                            (id1 -> packageClient.getPackageById(id1, token))
-                    .collect(Collectors.toList());
-            List<PackageDTO> packageDTOS = new ArrayList<>();
-            for (MonthlyOrderDTO monthlyOrder : monthlyOrderClient.getAllMonthlyOrders(token)) {
-                if (Objects.equals(orderDTO.getClientId(), monthlyOrder.getClientId()) && !orderDTO.isInvoiced()) {
-                    for (MonthlyOrderProductDTO monthlyOrderProductDTO : monthlyOrderProductClient.getAllMonthlyProductOrders(token)) {
-                        for (ProductDTO productDTO : productClient.getAllProducts(token)) {
-                            if (Objects.equals(productDTO.getPackageId(), monthlyOrderProductDTO.getPackageId()) && productDTO.getAvailableQuantity() > 0) {
-                                packageDTOS.add(packageClient.getPackageById(monthlyOrderProductDTO.getPackageId(), token));
-                            }
-                        }
-                    }
-                }
-            }
-            if (packageDTOS.isEmpty()) {
-                for (PackageDTO aPackage : packageClient.getAllPackages(token)) {
-                    for (ProductDTO productDTO : productClient.getAllProducts(token)) {
-                        if (Objects.equals(productDTO.getPackageId(), aPackage.getId()) && productDTO.getAvailableQuantity() > 0) {
-                            packageDTOS.add(aPackage);
-                        }
-                    }
-                }
+            List<OrderProductDTO> orderProductDTOS = getOrderProductsForOrder(orderDTO, token);
+            List<PackageDTO> packageDTOList = getPackageDTOListForOrderProducts(orderProductDTOS, token);
+            List<PackageDTO> packageDTOS;
+            if (OrderController.isMonthlyOrder) {
+                packageDTOS = getAvailablePackagesForOrder(orderDTO, token);
+            } else {
+                packageDTOS = getAvailablePackagesFromAllPackages(token);
             }
             model.addAttribute("packages", packageDTOS);
             model.addAttribute("orderProducts", orderProductDTOS);
@@ -126,8 +92,7 @@ public class OrderProductController {
         List<OrderProductDTO> orderProductDTOS = orderProductClient.getAllOrderProducts(token).stream().filter(order -> Objects.equals(order.getOrderId(), orderId)).toList();
         List<Long> packageDTOIds = orderProductDTOS.stream().map(OrderProductDTO::getPackageId).toList();
         List<PackageDTO> packageDTOList = packageDTOIds.stream()
-                .map(id1 -> packageClient.getPackageById(id1, token))
-                .collect(Collectors.toList());
+                .map(id1 -> packageClient.getPackageById(id1, token)).toList();
         model.addAttribute("backendBaseUrl", backendBaseUrl);
         model.addAttribute("order", orderClient.getOrderById(orderId, token));
         model.addAttribute("orderProducts", orderProductDTOS);
@@ -141,32 +106,9 @@ public class OrderProductController {
         String token = (String) request.getSession().getAttribute("sessionToken");
         OrderProductDTO orderProduct = new OrderProductDTO();
         OrderDTO orderDTO = orderClient.getOrderById(orderId, token);
-        List<OrderProductDTO> orderProductDTOS = orderProductClient.getAllOrderProducts(token).stream().filter(order -> Objects.equals(order.getOrderId(), orderDTO.getId())).toList();
-        List<Long> packageDTOIds = orderProductDTOS.stream().map(OrderProductDTO::getPackageId).toList();
-        List<PackageDTO> packageDTOList = packageDTOIds.stream()
-                .map(id1 -> packageClient.getPackageById(id1, token))
-                .collect(Collectors.toList());
-        List<PackageDTO> packageDTOS = new ArrayList<>();
-        for (MonthlyOrderDTO monthlyOrder : monthlyOrderClient.getAllMonthlyOrders(token)) {
-            if (Objects.equals(orderDTO.getClientId(), monthlyOrder.getClientId()) && !orderDTO.isInvoiced()) {
-                for (MonthlyOrderProductDTO monthlyOrderProductDTO : monthlyOrderProductClient.getAllMonthlyProductOrders(token)) {
-                    for (ProductDTO productDTO : productClient.getAllProducts(token)) {
-                        if (Objects.equals(productDTO.getPackageId(), monthlyOrderProductDTO.getPackageId()) && productDTO.getAvailableQuantity() > 0) {
-                            packageDTOS.add(packageClient.getPackageById(monthlyOrderProductDTO.getPackageId(), token));
-                        }
-                    }
-                }
-            }
-        }
-        if (packageDTOS.isEmpty()) {
-            for (PackageDTO aPackage : packageClient.getAllPackages(token)) {
-                for (ProductDTO productDTO : productClient.getAllProducts(token)) {
-                    if (Objects.equals(productDTO.getPackageId(), aPackage.getId()) && productDTO.getAvailableQuantity() > 0) {
-                        packageDTOS.add(aPackage);
-                    }
-                }
-            }
-        }
+        List<OrderProductDTO> orderProductDTOS = getOrderProductsForOrder(orderDTO, token);
+        List<PackageDTO> packageDTOList = getPackageDTOListForOrderProducts(orderProductDTOS, token);
+        List<PackageDTO> packageDTOS = getAvailablePackagesFromAllPackages(token);
         model.addAttribute("orderProducts", orderProductDTOS);
         model.addAttribute("products", packageDTOList);
         model.addAttribute("order", orderDTO);
@@ -174,6 +116,63 @@ public class OrderProductController {
         model.addAttribute("backendBaseUrl", backendBaseUrl);
         model.addAttribute(ORDERPRODUCT, orderProduct);
         return "OrderProduct/addProductToExistingOrder";
+    }
+
+    private List<OrderProductDTO> getOrderProductsForOrder(OrderDTO orderDTO, String token) {
+        return orderProductClient.getAllOrderProducts(token)
+                .stream()
+                .filter(order -> Objects.equals(order.getOrderId(), orderDTO.getId()))
+                .toList();
+    }
+
+    private List<PackageDTO> getPackageDTOListForOrderProducts(List<OrderProductDTO> orderProductDTOS, String token) {
+        List<Long> packageDTOIds = orderProductDTOS.stream().map(OrderProductDTO::getPackageId).toList();
+        return packageDTOIds.stream()
+                .map(id1 -> packageClient.getPackageById(id1, token))
+                .toList();
+    }
+
+    private List<PackageDTO> getAvailablePackagesForOrder(OrderDTO orderDTO, String token) {
+        List<PackageDTO> packageDTOS = new ArrayList<>();
+
+        for (MonthlyOrderDTO monthlyOrder : monthlyOrderClient.getAllMonthlyOrders(token)) {
+            if (Objects.equals(orderDTO.getClientId(), monthlyOrder.getClientId()) && !orderDTO.isInvoiced()) {
+                packageDTOS.addAll(getAvailablePackagesFromMonthlyOrder(monthlyOrder, token));
+            }
+        }
+
+        if (packageDTOS.isEmpty()) {
+            packageDTOS.addAll(getAvailablePackagesFromAllPackages(token));
+        }
+
+        return packageDTOS;
+    }
+
+    private List<PackageDTO> getAvailablePackagesFromMonthlyOrder(MonthlyOrderDTO monthlyOrder, String token) {
+        List<PackageDTO> packageDTOS = new ArrayList<>();
+        for (MonthlyOrderProductDTO monthlyOrderProductDTO : monthlyOrderProductClient.getAllMonthlyProductOrders(token)) {
+            for (ProductDTO productDTO : productClient.getAllProducts(token)) {
+                if (Objects.equals(productDTO.getPackageId(), monthlyOrderProductDTO.getPackageId()) && productDTO.getAvailableQuantity() > 0) {
+                    PackageDTO packageDTO = packageClient.getPackageById(monthlyOrderProductDTO.getPackageId(), token);
+                    if (!packageDTOS.contains(packageDTO)) {
+                        packageDTOS.add(packageDTO);
+                    }
+                }
+            }
+        }
+        return packageDTOS;
+    }
+
+    private List<PackageDTO> getAvailablePackagesFromAllPackages(String token) {
+        List<PackageDTO> packageDTOS = new ArrayList<>();
+        for (PackageDTO aPackage : packageClient.getAllPackages(token)) {
+            for (ProductDTO productDTO : productClient.getAllProducts(token)) {
+                if (Objects.equals(productDTO.getPackageId(), aPackage.getId()) && productDTO.getAvailableQuantity() > 0) {
+                    packageDTOS.add(aPackage);
+                }
+            }
+        }
+        return packageDTOS;
     }
 
     @PostMapping("/submitExistingOrder")

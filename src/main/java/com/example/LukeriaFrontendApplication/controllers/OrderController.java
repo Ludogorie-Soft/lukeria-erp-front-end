@@ -17,13 +17,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 @org.springframework.stereotype.Controller
 @RequiredArgsConstructor
 @Slf4j
 @RequestMapping("/order")
 public class OrderController {
+    public static boolean isMonthlyOrder;
     private static final String ORDERTXT = "order";
     private static final String REDIRECTTXT = "redirect:/order/show";
     private final OrderClient orderClient;
@@ -32,6 +32,7 @@ public class OrderController {
 
     @GetMapping("/create")
     String createOrder(Model model, HttpServletRequest request) {
+        isMonthlyOrder = false;
         String token = (String) request.getSession().getAttribute("sessionToken");
         OrderDTO orderDTO = new OrderDTO();
         List<ClientDTO> clientDTOS = clientClient.getAllClients(token);
@@ -42,6 +43,7 @@ public class OrderController {
 
     @GetMapping("/monthly/create")
     String createOrderMonthly(Model model, HttpServletRequest request) {
+        isMonthlyOrder = true;
         String token = (String) request.getSession().getAttribute("sessionToken");
         OrderDTO orderDTO = new OrderDTO();
         List<ClientDTO> clientDTOS = new ArrayList<>();
@@ -70,8 +72,7 @@ public class OrderController {
         List<OrderDTO> orders = orderClient.getAllOrders(token);
         List<Long> clientIds = orders.stream().map(OrderDTO::getClientId).toList();
         List<ClientDTO> clients = new java.util.ArrayList<>(clientIds.stream()
-                .map(id1 -> clientClient.getClientById(id1, token))
-                .collect(Collectors.toList()));
+                .map(id1 -> clientClient.getClientById(id1, token)).toList());
         Collections.reverse(orders);
         Collections.reverse(clients);
         model.addAttribute("orders", orders);

@@ -157,6 +157,25 @@ public class MonthlyOrderController {
         return "MonthlyOrder/show";
     }
 
+    @PostMapping("/delete/{id}")
+    ModelAndView deleteOrderById(@PathVariable("id") Long id, Model model, HttpServletRequest request) {
+        String token = (String) request.getSession().getAttribute("sessionToken");
+        monthlyOrderClient.deleteMonthlyOrder(id, token);
+        for (MonthlyOrderProductDTO order : monthlyOrderProductClient.getAllMonthlyProductOrders(token)) {
+            if(Objects.equals(order.getMonthlyOrderId(), id)){
+                monthlyOrderProductClient.deleteMonthlyProductOrder(order.getId(), token);
+            }
+        }
+        return new ModelAndView(REDIRECTTXT);
+    }
+
+    @PostMapping("/deleteMonthlyOrderProduct/delete/{id}")
+    ModelAndView deleteMonthlyOrderProduct(@PathVariable("id") Long id, Model model, HttpServletRequest request) {
+        String token = (String) request.getSession().getAttribute("sessionToken");
+        monthlyOrderProductClient.deleteMonthlyProductOrder(id, token);
+        return new ModelAndView(REDIRECTTXT);
+    }
+
     @GetMapping("/orderDetails/{orderId}")
     public String orderDetails(@PathVariable("orderId") Long id, Model model, HttpServletRequest request) {
         String token = (String) request.getSession().getAttribute("sessionToken");
@@ -167,7 +186,8 @@ public class MonthlyOrderController {
             if (Objects.equals(order.getMonthlyOrderId(), id)) {
                 for (InvoiceOrderProductDTO invoiceOrderProductDTO1 : invoiceOrderProductDTOS) {
                     InvoiceDTO invoiceDTO = invoiceClient.getInvoiceById(invoiceOrderProductDTO1.getInvoiceId(), token);
-                    if ((invoiceDTO.getInvoiceDate().isBefore(monthlyOrderDTO.getEndDate().toLocalDate()) || invoiceDTO.getInvoiceDate().equals(monthlyOrderDTO.getEndDate())) && (invoiceDTO.getInvoiceDate().isAfter(monthlyOrderDTO.getStartDate().toLocalDate()) || invoiceDTO.getInvoiceDate().equals(monthlyOrderDTO.getStartDate()))) {
+                    if ((invoiceDTO.getInvoiceDate().isBefore(monthlyOrderDTO.getEndDate().toLocalDate()) || invoiceDTO.getInvoiceDate().equals(monthlyOrderDTO.getEndDate())) &&
+                            (invoiceDTO.getInvoiceDate().isAfter(monthlyOrderDTO.getStartDate().toLocalDate()) || invoiceDTO.getInvoiceDate().equals(monthlyOrderDTO.getStartDate()))) {
                         Integer sent = 0;
                         order.setSentQuantity(sent);
                         System.out.println(monthlyOrderProductClient.getAllMonthlyProductOrders(token));
@@ -197,17 +217,4 @@ public class MonthlyOrderController {
         return "MonthlyOrder/orderDetails";
     }
 
-    @PostMapping("/delete/{id}")
-    ModelAndView deleteOrderById(@PathVariable("id") Long id, Model model, HttpServletRequest request) {
-        String token = (String) request.getSession().getAttribute("sessionToken");
-        monthlyOrderClient.deleteMonthlyOrder(id, token);
-        return new ModelAndView(REDIRECTTXT);
-    }
-
-    @PostMapping("/deleteMonthlyOrderProduct/delete/{id}")
-    ModelAndView deleteMonthlyOrderProduct(@PathVariable("id") Long id, Model model, HttpServletRequest request) {
-        String token = (String) request.getSession().getAttribute("sessionToken");
-        monthlyOrderProductClient.deleteMonthlyProductOrder(id, token);
-        return new ModelAndView(REDIRECTTXT);
-    }
 }

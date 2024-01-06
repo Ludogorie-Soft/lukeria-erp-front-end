@@ -11,8 +11,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.io.IOException;
-
 @org.springframework.stereotype.Controller
 @RequiredArgsConstructor
 @Slf4j
@@ -25,7 +23,7 @@ public class UploadFileController {
     }
 
     @PostMapping("/upload/file/submit")
-    public ModelAndView uploadFromFile(@RequestParam MultipartFile file, HttpServletRequest request) throws IOException {
+    public ModelAndView uploadFromFile(@RequestParam MultipartFile file, HttpServletRequest request) {
         String token = (String) request.getSession().getAttribute("sessionToken");
         uploadFileClient.uploadFromFile(file, token);
         return new ModelAndView("redirect:/package/show");

@@ -63,7 +63,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
         // Adjust validation rules based on the client's nationality
         if (isBulgarianClient === 'true') {
-            idNumEIKInput.pattern = '\\d{5}';
+            idNumEIKInput.pattern = '\\d{5,}';
             idNumEIKInput.title = 'Номера по ЕИК трябва да съдържа 5 цифри!';
         } else {
             idNumEIKInput.pattern = '.{5,}';
