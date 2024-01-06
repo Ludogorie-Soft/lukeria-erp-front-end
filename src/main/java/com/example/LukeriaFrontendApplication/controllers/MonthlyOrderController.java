@@ -156,10 +156,16 @@ public class MonthlyOrderController {
         model.addAttribute("clients", clients);
         return "MonthlyOrder/show";
     }
+
     @PostMapping("/delete/{id}")
     ModelAndView deleteOrderById(@PathVariable("id") Long id, Model model, HttpServletRequest request) {
         String token = (String) request.getSession().getAttribute("sessionToken");
         monthlyOrderClient.deleteMonthlyOrder(id, token);
+        for (MonthlyOrderProductDTO order : monthlyOrderProductClient.getAllMonthlyProductOrders(token)) {
+            if(Objects.equals(order.getMonthlyOrderId(), id)){
+                monthlyOrderProductClient.deleteMonthlyProductOrder(order.getId(), token);
+            }
+        }
         return new ModelAndView(REDIRECTTXT);
     }
 
@@ -169,6 +175,7 @@ public class MonthlyOrderController {
         monthlyOrderProductClient.deleteMonthlyProductOrder(id, token);
         return new ModelAndView(REDIRECTTXT);
     }
+
     @GetMapping("/orderDetails/{orderId}")
     public String orderDetails(@PathVariable("orderId") Long id, Model model, HttpServletRequest request) {
         String token = (String) request.getSession().getAttribute("sessionToken");
