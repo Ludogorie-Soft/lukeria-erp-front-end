@@ -206,7 +206,7 @@ public class MonthlyOrderController {
     private void updateSentQuantityAndPersist(MonthlyOrderProductDTO order, String token) {
         Integer sent = 0;
         order.setSentQuantity(sent);
-        MonthlyOrderProductDTO monthlyOrderProductDTO = monthlyOrderProductClient.getMonthlyOrderProductById(order.getMonthlyOrderId(), token);
+        MonthlyOrderProductDTO monthlyOrderProductDTO = monthlyOrderProductClient.getMonthlyOrderProductById(order.getId(), token);
         MonthlyOrderDTO monthlyOrderDTO = monthlyOrderClient.getMonthlyOrderById(monthlyOrderProductDTO.getMonthlyOrderId(), token);
         for (OrderProductDTO orderProduct : orderProductClient.getAllOrderProducts(token)) {
             if (Objects.equals(orderClient.getOrderById(orderProduct.getOrderId(), token).getClientId(), monthlyOrderDTO.getId())) {
