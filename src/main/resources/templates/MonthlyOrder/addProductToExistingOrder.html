@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+
+<head>
+    <!--    LINKS  -->
+    <th:block th:include="~{fragments/links}"></th:block>
+
+    <title> Добави продукти към поръчка </title>
+    <link href="/css/form.css" rel="stylesheet">
+    <link href="/css/checkbox.css" rel="stylesheet">
+</head>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const navbar = document.getElementById("sidebar");
+    console.log(navbar);
+    const toggler = document.querySelector("a.sidebar-toggle");
+    toggler.addEventListener("click", () => {
+    navbar.classList.toggle("collapsed");
+    });
+});
+</script>
+<body>
+<div class="wrapper">
+    <!--    HEADER  -->
+    <th:block th:include="~{fragments/header}"></th:block>
+    <div class="main">
+        <nav class="navbar navbar-expand navbar-light navbar-bg">
+            <a class="sidebar-toggle js-sidebar-toggle">
+                <i class="hamburger align-self-center"></i>
+            </a>
+        </nav>
+        <main class="content">
+            <div class="form-container">
+                <div class="card custom-card-width-lg">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Добави продукти към поръчка</h5>
+                    </div>
+                    <div class="card-body">
+                        <form action="/monthlyOrder/submitExistingOrder" method="post">
+                            <input type="hidden" th:name="orderId" th:value="${order.id}" />
+                            <div class="form-group">
+                                <p>Номер на поръчка: <span th:text="${order.id}"></span></p>
+                            </div>
+                            <div class="form-group">
+                                <label for="packageId" style="width: 100%;">Продукти:</label>
+                                <select class="form-select" size="6" aria-label="size 6 select example" id="packageId" name="packageId" style="width: 100%;" required>
+                                    <option th:each="packageId : ${packages}" th:value="${packageId.id}"
+                                            th:text="${packageId.productCode} + ' - ' +${packageId.name}"  th:data-image-url="@{${backendBaseUrl} + '/' + ${packageId.photo}}">
+                                        <img th:src="@{'${backendBaseUrl}' + '/' + ${package.photo}}"  width="50" height="50">
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="number" style="width: 100%;">Брой:</label>
+                                <input type="number" id="number"  th:field="${orderProduct.orderedQuantity}" name="number" required min="1">
+                            </div>
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-primary">Запази</button>
+                            </div>
+                        </form>
+                        <br>
+                        <h6 class="card-title mb-0">Вече добавени продукти към поръчката</h6>
+                        <table class="table table-hover">
+                            <thead>
+                            <tr>
+                                <th>Номер</th>
+                                <th>Име</th>
+                                <th>Брой</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="product, iter : ${products}">
+                                <td th:text="${product.id}"></td>
+                                <td th:text="${product.name}"></td>
+                                <td th:text="${orderProducts[iter.index]?.orderedQuantity}"></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+<script src="/js/app.js"></script>
+<script>
+$(document).ready(function() {
+    $('#packageId').select2({
+        templateResult: formatState
+    });
+});
+
+function formatState(state) {
+    if (!state.id) {
+        return state.text;
+    }
+    var imageUrl = state.element.getAttribute('data-image-url');
+    var $state = $(
+        '<span><img src="' + imageUrl + '" width="50" height="50" /> ' + state.text + '</span>'
+    );
+    return $state;
+}
+</script>
+</body>

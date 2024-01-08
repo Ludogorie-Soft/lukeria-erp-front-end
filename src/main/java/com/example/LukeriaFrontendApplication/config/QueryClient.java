@@ -11,5 +11,5 @@ import java.util.List;
 
 public interface QueryClient {
     @GetMapping("/order_product/{id}")
-     List<OrderProductDTO> getOrderProductsByOrderId(@PathVariable(name = "id") Long id);
+    List<OrderProductDTO> getOrderProductsByOrderId(@PathVariable(name = "id") Long id);
 }

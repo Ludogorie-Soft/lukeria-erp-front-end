@@ -1,30 +1,31 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns="http://www.w3.org/1999/html">
 
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="Responsive Admin &amp; Dashboard Template based on Bootstrap 5">
-    <meta name="author" content="AdminKit">
-    <meta name="keywords"
-          content="adminkit, bootstrap, bootstrap 5, admin, dashboard, template, responsive, css, sass, html, theme, front-end, ui kit, web">
-
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link rel="shortcut icon" href="/static/img/icons/icon-48x48.png"/>
-
-    <link rel="canonical" href="https://demo-basic.adminkit.io/"/>
+    <!--    LINKS  -->
+    <th:block th:include="~{fragments/links}"></th:block>
 
     <title> Кутии </title>
 
     <link href="/css/app.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const navbar = document.getElementById("sidebar");
+    console.log(navbar);
+    const toggler = document.querySelector("a.sidebar-toggle");
+    toggler.addEventListener("click", () => {
+    navbar.classList.toggle("collapsed");
+    });
+});
+
+
+</script>
 <body>
 <div class="wrapper">
     <!--    HEADER  -->
     <th:block th:insert="~{fragments/header}"></th:block>
-
 
 
     <div class="main">
@@ -34,34 +35,47 @@
             </a>
         </nav>
         <main class="content">
-                <div class="row">
-                    <div class="col-lg-8 mx-auto">
-                        <div class="card custom-card-width-lg">
-                            <div class="card-header">
-                                <h5 class="card-title mb-0">Всички Кутии</h5>
-                            </div>
+            <div class="row">
+                <div class="col-lg-12 mx-auto">
+                    <div class="card custom-card-width-lg">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">Всички Кутии</h5>
+                        </div>
+                        <th:block th:if="${session.sessionToken != null and session.sessionRole == 'ADMIN'}">
                             <div class="text-center">
                                 <a href="/package/create" class="btn btn-primary">Добави Кутия</a>
                             </div>
-                            <div class="card-body">
-                                <div class="row mb-3">
-                                    <div class="col">
-                                        <input type="text" id="searchInput1" class="form-control" placeholder="Търсене по номер ID...">
-                                    </div>
-                                    <div class="col">
-                                        <input type="text" id="searchInput" class="form-control" placeholder="Търсене по име...">
+                        </th:block>
+                        <div class="card-body">
+                            <div class="row mb-3">
+                                <div class="col">
+                                    <input type="text" id="searchInput1" class="form-control"
+                                           placeholder="Търсене по код на кутия"><br>
+                                    <div class="alert alert-primary" role="alert">
+                                        <label>Резултати от търсенето: <span id="resultsCount"></span></label>
                                     </div>
                                 </div>
-                                <div class="table-responsive">
-                                    <table class="table">
+                                <div class="col">
+                                    <input type="text" id="searchInput2" class="form-control"
+                                           placeholder="Търсене по име на кутия"> <br>
+                                    <div class="alert alert-primary" role="alert">
+                                        <label>Резултати от търсенето: <span id="resultsCount2"></span></label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table">
                                     <thead>
                                     <tr>
                                         <th>Снимка</th>
-                                        <th>ID</th>
+                                        <th>Код на кутията</th>
                                         <th>Име</th>
                                         <th>Английско име</th>
                                         <th>Наличност</th>
-                                        <th>Цена</th>
+                                        <th:block
+                                                th:if="${session.sessionToken != null and session.sessionRole == 'ADMIN'}">
+                                            <th>Цена</th>
+                                        </th:block>
                                         <th>Кашон ID</th>
                                         <th>Тарелка ID</th>
                                         <th>Брой кутии в Кашон</th>
@@ -70,28 +84,56 @@
                                     <tbody>
                                     <tr th:each="package : ${packages}" data-id="${package.id}" class="package-row">
                                         <td>
-                                            <img th:src="@{${backendBaseUrl} + '/'+ ${package.photo}}" alt="no image" height="100" width="100">
+                                            <img th:if="${package.photo != null}"
+                                                 th:src="@{${backendBaseUrl} + '/' + ${package.photo}}"
+                                                 alt="no image"
+                                                 height="100"
+                                                 width="100">
+                                            <img th:unless="${package.photo != null}"
+                                                 class="card-img-top"
+                                                 src="/img/photos/noImage.png"
+                                                 alt="Default Image"
+                                                 height="100"
+                                                 width="100">
                                         </td>
-                                        <td th:text="${package.id}"></td>
+                                        <td th:text="${package.productCode}"></td>
                                         <td th:text="${package.name}"></td>
                                         <td th:text="${package.englishName}"></td>
                                         <td>
-                                            <span th:text="${package.availableQuantity + ' Броя'}" th:class="${package.availableQuantity <= 20 ? 'red-cell' : (package.availableQuantity <= 100 ? 'yellow-cell' : '')}"></span>
+                                            <span th:text="${package.availableQuantity + ' Броя'}"
+                                                  th:class="${package.availableQuantity <= 20 ? 'red-cell' : (package.availableQuantity <= 100 ? 'yellow-cell' : '')}"></span>
                                         </td>
-                                        <td th:text="${package.price + ' Лв'}"></td>
-                                        <td th:text="${package.cartonId}"></td>
-                                        <td th:text="${package.plateId}"></td>
+                                        <th:block
+                                                th:if="${session.sessionToken != null and session.sessionRole == 'ADMIN'}">
+                                            <td th:text="${package.price + ' Лв'}"></td>
+                                        </th:block>
+                                        <td>
+                                            <a th:href="@{/carton/{cartonId}(cartonId=${package.cartonId})}">
+                                                <span th:text="${package.cartonId}"></span>
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a th:href="@{/plate/{plateId}(plateId=${package.plateId})}">
+                                                <span th:text="${package.plateId}"></span>
+                                            </a>
+                                        </td>
                                         <td th:text="${package.piecesCarton}"></td>
-                                        <td>
-                                            <form th:action="@{'/package/delete/' + ${package.id}}" method="post" th:attr="onsubmit='return confirm(\'Сигурни ли сте, че искате да изтриете пакет с име: ' + ${package.name} + '?\');'">
-                                                <button type="submit" class="btn btn-danger">Изтрий</button>
-                                            </form>
-                                        </td>
-                                        <td>
-                                            <form th:action="@{'/package/editPackage/' + ${package.id}}" method="get" th:attr="onsubmit='return confirm(\'Сигурни ли сте, че искате да редактирате пакет с име: ' + ${package.name} + '?\');'">
-                                                <button type="submit" class="btn btn-primary">Редактирай</button>
-                                            </form>
-                                        </td>
+                                        <th:block
+                                                th:if="${session.sessionToken != null and session.sessionRole == 'ADMIN'}">
+                                            <td>
+                                                <form th:action="@{'/package/delete/' + ${package.id}}" method="post"
+                                                      th:attr="onsubmit='return confirm(\'Сигурни ли сте, че искате да изтриете пакет с име: ' + ${package.name} + '?\');'">
+                                                    <button type="submit" class="btn btn-danger">Изтрий</button>
+                                                </form>
+                                            </td>
+                                            <td>
+                                                <form th:action="@{'/package/editPackage/' + ${package.id}}"
+                                                      method="get"
+                                                      th:attr="onsubmit='return confirm(\'Сигурни ли сте, че искате да редактирате пакет с име: ' + ${package.name} + '?\');'">
+                                                    <button type="submit" class="btn btn-primary">Редактирай</button>
+                                                </form>
+                                            </td>
+                                        </th:block>
                                     </tr>
                                     </tbody>
                                 </table>
@@ -104,7 +146,77 @@
     </div>
 </div>
 <script src="/js/app.js"></script>
+<script>
+    document.getElementById('searchInput2').addEventListener('input', function () {
+    var input, filter, table, tr, td, i, txtValue;
+    input = document.getElementById('searchInput2');
+    filter = input.value.toUpperCase();
+    table = document.querySelector('table');
+    tr = table.getElementsByTagName('tr');
+    var count = 0; // Initialize the count variable
 
+    for (i = 0; i < tr.length; i++) {
+        td = tr[i].getElementsByTagName('td')[2];
+        if (td) {
+            txtValue = td.textContent || td.innerText;
+            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                tr[i].style.display = '';
+                count++; // Increment the count when a match is found
+            } else {
+                tr[i].style.display = 'none';
+            }
+        }
+    }
+
+    // Display the results count for the second search input
+    var resultsCountElement = document.getElementById('resultsCount2');
+    if (resultsCountElement) {
+        resultsCountElement.textContent = count;
+    } else {
+        // If the element doesn't exist, you can create and append it
+        resultsCountElement = document.createElement('div');
+        resultsCountElement.id = 'resultsCount2';
+        resultsCountElement.textContent = count;
+        input.parentNode.appendChild(resultsCountElement); // Appending to the parent of the input
+    }
+});
+    document.getElementById('searchInput1').addEventListener('input', function () {
+    var input, filter, table, tr, td, i, txtValue;
+    input = document.getElementById('searchInput1');
+    filter = input.value.toUpperCase();
+    table = document.querySelector('table');
+    tr = table.getElementsByTagName('tr');
+    var count = 0; // Initialize the count variable
+
+    for (i = 0; i < tr.length; i++) {
+        td = tr[i].getElementsByTagName('td')[1];
+        if (td) {
+            txtValue = td.textContent || td.innerText;
+            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                tr[i].style.display = '';
+                count++; // Increment the count when a match is found
+            } else {
+                tr[i].style.display = 'none';
+            }
+        }
+    }
+
+    // Display the results count
+    var resultsCountElement = document.getElementById('resultsCount');
+    if (resultsCountElement) {
+        resultsCountElement.textContent = count;
+    } else {
+        // If the element doesn't exist, you can create and append it
+        resultsCountElement = document.createElement('div');
+        resultsCountElement.id = 'resultsCount';
+        resultsCountElement.textContent = count;
+        input.parentNode.appendChild(resultsCountElement); // Appending to the parent of the input
+    }
+});
+
+
+
+</script>
 
 </body>
 

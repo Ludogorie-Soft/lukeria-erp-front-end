@@ -8,7 +8,16 @@
     <title> Кашони </title>
     <link href="/css/form.css" rel="stylesheet">
 </head>
-
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const navbar = document.getElementById("sidebar");
+    console.log(navbar);
+    const toggler = document.querySelector("a.sidebar-toggle");
+    toggler.addEventListener("click", () => {
+    navbar.classList.toggle("collapsed");
+    });
+});
+</script>
 <body>
 <div class="wrapper">
 <!--    HEADER  -->
@@ -29,15 +38,13 @@
                         <form action="/submit" method="post">
                             <div class="form-group">
                                 <label for="name">Име:</label>
-                                <input type="text" id="name" name="name" pattern=".{10,}"
-                                       title="Моля въведете името на кашона с поне 10 символа!" required
+                                <input type="text" id="name" name="name" required
                                        th:value="${carton.name}"/>
                                 <div class="error-message"></div>
                             </div>
                             <div class="form-group">
                                 <label for="size">Размери:</label>
-                                <input type="text" id="size" name="size" pattern=".{10,}"
-                                       title="Моля въведете размерите на кашона с поне 10 символа!" required
+                                <input type="text" id="size" name="size" required
                                        th:value="${carton.size}"/>
                                 <div class="error-message"></div>
                             </div>

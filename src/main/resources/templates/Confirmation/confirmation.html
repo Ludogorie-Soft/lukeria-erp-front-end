@@ -7,6 +7,17 @@
     <title> Confirmation </title>
     <link href="/css/show.css" rel="stylesheet">
 </head>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const navbar = document.getElementById("sidebar");
+    console.log(navbar);
+    const toggler = document.querySelector("a.sidebar-toggle");
+    toggler.addEventListener("click", () => {
+    navbar.classList.toggle("collapsed");
+    });
+});
+
+</script>
 <body>
 <div class="wrapper">
     <!--    HEADER  -->
@@ -22,13 +33,24 @@
         <main class="content">
             <div class="row">
                 <div class="col-lg-8 mx-auto">
-                    <button onclick="generatePDF()">
+                    <button class="btn btn-primary" onclick="generatePDF()">
                         Свали PDF
                     </button>
+                    <button id="printButton" class="btn btn-primary" onclick="printPage()">
+                        Принтирай <i class="fas fa-print"></i>
+                    </button>
+                    <h6 style="color:red;"> Цените се определят по курс на евро 1.95583</h6>
+                    <style>
+                    .hidden {
+                    display: none;
+                     }
+                    </style>
 
+                    <h4 class="hidden" th:text="${invoiceNumber}"></h4>
                     <div class="card custom-card-width-lg">
                         <center>
-                            <img class="card-img-top" src="/img/photos/logo.png" alt="Logo" style="width: 250px; height: 220px; float: left;">
+                            <img class="card-img-top" src="/img/photos/logo.png" alt="Logo"
+                                 style="width: 250px; height: 220px; float: left;">
                         </center>
                         <div class="card-body">
                             <center>
@@ -36,10 +58,14 @@
                             </center>
                             <br>
                             <div class="card-body">
-                                <h5> Today:............... </span>.(date),      ……………………………………………………… (name), as ............. (position) of "DAMAK" GbR, GERMANY, 47800 Krefeld, EMIL
-                                    SCHAEFER STR.18, VAT № DE  181 791 338, accept goods on the invoice <span th:text="${invoiceNumber}"></span> / 23.06.2023 from ......................................
-                                    position – driver, with truck  ........ with reg plates № ,  ………………………… from “ LUKERIA “ LTD with Vat ID №: 200418603,
-                                    in the city Krefeld, Germany,as follows:	</h5>
+                                <h6> Today:............................(date), ............................... (name),
+                                    as ....................... (position) of ...........
+                                    ....................,accept goods on the invoice <span
+                                            th:text="${invoiceNumber}"></span> / .............. from
+                                    ...............................
+                                    position – driver, with truck ............. with reg plates № ,
+                                    ....................... from “ LUKERIA “ LTD with Vat ID №: ....................,
+                                    in ..............................,as follows: </h6>
                                 <br><br>
                                 <div class="table-responsive">
                                     <table class="table table-bordered">
@@ -47,27 +73,37 @@
                                         <tr>
                                             <th>CODE</th>
                                             <th>number and kind of packages description of goods</th>
-                                            <th>quantity  of packs</th>
-                                            <th>unit  price (€ /pack)</th>
-                                            <th>Value € </th>
+                                            <th>quantity of packs</th>
+                                            <th>unit price (€ /pack)</th>
+                                            <th>Value €</th>
                                         </tr>
                                         </thead>
                                         <tbody>
                                         <tr th:each="orderProductDTO : ${orderProductDTOS}">
                                             <td th:text="${orderProductDTO.id}"></td>
-                                            <td th:text="${orderProductDTO.number}"></td>
                                             <td>
                                             <span th:each="packageDTO : ${packageDTOS}"
                                                   th:if="${packageDTO.id == orderProductDTO.packageId}"
-                                                  th:text="${packageDTO.name}"></span>
+                                                  th:text="${packageDTO.englishName}"></span>
+                                            </td>
+                                            <td th:text="${orderProductDTO.number}"></td>
+                                            <td>
+                                                <!--                                                <span th:text="${orderProductDTO.sellingPrice} * 1.95583 "></span >-->
+                                                <script th:inline="javascript">
+                                                  var originalValue = /*[[${orderProductDTO.sellingPrice * 1.95583}]]*/ 0;
+                                                  var roundedValue = originalValue.toFixed(2);
+                                                  document.write(roundedValue);
+
+                                                </script>
                                             </td>
                                             <td>
-                                                <span th:each="packageDTO : ${packageDTOS}"
-                                                      th:text="${packageDTO.price}"></span>
-                                            </td>
-                                            <td>
-                                                <span th:each="packageDTO : ${packageDTOS}"
-                                                      th:text="${packageDTO.price * orderProductDTO.number}"></span>
+                                                <!--                                                <span th:text="${orderProductDTO.sellingPrice * orderProductDTO.number} * 1.95583"></span>-->
+                                                <script th:inline="javascript">
+                                                  var originalValue = /*[[${orderProductDTO.sellingPrice * orderProductDTO.number  * 1.95583}]]*/ 0;
+                                                  var roundedValue = originalValue.toFixed(2);
+                                                  document.write(roundedValue);
+
+                                                </script>
                                             </td>
                                         </tr>
                                         </tbody>
@@ -78,26 +114,27 @@
                                 <div style="display: flex; justify-content: space-between;">
                                     <div style="text-align: left;">
                                         <I><h6>Изпращач:</h6></I>
-                                        <p>Sender:    </p>
+                                        <p>Sender: </p>
                                         <p>Kadriya Yaldaz,Manager</p>
                                         <br><br>
-                                        <p>/Име,длъжност,  подпис и печат/ (Name,Position,Signature, Stamp) </p>
+                                        <p>/Име,длъжност, подпис и печат/ (Name,Position,Signature, Stamp) </p>
                                     </div>
                                     <div style="text-align: center;">
                                         <I><h6>Получател:</h6></I>
-                                        <p>Recipient:    </p>
+                                        <p>Recipient: </p>
                                         <br>
                                         <br>
                                         <p>.............................</p>
-                                        <p style="text-align: left;">/Име,длъжност,  подпис и печат/ (Name,Position,Signature, Stamp)  </p>
+                                        <p style="text-align: left;">/Име,длъжност, подпис и печат/
+                                            (Name,Position,Signature, Stamp) </p>
                                     </div>
                                     <div style="text-align: left;">
                                         <I><h6>Превозвач:</h6></I>
-                                        <p>Carrier:    </p>
+                                        <p>Carrier: </p>
                                         <br>
                                         <br>
                                         <p>.............................</p>
-                                        <p>/Име,длъжност,  подпис и печат/ (Name,Position,Signature, Stamp)  </p>
+                                        <p>/Име,длъжност, подпис и печат/ (Name,Position,Signature, Stamp) </p>
                                     </div>
                                 </div>
                             </div>
@@ -111,22 +148,42 @@
 <script src="/js/app.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
-
 <script>
     function generatePDF() {
         const element = document.querySelector('.custom-card-width-lg'); // Select the element to convert to PDF
+        const invoiceNumberElement = document.querySelector('h4'); // Assuming the invoice number is in an h2 element
+
+        if (!invoiceNumberElement) {
+            alert('Invoice number element not found.');
+            return;
+        }
+
+        const invoiceNumber = invoiceNumberElement.innerText.trim();
+        const filename = invoiceNumber ? `Confirmation ${invoiceNumber}.pdf` : 'invoice.pdf'; // Use the invoice number in the filename if available
+
         const opt = {
             margin: 10,
-            filename: 'confirmation.pdf', // Set the PDF file name
-            image: { type: 'jpeg', quality: 0.40 }, // Image settings
-            html2canvas: { scale: 2 }, // Higher scale for better resolution
-            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } // PDF settings
+            filename: filename,
+            image: { type: 'jpeg', quality: 0.40 },
+            html2canvas: { scale: 2 },
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
         };
 
         // Use html2pdf to generate the PDF
         html2pdf().from(element).set(opt).save();
     }
 </script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+const printButton = document.getElementById("printButton");
 
+function printPage() {
+window.print();
+}
+
+printButton.addEventListener("click", printPage);
+});
+
+</script>
 </body>
 </html>

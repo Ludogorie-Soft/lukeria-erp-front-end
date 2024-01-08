@@ -9,7 +9,16 @@
     <link href="/css/form.css" rel="stylesheet">
     <link href="/css/datepicker.css" rel="stylesheet">
 </head>
-
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const navbar = document.getElementById("sidebar");
+    console.log(navbar);
+    const toggler = document.querySelector("a.sidebar-toggle");
+    toggler.addEventListener("click", () => {
+    navbar.classList.toggle("collapsed");
+    });
+});
+</script>
 <body>
 <div class="wrapper">
     <!--    HEADER  -->
@@ -88,7 +97,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="materialPrice">Обща цена на поръчката:</label>
-                                <input type="number" id="materialPrice" name="materialPrice"
+                                <input type="number" id="materialPrice" name="materialPrice" step="0.01"
                                        th:field="${order.materialPrice}"/>
                             </div>
                             <div class="form-group">

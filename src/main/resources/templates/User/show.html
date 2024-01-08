@@ -7,6 +7,16 @@
     <title> Потребители </title>
     <link href="/css/show.css" rel="stylesheet">
 </head>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const navbar = document.getElementById("sidebar");
+    console.log(navbar);
+    const toggler = document.querySelector("a.sidebar-toggle");
+    toggler.addEventListener("click", () => {
+    navbar.classList.toggle("collapsed");
+    });
+});
+</script>
 <body>
 <div class="wrapper">
     <!--    HEADER  -->
@@ -21,7 +31,7 @@
         </nav>
         <main class="content">
             <div class="row">
-                <div class="col-lg-8 mx-auto">
+                <div class="col-lg-11 mx-auto">
                     <div class="card custom-card-width-lg">
                         <div class="card-header">
                                 <h5 class="card-title mb-0">Всички Потребители</h5>
@@ -32,10 +42,16 @@
                             <div class="card-body">
                                 <div class="row mb-3">
                                     <div class="col">
-                                        <input type="text" id="searchInput1" class="form-control" placeholder="Търсене по номер ID...">
+                                        <input type="text" id="searchInput1" class="form-control" placeholder="Търсене по първо име"><br>
+                                        <div class="alert alert-primary" role="alert">
+                                            <label>Резултати от търсенето: <span id="resultsCount"></span></label>
+                                        </div>
                                     </div>
                                     <div class="col">
-                                        <input type="text" id="searchInput" class="form-control" placeholder="Търсене по пълно име...">
+                                        <input type="text" id="searchInput2" class="form-control" placeholder="Търсене по фамилия"><br>
+                                        <div class="alert alert-primary" role="alert">
+                                            <label>Резултати от търсенето: <span id="resultsCount2"></span></label>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="table-responsive">
@@ -44,7 +60,9 @@
                                     <tr>
                                         <th>ID</th>
                                         <th>Потребителско име</th>
-                                        <th>Пълно име</th>
+                                        <th>Първо име</th>
+                                        <th>Фамилно име</th>
+                                        <th>Адрес</th>
                                         <th>Е-поща</th>
                                         <th>Роля</th>
                                     </tr>
@@ -53,18 +71,20 @@
                                     <tr th:each="user : ${users}">
                                         <td th:text="${user.id}"></td>
                                         <td th:text="${user.username}"></td>
-                                        <td th:text="${user.fullName}"></td>
+                                        <td th:text="${user.firstname}"></td>
+                                        <td th:text="${user.lastname}"></td>
+                                        <td th:text="${user.address}"></td>
                                         <td th:text="${user.email}"></td>
                                         <td th:text="${user.role}"></td>
                                         <td>
                                             <form th:action="@{'/user/delete/' + ${user.id}}" method="post"
-                                                  th:attr="onsubmit='return confirm(\'Сигурни ли сте, че искате да изтриете Потребител с име: ' + ${user.fullName} + '?\');'">
+                                                  th:attr="onsubmit='return confirm(\'Сигурни ли сте, че искате да изтриете Потребител с име: ' + ${user.firstname} + '?\');'">
                                                 <button type="submit" class="btn btn-danger">Изтрий</button>
                                             </form>
                                         </td>
                                         <td>
                                             <form th:action="@{'/user/editUser/' + ${user.id}}" method="get"
-                                                  th:attr="onsubmit='return confirm(\'Сигурни ли сте, че искате да редактирате Потребител с име: ' + ${user.fullName} + '?\');'">
+                                                  th:attr="onsubmit='return confirm(\'Сигурни ли сте, че искате да редактирате Потребител с име: ' + ${user.firstname} + '?\');'">
                                                 <button type="submit" class="btn btn-primary">Редактирай</button>
                                             </form>
                                         </td>
@@ -80,26 +100,73 @@
     </div>
 </div>
 <script src="/js/app.js"></script>
-</body>
-</html>
 <script>
-    document.getElementById('searchInput').addEventListener('input', function () {
-        var input, filter, table, tr, td, i, txtValue;
-        input = document.getElementById('searchInput');
-        filter = input.value.toUpperCase();
-        table = document.querySelector('table');
-        tr = table.getElementsByTagName('tr');
+    document.getElementById('searchInput2').addEventListener('input', function () {
+    var input, filter, table, tr, td, i, txtValue;
+    input = document.getElementById('searchInput2');
+    filter = input.value.toUpperCase();
+    table = document.querySelector('table');
+    tr = table.getElementsByTagName('tr');
+    var count = 0; // Initialize the count variable
 
-        for (i = 0; i < tr.length; i++) {
-            td = tr[i].getElementsByTagName('td')[2];
-            if (td) {
-                txtValue = td.textContent || td.innerText;
-                if (txtValue.toUpperCase().indexOf(filter) > -1) {
-                    tr[i].style.display = '';
-                } else {
-                    tr[i].style.display = 'none';
-                }
+    for (i = 0; i < tr.length; i++) {
+        td = tr[i].getElementsByTagName('td')[3];
+        if (td) {
+            txtValue = td.textContent || td.innerText;
+            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                tr[i].style.display = '';
+                count++; // Increment the count when a match is found
+            } else {
+                tr[i].style.display = 'none';
             }
         }
-    });
+    }
+
+    // Display the results count for the second search input
+    var resultsCountElement = document.getElementById('resultsCount2');
+    if (resultsCountElement) {
+        resultsCountElement.textContent = count;
+    } else {
+        // If the element doesn't exist, you can create and append it
+        resultsCountElement = document.createElement('div');
+        resultsCountElement.id = 'resultsCount2';
+        resultsCountElement.textContent = count;
+        input.parentNode.appendChild(resultsCountElement); // Appending to the parent of the input
+    }
+});
+    document.getElementById('searchInput1').addEventListener('input', function () {
+    var input, filter, table, tr, td, i, txtValue;
+    input = document.getElementById('searchInput1');
+    filter = input.value.toUpperCase();
+    table = document.querySelector('table');
+    tr = table.getElementsByTagName('tr');
+    var count = 0; // Initialize the count variable
+
+    for (i = 0; i < tr.length; i++) {
+        td = tr[i].getElementsByTagName('td')[2];
+        if (td) {
+            txtValue = td.textContent || td.innerText;
+            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                tr[i].style.display = '';
+                count++; // Increment the count when a match is found
+            } else {
+                tr[i].style.display = 'none';
+            }
+        }
+    }
+
+    // Display the results count
+    var resultsCountElement = document.getElementById('resultsCount');
+    if (resultsCountElement) {
+        resultsCountElement.textContent = count;
+    } else {
+        // If the element doesn't exist, you can create and append it
+        resultsCountElement = document.createElement('div');
+        resultsCountElement.id = 'resultsCount';
+        resultsCountElement.textContent = count;
+        input.parentNode.appendChild(resultsCountElement); // Appending to the parent of the input
+    }
+});
 </script>
+</body>
+</html>

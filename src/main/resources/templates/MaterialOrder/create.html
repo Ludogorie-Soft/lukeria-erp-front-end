@@ -8,7 +8,16 @@
     <title> Поръчка на материали </title>
     <link href="/css/form.css" rel="stylesheet">
 </head>
-
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const navbar = document.getElementById("sidebar");
+    console.log(navbar);
+    const toggler = document.querySelector("a.sidebar-toggle");
+    toggler.addEventListener("click", () => {
+    navbar.classList.toggle("collapsed");
+    });
+});
+</script>
 <body>
 <div class="wrapper">
     <!--    HEADER  -->
@@ -51,22 +60,26 @@
                             <div class="form-group">
                             <div id="plateDropdown" style="display: none;">
                                 <label for="materialId">Тарелки:</label>
-                                <select class="form-select" size="3" aria-label="size 3 select example" id="plateId" name="materialId">
+                                <select  class="js-example-basic-single" id="plateId" name="materialId">
                                     <option th:each="plate : ${plates}" th:value="${plate.id}" th:text="${plate.id} + ' - ' + ${plate.name}"></option>
                                 </select>
                             </div>
                             <div id="cartonDropdown" style="display: none;">
                                 <label for="materialId">Кашони:</label>
-                                <select class="form-select" size="3" aria-label="size 3 select example" id="materialId" name="materialId">
+                                <select  class="js-example-basic-single" id="materialId" name="materialId">
                                     <option th:each="carton : ${cartons}" th:value="${carton.id}" th:text="${carton.id} + ' - ' + ${carton.name}"></option>
                                 </select>
                             </div>
-                            <div id="packageDropdown" style="display: none;">
-                                <label for="materialId">Кутии:</label>
-                                <select class="form-select" size="3" aria-label="size 3 select example" id="packageId" name="materialId">
-                                    <option th:each="package : ${packages}" th:value="${package.id}" th:text="${package.id} + ' - ' + ${package.name}"></option>
-                                </select>
-                            </div>
+                                <div id="packageDropdown" style="display: none;">
+                                    <label for="materialId">Кутии:</label>
+                                    <select id="packageId" name="packageId" style="width: 100%;">
+                                        <option th:each="package : ${packages}" th:value="${package.id}"
+                                                th:data-image-url="@{${backendBaseUrl} + '/' + ${package.photo}}" >
+                                            <img th:src="@{'${backendBaseUrl}' + '/' + ${package.photo}}"  width="50" height="50">
+                                            <span th:text = "${package.productCode} + ' - '+ ${package.name}"></span>
+                                        </option>
+                                    </select>
+                                </div>
                             </div>
                             <div class="form-group">
                                 <label for="orderedQuantity">Брой:</label>
@@ -84,7 +97,6 @@
     </div>
 </div>
 <script src="js/app.js"></script>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
         $(document).ready(function() {
             $('input[type=radio][name=materialType]').change(function() {
@@ -94,6 +106,36 @@
                 $('#packageDropdown').toggle(materialType === 'PACKAGE');
             });
         });
+
     </script>
+
+<script>
+
+       $(document).ready(function() {
+           $('#materialId').select2();
+       });
+
+       $(document).ready(function() {
+           $('#plateId').select2();
+       });
+   </script>
+<script>
+$(document).ready(function() {
+    $('#packageId').select2({
+        templateResult: formatState
+    });
+});
+
+function formatState(state) {
+    if (!state.id) {
+        return state.text;
+    }
+    var imageUrl = state.element.getAttribute('data-image-url');
+    var $state = $(
+        '<span><img src="' + imageUrl + '" width="50" height="50" /> ' + state.text + '</span>'
+    );
+    return $state;
+}
+</script>
 </body>
 </html>

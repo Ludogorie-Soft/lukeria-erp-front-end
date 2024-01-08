@@ -12,21 +12,21 @@ import java.util.List;
 @FeignClient(name = "lukeria-erp-invoiceOrderProduct", url = "http://localhost:8088/api/v1/invoiceOrderProduct")
 public interface InvoiceOrderProductClient {
     @GetMapping()
-    List<InvoiceOrderProductDTO> getAllInvoiceOrderProduct();
+    List<InvoiceOrderProductDTO> getAllInvoiceOrderProduct(@RequestHeader("Authorization") String auth);
 
     @GetMapping("/{id}")
-    InvoiceOrderProductDTO getInvoiceOrderProductById(@PathVariable(name = "id") Long id);
+    InvoiceOrderProductDTO getInvoiceOrderProductById(@PathVariable(name = "id") Long id, @RequestHeader("Authorization") String auth);
 
     @PostMapping
-    InvoiceOrderProductDTO createInvoiceOrderProduct(@Valid @RequestBody InvoiceOrderProductDTO invoiceOrderProductDTO);
+    InvoiceOrderProductDTO createInvoiceOrderProduct(@Valid @RequestBody InvoiceOrderProductDTO invoiceOrderProductDTO, @RequestHeader("Authorization") String auth);
 
     @PostMapping("/withIds")
-     ResponseEntity<String> createInvoiceOrderProductWhitIdsList(InvoiceOrderProductConfigDTO configDTO);
+    ResponseEntity<String> createInvoiceOrderProductWhitIdsList(InvoiceOrderProductConfigDTO configDTO, @RequestHeader("Authorization") String auth);
 
     @PutMapping("/{id}")
-    void updateInvoiceOrderProduct(@PathVariable("id") Long id, @Valid @RequestBody  InvoiceOrderProductDTO invoiceOrderProductDTO) ;
+    void updateInvoiceOrderProduct(@PathVariable("id") Long id, @Valid @RequestBody InvoiceOrderProductDTO invoiceOrderProductDTO, @RequestHeader("Authorization") String auth);
 
     @DeleteMapping("/{id}")
-    String deleteInvoiceOrderProductById(@PathVariable("id") Long id);
+    String deleteInvoiceOrderProductById(@PathVariable("id") Long id, @RequestHeader("Authorization") String auth);
 
 }

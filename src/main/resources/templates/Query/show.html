@@ -7,6 +7,16 @@
     <title> Фактура </title>
     <link href="/css/invoice.css" rel="stylesheet">
 </head>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const navbar = document.getElementById("sidebar");
+    console.log(navbar);
+    const toggler = document.querySelector("a.sidebar-toggle");
+    toggler.addEventListener("click", () => {
+    navbar.classList.toggle("collapsed");
+    });
+});
+</script>
 <body>
 <div class="wrapper">
     <!--    HEADER  -->
@@ -37,18 +47,18 @@
                                 <div class="text-container">
                                     <strong class="underlined" th:text="ПОЛУЧАТЕЛ"></strong>
                                     <h5><strong
-                                            th:text=" ${clientDTOS[orderDTO.clientId - 1].businessName}"></strong>
+                                            th:text=" ${client.businessName}"></strong>
                                     </h5>
                                     <h5><strong
-                                            th:text="'Ид. номер: ' + ${clientDTOS[orderDTO.clientId - 1].idNumEIK}"></strong>
+                                            th:text="'Ид. номер: ' + ${client.idNumEIK}"></strong>
                                     </h5>
-                                    <h5><strong th:if="${clientDTOS[orderDTO.clientId - 1].hasIdNumDDS}">
-                                        <span th:text="'Ид. номер по ДДС: BG' + ${clientDTOS[orderDTO.clientId - 1].idNumEIK}"></span>
+                                    <h5><strong th:if="${client.hasIdNumDDS}">
+                                        <span th:text="'Ид. номер по ДДС: BG' + ${client.idNumEIK}"></span>
                                     </strong></h5>
                                     <h5><strong
-                                            th:text="'Адрес: ' + ${clientDTOS[orderDTO.clientId - 1].address}"></strong>
+                                            th:text="'Адрес: ' + ${client.address}"></strong>
                                     </h5>
-                                    <h5><strong th:text="'МОЛ: ' + ${clientDTOS[orderDTO.clientId - 1].mol}"></strong>
+                                    <h5><strong th:text="'МОЛ: ' + ${client.mol}"></strong>
                                     </h5>
                                 </div>
 
@@ -102,11 +112,9 @@
                                         </td>
 
                                         <td>
-                                            <label>
-                                                <input type="number" step="0.01" class="price-input"
-                                                       th:value="${productDTOS[__${orderProductDTO.packageId - 1}__].price}"
-                                                       id="priceInput" name="priceInput">
-                                            </label>
+                                            <input type="number" step="0.01" class="price-input"
+                                                   th:value="${productDTOS[__${orderProductDTO.packageId - 1}__].price}"
+                                                   id="priceInput" name="priceInput">
                                         </td>
                                         <td th:text="20"></td>
                                         <td id="totalPriceNumber*Price">
@@ -151,6 +159,27 @@
                                             <option value="false">С ПРЕВОДНО НАРЕЖДАНЕ</option>
                                         </select>
                                     </div>
+                                    <div class="form-group" id="bankAccountGroup" style="display: none;">
+                                    <label for="bankAccount">Банкова сметка: </label>
+                                    <select class="form-control small-input" id="bankAccount" name="bankAccount">
+                                        <option value="BG56-UNCR-7000-1523215088 УНИКРЕДИТ БУЛБАНК АД" th:text="${'BG56-UNCR-7000-1523215088 УНИКРЕДИТ БУЛБАНК АД'}"></option>
+                                        <option value="BG84-BPBI-7943-1076363002 ЮРОБАНК БЪЛГАРИЯ АД" th:text="${'BG84-BPBI-7943-1076363002 ЮРОБАНК БЪЛГАРИЯ АД'}"></option>
+                                        <option value="BG06-DEMI-9240-1000326433 ТЪРГОВСКА БАНКА Д АД" th:text="${'BG06-DEMI-9240-1000326433 ТЪРГОВСКА БАНКА Д АД'}"></option>
+                                    </select>
+                                    </div>
+
+                                    <script th:inline="javascript">
+                                        $(document).ready(function () {
+                                          $('#paymentMethod').change(function () {
+                                            var selectedValue = $(this).val();
+                                            if (selectedValue === 'false') {
+                                              $('#bankAccountGroup').show();
+                                               } else {
+                                               $('#bankAccountGroup').hide();
+                                             }
+                                           });
+                                         });
+                                    </script>
                                     <div class="form-group">
                                         <label for="dateInput">Дата на падеж:</label>
                                         <input class="form-control small-input" type="date" id="dateInput"
@@ -165,7 +194,7 @@
                                         <input type="hidden" name="orderProductIds" th:value="${orderProductDTO.id}">
                                     </th:block>
                                     <div>
-                                        <button id="printButton3" type="submit">Фактурирай</button>
+                                        <button id="printButton3" type="submit" onclick="return confirm('Сигурни ли сте, че искате да фактурирате тази поръчка?')">Фактурирай</button>
                                     </div>
                                 </form>
                             </div>
@@ -178,4 +207,5 @@
 </div>
 </body>
 <script src="/js/invoice.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 </html>

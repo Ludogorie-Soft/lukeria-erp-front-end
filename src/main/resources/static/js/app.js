@@ -1,4 +1,14 @@
 /*! For license information please see app.js.LICENSE.txt */
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const navbar = document.getElementById("sidebar");
+    console.log(navbar);
+    const toggler = document.querySelector("a.sidebar-toggle");
+    toggler.addEventListener("click", () => {
+    navbar.classList.toggle("collapsed");
+    });
+});
+</script>
 document.addEventListener("DOMContentLoaded", function() {
   var currentPageUrl = window.location.href;
   var sidebarLinks = document.querySelectorAll('.sidebar-link');

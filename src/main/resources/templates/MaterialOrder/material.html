@@ -4,9 +4,19 @@
   <!--    LINKS  -->
   <th:block th:include="~{fragments/links}"></th:block>
 
-  <title> Всички Нужни брой Материали </title>
+  <title> Материал </title>
   <link href="/css/show.css" rel="stylesheet">
 </head>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const navbar = document.getElementById("sidebar");
+    console.log(navbar);
+    const toggler = document.querySelector("a.sidebar-toggle");
+    toggler.addEventListener("click", () => {
+    navbar.classList.toggle("collapsed");
+    });
+});
+</script>
 <body>
 <div class="wrapper">
   <!--    HEADER  -->
@@ -41,6 +51,8 @@
                       <hr>
                       <h4 class="material-id" th:text="'Номер: ' + ${material.id}"></h4>
                       <hr>
+                      <h4 th:if="${type eq 'Кутия'}" class="material-name" th:text="'Код на кутията: ' + ${productCode}"></h4>
+                      <hr th:if="${type eq 'Кутия'}">
                       <h4 class="material-name" th:text="'Име: ' + ${material.name}"></h4>
                       <hr>
                       <h4 class="material-quantity" th:text="'Наличност: ' + ${material.availableQuantity} + ' бр.'"></h4>

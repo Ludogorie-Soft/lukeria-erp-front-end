@@ -1,88 +1,228 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
-  <!--    LINKS  -->
-  <th:block th:include="~{fragments/links}"></th:block>
+    <!--    LINKS  -->
+    <th:block th:include="~{fragments/links}"></th:block>
 
-  <title> Поръчки </title>
-  <link href="/css/show.css" rel="stylesheet">
+    <title> Транспортиране на продукт </title>
+    <link href="/css/show.css" rel="stylesheet">
 </head>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const navbar = document.getElementById("sidebar");
+    console.log(navbar);
+    const toggler = document.querySelector("a.sidebar-toggle");
+    toggler.addEventListener("click", () => {
+    navbar.classList.toggle("collapsed");
+    });
+});
+
+</script>
 <body>
 <div class="wrapper">
-  <!--    HEADER  -->
-  <th:block th:include="~{fragments/header}"></th:block>
+    <!--    HEADER  -->
+    <th:block th:include="~{fragments/header}"></th:block>
 
 
-  <div class="main">
-    <nav class="navbar navbar-expand navbar-light navbar-bg">
-      <a class="sidebar-toggle js-sidebar-toggle">
-        <i class="hamburger align-self-center"></i>
-      </a>
-    </nav>
-    <main class="content">
-        <div class="row">
-          <div class="col-lg-8 mx-auto">
-            <div class="card custom-card-width-lg">
-              <div class="card-header">
-                <h5 class="card-title mb-0">Всички поръчки</h5>
-              </div>
-              <div class="text-center">
-                <a href="/order/create" class="btn btn-primary">Добави Поръчка</a>
-              </div>
-              <div>
+    <div class="main">
+        <nav class="navbar navbar-expand navbar-light navbar-bg">
+            <a class="sidebar-toggle js-sidebar-toggle">
+                <i class="hamburger align-self-center"></i>
+            </a>
+        </nav>
+        <main class="content">
+            <div class="row">
+                <div class="col-lg-11 mx-auto">
+                    <div class="card custom-card-width-lg">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">Всички поръчки</h5>
+                        </div>
+                        <th:block th:if="${session.sessionToken != null and session.sessionRole == 'ADMIN'}">
+                            <div class="text-center">
+                                <a href="/order/create" class="btn btn-primary">Транспортиране на стоки</a>
+                            </div>
+                            <br>
+                            <div class="text-center">
+                                <a href="/order/monthly/create" class="btn btn-primary">Транспортиране към месечна поръчка</a>
+                            </div>
+                        </th:block>
+                        <br>
+                        <th:block
+                                th:if="${session.sessionToken != null and session.sessionRole == 'TRANSPORT_MANAGER'}">
+                            <div class="text-center">
+                                <a href="/order/create" class="btn btn-primary">Транспортиране на стоки</a>
+                            </div>
+                            <br>
+                            <div class="text-center">
+                                <a href="/order/monthly/create" class="btn btn-primary">Транспортиране към месечна поръчка</a>
+                            </div>
+                        </th:block>
+                        <th:block th:if="${session.sessionToken != null and session.sessionRole == 'ADMIN'}">
+                            <div class="text-center">
+                                <a href="/material-order/all-materials" class="btn btn-warning">Провери налични
+                                    Материали за Всички Поръчки</a>
+                            </div>
+                        </th:block>
+                        <br>
+                        <th:block
+                                th:if="${session.sessionToken != null and session.sessionRole == 'PRODUCTION_MANAGER'}">
+                            <div class="text-center">
+                                <a href="/material-order/all-materials" class="btn btn-warning">Провери налични
+                                    Материали за Всички Поръчки</a>
+                            </div>
+                        </th:block>
+                        <div class="card-body">
+                            <h6 class="card-title mb-0">Актични поръчки</h6>
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                    <tr>
+                                        <th>Поръчка</th>
+                                        <th>Клиент</th>
+                                        <th>Дата на поръчка</th>
+                                        <th>Виж повече</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="order : ${orders}" th:if="${!order.invoiced}">
+                                        <td th:text="${order.id}"></td>
+                                        <td th:text="${clients[__${orderStat.index}__]?.businessName}"></td>
+                                        <td th:text="${order.orderDate}"></td>
+                                        <td><a th:href="@{/orderProduct/orderDetails/{orderId}(orderId=${order.id})}">Повече
+                                            информация</a></td>
+                                        <th:block
+                                                th:if="${session.sessionToken != null and session.sessionRole == 'ADMIN'}">
+                                            <td>
+                                                <form th:action="@{'/order/delete/' + ${order.id}}" method="post"
+                                                      th:attr="onsubmit='return confirm(\'Сигурни ли сте, че искате да изтриете поръчка с номер: ' + ${order.id} + '?\');'">
+                                                    <button type="submit" class="btn btn-danger">Изтрий</button>
+                                                </form>
+                                            </td>
+                                            <td>
+                                                <form th:action="@{'/order/editOrder/' + ${order.id}}" method="get">
+                                                    <button type="submit" class="btn btn-primary">Редактирай</button>
+                                                </form>
+                                            </td>
+                                        </th:block>
+                                        <th:block
+                                                th:if="${session.sessionToken != null and session.sessionRole == 'TRANSPORT_MANAGER'}">
+                                            <td>
+                                                <form th:action="@{'/order/editOrder/' + ${order.id}}" method="get">
+                                                    <button type="submit" class="btn btn-primary">Редактирай</button>
+                                                </form>
+                                            </td>
+                                        </th:block>
+                                        <th:block
+                                                th:if="${session.sessionToken != null and session.sessionRole == 'ADMIN'}">
+                                            <td>
+                                                <form th:action="@{'/material-order/materials/' + ${order.id}}"
+                                                      method="get">
+                                                    <button type="submit" class="btn btn-warning">Провери налични
+                                                        Материали
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        </th:block>
+                                        <th:block
+                                                th:if="${session.sessionToken != null and session.sessionRole == 'PRODUCTION_MANAGER'}">
+                                            <td>
+                                                <form th:action="@{'/material-order/materials/' + ${order.id}}"
+                                                      method="get">
+                                                    <button type="submit" class="btn btn-warning">Провери налични
+                                                        Материали
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        </th:block>
+                                        <th:block
+                                                th:if="${session.sessionToken != null and session.sessionRole == 'ADMIN'}">
+                                            <td>
+                                                <form th:action="@{'/invoice/show/' + ${order.id}}" method="get">
+                                                    <button type="submit" class="btn btn-primary"> Фактуриране на тази
+                                                        поръчка
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        </th:block>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                                <br><br>
+                                <h6 class="card-title mb-0">Доставени поръчки</h6>
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <thead>
+                                        <tr>
+                                            <th>Поръчка</th>
+                                            <th>Клиент</th>
+                                            <th>Дата на поръчка</th>
+                                            <th>Виж повече</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr th:each="order, iter : ${orders}" th:if="${order.invoiced}">
+                                            <td th:text="${order.id}"></td>
+                                            <td th:text="${clients[iter.index]?.businessName}"></td>
+                                            <td th:text="${order.orderDate}"></td>
+                                            <td>
+                                                <a th:href="@{/orderProduct/orderDetails/{orderId}(orderId=${order.id})}">Повече
+                                                    информация</a></td>
+                                            <th:block
+                                                    th:if="${session.sessionToken != null and session.sessionRole == 'ADMIN'}">
+                                                <td th:if="${!order.invoiced}">
+                                                    <form th:action="@{'/order/delete/' + ${order.id}}" method="post"
+                                                          th:attr="onsubmit='return confirm(\'Сигурни ли сте, че искате да изтриете поръчка с номер: ' + ${order.id} + '?\');'">
+                                                        <button type="submit" class="btn btn-danger">Изтрий</button>
+                                                    </form>
+                                                </td>
+                                                <td th:if="${!order.invoiced}">
+                                                    <form th:action="@{'/order/editOrder/' + ${order.id}}" method="get">
+                                                        <button type="submit" class="btn btn-primary">Редактирай
+                                                        </button>
+                                                    </form>
+                                                </td>
 
-              </div>
-              <div class="text-center">
-                <a href="/material-order/all-materials" class="btn btn-warning">Провери налични Материали за Всички Поръчки</a>
-              </div>
-              <div class="card-body">
-                <div class="table-responsive">
-                  <table class="table">
-                  <thead>
-                  <tr>
-                    <th>Поръчка</th>
-                    <th>Клиент</th>
-                    <th>Дата на поръчка</th>
-                    <th>Виж повече</th>
-                  </tr>
-                  </thead>
-                  <tbody>
-                  <tr th:each="order, iter : ${orders}">
-                    <td th:text="${order.id}"></td>
-                    <td th:text="${clients[iter.index]?.businessName}"></td>
-                    <td th:text="${order.orderDate}"></td>
-                    <td><a th:href="@{/orderProduct/orderDetails/{orderId}(orderId=${order.id})}">Повече информация</a></td>
-                    <td>
-                      <form th:action="@{'/order/delete/' + ${order.id}}" method="post"
-                            th:attr="onsubmit='return confirm(\'Сигурни ли сте, че искате да изтриете поръчка с номер: ' + ${order.id} + '?\');'">
-                        <button type="submit" class="btn btn-danger">Изтрий</button>
-                      </form>
-                    </td>
-                    <td>
-                      <form th:action="@{'/order/editOrder/' + ${order.id}}" method="get">
-                        <button type="submit" class="btn btn-primary">Редактирай</button>
-                      </form>
-                    </td>
-                    <td th:if="${!order.invoiced}">
-                      <form th:action="@{'/material-order/materials/' + ${order.id}}" method="get">
-                        <button type="submit" class="btn btn-warning">Провери налични Материали</button>
-                      </form>
-                    </td>
-                    <td th:if="${!order.invoiced}">
-                      <form th:action="@{'/invoice/show/' + ${order.id}}" method="get">
-                        <button type="submit" class="btn btn-primary"> Фактуриране на тази поръчка </button>
-                      </form>
-                    </td>
-                  </tr>
-                  </tbody>
-                </table>
-              </div>
+                                                <td th:if="${!order.invoiced}">
+                                                    <form th:action="@{'/material-order/materials/' + ${order.id}}"
+                                                          method="get">
+                                                        <button type="submit" class="btn btn-warning">Провери налични
+                                                            Материали
+                                                        </button>
+                                                    </form>
+                                                </td>
+                                            </th:block>
+                                            <th:block
+                                                    th:if="${session.sessionToken != null and session.sessionRole == 'PRODUCTION_MANAGER'}">
+                                                <td th:if="${!order.invoiced}">
+                                                    <form th:action="@{'/material-order/materials/' + ${order.id}}"
+                                                          method="get">
+                                                        <button type="submit" class="btn btn-warning">Провери налични
+                                                            Материали
+                                                        </button>
+                                                    </form>
+                                                </td>
+                                            </th:block>
+                                            <th:block
+                                                    th:if="${session.sessionToken != null and session.sessionRole == 'ADMIN'}">
+                                                <td th:if="${!order.invoiced}">
+                                                    <form th:action="@{'/invoice/show/' + ${order.id}}" method="get">
+                                                        <button type="submit" class="btn btn-primary"> Фактуриране на
+                                                            тази поръчка
+                                                        </button>
+                                                    </form>
+                                                </td>
+                                            </th:block>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
-        </div>
-      </div>
-    </main>
-  </div>
+        </main>
+    </div>
 </div>
 <script src="/js/app.js"></script>
 </body>

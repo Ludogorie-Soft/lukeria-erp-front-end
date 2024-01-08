@@ -2,8 +2,8 @@ package com.example.LukeriaFrontendApplication.controllers;
 
 import com.example.LukeriaFrontendApplication.config.ImageClient;
 import com.example.LukeriaFrontendApplication.config.PlateClient;
-import com.example.LukeriaFrontendApplication.dtos.PackageDTO;
 import com.example.LukeriaFrontendApplication.dtos.PlateDTO;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.io.IOException;
+import java.util.Comparator;
 import java.util.List;
 
 @org.springframework.stereotype.Controller
@@ -20,30 +21,35 @@ import java.util.List;
 @Slf4j
 @RequestMapping("/plate")
 public class PlateController {
+    private static final String CARTONTXT = "plate";
+    private static final String REDIRECTTXT = "redirect:/plate/show";
     private final PlateClient plateClient;
     private final ImageClient imageService;
     @Value("${backend.base-url}")
     private String backendBaseUrl;
-    private  static final String CARTONTXT = "plate";
-    private static final String REDIRECTTXT = "redirect:/plate/show";
 
     @GetMapping("/show")
-    public String index(Model model) {
-        List<PlateDTO> plates = plateClient.getAllPlates();
+    public String index(Model model, HttpServletRequest request) {
+        String token = (String) request.getSession().getAttribute("sessionToken");
+        List<PlateDTO> plates = plateClient.getAllPlates(token);
         for (PlateDTO plate : plates) {
-            if(plate.getPhoto()!=null) {
+            if (plate.getPhoto() != null) {
                 imageService.getImage(plate.getPhoto());
             }
         }
+        List<PlateDTO> sortedPlates = plates.stream()
+                .sorted(Comparator.comparingInt(PlateDTO::getAvailableQuantity).reversed())
+                .toList();
         model.addAttribute("backendBaseUrl", backendBaseUrl);
         model.addAttribute("deleteMessageBoolean", true);
-        model.addAttribute("plates", plates);
+        model.addAttribute("plates", sortedPlates);
         return "Plate/show";
     }
 
     @GetMapping("/show/{id}")
-    String getPlateById(@PathVariable(name = "id") Long id, Model model) {
-        PlateDTO plate = plateClient.getPlateById(id);
+    String getPlateById(@PathVariable(name = "id") Long id, Model model, HttpServletRequest request) {
+        String token = (String) request.getSession().getAttribute("sessionToken");
+        PlateDTO plate = plateClient.getPlateById(id, token);
         model.addAttribute(CARTONTXT, plate);
         return "Plate/showById";
     }
@@ -57,30 +63,37 @@ public class PlateController {
     }
 
     @GetMapping("/editPlate/{id}")
-    String editPlate(@PathVariable(name = "id") Long id, Model model) {
-        PlateDTO existingPlate = plateClient.getPlateById(id);
+    String editPlate(@PathVariable(name = "id") Long id, Model model, HttpServletRequest request) {
+        String token = (String) request.getSession().getAttribute("sessionToken");
+        PlateDTO existingPlate = plateClient.getPlateById(id, token);
         model.addAttribute(CARTONTXT, existingPlate);
         return "Plate/edit";
     }
+
     @PostMapping("/edit/{id}")
-    ModelAndView editPlate(@PathVariable(name = "id") Long id, PlateDTO plateDTO, @RequestParam("file") MultipartFile file) throws IOException {
-        plateClient.updatePlate(id, plateDTO);
+    ModelAndView editPlate(@PathVariable(name = "id") Long id, PlateDTO plateDTO, @RequestParam("file") MultipartFile file, HttpServletRequest request) throws IOException {
+        String token = (String) request.getSession().getAttribute("sessionToken");
+        plateClient.updatePlate(id, plateDTO, token);
         if (!file.isEmpty()) {
             imageService.editImageForPlate(file, id);
         }
         return new ModelAndView(REDIRECTTXT);
     }
+
     @PostMapping("/submit")
-    public ModelAndView submitPlate(@ModelAttribute("plate") PlateDTO plateDTO, @RequestParam MultipartFile file) throws IOException {
-        plateClient.createPlate(plateDTO);
+    public ModelAndView submitPlate(@ModelAttribute("plate") PlateDTO plateDTO, @RequestParam MultipartFile file, HttpServletRequest request) throws IOException {
+        String token = (String) request.getSession().getAttribute("sessionToken");
+        plateClient.createPlate(plateDTO, token);
         if (!file.isEmpty()) {
             imageService.uploadImageForPlate(file);
         }
         return new ModelAndView(REDIRECTTXT);
     }
+
     @PostMapping("/delete/{id}")
-    ModelAndView deletePlateById(@PathVariable("id") Long id, Model model) {
-        plateClient.deletePlateById(id);
+    ModelAndView deletePlateById(@PathVariable("id") Long id, Model model, HttpServletRequest request) {
+        String token = (String) request.getSession().getAttribute("sessionToken");
+        plateClient.deletePlateById(id, token);
         return new ModelAndView(REDIRECTTXT);
     }
 

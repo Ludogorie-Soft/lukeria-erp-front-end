@@ -8,7 +8,16 @@
     <title> Потрбители </title>
     <link href="/css/form.css" rel="stylesheet">
 </head>
-
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const navbar = document.getElementById("sidebar");
+    console.log(navbar);
+    const toggler = document.querySelector("a.sidebar-toggle");
+    toggler.addEventListener("click", () => {
+    navbar.classList.toggle("collapsed");
+    });
+});
+</script>
 <body>
 <div class="wrapper">
     <!--    HEADER  -->
@@ -36,9 +45,19 @@
                                                th:field="*{username}" required>
                                     </div>
                                     <div class="form-group">
-                                        <label for="fullName">Пълно име</label>
-                                        <input type="text" class="form-control" id="fullName" name="fullName"
-                                               th:field="*{fullName}" required>
+                                        <label for="firstname">Първо име</label>
+                                        <input type="text" class="form-control" id="firstname" name="firstname"
+                                               th:field="*{firstname}" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="lastname">Фамилно име</label>
+                                        <input type="text" class="form-control" id="lastname" name="lastname"
+                                               th:field="*{lastname}" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="address">Адрес</label>
+                                        <input type="text" class="form-control" id="address" name="address"
+                                               th:field="*{address}" required>
                                     </div>
                                     <div class="form-group">
                                         <label for="email">Е-поща</label>

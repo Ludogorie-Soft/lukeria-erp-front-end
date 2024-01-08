@@ -11,20 +11,23 @@ import java.util.List;
 public interface InvoiceClient {
 
     @GetMapping
-    List<InvoiceDTO> getAllInvoices();
+    List<InvoiceDTO> getAllInvoices(@RequestHeader("Authorization") String auth);
 
     @GetMapping("/{id}")
-    InvoiceDTO getInvoiceById(@PathVariable(name = "id") Long id);
+    InvoiceDTO getInvoiceById(@PathVariable(name = "id") Long id, @RequestHeader("Authorization") String auth);
 
     @PostMapping
-    InvoiceDTO createInvoice(@Valid @RequestBody InvoiceDTO invoiceDTO);
+    InvoiceDTO createInvoice(@Valid @RequestBody InvoiceDTO invoiceDTO, @RequestHeader("Authorization") String auth);
 
     @PutMapping("/{id}")
-    void updateInvoice(@PathVariable("id") Long id, @Valid @RequestBody InvoiceDTO invoiceDTO) ;
+    void updateInvoice(@PathVariable("id") Long id, @Valid @RequestBody InvoiceDTO invoiceDTO, @RequestHeader("Authorization") String auth);
 
     @DeleteMapping("/{id}")
-    String deleteInvoiceById(@PathVariable("id") Long id);
+    String deleteInvoiceById(@PathVariable("id") Long id, @RequestHeader("Authorization") String auth);
 
     @GetMapping("/number")
-    Long findLastInvoiceNumberStartingWith();
+    Long findLastInvoiceNumberStartingWith(@RequestHeader("Authorization") String auth);
+
+    @GetMapping("/number/abroad")
+    Long findLastInvoiceNumberStartingWithOne(@RequestHeader("Authorization") String auth);
 }
