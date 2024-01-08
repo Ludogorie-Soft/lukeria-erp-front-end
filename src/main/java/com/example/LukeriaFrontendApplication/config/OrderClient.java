@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@FeignClient(name = "lukeria-erp-order", url = "http://localhost:8088/api/v1/order")
+@FeignClient(name = "lukeria-erp-order", url = "${backend.base-url}/order")
 public interface OrderClient {
     @GetMapping()
     List<OrderDTO> getAllOrders(@RequestHeader("Authorization") String auth);

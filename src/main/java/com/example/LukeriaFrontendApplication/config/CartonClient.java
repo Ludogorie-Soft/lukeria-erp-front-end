@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@FeignClient(name = "lukeria-erp-carton", url = "http://localhost:8088/api/v1/carton")
+@FeignClient(name = "lukeria-erp-carton", url = "${backend.base-url}/carton")
 public interface CartonClient {
 
     @GetMapping()

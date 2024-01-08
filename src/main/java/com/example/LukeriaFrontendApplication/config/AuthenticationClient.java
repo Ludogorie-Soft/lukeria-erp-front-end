@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.io.IOException;
 
-@FeignClient(name = "lukeria-erp-auth", url = "http://localhost:8088/api/v1/auth")
+@FeignClient(name = "lukeria-erp-auth", url = "${backend.base-url}/auth")
 public interface AuthenticationClient {
     @PostMapping("/register")
     AuthenticationResponse register(@RequestBody RegisterRequest request);

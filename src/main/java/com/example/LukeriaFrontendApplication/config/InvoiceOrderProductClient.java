@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@FeignClient(name = "lukeria-erp-invoiceOrderProduct", url = "http://localhost:8088/api/v1/invoiceOrderProduct")
+@FeignClient(name = "lukeria-erp-invoiceOrderProduct", url = "${backend.base-url}/invoiceOrderProduct")
 public interface InvoiceOrderProductClient {
     @GetMapping()
     List<InvoiceOrderProductDTO> getAllInvoiceOrderProduct(@RequestHeader("Authorization") String auth);

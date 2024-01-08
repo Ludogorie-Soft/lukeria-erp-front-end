@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
-@FeignClient(name = "lukeria-erp-invoice", url = "http://localhost:8088/test")
+@FeignClient(name = "lukeria-erp-invoice", url = "${backend.base-url}/test")
 
 public interface QueryClient {
     @GetMapping("/order_product/{id}")
