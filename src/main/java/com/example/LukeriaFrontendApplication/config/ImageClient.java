@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
-@FeignClient(name = "lukeria-erp-images", url = "${backend.base-url}/auth/images")
+@FeignClient(name = "lukeria-erp-images", url = "${backend.base-url}/images")
 public interface ImageClient {
 
     @PostMapping(value = "uploadImageForPackage", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
