@@ -26,7 +26,7 @@ public class ProductController {
     private final ProductClient productClient;
     private final PackageClient packageClient;
     private final ImageClient imageService;
-    @Value("${backend.base-url}")
+    @Value("${backend.base-url}/images")
     private String backendBaseUrl;
 
 

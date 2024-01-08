@@ -25,7 +25,7 @@ public class PlateController {
     private static final String REDIRECTTXT = "redirect:/plate/show";
     private final PlateClient plateClient;
     private final ImageClient imageService;
-    @Value("${backend.base-url}")
+    @Value("${backend.base-url}/images")
     private String backendBaseUrl;
 
     @GetMapping("/show")

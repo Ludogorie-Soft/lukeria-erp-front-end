@@ -33,7 +33,7 @@ public class MonthlyOrderController {
     private final OrderClient orderClient;
     private final ImageClient imageService;
 
-    @Value("${backend.base-url}")
+    @Value("${backend.base-url}/images")
     private String backendBaseUrl;
 
     @GetMapping("/create")

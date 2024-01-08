@@ -31,7 +31,7 @@ public class OrderProductController {
     private final PackageClient packageClient;
     private final ImageClient imageService;
 
-    @Value("${backend.base-url}")
+    @Value("${backend.base-url}/images")
     private String backendBaseUrl;
 
     @GetMapping("/addProduct")

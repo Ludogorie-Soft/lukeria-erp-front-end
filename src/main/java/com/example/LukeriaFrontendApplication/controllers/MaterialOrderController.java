@@ -34,7 +34,7 @@ public class MaterialOrderController {
     private final CartonClient cartonClient;
     private final PackageClient packageClient;
     private final PlateClient plateClient;
-    @Value("${backend.base-url}")
+    @Value("${backend.base-url}/images")
     private String backendBaseUrl;
 
     @GetMapping("/create")

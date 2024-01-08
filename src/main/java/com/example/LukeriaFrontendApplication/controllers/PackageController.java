@@ -30,7 +30,7 @@ public class PackageController {
     private final CartonClient cartonClient;
     private final PlateClient plateClient;
     private final ImageClient imageService;
-    @Value("${backend.base-url}")
+    @Value("${backend.base-url}/images")
     private String backendBaseUrl;
 
     @GetMapping("/package/show")
