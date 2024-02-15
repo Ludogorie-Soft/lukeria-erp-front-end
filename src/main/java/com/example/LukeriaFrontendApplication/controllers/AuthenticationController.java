@@ -20,6 +20,8 @@ import org.springframework.web.servlet.ModelAndView;
 public class AuthenticationController {
     private final AuthenticationClient authenticationClient;
     private final SessionManager sessionManager;
+    private static final String REDIRECTTXT = "redirect:/index";
+
 
     @GetMapping("login")
     public String login(Model model, AuthenticationRequest authenticationRequest) {
@@ -31,7 +33,7 @@ public class AuthenticationController {
         String token = (String) request.getSession().getAttribute("sessionToken");
         authenticationClient.logout(token);
         sessionManager.invalidateSession(request);
-        return new ModelAndView("/index");
+        return new ModelAndView(REDIRECTTXT);
     }
 
     @PostMapping("/login")
@@ -39,7 +41,7 @@ public class AuthenticationController {
         try {
             ResponseEntity<AuthenticationResponse> authenticationResponse = authenticationClient.authenticate(authenticationRequest);
             sessionManager.setSessionToken(httpServletRequest, authenticationResponse.getBody().getAccessToken(), authenticationResponse.getBody().getUser().getRole().toString());
-            return new ModelAndView("/index");
+            return new ModelAndView(REDIRECTTXT);
         } catch (Exception e) {
             ModelAndView modelAndView = new ModelAndView("redirect:/login");
             modelAndView.addObject("error", "Невалидно име или парола");
