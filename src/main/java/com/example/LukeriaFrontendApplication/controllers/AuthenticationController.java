@@ -22,7 +22,6 @@ public class AuthenticationController {
     private final SessionManager sessionManager;
     private static final String REDIRECTTXT = "redirect:/index";
 
-
     @GetMapping("login")
     public String login(Model model, AuthenticationRequest authenticationRequest) {
         return "login";
