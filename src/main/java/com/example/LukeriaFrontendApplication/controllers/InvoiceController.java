@@ -23,8 +23,6 @@ import java.util.*;
 @Slf4j
 @RequestMapping("/invoice")
 public class InvoiceController {
-    private static final Logger logger = LogManager.getLogger(InvoiceController.class);
-
 
     private static final String ORDERPRODUCT = "orderProductDTOS";
     private static final String PACKAGE = "packageDTOS";
@@ -73,38 +71,27 @@ public class InvoiceController {
     @GetMapping("/showId/{id}")
     public String invoiceShow(@PathVariable(name = "id") Long id, Model model, HttpSession session, HttpServletRequest request) {
         String token = (String) request.getSession().getAttribute("sessionToken");
-        logger.info("row 76");
         Long lastInvoiceNumber = invoiceClient.findLastInvoiceNumberStartingWith(token);
         Long orderId = 0L;
-        logger.info("row 79");
         for (InvoiceOrderProductDTO invoiceOrderProductDTO : invoiceOrderProductClient.getAllInvoiceOrderProduct(token)) {
             if (invoiceOrderProductDTO.getInvoiceId() == id) {
                 OrderProductDTO orderProductDTO = orderProductClient.getOrderProductById(invoiceOrderProductDTO.getOrderProductId(), token);
                 orderId = orderProductDTO.getOrderId();
-                logger.info("row 84");
                 break;
             }
         }
         List<OrderProductDTO> orderProductDTOS = queryClient.getOrderProductsByOrderId(orderId);
-        logger.info("row 89");
         List<PackageDTO> packageDTOS = packageClient.getAllPackages(token);
-        logger.info("row 91");
         List<ClientDTO> clientDTOS = clientClient.getAllClients(token);
-        logger.info("row 93");
         OrderDTO orderDTO = orderClient.getOrderById(orderId, token);
-        logger.info("row 95");
         List<ProductDTO> productDTOS = productClient.getAllProducts(token);
-        logger.info("row 97");
         InvoiceDTO invoiceDTO = invoiceClient.getInvoiceById(id, token);
-        logger.info("row 99");
         ClientDTO clientDTO = clientClient.getClientById(orderDTO.getClientId(), token);
-        logger.info("row 101");
         if (invoiceDTO.getInvoiceNumber() >= 2000000000) {
             session.setAttribute(SessionLocaleResolver.LOCALE_SESSION_ATTRIBUTE_NAME, new Locale("bg"));
             model.addAttribute("clientName", clientDTO.getBusinessName());
             model.addAttribute("clientAddress", clientDTO.getAddress());
             model.addAttribute("clientMOL", clientDTO.getMol());
-            logger.info("row 107");
         } else {
             session.setAttribute(SessionLocaleResolver.LOCALE_SESSION_ATTRIBUTE_NAME, Locale.ENGLISH);
             model.addAttribute("clientName", clientDTO.getEnglishBusinessName());
@@ -113,7 +100,6 @@ public class InvoiceController {
         }
         orderDTO.setInvoiced(true);
         orderClient.updateOrder(orderId, orderDTO, token);
-        logger.info("row 116");
         model.addAttribute("client", clientDTO);
         model.addAttribute("InvoiceId", id);
         model.addAttribute("invoiceDTO", invoiceDTO);
@@ -123,7 +109,6 @@ public class InvoiceController {
         model.addAttribute("clientDTOS", clientDTOS);
         model.addAttribute(PACKAGE, packageDTOS);
         model.addAttribute(ORDERPRODUCT, orderProductDTOS);
-        logger.info("row 126");
         return "Invoice/ShowId";
     }
 
