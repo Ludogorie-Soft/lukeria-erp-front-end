@@ -23,6 +23,8 @@ import java.util.*;
 public class InvoiceController {
     private static final String ORDERPRODUCT = "orderProductDTOS";
     private static final String PACKAGE = "packageDTOS";
+    private static final String REDIRECTTXT = "redirect:/invoice/showId/";
+
     private static final String REGEX = "[\\[\\]]";
     private final InvoiceClient invoiceClient;
     private final QueryClient queryClient;
@@ -165,7 +167,7 @@ public class InvoiceController {
 
         invoiceOrderProductClient.createInvoiceOrderProductWhitIdsList(invoiceOrderProductConfigDTO, token);
         orderProductClient.findInvoiceOrderProductsByInvoiceIdLessening(createdInvoice.getId(), token);
-        return new ModelAndView("redirect:/invoice/showId/" + (createdInvoice.getId()));
+        return new ModelAndView(REDIRECTTXT + createdInvoice.getId().toString());
     }
 
     @GetMapping("/certificate/{id}")
