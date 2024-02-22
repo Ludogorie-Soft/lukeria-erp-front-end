@@ -124,7 +124,7 @@ public class InvoiceController {
         model.addAttribute(PACKAGE, packageDTOS);
         model.addAttribute(ORDERPRODUCT, orderProductDTOS);
         logger.info("row 126");
-        return "Invoice/showId";
+        return "Invoice/ShowId";
     }
 
     @GetMapping("/showAllInvoices")
