@@ -70,6 +70,7 @@ document.addEventListener("DOMContentLoaded", function() {
                                     <thead>
                                     <tr>
                                         <th>Снимка</th>
+                                        <th>ID</th>
                                         <th>Код на продукта</th>
                                         <th>Име на Продукт</th>
                                         <th>Наличност</th>
@@ -92,6 +93,7 @@ document.addEventListener("DOMContentLoaded", function() {
                                                  width="100">
                                         </td>
 
+                                        <td th:text="${product.id}"></td>
                                         <td th:text="${product.productCode}"></td>
                                         <td th:text="${productPackageMap.get(product.packageId)}"></td>
                                         <td>

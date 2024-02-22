@@ -92,7 +92,7 @@ document.addEventListener("DOMContentLoaded", function() {
                             </div>
                             <div class="form-group">
                                 <label for="receivedQuantity">Доставен брой:</label>
-                                <input type="number" id="receivedQuantity" name="receivedQuantity"
+                                <input type="number" id="receivedQuantity" name="receivedQuantity" min="1" required
                                        th:field="${order.receivedQuantity}" />
                             </div>
                             <div class="form-group">
@@ -103,7 +103,7 @@ document.addEventListener("DOMContentLoaded", function() {
                             <div class="form-group">
                             <label for="arrivalDate">Дата на доставка:</label>
                                 <center>
-                            <input type="date" name="arrivalDate" id="arrivalDate"  th:field="${order.arrivalDate}">
+                            <input type="date" name="arrivalDate" id="arrivalDate"  th:field="${order.arrivalDate}" required>
                                 </center>
                             </div>
                             <div class="text-center">

@@ -68,6 +68,7 @@ document.addEventListener("DOMContentLoaded", function() {
                                     <thead>
                                     <tr>
                                         <th>Снимка</th>
+                                        <th>ID</th>
                                         <th>Код на кутията</th>
                                         <th>Име</th>
                                         <th>Английско име</th>
@@ -96,12 +97,13 @@ document.addEventListener("DOMContentLoaded", function() {
                                                  height="100"
                                                  width="100">
                                         </td>
+                                        <td th:text="${package.id}"></td>
                                         <td th:text="${package.productCode}"></td>
                                         <td th:text="${package.name}"></td>
                                         <td th:text="${package.englishName}"></td>
                                         <td>
                                             <span th:text="${package.availableQuantity + ' Броя'}"
-                                                  th:class="${package.availableQuantity <= 20 ? 'red-cell' : (package.availableQuantity <= 100 ? 'yellow-cell' : '')}"></span>
+                                                  th:class="${package.availableQuantity <= 200 ? 'red-cell' : (package.availableQuantity <= 1000 ? 'yellow-cell' : '')}"></span>
                                         </td>
                                         <th:block
                                                 th:if="${session.sessionToken != null and session.sessionRole == 'ADMIN'}">

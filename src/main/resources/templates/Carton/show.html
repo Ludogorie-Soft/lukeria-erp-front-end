@@ -89,7 +89,7 @@ margin: 0 auto; /* Опционално: Центриране на карта х
                                         <td th:text="${carton.size + ' См'}"></td>
                                         <td>
                                         <span th:text="${carton.availableQuantity + ' Броя'}"
-                                              th:class="${carton.availableQuantity <= 20 ? 'red-cell' : (carton.availableQuantity <= 100 ? 'yellow-cell' : '')}"></span>
+                                              th:class="${carton.availableQuantity <= 50 ? 'red-cell' : (carton.availableQuantity <= 200 ? 'yellow-cell' : '')}"></span>
                                         </td>
                                         <th:block th:if="${session.sessionToken != null and session.sessionRole == 'ADMIN'}">
                                         <td th:text="${carton.price + ' Лв'}"></td>

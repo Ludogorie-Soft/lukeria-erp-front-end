@@ -9,14 +9,14 @@
     <link href="/css/form.css" rel="stylesheet">
 </head>
 <script>
-document.addEventListener("DOMContentLoaded", function() {
-    const navbar = document.getElementById("sidebar");
-    console.log(navbar);
-    const toggler = document.querySelector("a.sidebar-toggle");
-    toggler.addEventListener("click", () => {
-    navbar.classList.toggle("collapsed");
+    document.addEventListener("DOMContentLoaded", function() {
+        const navbar = document.getElementById("sidebar");
+        console.log(navbar);
+        const toggler = document.querySelector("a.sidebar-toggle");
+        toggler.addEventListener("click", () => {
+        navbar.classList.toggle("collapsed");
+        });
     });
-});
 </script>
 <body>
 <div class="wrapper">
@@ -37,46 +37,52 @@ document.addEventListener("DOMContentLoaded", function() {
                     <div class="card-body">
                         <form action="/material-order/submit" method="post">
                             <div class="form-group">
-                            <label for="materialId">Вид на материала:</label>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="materialType" value="CARTON" id="materialType">
-                                <label class="form-check-label" for="materialType">
-                                    Кашон
-                                </label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="materialType" value="PACKAGE" id="materialType1">
-                                <label class="form-check-label" for="materialType1">
-                                    Кутия
-                                </label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="materialType" value="PLATE" id="materialType2">
-                                <label class="form-check-label" for="materialType2">
-                                    Тарелка
-                                </label>
-                            </div>
+                                <label for="materialId">Вид на материала:</label>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="materialType" value="CARTON"
+                                           id="materialType">
+                                    <label class="form-check-label" for="materialType">
+                                        Кашон
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="materialType" value="PACKAGE"
+                                           id="materialType1">
+                                    <label class="form-check-label" for="materialType1">
+                                        Кутия
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="materialType" value="PLATE"
+                                           id="materialType2">
+                                    <label class="form-check-label" for="materialType2">
+                                        Тарелка
+                                    </label>
+                                </div>
                             </div>
                             <div class="form-group">
-                            <div id="plateDropdown" style="display: none;">
-                                <label for="materialId">Тарелки:</label>
-                                <select  class="js-example-basic-single" id="plateId" name="materialId">
-                                    <option th:each="plate : ${plates}" th:value="${plate.id}" th:text="${plate.id} + ' - ' + ${plate.name}"></option>
-                                </select>
-                            </div>
-                            <div id="cartonDropdown" style="display: none;">
-                                <label for="materialId">Кашони:</label>
-                                <select  class="js-example-basic-single" id="materialId" name="materialId">
-                                    <option th:each="carton : ${cartons}" th:value="${carton.id}" th:text="${carton.id} + ' - ' + ${carton.name}"></option>
-                                </select>
-                            </div>
+                                <div id="plateDropdown" style="display: none;">
+                                    <label for="materialId">Тарелки:</label>
+                                    <select class="js-example-basic-single" id="plateId" name="materialId">
+                                        <option th:each="plate : ${plates}" th:value="${plate.id}"
+                                                th:text="${plate.id} + ' - ' + ${plate.name}"></option>
+                                    </select>
+                                </div>
+                                <div id="cartonDropdown" style="display: none;">
+                                    <label for="materialId">Кашони:</label>
+                                    <select class="js-example-basic-single" id="materialId" name="materialId">
+                                        <option th:each="carton : ${cartons}" th:value="${carton.id}"
+                                                th:text="${carton.id} + ' - ' + ${carton.name}"></option>
+                                    </select>
+                                </div>
                                 <div id="packageDropdown" style="display: none;">
                                     <label for="materialId">Кутии:</label>
                                     <select id="packageId" name="packageId" style="width: 100%;">
                                         <option th:each="package : ${packages}" th:value="${package.id}"
-                                                th:data-image-url="@{${backendBaseUrl} + '/' + ${package.photo}}" >
-                                            <img th:src="@{'${backendBaseUrl}' + '/' + ${package.photo}}"  width="50" height="50">
-                                            <span th:text = "${package.productCode} + ' - '+ ${package.name}"></span>
+                                                th:data-image-url="@{${backendBaseUrl} + '/' + ${package.photo}}">
+                                            <img th:src="@{'${backendBaseUrl}' + '/' + ${package.photo}}" width="50"
+                                                 height="50">
+                                            <span th:text="${package.id} +' - '+  ${package.productCode} + ' - ' + ${package.name}"></span>
                                         </option>
                                     </select>
                                 </div>
@@ -87,7 +93,7 @@ document.addEventListener("DOMContentLoaded", function() {
                                        th:field="${order.orderedQuantity}"/>
                             </div>
                             <div class="text-center">
-                                <button type="submit" class="btn btn-primary" >Поръчай</button>
+                                <button type="submit" class="btn btn-primary">Поръчай</button>
                             </div>
                         </form>
                     </div>
@@ -98,44 +104,44 @@ document.addEventListener("DOMContentLoaded", function() {
 </div>
 <script src="js/app.js"></script>
 <script>
-        $(document).ready(function() {
-            $('input[type=radio][name=materialType]').change(function() {
-                var materialType = $(this).val();
-                $('#plateDropdown').toggle(materialType === 'PLATE');
-                $('#cartonDropdown').toggle(materialType === 'CARTON');
-                $('#packageDropdown').toggle(materialType === 'PACKAGE');
-            });
+    $(document).ready(function() {
+        $('input[type=radio][name=materialType]').change(function() {
+            var materialType = $(this).val();
+            $('#plateDropdown').toggle(materialType === 'PLATE');
+            $('#cartonDropdown').toggle(materialType === 'CARTON');
+            $('#packageDropdown').toggle(materialType === 'PACKAGE');
         });
-
-    </script>
-
-<script>
-
-       $(document).ready(function() {
-           $('#materialId').select2();
-       });
-
-       $(document).ready(function() {
-           $('#plateId').select2();
-       });
-   </script>
-<script>
-$(document).ready(function() {
-    $('#packageId').select2({
-        templateResult: formatState
     });
-});
 
-function formatState(state) {
-    if (!state.id) {
-        return state.text;
+</script>
+
+<script>
+
+    $(document).ready(function() {
+        $('#materialId').select2();
+    });
+
+    $(document).ready(function() {
+        $('#plateId').select2();
+    });
+</script>
+<script>
+    $(document).ready(function() {
+        $('#packageId').select2({
+            templateResult: formatState
+        });
+    });
+
+    function formatState(state) {
+        if (!state.id) {
+            return state.text;
+        }
+        var imageUrl = state.element.getAttribute('data-image-url');
+        var $state = $(
+            '<span><img src="' + imageUrl + '" width="50" height="50" /> ' + state.text + '</span>'
+        );
+        return $state;
     }
-    var imageUrl = state.element.getAttribute('data-image-url');
-    var $state = $(
-        '<span><img src="' + imageUrl + '" width="50" height="50" /> ' + state.text + '</span>'
-    );
-    return $state;
-}
 </script>
 </body>
 </html>

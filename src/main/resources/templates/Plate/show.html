@@ -84,7 +84,7 @@ document.addEventListener("DOMContentLoaded", function() {
                                         <td th:text="${plate.name}"></td>
                                         <td>
                                             <span th:text="${plate.availableQuantity + ' Броя'}"
-                                                  th:class="${plate.availableQuantity <= 20 ? 'red-cell' : (plate.availableQuantity <= 100 ? 'yellow-cell' : '')}"></span>
+                                                  th:class="${plate.availableQuantity <= 200 ? 'red-cell' : (plate.availableQuantity <= 1000 ? 'yellow-cell' : '')}"></span>
                                         </td>
                                         <th:block
                                                 th:if="${session.sessionToken != null and session.sessionRole == 'ADMIN'}">
