@@ -119,7 +119,7 @@ document.addEventListener("DOMContentLoaded", function() {
                                             <span th:if="${invoiceDTO.invoiceNumber >= 2000000000}" th:text="${orderProductDTO.sellingPrice}"></span>
                                             <span th:if="${invoiceDTO.invoiceNumber < 2000000000}">
                                                 <script th:inline="javascript">
-                                                  var originalValue = /*[[${orderProductDTO.sellingPrice / 1.95583}]]*/ 0;
+                                                  var originalValue = /*[[${orderProductDTO.sellingPrice * 1.95583}]]*/ 0;
                                                   var roundedValue = originalValue.toFixed(2);
                                                   document.write(roundedValue);
                                                 </script>
@@ -135,7 +135,7 @@ document.addEventListener("DOMContentLoaded", function() {
                                              <span hidden th:unless="${invoiceDTO.invoiceNumber >= 2000000000}" th:text="${productPrice * orderNumber / 1.95583}"></span>
                                                 <span th:unless="${invoiceDTO.invoiceNumber >= 2000000000}">
                                                     <script th:inline="javascript">
-                                                    var originalValue = /*[[${productPrice * orderNumber / 1.95583}]]*/ 0;
+                                                    var originalValue = /*[[${productPrice * orderNumber * 1.95583}]]*/ 0;
                                                     var roundedValue = originalValue.toFixed(2);
                                                     document.write(roundedValue);
                                                     </script>
