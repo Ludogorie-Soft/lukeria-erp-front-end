@@ -119,14 +119,16 @@ document.addEventListener("DOMContentLoaded", function() {
                                             <span th:if="${invoiceDTO.invoiceNumber >= 2000000000}" th:text="${orderProductDTO.sellingPrice}"></span>
                                             <span th:if="${invoiceDTO.invoiceNumber < 2000000000}">
                                                 <script th:inline="javascript">
-                                                  var originalValue = /*[[${orderProductDTO.sellingPrice * 1.95583}]]*/ 0;
+                                                  var originalValue = /*[[${orderProductDTO.sellingPrice / 1.95583}]]*/ 0;
                                                   var roundedValue = originalValue.toFixed(2);
                                                   document.write(roundedValue);
                                                 </script>
                                             </span>
                                         </td>
                                         </td>
-                                        <td th:text="20"></td>
+                                        <td>
+                                            <span id="vatInput" th:text="${invoiceDTO.invoiceNumber >= 2000000000 ? '20' : '0'}"></span> %
+                                        </td>
                                         <td>
                                             <span th:with="productPrice=${orderProductDTO.sellingPrice}, orderNumber=${orderProductDTO.number}"
                                              th:each="productDTO : ${productDTOS}" th:if="${productDTO.id == orderProductDTO.packageId}"
@@ -135,7 +137,7 @@ document.addEventListener("DOMContentLoaded", function() {
                                              <span hidden th:unless="${invoiceDTO.invoiceNumber >= 2000000000}" th:text="${productPrice * orderNumber * 1.95583}"></span>
                                                 <span th:unless="${invoiceDTO.invoiceNumber >= 2000000000}">
                                                     <script th:inline="javascript">
-                                                    var originalValue = /*[[${productPrice * orderNumber * 1.95583}]]*/ 0;
+                                                    var originalValue = /*[[${productPrice * orderNumber / 1.95583}]]*/ 0;
                                                     var roundedValue = originalValue.toFixed(2);
                                                     document.write(roundedValue);
                                                     </script>

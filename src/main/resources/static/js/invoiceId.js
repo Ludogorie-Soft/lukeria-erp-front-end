@@ -14,6 +14,7 @@ document.addEventListener("DOMContentLoaded", function() {
     var productValueElements = document.querySelectorAll('[id^="productValue-"]');
     var totalPriceElement = document.getElementById('totalPrice');
     var vatValueElement = document.getElementById('vatValue');
+    var vatInputElement = document.getElementById('vatInput');
 
     var totalPrice = 0;
     productValueElements.forEach(function(element) {
@@ -21,7 +22,8 @@ document.addEventListener("DOMContentLoaded", function() {
     });
     totalPriceElement.textContent = totalPrice.toFixed(2);
 
-    var vatValue = totalPrice * 0.2;
+    var vatPercent = parseFloat(vatInputElement.textContent);
+    var vatValue = totalPrice * (vatPercent / 100);
     vatValueElement.textContent = vatValue.toFixed(2);
 
     var paymentAmount = vatValue + totalPrice;
