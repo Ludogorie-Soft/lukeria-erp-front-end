@@ -75,6 +75,7 @@ var priceInputs = document.querySelectorAll('.price-input');
 var totalPriceCell = document.getElementById('totalPrice');
 var vatValueCell = document.getElementById('vatValue');
 var paymentAmountCell = document.getElementById('paymentAmount');
+var vatInput = document.getElementById('vatInput');
 
 function updateTable() {
     var totalValue = 0;
@@ -94,7 +95,8 @@ function updateTable() {
 
 function updateVatValue() {
     var totalValue = parseFloat(totalPriceCell.textContent);
-    var vatValue = totalValue * 0.2;
+    var vatPercent = parseFloat(vatInput.value);
+    var vatValue = totalValue * (vatPercent / 100);
 
     vatValueCell.textContent = vatValue.toFixed(2);
 }
@@ -114,54 +116,10 @@ quantityInputs.forEach(function (input) {
 priceInputs.forEach(function (input) {
     input.addEventListener('input', updateTable);
 });
+
+vatInput.addEventListener('input', updateTable);
 
 updateTable();
-
-var quantityInputs = document.querySelectorAll('.quantity-input');
-var priceInputs = document.querySelectorAll('.price-input');
-var totalPriceCell = document.getElementById('totalPrice');
-var vatValueCell = document.getElementById('vatValue');
-var paymentAmountCell = document.getElementById('paymentAmount');
-
-function updateTable() {
-    var totalValue = 0;
-
-    quantityInputs.forEach(function (input, index) {
-        var quantity = parseFloat(input.value);
-        var price = parseFloat(priceInputs[index].value);
-        var subTotal = quantity * price;
-
-        totalValue += subTotal;
-    });
-
-    totalPriceCell.textContent = totalValue.toFixed(2);
-    updateVatValue();
-    updatePaymentAmount();
-}
-
-function updateVatValue() {
-    var totalValue = parseFloat(totalPriceCell.textContent);
-    var vatValue = totalValue * 0.2;
-
-    vatValueCell.textContent = vatValue.toFixed(2);
-}
-
-function updatePaymentAmount() {
-    var totalValue = parseFloat(totalPriceCell.textContent);
-    var vatValue = parseFloat(vatValueCell.textContent);
-    var paymentAmount = totalValue + vatValue;
-
-    paymentAmountCell.textContent = paymentAmount.toFixed(2);
-}
-
-quantityInputs.forEach(function (input) {
-    input.addEventListener('input', updateTable);
-});
-
-priceInputs.forEach(function (input) {
-    input.addEventListener('input', updateTable);
-});
-
 updateTable();
  document.addEventListener("DOMContentLoaded", function () {
         const priceInputs = document.querySelectorAll(".price-input");
@@ -189,6 +147,30 @@ updateTable();
         updateTotal();
     });
 
+document.addEventListener("DOMContentLoaded", function () {
+    const priceInputs = document.querySelectorAll(".price-input");
+    const quantityInputs = document.querySelectorAll(".quantity-input");
+
+    function updateTotal() {
+        priceInputs.forEach(function (priceInput, index) {
+            const quantityInput = quantityInputs[index];
+            const totalSpan = document.getElementById('totalPriceNumber' + index);
+            const price = parseFloat(priceInput.value);
+            const quantity = parseFloat(quantityInput.value);
+            const total = (price * quantity).toFixed(2);
+            totalSpan.textContent = total;
+        });
+    }
+
+    priceInputs.forEach(function (priceInput, index) {
+        const quantityInput = quantityInputs[index];
+        priceInput.addEventListener("input", updateTotal);
+        quantityInput.addEventListener("input", updateTotal);
+    });
+
+    updateTotal();
+});
+
   function printPage() {
         window.print();
     }
@@ -202,7 +184,7 @@ updateTable();
 
     var currentDate = new Date();
     currentDate.setDate(currentDate.getDate() - 45);
-    var maxDate = formatDate(new Date()); // Максималната дата е днешната дата
+    var maxDate = formatDate(new Date());
     var minDate = formatDate(currentDate);
 
     const dateInput = document.getElementById('invoiceDateInput');
