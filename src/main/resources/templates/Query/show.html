@@ -116,7 +116,7 @@ document.addEventListener("DOMContentLoaded", function() {
                                                    id="priceInput" name="priceInput">
                                         </td>
                                         <td>
-                                            <input type="number" id="vatInput" min="0" max="100" value="20"> %
+                                            <span id="vatInput" th:text="${lastInvoiceNumber >= 2000000000 ? '20' : '0'}"></span> %
                                         </td>
                                         <td id="totalPriceNumber*Price">
                                     </tr>

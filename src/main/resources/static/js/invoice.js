@@ -95,7 +95,7 @@ function updateTable() {
 
 function updateVatValue() {
     var totalValue = parseFloat(totalPriceCell.textContent);
-    var vatPercent = parseFloat(vatInput.value);
+    var vatPercent = parseFloat(vatInput.textContent);
     var vatValue = totalValue * (vatPercent / 100);
 
     vatValueCell.textContent = vatValue.toFixed(2);
