@@ -3,7 +3,7 @@
 
 <head>
     <!--    LINKS  -->
-    <th:block th:include="~{fragments/links}"></th:block>
+    <th:block th:insert="~{fragments/links}"></th:block>
 
     <title> Добави поръчка </title>
     <link href="/css/form.css" rel="stylesheet">
@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", function() {
 <body>
 <div class="wrapper">
     <!--    HEADER  -->
-    <th:block th:include="~{fragments/header}"></th:block>
+    <th:block th:insert="~{fragments/header}"></th:block>
     <div class="main">
         <nav class="navbar navbar-expand navbar-light navbar-bg">
             <a class="sidebar-toggle js-sidebar-toggle">
