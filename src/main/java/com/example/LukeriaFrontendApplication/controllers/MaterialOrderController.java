@@ -1,13 +1,7 @@
 package com.example.LukeriaFrontendApplication.controllers;
 
-import com.example.LukeriaFrontendApplication.config.CartonClient;
-import com.example.LukeriaFrontendApplication.config.MaterialOrderClient;
-import com.example.LukeriaFrontendApplication.config.PackageClient;
-import com.example.LukeriaFrontendApplication.config.PlateClient;
-import com.example.LukeriaFrontendApplication.dtos.CartonDTO;
-import com.example.LukeriaFrontendApplication.dtos.MaterialOrderDTO;
-import com.example.LukeriaFrontendApplication.dtos.PackageDTO;
-import com.example.LukeriaFrontendApplication.dtos.PlateDTO;
+import com.example.LukeriaFrontendApplication.config.*;
+import com.example.LukeriaFrontendApplication.dtos.*;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,12 +22,15 @@ public class MaterialOrderController {
     private static final String PLATETXT = "plates";
     private static final String PACKAGETXT = "packages";
     private static final String CARTONTXT = "cartons";
+    private static final String PRODUCTTXT = "products";
+    private static final String MATERIALTXT = "material";
     private static final String REDIRECTTXT = "redirect:/material-order/show";
     private static final String MATERIALSORDERSHOW = "MaterialOrder/show";
     private final MaterialOrderClient materialOrderClient;
     private final CartonClient cartonClient;
     private final PackageClient packageClient;
     private final PlateClient plateClient;
+    private final ProductClient productClient;
     @Value("${backend.base-url}/images")
     private String backendBaseUrl;
 
@@ -67,10 +64,12 @@ public class MaterialOrderController {
             model.addAttribute("materialsForOrder", materialsForOrder);
             model.addAttribute("message", "Всички материални са налични!");
         }
+        List<ProductDTO> products=productClient.getAllProducts(token);
         List<PackageDTO> packages = packageClient.getAllPackages(token);
         List<CartonDTO> cartons = cartonClient.getAllCartons(token);
         List<PlateDTO> plates = plateClient.getAllPlates(token);
 
+        model.addAttribute(PRODUCTTXT,products);
         model.addAttribute(PACKAGETXT, packages);
         model.addAttribute(CARTONTXT, cartons);
         model.addAttribute(PLATETXT, plates);
@@ -90,7 +89,9 @@ public class MaterialOrderController {
         List<PackageDTO> packages = packageClient.getAllPackages(token);
         List<CartonDTO> cartons = cartonClient.getAllCartons(token);
         List<PlateDTO> plates = plateClient.getAllPlates(token);
+        List<ProductDTO> products=productClient.getAllProducts(token);
 
+        model.addAttribute(PRODUCTTXT,products);
         model.addAttribute(PACKAGETXT, packages);
         model.addAttribute(CARTONTXT, cartons);
         model.addAttribute(PLATETXT, plates);
@@ -134,14 +135,14 @@ public class MaterialOrderController {
     public String viewMaterial(@PathVariable Long materialId, @RequestParam("materialType") String materialType, Model model, HttpServletRequest request) {
         String token = (String) request.getSession().getAttribute("sessionToken");
         if (materialType.equals("CARTON")) {
-            model.addAttribute("material", cartonClient.getCartonById(materialId, token));
+            model.addAttribute(MATERIALTXT, cartonClient.getCartonById(materialId, token));
             model.addAttribute("type", "Кашон");
         } else if (materialType.equals("PLATE")) {
-            model.addAttribute("material", plateClient.getPlateById(materialId, token));
+            model.addAttribute(MATERIALTXT, plateClient.getPlateById(materialId, token));
             model.addAttribute("type", "Тарелка");
         } else {
             PackageDTO packageDTO = packageClient.getPackageById(materialId, token);
-            model.addAttribute("material", packageDTO);
+            model.addAttribute(MATERIALTXT, packageDTO);
             model.addAttribute("productCode", packageDTO.getProductCode());
             model.addAttribute("type", "Кутия");
         }

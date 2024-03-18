@@ -81,20 +81,18 @@ document.addEventListener("DOMContentLoaded", function() {
                                     <tr>
                                         <th>Материал</th>
                                         <th>Вид материал</th>
-                                        <th>Нужен брой Материали</th>
+                                        <th>Не Достигащ брой материали (Липсващи)</th>
                                         <th>Брой материали в склад</th>
+                                        <th>Брой налични готови продукти</th>
+
                                     </tr>
                                     </thead>
                                     <tbody>
                                     <tr th:each="order : ${orders}">
                                         <td>
-                                            <span th:if="${order.materialType == 'CARTON'}"
-                                                  th:text="${cartons[order.materialId-1].name}"></span>
-                                            <span th:if="${order.materialType == 'PACKAGE'}"
-                                                  th:text="${packages[order.materialId-1].name}"></span>
-                                            <span th:if="${order.materialType == 'PLATE'}"
-                                                  th:text="${plates[order.materialId-1].name}"></span>
-
+                                            <span th:if="${order.materialType == 'CARTON'}" th:text="${cartons[order.materialId-1].id}+ ' ' +${cartons[order.materialId-1].name}"></span>
+                                            <span th:if="${order.materialType == 'PACKAGE'}" th:text="${packages[order.materialId-1].productCode}+ ' ' +${packages[order.materialId-1].name}"></span>
+                                            <span th:if="${order.materialType == 'PLATE'}" th:text="${plates[order.materialId-1].id}+ ' ' +${plates[order.materialId-1].name}"></span>
                                         </td>
                                         <td>
                                             <span th:if="${order.materialType == 'CARTON'}">Кашон</span>
@@ -103,16 +101,18 @@ document.addEventListener("DOMContentLoaded", function() {
                                         </td>
                                         <td th:text="${order.orderedQuantity}"></td>
                                         <td>
-                                            <span th:if="${order.materialType == 'CARTON'}"
-                                                  th:text="${cartons[order.materialId-1].availableQuantity}"></span>
-                                            <span th:if="${order.materialType == 'PACKAGE'}"
-                                                  th:text="${packages[order.materialId-1].availableQuantity}"></span>
-                                            <span th:if="${order.materialType == 'PLATE'}"
-                                                  th:text="${plates[order.materialId-1].availableQuantity}"></span>
+                                            <span th:if="${order.materialType == 'CARTON'}" th:text="${cartons[order.materialId-1].availableQuantity}"></span>
+                                            <span th:if="${order.materialType == 'PACKAGE'}" th:text="${packages[order.materialId-1].availableQuantity}"></span>
+                                            <span th:if="${order.materialType == 'PLATE'}" th:text="${plates[order.materialId-1].availableQuantity}"></span>
+                                        </td>
+                                        <td>
+                                            <span th:if="${order.materialType == 'PACKAGE'}" th:text="'готови продукти бройки: ' +${products[order.materialId-1].availableQuantity}"></span>
+
                                         </td>
                                     </tr>
                                     </tbody>
                                 </table>
+
                             </div>
                         </div>
                     </div>
