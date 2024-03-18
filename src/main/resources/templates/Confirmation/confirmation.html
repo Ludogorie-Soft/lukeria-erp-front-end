@@ -73,9 +73,9 @@ document.addEventListener("DOMContentLoaded", function() {
                                         <thead>
                                         <tr>
                                             <th>CODE</th>
-                                            <th>number and kind of packages description of goods</th>
-                                            <th>quantity of packs</th>
-                                            <th>unit price (€ /pack)</th>
+                                            <th>Number and kind of packages description of goods</th>
+                                            <th>Quantity of packs</th>
+                                            <th>Unit price (€ /pack)</th>
                                             <th>Value €</th>
                                         </tr>
                                         </thead>
@@ -83,29 +83,41 @@ document.addEventListener("DOMContentLoaded", function() {
                                         <tr th:each="orderProductDTO : ${orderProductDTOS}">
                                             <td th:text="${orderProductDTO.id}"></td>
                                             <td>
-                                            <span th:each="packageDTO : ${packageDTOS}"
-                                                  th:if="${packageDTO.id == orderProductDTO.packageId}"
-                                                  th:text="${packageDTO.englishName}"></span>
+                                                <span th:each="packageDTO : ${packageDTOS}" th:if="${packageDTO.id == orderProductDTO.packageId}" th:text="${packageDTO.englishName}"></span>
                                             </td>
                                             <td th:text="${orderProductDTO.number}"></td>
                                             <td>
-                                                <!--                                                <span th:text="${orderProductDTO.sellingPrice} * 1.95583 "></span >-->
                                                 <script th:inline="javascript">
-                                                  var originalValue = /*[[${orderProductDTO.sellingPrice * 1.95583}]]*/ 0;
-                                                  var roundedValue = originalValue.toFixed(2);
-                                                  document.write(roundedValue);
-
+                                                    var unitPrice = /*[[${orderProductDTO.sellingPrice / 1.95583}]]*/ 0;
+                                                    document.write(unitPrice.toFixed(2));
                                                 </script>
                                             </td>
                                             <td>
-                                                <!--                                                <span th:text="${orderProductDTO.sellingPrice * orderProductDTO.number} * 1.95583"></span>-->
                                                 <script th:inline="javascript">
-                                                  var originalValue = /*[[${orderProductDTO.sellingPrice * orderProductDTO.number  * 1.95583}]]*/ 0;
-                                                  var roundedValue = originalValue.toFixed(2);
-                                                  document.write(roundedValue);
-
+                                                    var totalPrice = /*[[${orderProductDTO.sellingPrice * orderProductDTO.number / 1.95583}]]*/ 0;
+                                                    document.write(totalPrice.toFixed(2));
                                                 </script>
                                             </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="4"><strong>Total Value:</strong></td>
+                                            <td id="totalValue"></td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                    <script th:inline="javascript">
+                                        var totalValue = 0;
+                                        var orderProductDTOS = /*[[${orderProductDTOS}]]*/ [];
+
+                                        for (var i = 0; i < orderProductDTOS.length; i++) {
+                                            var orderProductDTO = orderProductDTOS[i];
+                                            var value = orderProductDTO.number * orderProductDTO.sellingPrice / 1.95583;
+                                            totalValue += value;
+                                        }
+
+                                        document.getElementById('totalValue').textContent = totalValue.toFixed(2);
+                                    </script>
+                                    </td>
                                         </tr>
                                         </tbody>
                                     </table>
