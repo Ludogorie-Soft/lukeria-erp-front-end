@@ -78,7 +78,7 @@ document.addEventListener("DOMContentLoaded", function() {
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label for="piecesCarton">Брой картони:</label>
+                                <label for="piecesCarton">Брой кутии който влизат в 1 Кашон:</label>
                                 <input type="number" id="piecesCarton" name="piecesCarton" min="1" required
                                        th:field="*{piecesCarton}" />
                                 <div class="error-message" th:if="${#fields.hasErrors('piecesCarton')}" th:errors="*{piecesCarton}"></div>
