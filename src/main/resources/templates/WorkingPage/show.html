@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <!--    LINKS  -->
+    <th:block th:insert="~{fragments/links}"></th:block>
+
+    <title> Работна страница </title>
+    <link rel="icon" type="image/x-icon" href="/img/photos/noImage.png">
+    <link href="/css/show.css" rel="stylesheet">
+</head>
+<style>
+    table,
+    th,
+    td {
+        border: 1px solid black;
+        border-collapse: collapse;
+    }
+
+    th,
+    td {
+        padding: 5px;
+        text-align: left;
+    }
+</style>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const navbar = document.getElementById("sidebar");
+        console.log(navbar);
+        const toggler = document.querySelector("a.sidebar-toggle");
+        toggler.addEventListener("click", () => {
+        navbar.classList.toggle("collapsed");
+        });
+    });
+</script>
+<body>
+<div class="wrapper">
+    <!--    HEADER  -->
+    <th:block th:insert="~{fragments/header}"></th:block>
+    <div class="main">
+        <nav class="navbar navbar-expand navbar-light navbar-bg">
+            <a class="sidebar-toggle js-sidebar-toggle">
+                <i class="hamburger align-self-center"></i>
+            </a>
+        </nav>
+        <main class="content">
+            <div class="row">
+                <div class="col-lg-13 mx-auto">
+                    <div class="card custom-card-width-lg">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">Работна страница</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table style="width:100%">
+                                    <th>Клиент:</td>
+                                    </th>
+                                    <th>Поръчани Артикул:</th>
+                                    <th>Поръчан брой:</th>
+
+
+                                    </tr>
+                                    <tr>
+                                    <tr th:each="orderProduct : ${orderProducts}" data-id="${orderProduct.id}" class="orderProduct-row">
+                                    <td th:text="${#lists.findByProperty(orders, 'id', orderProduct.orderId).id}"></td>
+                                    <td th:text="${orderProduct.id}"></td>
+
+<!--                                    <td th:text="${clients[orders[orderProduct.orderId].clientId].businessName}"></td>-->
+<!--                                        <td th:text="${packages[orderProduct.packageId].name}"></td>-->
+                                        <td th:text="${orderProduct.number}"></td>
+
+
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+<script src="/js/app.js"></script>
+</body>
+</html>
