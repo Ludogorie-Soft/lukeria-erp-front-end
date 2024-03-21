@@ -6,8 +6,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -42,7 +40,7 @@ public class InvoiceController {
     public String invoiceCreateFromOrder(@PathVariable(name = "id") Long id, Model model, HttpServletRequest request) {
         String token = (String) request.getSession().getAttribute("sessionToken");
         List<PackageDTO> packages = packageClient.getAllPackages(token);
-        Long lastInvoiceNumber = 0L;
+        Long lastInvoiceNumber;
         List<OrderProductDTO> orderProductDTOS = queryClient.getOrderProductsByOrderId(id);
         OrderDTO order = orderClient.getOrderById(orderProductDTOS.get(0).getOrderId(), token);
         ClientDTO client = clientClient.getClientById(order.getClientId(), token);
@@ -133,8 +131,8 @@ public class InvoiceController {
                                       @RequestParam("bankAccount") String bankAccount,
                                       HttpServletRequest request) {
         String token = (String) request.getSession().getAttribute("sessionToken");
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-        LocalDate currentDateSte = LocalDate.parse(currentDate, formatter);
+        DateTimeFormatter formatterInput = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate currentDateSte = LocalDate.parse(currentDate, formatterInput);
 
         List<Integer> quantityInputIntList = quantityInput.stream()
                 .map(s -> s.replaceAll(REGEX, ""))

@@ -78,7 +78,7 @@ document.addEventListener("DOMContentLoaded", function() {
                             </div>
                             <div class="centered">
                                 <h2 th:text="'Фактура: ' + (${lastInvoiceNumber})"></h2>
-                                <h2 th:text="'ДАТА: '+ ${#dates.format(#dates.createNow(), 'dd.MM.yyyy')}"></h2>
+                                <input type="date" id="datePicker" th:value="${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}" required />
                             </div>
                         </div>
                         <div class="card-body">
@@ -150,8 +150,7 @@ document.addEventListener("DOMContentLoaded", function() {
                                 <form method="post" action="/invoice/submit">
                                     <input type="hidden" id="invoiceNumberInput" name="invoiceNumber"
                                            th:value="${lastInvoiceNumber + 1}">
-                                    <input type="hidden" id="currentDateInput" name="currentDate"
-                                           th:value="${#dates.format(#dates.createNow(), 'dd.MM.yyyy')}">
+                                    <input type="hidden" id="currentDateInput" name="currentDate" />
                                     <div class="form-group">
                                         <label for="paymentMethod">Начин на плащане:</label>
                                         <select class="form-control small-input" id="paymentMethod"
@@ -207,6 +206,16 @@ document.addEventListener("DOMContentLoaded", function() {
     </div>
 </div>
 </body>
+<script>
+    var datePicker = document.getElementById('datePicker');
+    var currentDateInput = document.getElementById('currentDateInput');
+
+    currentDateInput.value = datePicker.value;
+
+    datePicker.addEventListener('change', function() {
+        currentDateInput.value = datePicker.value;
+    });
+</script>
 <script src="/js/invoice.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 </html>
