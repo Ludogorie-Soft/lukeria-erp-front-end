@@ -43,12 +43,12 @@ document.addEventListener("DOMContentLoaded", function() {
                         </th:block>
                         <th:block th:if="${session.sessionToken != null and session.sessionRole == 'ADMIN'}">
                         <div class="text-center">
-                            <a href="/product/produce" class="btn btn-warning">Добави производство на продукт</a>
+                            <a href="/product/produce" class="btn btn-warning">Производство на продукт</a>
                         </div>
                         </th:block>
                         <th:block th:if="${session.sessionToken != null and session.sessionRole == 'PRODUCTION_MANAGER'}">
                             <div class="text-center">
-                                <a href="/product/produce" class="btn btn-warning">Добави производство на продукт</a>
+                                <a href="/product/produce" class="btn btn-warning">Производство на продукт</a>
                             </div>
                         </th:block>
                         <div class="card-body">
