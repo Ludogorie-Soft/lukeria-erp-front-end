@@ -15,7 +15,7 @@ import java.util.List;
 @org.springframework.stereotype.Controller
 @RequiredArgsConstructor
 @Slf4j
-@RequestMapping("/WorkingPage")
+@RequestMapping("/workingPage")
 public class WorkingPageController {
     private final PackageClient packageClient;
     private final ClientClient clientClient;
