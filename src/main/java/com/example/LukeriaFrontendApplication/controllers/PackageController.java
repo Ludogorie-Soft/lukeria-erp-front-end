@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.Base64;
 import java.util.Comparator;
 import java.util.List;
 
@@ -73,14 +74,20 @@ public class PackageController {
     }
 
     @GetMapping("/package/editPackage/{id}")
-    String editPackage(@PathVariable(name = "id") Long id, Model model, HttpServletRequest request) {
+    public String editPackage(@PathVariable(name = "id") Long id, Model model, HttpServletRequest request) {
         String token = (String) request.getSession().getAttribute(SESSION_TOKEN);
         PackageDTO existingPackage = packageClient.getPackageById(id, token);
         List<CartonDTO> cartons = cartonClient.getAllCartons(token);
         List<PlateDTO> plates = plateClient.getAllPlates(token);
+
+        byte[] imageBytes = existingPackage.getPhoto() != null ? imageService.getImage(existingPackage.getPhoto()) : null;
+        String imageUrl = imageBytes != null ? "data:image/jpeg;base64," + Base64.getEncoder().encodeToString(imageBytes) : null;
+
         model.addAttribute("plates", plates);
         model.addAttribute("cartons", cartons);
         model.addAttribute("package", existingPackage);
+        model.addAttribute("image", imageUrl);
+
         return "Package/edit";
     }
 

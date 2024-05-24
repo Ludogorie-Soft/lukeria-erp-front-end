@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:c="http://www.w3.org/1999/XSL/Transform">
 
 <head>
     <!--    LINKS  -->
@@ -88,11 +88,14 @@ document.addEventListener("DOMContentLoaded", function() {
                                 <input type="number" id="price" name="price" step="0.01" min="0.01" required
                                        th:field="*{price}" />
                                 <div class="error-message" th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></div>
-                            </div>
-                            <div class="form-group">
-                                <label for="photo">Снимка:</label>
-                                <input type="file" id="photo" name="file" />
-                            </div>
+                                <div class="form-group">
+                                    <label for="photo">Снимка:</label>
+                                    <input type="file" id="photo" name="file" />
+                                    <br>
+                                    <div th:if="${image != null}">
+                                        <img th:src="${image}" alt="Текуща снимка" style="max-width: 200px; max-height: 200px;"/>
+                                    </div>
+                                </div>
                             <div class="text-center">
                                 <button type="submit" class="btn btn-primary">Запази промените</button>
                             </div>
