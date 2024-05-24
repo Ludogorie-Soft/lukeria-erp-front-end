@@ -56,6 +56,10 @@ document.addEventListener("DOMContentLoaded", function() {
                             <div class="form-group">
                                 <label for="photo">Снимка:</label>
                                 <input type="file" id="photo" name="file" />
+                                <br>
+                                <div th:if="${image != null}">
+                                    <img th:src="${image}" alt="Текуща снимка" style="max-width: 200px; max-height: 200px;"/>
+                                </div>
                             </div>
                             <div class="text-center">
                                 <button type="submit" class="btn btn-primary">Редактирай</button>

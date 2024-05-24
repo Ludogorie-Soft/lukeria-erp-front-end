@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.io.IOException;
+import java.util.Base64;
 import java.util.Comparator;
 import java.util.List;
 
@@ -66,7 +67,13 @@ public class PlateController {
     String editPlate(@PathVariable(name = "id") Long id, Model model, HttpServletRequest request) {
         String token = (String) request.getSession().getAttribute("sessionToken");
         PlateDTO existingPlate = plateClient.getPlateById(id, token);
+
+        byte[] imageBytes = existingPlate.getPhoto() != null ? imageService.getImage(existingPlate.getPhoto()) : null;
+        String imageUrl = imageBytes != null ? "data:image/jpeg;base64," + Base64.getEncoder().encodeToString(imageBytes) : null;
+
+
         model.addAttribute(CARTONTXT, existingPlate);
+        model.addAttribute("image", imageUrl);
         return "Plate/edit";
     }
 
