@@ -9,14 +9,14 @@
     <link href="/css/invoice.css" rel="stylesheet">
 </head>
 <script>
-document.addEventListener("DOMContentLoaded", function() {
-    const navbar = document.getElementById("sidebar");
-    console.log(navbar);
-    const toggler = document.querySelector("a.sidebar-toggle");
-    toggler.addEventListener("click", () => {
-    navbar.classList.toggle("collapsed");
+    document.addEventListener("DOMContentLoaded", function() {
+        const navbar = document.getElementById("sidebar");
+        console.log(navbar);
+        const toggler = document.querySelector("a.sidebar-toggle");
+        toggler.addEventListener("click", () => {
+        navbar.classList.toggle("collapsed");
+        });
     });
-});
 </script>
 <body>
 <div class="wrapper">
@@ -78,7 +78,8 @@ document.addEventListener("DOMContentLoaded", function() {
                             </div>
                             <div class="centered">
                                 <h2 th:text="'Фактура: ' + (${lastInvoiceNumber})"></h2>
-                                <input type="date" id="datePicker" th:value="${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}" required />
+                                <input type="date" id="datePicker"
+                                       th:value="${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}" required/>
                             </div>
                         </div>
                         <div class="card-body">
@@ -88,7 +89,7 @@ document.addEventListener("DOMContentLoaded", function() {
                                 <table class="table">
                                     <thead>
                                     <tr>
-                                        <th>ID</th>
+                                        <th>Код</th>
                                         <th>Наименувание</th>
                                         <th>Количество</th>
                                         <th>ЕД.Цена без ДДС</th>
@@ -98,7 +99,11 @@ document.addEventListener("DOMContentLoaded", function() {
                                     </thead>
                                     <tbody>
                                     <tr th:each="orderProductDTO : ${orderProductDTOS}">
-                                        <td th:text="${orderProductDTO.id}"></td>
+                                        <td>
+                                              <span th:each="packageDTO : ${packageDTOS}"
+                                                    th:if="${packageDTO.id == orderProductDTO.packageId}"
+                                                    th:text="${packageDTO.productCode}"></span>
+                                        </td>
                                         <td>
                                               <span th:each="packageDTO : ${packageDTOS}"
                                                     th:if="${packageDTO.id == orderProductDTO.packageId}"
@@ -107,7 +112,8 @@ document.addEventListener("DOMContentLoaded", function() {
                                         <td>
                                             <label>
                                                 <input class="quantity-input" type="number"
-                                                       th:value="${orderProductDTO.number}" min="1"  id="quantityInput" name="quantityInputList">
+                                                       th:value="${orderProductDTO.number}" min="1" id="quantityInput"
+                                                       name="quantityInputList">
                                             </label>
                                             <span>БР</span>
                                         </td>
@@ -117,7 +123,8 @@ document.addEventListener("DOMContentLoaded", function() {
                                                    id="priceInput" name="priceInput">
                                         </td>
                                         <td>
-                                            <span id="vatInput" th:text="${lastInvoiceNumber >= 2000000000 ? '20' : '0'}"></span> %
+                                            <span id="vatInput"
+                                                  th:text="${lastInvoiceNumber >= 2000000000 ? '20' : '0'}"></span> %
                                         </td>
                                         <td id="totalPriceNumber*Price">
                                     </tr>
@@ -150,7 +157,7 @@ document.addEventListener("DOMContentLoaded", function() {
                                 <form method="post" action="/invoice/submit">
                                     <input type="hidden" id="invoiceNumberInput" name="invoiceNumber"
                                            th:value="${lastInvoiceNumber + 1}">
-                                    <input type="hidden" id="currentDateInput" name="currentDate" />
+                                    <input type="hidden" id="currentDateInput" name="currentDate"/>
                                     <div class="form-group">
                                         <label for="paymentMethod">Начин на плащане:</label>
                                         <select class="form-control small-input" id="paymentMethod"
@@ -160,12 +167,15 @@ document.addEventListener("DOMContentLoaded", function() {
                                         </select>
                                     </div>
                                     <div class="form-group" id="bankAccountGroup" style="display: none;">
-                                    <label for="bankAccount">Банкова сметка: </label>
-                                    <select class="form-control small-input" id="bankAccount" name="bankAccount">
-                                        <option value="BG56-UNCR-7000-1523215088 УНИКРЕДИТ БУЛБАНК АД" th:text="${'BG56-UNCR-7000-1523215088 УНИКРЕДИТ БУЛБАНК АД'}"></option>
-                                        <option value="BG84-BPBI-7943-1076363002 ЮРОБАНК БЪЛГАРИЯ АД" th:text="${'BG84-BPBI-7943-1076363002 ЮРОБАНК БЪЛГАРИЯ АД'}"></option>
-                                        <option value="BG06-DEMI-9240-1000326433 ТЪРГОВСКА БАНКА Д АД" th:text="${'BG06-DEMI-9240-1000326433 ТЪРГОВСКА БАНКА Д АД'}"></option>
-                                    </select>
+                                        <label for="bankAccount">Банкова сметка: </label>
+                                        <select class="form-control small-input" id="bankAccount" name="bankAccount">
+                                            <option value="BG56-UNCR-7000-1523215088 УНИКРЕДИТ БУЛБАНК АД"
+                                                    th:text="${'BG56-UNCR-7000-1523215088 УНИКРЕДИТ БУЛБАНК АД'}"></option>
+                                            <option value="BG84-BPBI-7943-1076363002 ЮРОБАНК БЪЛГАРИЯ АД"
+                                                    th:text="${'BG84-BPBI-7943-1076363002 ЮРОБАНК БЪЛГАРИЯ АД'}"></option>
+                                            <option value="BG06-DEMI-9240-1000326433 ТЪРГОВСКА БАНКА Д АД"
+                                                    th:text="${'BG06-DEMI-9240-1000326433 ТЪРГОВСКА БАНКА Д АД'}"></option>
+                                        </select>
                                     </div>
 
                                     <script th:inline="javascript">
@@ -188,13 +198,17 @@ document.addEventListener("DOMContentLoaded", function() {
                                     <input type="hidden" id="paymentAmountInput" name="paymentAmount">
                                     <input type="hidden" id="quantityInputList" name="quantityInputList">
                                     <input type="hidden" id="priceInputList" name="priceInputList">
-                                    <input type="hidden" id="lastInvoiceNumber" name="lastInvoiceNumber" th:value="${lastInvoiceNumber}">
+                                    <input type="hidden" id="lastInvoiceNumber" name="lastInvoiceNumber"
+                                           th:value="${lastInvoiceNumber}">
 
                                     <th:block th:each="orderProductDTO : ${orderProductDTOS}">
                                         <input type="hidden" name="orderProductIds" th:value="${orderProductDTO.id}">
                                     </th:block>
                                     <div>
-                                        <button id="printButton3" type="submit" onclick="return confirm('Сигурни ли сте, че искате да фактурирате тази поръчка?')">Фактурирай</button>
+                                        <button id="printButton3" type="submit"
+                                                onclick="return confirm('Сигурни ли сте, че искате да фактурирате тази поръчка?')">
+                                            Фактурирай
+                                        </button>
                                     </div>
                                 </form>
                             </div>

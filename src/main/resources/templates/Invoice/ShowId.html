@@ -9,14 +9,14 @@
     <link href="/css/invoice.css" rel="stylesheet">
 </head>
 <script>
-document.addEventListener("DOMContentLoaded", function() {
-    const navbar = document.getElementById("sidebar");
-    console.log(navbar);
-    const toggler = document.querySelector("a.sidebar-toggle");
-    toggler.addEventListener("click", () => {
-    navbar.classList.toggle("collapsed");
+    document.addEventListener("DOMContentLoaded", function() {
+        const navbar = document.getElementById("sidebar");
+        console.log(navbar);
+        const toggler = document.querySelector("a.sidebar-toggle");
+        toggler.addEventListener("click", () => {
+        navbar.classList.toggle("collapsed");
+        });
     });
-});
 </script>
 <body>
 <div class="wrapper">
@@ -51,42 +51,32 @@ document.addEventListener("DOMContentLoaded", function() {
                             <div class="container">
                                 <div class="text-container">
                                     <strong class="underlined" th:text="#{label.receiver}"></strong>
-                                    <h5>
-                                        <strong th:text="${clientName}"></strong>
-                                    </h5>
-                                    <h5><strong
-                                            th:text="#{label.idNumber}+'  ' + ${client.idNumEIK}"></strong>
-                                    </h5>
-                                    <h5><strong th:if="${client.hasIdNumDDS}">
-                                        <span th:text= "#{label.idNumberDDS} +'  '+ ' BG' + ${client.idNumEIK}"></span>
-                                    </strong></h5>
-                                    <h5>
-                                        <strong th:text=" #{label.address}"></strong>
-                                        <strong th:text="${clientAddress}"></strong>
-                                    </h5>
-                                    <h5><strong th:text="#{label.MOL} +'  '+ ${clientMOL}"></strong>
-                                    </h5>
+                                    <h6 th:text="${clientName}"></h6>
+                                    <h6 th:text="#{label.idNumber}+'  ' + ${client.idNumEIK}"></h6>
+                                    <h6 th:if="${client.hasIdNumDDS}"
+                                        th:text="#{label.idNumberDDS} + '  ' + ' BG' + ${client.idNumEIK}">
+                                    </h6>
+                                    <h6>
+                                        <span th:text="#{label.address}"></span>
+                                        <span th:text="${clientAddress}"></span>
+                                    </h6>
+                                    <h6 th:text="#{label.MOL} + '  ' + ${clientMOL}"></h6>
                                 </div>
 
                                 <div class="text-container right">
                                     <strong class="underlined" th:text="#{label.supplier}"></strong>
-                                    <h5><strong th:text=" #{lukeria.name}"></strong></h5>
-                                    <h5>
-
-                                    </h5>
-                                    <h5><strong th:text="#{label.idNumber} + '  ' + '200418603'"></strong></h5>
-                                    <h5><strong>
-                                        <span th:text="#{label.idNumberDDS} +'  ' +'BG'+ '200418603'"></span>
-                                    </strong></h5>
-                                    <h5><strong th:text="#{label.address} +'  ' + #{lukeria.address}"></strong>
-                                    </h5>
-                                    <h5><strong th:text="#{label.MOL}+'  ' + #{lukeria.MOL}"></strong>
-                                    </h5>
+                                    <h6 th:text=" #{lukeria.name}"></h6>
+                                    <h6 th:text="#{label.idNumber} + '  ' + '200418603'"></h6>
+                                    <h6 th:text="#{label.idNumberDDS} +'  ' +'BG'+ '200418603'"></h6>
+                                    <h6 th:text="#{label.address} +'  ' + #{lukeria.address}"></h6>
+                                    <h6 th:text="#{label.MOL}+'  ' + #{lukeria.MOL}"></h6>
                                 </div>
                             </div>
                             <div class="centered">
-                                <h2 th:text="#{title.invoice}+'  ' + ${invoiceDTO.invoiceNumber}"></h2>
-                                <h2 th:text="#{title.date} +'  '+ ${invoiceDTO.invoiceDate}"></h2>
+                                <h2 th:text="#{title.invoice}+'  ' + ${invoiceDTO.invoiceNumber}"
+                                    style="font-size: 20px;"></h2>
+                                <h2 th:text="#{title.date} +'  '+ ${invoiceDTO.invoiceDate}"
+                                    style="font-size: 20px;"></h2>
                             </div>
                         </div>
                         <div class="card-body">
@@ -96,29 +86,39 @@ document.addEventListener("DOMContentLoaded", function() {
                                 <table class="table">
                                     <thead>
                                     <tr>
-                                        <th th:text="#{label.id}"></th>
-                                        <th th:text="#{label.name}"></th>
-                                        <th th:text="#{label.quantity}"></th>
-                                        <th th:text="#{label.unitPriceWithoutVAT}"></th>
-                                        <th th:text="#{label.vatPercentage}"></th>
-                                        <th th:text="#{label.valueWithoutVAT}"></th>
+                                        <th th:text="#{label.id}" style="font-size: 12px;"></th>
+                                        <th th:text="#{label.name}" style="font-size: 12px;"></th>
+                                        <th th:text="#{label.quantity}" style="font-size: 12px;"></th>
+                                        <th th:text="#{label.unitPriceWithoutVAT}" style="font-size: 12px;"></th>
+                                        <th th:text="#{label.vatPercentage}" style="font-size: 12px;"></th>
+                                        <th th:text="#{label.valueWithoutVAT}" style="font-size: 12px;"></th>
                                     </tr>
                                     </thead>
                                     <tbody>
                                     <tr th:each="orderProductDTO : ${orderProductDTOS}">
-                                        <td th:text="${orderProductDTO.id}"></td>
                                         <td>
-                                          <span th:each="packageDTO : ${packageDTOS}" th:if="${packageDTO.id == orderProductDTO.packageId}">
-                                          <span th:if="${invoiceDTO.invoiceNumber  >= 2000000000}" th:text="${packageDTO.name}"></span>
-                                         <span th:unless="${invoiceDTO.invoiceNumber  >= 2000000000}" th:text="${packageDTO.englishName}"></span>
+                                          <span th:each="packageDTO : ${packageDTOS}"
+                                                th:if="${packageDTO.id == orderProductDTO.packageId}"
+                                                th:text="${packageDTO.productCode}" style="font-size: 12px;">
                                        </span>
                                         </td>
-                                        <td class="quantity-input" th:text="${orderProductDTO.number } +' '+ #{label.num}">
+                                        <td>
+                                          <span th:each="packageDTO : ${packageDTOS}"
+                                                th:if="${packageDTO.id == orderProductDTO.packageId}">
+                                          <span th:if="${invoiceDTO.invoiceNumber  >= 2000000000}"
+                                                th:text="${packageDTO.name}" style="font-size: 12px;" ></span>
+                                         <span th:unless="${invoiceDTO.invoiceNumber  >= 2000000000}"
+                                               th:text="${packageDTO.englishName}" style="font-size: 12px;"></span>
+                                       </span>
+                                        </td>
+                                        <td class="quantity-input"
+                                            th:text="${orderProductDTO.number } +' '+ #{label.num} " style="font-size: 12px;">
                                         </td>
 
                                         <td class="price-input">
-                                            <span th:if="${invoiceDTO.invoiceNumber >= 2000000000}" th:text="${orderProductDTO.sellingPrice}"></span>
-                                            <span th:if="${invoiceDTO.invoiceNumber < 2000000000}">
+                                            <span th:if="${invoiceDTO.invoiceNumber >= 2000000000}"
+                                                  th:text="${orderProductDTO.sellingPrice}" style="font-size: 12px;"></span>
+                                            <span th:if="${invoiceDTO.invoiceNumber < 2000000000}" style="font-size: 12px;">
                                                 <script th:inline="javascript">
                                                   var originalValue = /*[[${orderProductDTO.sellingPrice / 1.95583}]]*/ 0;
                                                   var roundedValue = originalValue.toFixed(2);
@@ -128,15 +128,20 @@ document.addEventListener("DOMContentLoaded", function() {
                                         </td>
                                         </td>
                                         <td>
-                                            <span id="vatInput" th:text="${invoiceDTO.invoiceNumber >= 2000000000 ? '20' : '0'}"></span> %
+                                            <span id="vatInput"
+                                                  th:text="${invoiceDTO.invoiceNumber >= 2000000000 ? '20' : '0'}" style="font-size: 12px;"></span>
+                                            %
                                         </td>
                                         <td>
                                             <span th:with="productPrice=${orderProductDTO.sellingPrice}, orderNumber=${orderProductDTO.number}"
-                                             th:each="productDTO : ${productDTOS}" th:if="${productDTO.id == orderProductDTO.packageId}"
-                                             th:id="${'productValue-' + productDTO.id}">
-                                             <span th:if="${invoiceDTO.invoiceNumber >= 2000000000}" th:text="${productPrice * orderNumber}"></span>
-                                             <span hidden th:unless="${invoiceDTO.invoiceNumber >= 2000000000}" th:text="${productPrice * orderNumber / 1.95583}"></span>
-                                                <span th:unless="${invoiceDTO.invoiceNumber >= 2000000000}">
+                                                  th:each="productDTO : ${productDTOS}"
+                                                  th:if="${productDTO.id == orderProductDTO.packageId}"
+                                                  th:id="${'productValue-' + productDTO.id}" style="font-size: 12px;">
+                                             <span th:if="${invoiceDTO.invoiceNumber >= 2000000000}"
+                                                   th:text="${productPrice * orderNumber}" style="font-size: 12px;"></span>
+                                             <span hidden th:unless="${invoiceDTO.invoiceNumber >= 2000000000}"
+                                                   th:text="${productPrice * orderNumber / 1.95583}" style="font-size: 12px;"></span>
+                                                <span th:unless="${invoiceDTO.invoiceNumber >= 2000000000}" style="font-size: 12px;">
                                                     <script th:inline="javascript">
                                                     var originalValue = /*[[${productPrice * orderNumber / 1.95583}]]*/ 0;
                                                     var roundedValue = originalValue.toFixed(2);
@@ -151,37 +156,42 @@ document.addEventListener("DOMContentLoaded", function() {
                                         <td></td>
                                         <td></td>
                                         <td></td>
-                                        <td th:text = "#{label.taxBase}"></td>
-                                        <td id="totalPrice"></td>
+                                        <td th:text="#{label.taxBase}" style="font-size: 12px;"></td>
+                                        <td id="totalPrice" style="font-size: 12px;"></td>
                                     </tr>
                                     <tr>
                                         <td></td>
                                         <td></td>
                                         <td></td>
                                         <td></td>
-                                        <td th:text = "#{label.valueOfVAT}"></td>
-                                        <td id="vatValue"></td>
+                                        <td th:text="#{label.valueOfVAT}" style="font-size: 12px;"></td>
+                                        <td id="vatValue" style="font-size: 12px;"></td>
                                     </tr>
                                     <tr>
                                         <td></td>
                                         <td></td>
                                         <td></td>
                                         <td></td>
-                                        <td th:text = "#{label.paymentAmount}"></td>
-                                        <td id="paymentAmount"></td>
+                                        <td th:text="#{label.paymentAmount}" style="font-size: 12px;"></td>
+                                        <td id="paymentAmount" style="font-size: 12px;"></td>
                                     </tr>
                                     </tbody>
                                 </table>
-                                <label th:unless="${invoiceDTO.isCashPayment}" th:text = "#{other.bankAccount} + '  '"></label>
-                                    <strong th:unless="${invoiceDTO.isCashPayment}" th:text = "${invoiceDTO.bankAccount}"></strong>
+                                <label th:unless="${invoiceDTO.isCashPayment}"
+                                       th:text="#{other.bankAccount} + '  '" style="font-size: 12px;"></label>
+                                <strong th:unless="${invoiceDTO.isCashPayment}"
+                                        th:text="${invoiceDTO.bankAccount}" style="font-size: 12px;"></strong>
                                 <br>
-                                <label th:text = "#{other.paymentMethod}"></label>
-                                    <span th:if="${invoiceDTO.isCashPayment}"><strong th:text = "#{other.paymentMethodNum}"></strong> </span>
-                                    <span th:unless="${invoiceDTO.isCashPayment}"><strong th:text = "#{other.paymentMehtodWithTranslationOrder}"></strong></span>
+                                <label th:text="#{other.paymentMethod}" style="font-size: 12px;"></label>
+                                <span th:if="${invoiceDTO.isCashPayment}" style="font-size: 12px;"><strong
+                                        th:text="#{other.paymentMethodNum}" style="font-size: 12px;"></strong> </span>
+                                <span th:unless="${invoiceDTO.isCashPayment}" style="font-size: 12px;"><strong
+                                        th:text="#{other.paymentMehtodWithTranslationOrder}" style="font-size: 12px;"></strong></span>
                                 <br>
-                                <label th:text = "#{other.maturityDate}">  </label>
-                                    <strong><span th:text="${#temporals.format(invoiceDTO.deadline, 'dd.MM.yyyy')}"></span></strong></label><br><br>
-                                    <strong th:text = "#{other.notice}"></strong>
+                                <label th:text="#{other.maturityDate}" style="font-size: 12px;"> </label>
+                                <strong><span th:text="${#temporals.format(invoiceDTO.deadline, 'dd.MM.yyyy')}" style="font-size: 12px;"></span></strong></label>
+                                <br><br>
+                                <strong th:text="#{other.notice}" style="font-size: 12px;"></strong>
                                 </label><br>
                             </div>
                         </div>
@@ -199,25 +209,25 @@ document.addEventListener("DOMContentLoaded", function() {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
 <script src="/js/invoiceId.js"></script>
 <script>
-var invoiceId = [[${InvoiceId}]];
-    // JavaScript function to round a value to two decimal places
-    function roundValue(value) {
-        return Math.round(value * 100) / 100;
-    }
+    var invoiceId = [[${InvoiceId}]];
+        // JavaScript function to round a value to two decimal places
+        function roundValue(value) {
+            return Math.round(value * 100) / 100;
+        }
 
-    // Get the elements you need
-    var tdElement = document.querySelector('.price-input');
+        // Get the elements you need
+        var tdElement = document.querySelector('.price-input');
 
-    var sellingPrice = [[${sellingPrice}]];
+        var sellingPrice = [[${sellingPrice}]];
 
-    // Calculate the value based on the condition
-    var calculatedValue = invoiceId >= 2000000000 ? sellingPrice : sellingPrice / 1.95583;
+        // Calculate the value based on the condition
+        var calculatedValue = invoiceId >= 2000000000 ? sellingPrice : sellingPrice / 1.95583;
 
-    // Round the calculated value to two decimal places
-    var roundedValue = roundValue(calculatedValue);
+        // Round the calculated value to two decimal places
+        var roundedValue = roundValue(calculatedValue);
 
-    // Set the rounded value as the text content of the <td> element
-    tdElement.textContent = roundedValue.toFixed(2);
+        // Set the rounded value as the text content of the <td> element
+        tdElement.textContent = roundedValue.toFixed(2);
 </script>
 
 <script>
@@ -246,12 +256,12 @@ var invoiceId = [[${InvoiceId}]];
     }
 </script>
 <script>
-document.addEventListener("DOMContentLoaded", function() {
-    const navbar = document.getElementById("sidebar");
-    console.log(navbar);
-    const toggler = document.querySelector("a.sidebar-toggle");
-    toggler.addEventListener("click", () => {
-    navbar.classList.toggle("collapsed");
+    document.addEventListener("DOMContentLoaded", function() {
+        const navbar = document.getElementById("sidebar");
+        console.log(navbar);
+        const toggler = document.querySelector("a.sidebar-toggle");
+        toggler.addEventListener("click", () => {
+        navbar.classList.toggle("collapsed");
+        });
     });
-});
 </script>
