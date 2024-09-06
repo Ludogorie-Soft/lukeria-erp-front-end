@@ -96,11 +96,13 @@ public class UserController {
     }
 
     @GetMapping("/ifPassMatch")
-    ModelAndView ifPassMatch(@ModelAttribute UserDTO userDTO,HttpServletRequest request){
+    ModelAndView ifPassMatch(@ModelAttribute("user") UserDTO userDTO,HttpServletRequest request){
         String token = (String) request.getSession().getAttribute(SESSION_TOKEN);
-        boolean ifPassMatch = userClient.ifPassMatch(userDTO, token);
+        boolean ifPassMatch = userClient.ifPassMatch(userDTO.getPassword(), token);
         if(!ifPassMatch){
-            return new ModelAndView("redirect:/user/password");
+            ModelAndView modelAndView = new ModelAndView("redirect:/user/password");
+            modelAndView.addObject("error", "Грешна парола!");
+            return modelAndView;
         }
         return new ModelAndView("redirect:/user/change-password");
     }
@@ -112,7 +114,14 @@ public class UserController {
     @PostMapping("/change-password")
     ModelAndView changePassword(@ModelAttribute UserDTO userDTO,HttpServletRequest request){
         String token = (String) request.getSession().getAttribute(SESSION_TOKEN);
-        userClient.changePassword(userDTO,token);
-        return new ModelAndView(REDIRECTTXT2);
+        boolean response = userClient.changePassword(userDTO,token);
+        if(response){
+            return new ModelAndView(REDIRECTTXT2);
+        }
+        ModelAndView modelAndView = new ModelAndView("redirect:/user/change-password");
+        modelAndView.addObject("error", "Паролите не съвпадат!");
+        return modelAndView;
     }
+
+
 }

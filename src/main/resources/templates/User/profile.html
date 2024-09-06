@@ -71,9 +71,9 @@
                             </div>
                             <div class="row">
                                 <div class="col">
-                                    <form th:action="@{'/user/delete/' + ${user.id}}" method="post"
-                                          th:attr="onsubmit='return confirm(\'Сигурни ли сте, че искате да изтриете Потребител с име: ' + ${user.firstname} + '?\');'">
-                                        <button type="submit" class="btn btn-danger">Изтрий</button>
+                                    <form th:action="@{/user/password}" method="get"
+                                          th:attr="onsubmit='return confirm(\'Сигурни ли сте, че искате да смените паролата на: ' + ${user.firstname} + '?\');'">
+                                        <button type="submit" class="btn btn-danger">Смени парола</button>
                                     </form>
                                 </div>
                                 <div class="col">

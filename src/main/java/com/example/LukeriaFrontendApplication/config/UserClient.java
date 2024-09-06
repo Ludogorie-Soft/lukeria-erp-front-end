@@ -29,8 +29,8 @@ public interface UserClient {
     UserDTO findAuthenticatedUser(@RequestHeader("Authorization") String auth);
 
     @GetMapping("/ifPassMatch")
-    Boolean ifPassMatch(UserDTO userDTO, @RequestHeader("Authorization") String auth);
+    boolean ifPassMatch(@RequestParam String password, @RequestHeader("Authorization") String auth);
 
     @PutMapping("/change-pass")
-    public void changePassword(UserDTO userDTO, @RequestHeader("Authorization") String auth);
+    boolean changePassword(@RequestBody UserDTO userDTO, @RequestHeader("Authorization") String auth);
 }
