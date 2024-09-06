@@ -5,7 +5,7 @@
     <!--    LINKS  -->
     <th:block th:insert="~{fragments/links}"></th:block>
 
-    <title> Потрбители </title>
+    <title> Редактиране </title>
     <link rel="icon" type="image/x-icon" href="/img/photos/noImage.png">
     <link href="/css/form.css" rel="stylesheet">
 </head>
@@ -39,7 +39,7 @@ document.addEventListener("DOMContentLoaded", function() {
                             </div>
                             <div class="card-body">
                                 <form th:action="@{'/user/edit/' + ${user.id}}" method="get" th:object="${user}">
-<!--                                    <form th:action="@{'/client/edit/' + ${client.id}}" method="get" th:object="${client}">-->
+                                    <!--                                    <form th:action="@{'/client/edit/' + ${client.id}}" method="get" th:object="${client}">-->
                                     <div class="form-group">
                                         <label for="username">Потребителско име</label>
                                         <input type="text" class="form-control" id="username" name="username"
@@ -64,14 +64,6 @@ document.addEventListener("DOMContentLoaded", function() {
                                         <label for="email">Е-поща</label>
                                         <input type="email" class="form-control" id="email" name="email"
                                                th:field="*{email}" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="role">Роля</label>
-                                        <select class="form-control" id="role" name="role" th:field="*{role}" required>
-                                            <option value="ADMIN">Администратор</option>
-                                            <option value="PRODUCTION_MANAGER">Мениджър производство</option>
-                                            <option value="TRANSPORT_MANAGER">Мениджър транспорт</option>
-                                        </select>
                                     </div>
                                     <div class="text-center">
                                         <button type="submit" class="btn btn-primary">Редактирай</button>

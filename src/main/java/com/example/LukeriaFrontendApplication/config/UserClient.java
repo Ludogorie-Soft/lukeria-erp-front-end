@@ -26,6 +26,11 @@ public interface UserClient {
     String deleteUserById(@PathVariable("id") Long id, @RequestHeader("Authorization") String auth);
 
     @GetMapping("/me")
-    UserDTO findAuthenticatedUser();
+    UserDTO findAuthenticatedUser(@RequestHeader("Authorization") String auth);
 
+    @GetMapping("/ifPassMatch")
+    Boolean ifPassMatch(UserDTO userDTO, @RequestHeader("Authorization") String auth);
+
+    @PutMapping("/change-pass")
+    public void changePassword(UserDTO userDTO, @RequestHeader("Authorization") String auth);
 }

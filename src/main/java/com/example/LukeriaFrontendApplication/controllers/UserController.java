@@ -19,6 +19,7 @@ import java.util.List;
 @RequestMapping("/user")
 public class UserController {
     private static final String REDIRECTTXT = "redirect:/user/show";
+    private static final String REDIRECTTXT2 = "redirect:/user/profile";
     private static final String SESSION_TOKEN = "sessionToken";
 
     private final UserClient userClient;
@@ -48,8 +49,13 @@ public class UserController {
     @GetMapping("/editUser/{id}")
     String editUser(@PathVariable(name = "id") Long id, Model model, HttpServletRequest request) {
         String token = (String) request.getSession().getAttribute(SESSION_TOKEN);
-        UserDTO existingCarton = userClient.getUserById(id, token);
-        model.addAttribute("user", existingCarton);
+        UserDTO existingUser = userClient.getUserById(id, token);
+        model.addAttribute("user", existingUser);
+        UserDTO authenticatedUser = userClient.findAuthenticatedUser(token);
+
+        if (existingUser.equals(authenticatedUser)) {
+            return "User/profile-edit";
+        }
         return "User/edit";
     }
 
@@ -57,8 +63,15 @@ public class UserController {
     ModelAndView editSubmitUser(@PathVariable(name = "id") Long id, UserDTO userDTO, HttpServletRequest request) {
         String token = (String) request.getSession().getAttribute(SESSION_TOKEN);
         userClient.updateUser(id, userDTO, token);
+        UserDTO existingUser = userClient.getUserById(id, token);
+        UserDTO authenticatedUser = userClient.findAuthenticatedUser(token);
+
+        if (existingUser.equals(authenticatedUser)) {
+            return new ModelAndView(REDIRECTTXT2);
+        }
         return new ModelAndView(REDIRECTTXT);
     }
+
 
     @PostMapping("/delete/{id}")
     ModelAndView deleteClientById(@PathVariable("id") Long id, Model model, HttpServletRequest request) {
@@ -68,9 +81,38 @@ public class UserController {
     }
 
     @GetMapping("/profile")
-    String showProfile(Model model){
-        UserDTO user = userClient.findAuthenticatedUser();
+    String showProfile(Model model, HttpServletRequest request) {
+        String token = (String) request.getSession().getAttribute(SESSION_TOKEN);
+        UserDTO user = userClient.findAuthenticatedUser(token);
         model.addAttribute("user", user);
         return "User/profile";
+    }
+
+    @GetMapping("/password")
+    String ifPassMatch(Model model) {
+        model.addAttribute("user", new UserDTO());
+        return "User/pass-match";
+
+    }
+
+    @GetMapping("/ifPassMatch")
+    ModelAndView ifPassMatch(@ModelAttribute UserDTO userDTO,HttpServletRequest request){
+        String token = (String) request.getSession().getAttribute(SESSION_TOKEN);
+        boolean ifPassMatch = userClient.ifPassMatch(userDTO, token);
+        if(!ifPassMatch){
+            return new ModelAndView("redirect:/user/password");
+        }
+        return new ModelAndView("redirect:/user/change-password");
+    }
+    @GetMapping("/change-password")
+    String changePassword(Model model){
+        model.addAttribute("user", new UserDTO());
+        return "User/change-password";
+    }
+    @PostMapping("/change-password")
+    ModelAndView changePassword(@ModelAttribute UserDTO userDTO,HttpServletRequest request){
+        String token = (String) request.getSession().getAttribute(SESSION_TOKEN);
+        userClient.changePassword(userDTO,token);
+        return new ModelAndView(REDIRECTTXT2);
     }
 }
