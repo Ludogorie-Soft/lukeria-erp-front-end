@@ -3,6 +3,7 @@ package com.example.LukeriaFrontendApplication.config;
 import com.example.LukeriaFrontendApplication.dtos.UserDTO;
 import jakarta.validation.Valid;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,4 +24,8 @@ public interface UserClient {
 
     @DeleteMapping("/{id}")
     String deleteUserById(@PathVariable("id") Long id, @RequestHeader("Authorization") String auth);
+
+    @GetMapping("/me")
+    UserDTO findAuthenticatedUser();
+
 }

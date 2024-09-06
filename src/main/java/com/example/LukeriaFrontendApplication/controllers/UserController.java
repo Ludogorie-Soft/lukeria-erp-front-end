@@ -6,6 +6,7 @@ import com.example.LukeriaFrontendApplication.models.User;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.bouncycastle.math.raw.Mod;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -66,4 +67,10 @@ public class UserController {
         return new ModelAndView(REDIRECTTXT);
     }
 
+    @GetMapping("/profile")
+    String showProfile(Model model){
+        UserDTO user = userClient.findAuthenticatedUser();
+        model.addAttribute("user", user);
+        return "User/profile";
+    }
 }
