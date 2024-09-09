@@ -7,6 +7,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 @FeignClient(name = "lukeria-erp-user", url = "${backend.base-url}/user")
@@ -20,8 +21,11 @@ public interface UserClient {
     @PostMapping
     UserDTO createUser(@Valid @RequestBody UserDTO user, @RequestHeader("Authorization") String auth);
 
+    @PutMapping("/authenticated/{id}")
+    AuthenticationResponse updateAuthenticatedUser(@PathVariable("id") Long id, @Valid @RequestBody UserDTO userDTO, @RequestHeader("Authorization") String auth);
+
     @PutMapping("/{id}")
-    AuthenticationResponse updateUser(@PathVariable("id") Long id, @Valid @RequestBody UserDTO userDTO, @RequestHeader("Authorization") String auth);
+    UserDTO updateUser(@PathVariable("id") Long id, @Valid @RequestBody UserDTO userDTO, @RequestHeader("Authorization") String auth);
 
     @DeleteMapping("/{id}")
     String deleteUserById(@PathVariable("id") Long id, @RequestHeader("Authorization") String auth);

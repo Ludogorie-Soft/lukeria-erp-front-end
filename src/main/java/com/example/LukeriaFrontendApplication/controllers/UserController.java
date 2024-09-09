@@ -67,20 +67,20 @@ public class UserController {
     @PostMapping("/edit/{id}")
     ModelAndView editSubmitUser(@PathVariable(name = "id") Long id, UserDTO userDTO, HttpServletRequest request) {
         String token = (String) request.getSession().getAttribute(SESSION_TOKEN);
+        UserDTO authenticatedUser = userClient.findAuthenticatedUser(token);
+        UserDTO existingUser = userClient.getUserById(id, token);
         try {
-            UserDTO authenticatedUser = userClient.findAuthenticatedUser(token);
-            UserDTO existingUser = userClient.getUserById(id, token);
-            AuthenticationResponse authenticationResponse =  userClient.updateUser(id, userDTO, token);
-
             if (existingUser.equals(authenticatedUser)) {
+                AuthenticationResponse authenticationResponse = userClient.updateAuthenticatedUser(id, userDTO, token);
                 sessionManager.setSessionToken(request, authenticationResponse.getAccessToken(), authenticationResponse.getUser().getRole().toString());
                 return new ModelAndView(REDIRECTTXT2);
             }
+            userClient.updateUser(id, userDTO, token);
             return new ModelAndView(REDIRECTTXT);
-        }catch (Exception e){
+        } catch (Exception e) {
 
-            ModelAndView modelAndView = new ModelAndView("redirect:/login");
-            return modelAndView;
+            return new ModelAndView("redirect:/login");
+
         }
     }
 
@@ -108,26 +108,28 @@ public class UserController {
     }
 
     @GetMapping("/ifPassMatch")
-    ModelAndView ifPassMatch(@ModelAttribute("user") UserDTO userDTO,HttpServletRequest request){
+    ModelAndView ifPassMatch(@ModelAttribute("user") UserDTO userDTO, HttpServletRequest request) {
         String token = (String) request.getSession().getAttribute(SESSION_TOKEN);
         boolean ifPassMatch = userClient.ifPassMatch(userDTO.getPassword(), token);
-        if(!ifPassMatch){
+        if (!ifPassMatch) {
             ModelAndView modelAndView = new ModelAndView("redirect:/user/password");
             modelAndView.addObject("error", "Грешна парола!");
             return modelAndView;
         }
         return new ModelAndView("redirect:/user/change-password");
     }
+
     @GetMapping("/change-password")
-    String changePassword(Model model){
+    String changePassword(Model model) {
         model.addAttribute("user", new UserDTO());
         return "User/change-password";
     }
+
     @PostMapping("/change-password")
-    ModelAndView changePassword(@ModelAttribute UserDTO userDTO,HttpServletRequest request){
+    ModelAndView changePassword(@ModelAttribute UserDTO userDTO, HttpServletRequest request) {
         String token = (String) request.getSession().getAttribute(SESSION_TOKEN);
-        boolean response = userClient.changePassword(userDTO,token);
-        if(response){
+        boolean response = userClient.changePassword(userDTO, token);
+        if (response) {
             return new ModelAndView(REDIRECTTXT2);
         }
         ModelAndView modelAndView = new ModelAndView("redirect:/user/change-password");
