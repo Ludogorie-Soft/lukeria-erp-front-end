@@ -1,12 +1,15 @@
 package com.example.LukeriaFrontendApplication.controllers;
 
 import com.example.LukeriaFrontendApplication.config.UserClient;
+import com.example.LukeriaFrontendApplication.dtos.AuthenticationResponse;
 import com.example.LukeriaFrontendApplication.dtos.UserDTO;
 import com.example.LukeriaFrontendApplication.models.User;
+import com.example.LukeriaFrontendApplication.session.SessionManager;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.bouncycastle.math.raw.Mod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -23,6 +26,8 @@ public class UserController {
     private static final String SESSION_TOKEN = "sessionToken";
 
     private final UserClient userClient;
+
+    private final SessionManager sessionManager;
 
     @GetMapping("/show")
     public String index(Model model, HttpServletRequest request) {
@@ -59,17 +64,24 @@ public class UserController {
         return "User/edit";
     }
 
-    @GetMapping("/edit/{id}")
+    @PostMapping("/edit/{id}")
     ModelAndView editSubmitUser(@PathVariable(name = "id") Long id, UserDTO userDTO, HttpServletRequest request) {
         String token = (String) request.getSession().getAttribute(SESSION_TOKEN);
-        userClient.updateUser(id, userDTO, token);
-        UserDTO existingUser = userClient.getUserById(id, token);
-        UserDTO authenticatedUser = userClient.findAuthenticatedUser(token);
+        try {
+            UserDTO authenticatedUser = userClient.findAuthenticatedUser(token);
+            UserDTO existingUser = userClient.getUserById(id, token);
+            AuthenticationResponse authenticationResponse =  userClient.updateUser(id, userDTO, token);
 
-        if (existingUser.equals(authenticatedUser)) {
-            return new ModelAndView(REDIRECTTXT2);
+            if (existingUser.equals(authenticatedUser)) {
+                sessionManager.setSessionToken(request, authenticationResponse.getAccessToken(), authenticationResponse.getUser().getRole().toString());
+                return new ModelAndView(REDIRECTTXT2);
+            }
+            return new ModelAndView(REDIRECTTXT);
+        }catch (Exception e){
+
+            ModelAndView modelAndView = new ModelAndView("redirect:/login");
+            return modelAndView;
         }
-        return new ModelAndView(REDIRECTTXT);
     }
 
 
