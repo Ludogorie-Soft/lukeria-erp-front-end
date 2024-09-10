@@ -69,7 +69,6 @@ public class UserController {
         String token = (String) request.getSession().getAttribute(SESSION_TOKEN);
         UserDTO authenticatedUser = userClient.findAuthenticatedUser(token);
         UserDTO existingUser = userClient.getUserById(id, token);
-        try {
             if (existingUser.equals(authenticatedUser)) {
                 AuthenticationResponse authenticationResponse = userClient.updateAuthenticatedUser(id, userDTO, token);
                 sessionManager.setSessionToken(request, authenticationResponse.getAccessToken(), authenticationResponse.getUser().getRole().toString());
@@ -77,11 +76,6 @@ public class UserController {
             }
             userClient.updateUser(id, userDTO, token);
             return new ModelAndView(REDIRECTTXT);
-        } catch (Exception e) {
-
-            return new ModelAndView("redirect:/login");
-
-        }
     }
 
 
