@@ -17,6 +17,7 @@ document.addEventListener("DOMContentLoaded", function() {
     navbar.classList.toggle("collapsed");
     });
 });
+
 </script>
 <body>
 <div class="wrapper">
@@ -34,37 +35,41 @@ document.addEventListener("DOMContentLoaded", function() {
                 <div class="col-lg-11 mx-auto">
                     <div class="card custom-card-width-lg">
                         <div class="card-header">
-                            <h5 class="card-title mb-0">Всички продукти</h5>
+                            <h5 class="card-title mb-0">Налични продукти</h5>
                         </div>
                         <th:block th:if="${session.sessionToken != null and session.sessionRole == 'ADMIN'}">
-                        <div class="text-center">
-                            <a href="/product/create" class="btn btn-primary">Добави нов Продукт</a>
-                        </div><br>
+                            <div class="text-center">
+                                <a href="/product/create" class="btn btn-primary">Добави нов Продукт</a>
+                            </div>
+                            <br>
                         </th:block>
                         <th:block th:if="${session.sessionToken != null and session.sessionRole == 'ADMIN'}">
-                        <div class="text-center">
-                            <a href="/product/produce" class="btn btn-warning">Производство на продукт</a>
-                        </div>
-                        </th:block>
-                        <th:block th:if="${session.sessionToken != null and session.sessionRole == 'PRODUCTION_MANAGER'}">
                             <div class="text-center">
                                 <a href="/product/produce" class="btn btn-warning">Производство на продукт</a>
                             </div>
                         </th:block>
-                        <div>
+                        <th:block
+                                th:if="${session.sessionToken != null and session.sessionRole == 'PRODUCTION_MANAGER'}">
                             <div class="text-center">
-                            <a href="/product/available-products" style="margin: 20px;" class="btn btn-success">Налични продукти</a>
+                                <a href="/product/produce" class="btn btn-warning">Производство на продукт</a>
+                            </div>
+                        </th:block>
+                        <div class="text-center">
+                            <a href="/product/available-products" style="margin: 20px;" class="btn btn-success">Налични
+                                продукти</a>
                         </div>
                         <div class="card-body">
                             <div class="row mb-3">
                                 <div class="col">
-                                    <input type="text" id="searchInput1" class="form-control" placeholder="Търсене по код на продукт"><br>
+                                    <input type="text" id="searchInput1" class="form-control"
+                                           placeholder="Търсене по код на продукт"><br>
                                     <div class="alert alert-primary" role="alert">
                                         <label>Резултати от търсенето: <span id="resultsCount"></span></label>
                                     </div>
                                 </div>
                                 <div class="col">
-                                    <input type="text" id="searchInput2" class="form-control" placeholder="Търсене по име на продукт"><br>
+                                    <input type="text" id="searchInput2" class="form-control"
+                                           placeholder="Търсене по име на продукт"><br>
                                     <div class="alert alert-primary" role="alert">
                                         <label>Резултати от търсенето: <span id="resultsCount2"></span></label>
                                     </div>
@@ -78,8 +83,9 @@ document.addEventListener("DOMContentLoaded", function() {
                                         <th>Код на продукта</th>
                                         <th>Име на Продукт</th>
                                         <th>Наличност</th>
-                                        <th:block th:if="${session.sessionToken != null and session.sessionRole == 'ADMIN'}">
-                                        <th>Цена за брой</th>
+                                        <th:block
+                                                th:if="${session.sessionToken != null and session.sessionRole == 'ADMIN'}">
+                                            <th>Цена за брой</th>
                                         </th:block>
                                     </tr>
                                     </thead>
@@ -105,19 +111,20 @@ document.addEventListener("DOMContentLoaded", function() {
                                         </td>
                                         <th:block
                                                 th:if="${session.sessionToken != null and session.sessionRole == 'ADMIN'}">
-                                        <td th:text="${product.price + ' Лв'}"></td>
-                                        <td>
-                                            <form th:action="@{'/product/delete/' + ${product.id}}" method="post"
-                                                  th:attr="onsubmit='return confirm(\'Сигурни ли сте, че искате да изтриете тарелка с ID: ' + ${product.id} + '?\');'">
-                                                <button type="submit" class="btn btn-danger">Изтрий</button>
-                                            </form>
-                                        </td>
-                                        <td>
-                                            <form th:action="@{'/product/editProduct/' + ${product.id}}" method="get"
-                                                  th:attr="onsubmit='return confirm(\'Сигурни ли сте, че искате да редактирате тарелка с ID: ' + ${product.id} + '?\');'">
-                                                <button type="submit" class="btn btn-primary">Редактирай</button>
-                                            </form>
-                                        </td>
+                                            <td th:text="${product.price + ' Лв'}"></td>
+                                            <td>
+                                                <form th:action="@{'/product/delete/' + ${product.id}}" method="post"
+                                                      th:attr="onsubmit='return confirm(\'Сигурни ли сте, че искате да изтриете тарелка с ID: ' + ${product.id} + '?\');'">
+                                                    <button type="submit" class="btn btn-danger">Изтрий</button>
+                                                </form>
+                                            </td>
+                                            <td>
+                                                <form th:action="@{'/product/editProduct/' + ${product.id}}"
+                                                      method="get"
+                                                      th:attr="onsubmit='return confirm(\'Сигурни ли сте, че искате да редактирате тарелка с ID: ' + ${product.id} + '?\');'">
+                                                    <button type="submit" class="btn btn-primary">Редактирай</button>
+                                                </form>
+                                            </td>
                                         </th:block>
                                     </tr>
                                     </tbody>
@@ -201,6 +208,19 @@ document.getElementById('searchInput1').addEventListener('input', function () {
         input.parentNode.appendChild(resultsCountElement); // Appending to the parent of the input
     }
 });
+
 </script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
