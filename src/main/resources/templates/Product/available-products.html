@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+  <!--    LINKS  -->
+  <th:block th:insert="~{fragments/links}"></th:block>
+
+  <title>Продукти Лукерия</title>
+  <link rel="icon" type="image/x-icon" href="/img/photos/noImage.png">
+  <link href="/css/show.css" rel="stylesheet">
+</head>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const navbar = document.getElementById("sidebar");
+    console.log(navbar);
+    const toggler = document.querySelector("a.sidebar-toggle");
+    toggler.addEventListener("click", () => {
+    navbar.classList.toggle("collapsed");
+    });
+});
+</script>
+<body>
+<div class="wrapper">
+  <!--    HEADER  -->
+  <th:block th:insert="~{fragments/header}"></th:block>
+  <div class="main">
+    <nav class="navbar navbar-expand navbar-light navbar-bg">
+      <a class="sidebar-toggle js-sidebar-toggle">
+        <i class="hamburger align-self-center"></i>
+      </a>
+    </nav>
+
+    <main class="content">
+      <div class="row">
+        <div class="col-lg-11 mx-auto">
+          <div class="card custom-card-width-lg">
+            <div class="card-header">
+              <h5 class="card-title mb-0">Налични продукти</h5>
+            </div>
+            <th:block th:if="${session.sessionToken != null and session.sessionRole == 'ADMIN'}">
+              <div class="text-center">
+                <a href="/product/create" class="btn btn-primary">Добави нов Продукт</a>
+              </div><br>
+            </th:block>
+            <th:block th:if="${session.sessionToken != null and session.sessionRole == 'ADMIN'}">
+              <div class="text-center">
+                <a href="/product/produce" class="btn btn-warning">Производство на продукт</a>
+              </div>
+            </th:block>
+            <th:block th:if="${session.sessionToken != null and session.sessionRole == 'PRODUCTION_MANAGER'}">
+              <div class="text-center">
+                <a href="/product/produce" class="btn btn-warning">Производство на продукт</a>
+              </div>
+            </th:block>
+            <div class="card-body">
+              <div class="row mb-3">
+                <div class="col">
+                  <input type="text" id="searchInput1" class="form-control" placeholder="Търсене по код на продукт"><br>
+                  <div class="alert alert-primary" role="alert">
+                    <label>Резултати от търсенето: <span id="resultsCount"></span></label>
+                  </div>
+                </div>
+                <div class="col">
+                  <input type="text" id="searchInput2" class="form-control" placeholder="Търсене по име на продукт"><br>
+                  <div class="alert alert-primary" role="alert">
+                    <label>Резултати от търсенето: <span id="resultsCount2"></span></label>
+                  </div>
+                </div>
+              </div>
+              <div class="table-responsive">
+                <table class="table">
+                  <thead>
+                  <tr>
+                    <th>Снимка</th>
+                    <th>Код на продукта</th>
+                    <th>Име на Продукт</th>
+                    <th>Наличност</th>
+                    <th:block th:if="${session.sessionToken != null and session.sessionRole == 'ADMIN'}">
+                      <th>Цена за брой</th>
+                    </th:block>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr th:each="product, iter : ${availableProducts}" data-id="${product.id}" class="plate-row">
+                    <td>
+                      <img th:if="${productPackageMapImages.containsKey(product.packageId)}"
+                           th:src="@{${backendBaseUrl} + '/' + ${productPackageMapImages.get(product.packageId)}}"
+                           height="100"
+                           width="100">
+                      <img th:unless="${productPackageMapImages.containsKey(product.packageId)}"
+                           class="card-img-top"
+                           src="/img/photos/noImage.png"
+                           height="100"
+                           width="100">
+                    </td>
+
+                    <td th:text="${product.productCode}"></td>
+                    <td th:text="${productPackageMap.get(product.packageId)}"></td>
+                    <td>
+                                            <span th:text="${product.availableQuantity + ' Броя'}"
+                                                  th:class="${product.availableQuantity <= 20 ? 'red-cell' : (product.availableQuantity <= 100 ? 'yellow-cell' : '')}"></span>
+                    </td>
+                    <th:block
+                            th:if="${session.sessionToken != null and session.sessionRole == 'ADMIN'}">
+                      <td th:text="${product.price + ' Лв'}"></td>
+                      <td>
+                        <form th:action="@{'/product/delete/' + ${product.id}}" method="post"
+                              th:attr="onsubmit='return confirm(\'Сигурни ли сте, че искате да изтриете тарелка с ID: ' + ${product.id} + '?\');'">
+                          <button type="submit" class="btn btn-danger">Изтрий</button>
+                        </form>
+                      </td>
+                      <td>
+                        <form th:action="@{'/product/editProduct/' + ${product.id}}" method="get"
+                              th:attr="onsubmit='return confirm(\'Сигурни ли сте, че искате да редактирате тарелка с ID: ' + ${product.id} + '?\');'">
+                          <button type="submit" class="btn btn-primary">Редактирай</button>
+                        </form>
+                      </td>
+                    </th:block>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+<script src="/js/app.js"></script>
+<script>
+$(document).ready(function() {
+$('#packageId').select2();
+});
+document.getElementById('searchInput1').addEventListener('input', function () {
+    var input, filter, table, tr, td, i, txtValue;
+    input = document.getElementById('searchInput1');
+    filter = input.value.toUpperCase();
+    table = document.querySelector('table');
+    tr = table.getElementsByTagName('tr');
+    var count = 0; // Initialize the count variable
+
+    for (i = 0; i < tr.length; i++) {
+        td = tr[i].getElementsByTagName('td')[1];
+        if (td) {
+            txtValue = td.textContent || td.innerText;
+            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                tr[i].style.display = '';
+                count++; // Increment the count when a match is found
+            } else {
+                tr[i].style.display = 'none';
+            }
+        }
+    }
+
+    // Display the results count
+    var resultsCountElement = document.getElementById('resultsCount');
+    if (resultsCountElement) {
+        resultsCountElement.textContent = count;
+    } else {
+        // If the element doesn't exist, you can create and append it
+        resultsCountElement = document.createElement('div');
+        resultsCountElement.id = 'resultsCount';
+        resultsCountElement.textContent = count;
+        input.parentNode.appendChild(resultsCountElement); // Appending to the parent of the input
+    }
+});
+     document.getElementById('searchInput2').addEventListener('input', function () {
+    var input, filter, table, tr, td, i, txtValue;
+    input = document.getElementById('searchInput2');
+    filter = input.value.toUpperCase();
+    table = document.querySelector('table');
+    tr = table.getElementsByTagName('tr');
+    var count = 0; // Initialize the count variable
+
+    for (i = 0; i < tr.length; i++) {
+        td = tr[i].getElementsByTagName('td')[2];
+        if (td) {
+            txtValue = td.textContent || td.innerText;
+            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                tr[i].style.display = '';
+                count++; // Increment the count when a match is found
+            } else {
+                tr[i].style.display = 'none';
+            }
+        }
+    }
+
+    // Display the results count for the second search input
+    var resultsCountElement = document.getElementById('resultsCount2');
+    if (resultsCountElement) {
+        resultsCountElement.textContent = count;
+    } else {
+        // If the element doesn't exist, you can create and append it
+        resultsCountElement = document.createElement('div');
+        resultsCountElement.id = 'resultsCount2';
+        resultsCountElement.textContent = count;
+        input.parentNode.appendChild(resultsCountElement); // Appending to the parent of the input
+    }
+});
+</script>
+</body>
+</html>

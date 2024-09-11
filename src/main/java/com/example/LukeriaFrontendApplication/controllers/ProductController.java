@@ -76,6 +76,18 @@ public class ProductController {
         model.addAttribute("product", product);
         return "Product/create";
     }
+    @GetMapping("/available-products")
+    public String showProductsForSale(Model model, HttpServletRequest request) {
+        String token = (String) request.getSession().getAttribute(SESSION_TOKEN);
+        List<ProductDTO> productsForSale = productClient.getProductsForSale(token);
+        List<ProductDTO> sortedProducts = productsForSale.stream()
+                .sorted(Comparator.comparingInt(ProductDTO::getAvailableQuantity).reversed())
+                .toList();
+
+        model.addAttribute("availableProducts", sortedProducts);
+        return "Product/available-products";
+    }
+
 
     @PostMapping("/submit")
     public ModelAndView submitProduct(@ModelAttribute("product") ProductDTO productDTO, HttpServletRequest request) {
