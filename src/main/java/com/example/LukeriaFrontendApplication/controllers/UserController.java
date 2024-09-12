@@ -8,8 +8,6 @@ import com.example.LukeriaFrontendApplication.session.SessionManager;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.bouncycastle.math.raw.Mod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -69,13 +67,13 @@ public class UserController {
         String token = (String) request.getSession().getAttribute(SESSION_TOKEN);
         UserDTO authenticatedUser = userClient.findAuthenticatedUser(token);
         UserDTO existingUser = userClient.getUserById(id, token);
-            if (existingUser.equals(authenticatedUser)) {
-                AuthenticationResponse authenticationResponse = userClient.updateAuthenticatedUser(id, userDTO, token);
-                sessionManager.setSessionToken(request, authenticationResponse.getAccessToken(), authenticationResponse.getUser().getRole().toString());
-                return new ModelAndView(REDIRECTTXT2);
-            }
-            userClient.updateUser(id, userDTO, token);
-            return new ModelAndView(REDIRECTTXT);
+        if (existingUser.equals(authenticatedUser)) {
+            AuthenticationResponse authenticationResponse = userClient.updateAuthenticatedUser(id, userDTO, token);
+            sessionManager.setSessionToken(request, authenticationResponse.getAccessToken(), authenticationResponse.getUser().getRole().toString());
+            return new ModelAndView(REDIRECTTXT2);
+        }
+        userClient.updateUser(id, userDTO, token);
+        return new ModelAndView(REDIRECTTXT);
     }
 
 
@@ -131,5 +129,16 @@ public class UserController {
         return modelAndView;
     }
 
+    @GetMapping("/forgot-password")
+    public String showForgotPasswordPage() {
+        return "User/forgot-password";
+    }
 
+    @PostMapping("/forgot-password")
+    public String processForgotPassword(@RequestParam("email") String email,Model model) {
+        userClient.forgotPassword(email);
+
+        model.addAttribute("message", "Линк за възобновяване на парола беше изпратен успешно.");
+        return "User/forgot-password";
+    }
 }
