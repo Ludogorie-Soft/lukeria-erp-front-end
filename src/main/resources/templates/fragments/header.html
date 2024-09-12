@@ -36,6 +36,11 @@ document.addEventListener("DOMContentLoaded", function() {
                         <i class="fas fa-registered align-middle"></i> <span class="align-middle">Излез</span>
                     </a>
                 </li>
+                <li class="sidebar-item">
+                    <a id="profile" class="sidebar-link" href="/user/profile">
+                        <i class="fas fa-registered align-middle"></i> <span class="align-middle">Профил</span>
+                    </a>
+                </li>
             </th:block>
             <th:block th:if="${session.sessionToken != null and session.sessionRole == 'ADMIN'}">
             <li class="sidebar-item">
