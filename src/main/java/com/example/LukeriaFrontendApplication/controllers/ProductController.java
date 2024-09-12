@@ -29,9 +29,7 @@ public class ProductController {
     @Value("${backend.base-url}/images")
     private String backendBaseUrl;
 
-
-    @GetMapping("/show")
-    public String showAllProducts(Model model, HttpServletRequest request) {
+    public void modelAtributes(Model model, HttpServletRequest request) {
         String token = (String) request.getSession().getAttribute(SESSION_TOKEN);
         List<ProductDTO> sortedProducts = productClient.getAllProducts(token).stream()
                 .sorted(Comparator.comparingInt(ProductDTO::getAvailableQuantity).reversed())
@@ -58,24 +56,21 @@ public class ProductController {
         model.addAttribute("products", sortedProducts);
         model.addAttribute("packages", packages);
         model.addAttribute("productPackageMap", productPackageMap);
+
+    }
+
+    @GetMapping("/show")
+    public String showAllProducts(Model model, HttpServletRequest request) {
+        modelAtributes(model, request);
         return "Product/show";
     }
 
     @GetMapping("/create")
     public String createProduct(Model model, HttpServletRequest request) {
-        String token = (String) request.getSession().getAttribute(SESSION_TOKEN);
-        ProductDTO product = new ProductDTO();
-        List<PackageDTO> packages = packageClient.getAllPackages(token);
-        List<ProductDTO> productDTOS = productClient.getAllProducts(token);
-        List<PackageDTO> emptyPackages = packages.stream()
-                .filter(packageDTO -> productDTOS.stream()
-                        .noneMatch(productDTO -> Objects.equals(packageDTO.getId(), productDTO.getPackageId())))
-                .collect(Collectors.toList());
-        model.addAttribute("backendBaseUrl", backendBaseUrl);
-        model.addAttribute("packages", emptyPackages);
-        model.addAttribute("product", product);
+        modelAtributes(model, request);
         return "Product/create";
     }
+
     @GetMapping("/available-products")
     public String showProductsForSale(Model model, HttpServletRequest request) {
         String token = (String) request.getSession().getAttribute(SESSION_TOKEN);

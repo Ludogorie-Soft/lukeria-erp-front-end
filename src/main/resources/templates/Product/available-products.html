@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 <div class="col-lg-11 mx-auto">
                     <div class="card custom-card-width-lg">
                         <div class="card-header">
-                            <h5 class="card-title mb-0">Всички продукти</h5>
+                            <h5 class="card-title mb-0">Налични продукти</h5>
                         </div>
                         <th:block th:if="${session.sessionToken != null and session.sessionRole == 'ADMIN'}">
                             <div class="text-center">
@@ -108,18 +108,6 @@ document.addEventListener("DOMContentLoaded", function() {
                                         <th:block
                                                 th:if="${session.sessionToken != null and session.sessionRole == 'ADMIN'}">
                                             <td th:text="${product.price + ' Лв'}"></td>
-                                            <td>
-                                                <form th:action="@{'/product/delete/' + ${product.id}}" method="post"
-                                                      th:attr="onsubmit='return confirm(\'Сигурни ли сте, че искате да изтриете тарелка с ID: ' + ${product.id} + '?\');'">
-                                                    <button type="submit" class="btn btn-danger">Изтрий</button>
-                                                </form>
-                                            </td>
-                                            <td>
-                                                <form th:action="@{'/product/editProduct/' + ${product.id}}"
-                                                      method="get"
-                                                      th:attr="onsubmit='return confirm(\'Сигурни ли сте, че искате да редактирате тарелка с ID: ' + ${product.id} + '?\');'">
-                                                    <button type="submit" class="btn btn-primary">Редактирай</button>
-                                                </form>
                                             </td>
                                         </th:block>
                                     </tr>
