@@ -43,7 +43,6 @@ document.addEventListener("DOMContentLoaded", function() {
                     <i class="fas fa-users align-middle"></i> <span class="align-middle">Потребители</span>
                 </a>
             </li>
-
             <li class="sidebar-item">
                 <a id="nav-show2" class="sidebar-link" href="/client/show">
                     <i class="fas fa-user-plus align-middle"></i> <span class="align-middle">Клиенти</span>
@@ -106,6 +105,13 @@ document.addEventListener("DOMContentLoaded", function() {
                     </a>
                 </li>
             </th:block>
+            <th:block th:if="${session.sessionToken != null}">
+            <li class="sidebar-item">
+                <a id="nav-availableProducts" class="sidebar-link" href="/product/available-products">
+                    <i class="fas fa-shopping-basket align-middle"></i> <span class="align-middle">Налични продукти</span>
+                </a>
+            </th:block>
+            </li>
             <th:block th:if="${session.sessionToken != null}">
             <li class="sidebar-item">
                 <a id="nav-show3" class="sidebar-link" href="/order/show">
