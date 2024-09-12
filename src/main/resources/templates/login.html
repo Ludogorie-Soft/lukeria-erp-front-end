@@ -57,6 +57,10 @@
                                                      style="margin-top: 15px;">
                                                     <p th:text="${param.error}"></p>
                                                 </div>
+                                                <div th:if="${param.message}" class="text-success"
+                                                     style="margin-top: 15px;">
+                                                    <p th:text="${param.message}"></p>
+                                                </div>
                                                 <input type="submit"
                                                        class="btn btn-block btn-primary text-white py-3 px-5"
                                                        value="Влез">

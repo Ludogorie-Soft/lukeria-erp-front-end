@@ -150,13 +150,17 @@ public class UserController {
 
     @PostMapping("/reset-password")
     public ModelAndView processResetPassword(@RequestParam("token") String token,
-                                       @RequestParam("password") String password,
-                                       @RequestParam("confirmPassword") String confirmPassword,
-                                       Model model) {
-        model.addAttribute("message", "Your password has been reset successfully.");
-        userClient.processResetPassword(token, confirmPassword);
+                                             @RequestParam("password") String password,
+                                             @RequestParam("confirmPassword") String confirmPassword) {
         ModelAndView modelAndView = new ModelAndView("redirect:/login");
-        modelAndView.addObject("error", "Успешно променена парола! ");
+
+        Boolean isPasswordResetSuccessful = userClient.processResetPassword(token, password);
+        if (Boolean.TRUE.equals(isPasswordResetSuccessful)) {
+            modelAndView.addObject("message", "Паролата е променена успешно!");
+        } else {
+            modelAndView.addObject("error", "Паролата не е променена успешно! Опитайте отново.");
+        }
         return modelAndView;
     }
 }
+

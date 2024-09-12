@@ -41,6 +41,6 @@ public interface UserClient {
      String forgotPassword(@RequestParam String email);
 
     @PostMapping("/reset-password")
-    public ResponseEntity<Boolean> processResetPassword(@RequestParam("token") String token,
+    public Boolean processResetPassword(@RequestParam("token") String token,
                                                         @RequestParam("password") String newPassword);
 }
