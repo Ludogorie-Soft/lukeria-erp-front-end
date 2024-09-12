@@ -135,10 +135,28 @@ public class UserController {
     }
 
     @PostMapping("/forgot-password")
-    public String processForgotPassword(@RequestParam("email") String email,Model model) {
+    public String processForgotPassword(@RequestParam("email") String email, Model model) {
         userClient.forgotPassword(email);
 
         model.addAttribute("message", "Линк за възобновяване на парола беше изпратен успешно.");
         return "User/forgot-password";
+    }
+
+    @GetMapping("/reset-password")
+    public String showResetPasswordPage(@RequestParam("token") String token, Model model) {
+        model.addAttribute("token", token);
+        return "User/reset-password";
+    }
+
+    @PostMapping("/reset-password")
+    public ModelAndView processResetPassword(@RequestParam("token") String token,
+                                       @RequestParam("password") String password,
+                                       @RequestParam("confirmPassword") String confirmPassword,
+                                       Model model) {
+        model.addAttribute("message", "Your password has been reset successfully.");
+        userClient.processResetPassword(token, confirmPassword);
+        ModelAndView modelAndView = new ModelAndView("redirect:/login");
+        modelAndView.addObject("error", "Успешно променена парола! ");
+        return modelAndView;
     }
 }
