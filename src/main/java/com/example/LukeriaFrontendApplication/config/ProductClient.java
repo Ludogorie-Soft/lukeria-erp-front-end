@@ -14,6 +14,9 @@ public interface ProductClient {
     @GetMapping
     List<ProductDTO> getAllProducts(@RequestHeader("Authorization") String auth);
 
+    @GetMapping("/available-products")
+    List<ProductDTO> getProductsForSale(@RequestHeader("Authorization") String auth);
+
     @GetMapping("/{id}")
     ProductDTO getProductById(@PathVariable(name = "id") Long id, @RequestHeader("Authorization") String auth);
 
