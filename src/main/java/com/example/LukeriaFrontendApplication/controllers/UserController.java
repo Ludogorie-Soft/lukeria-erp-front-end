@@ -136,9 +136,11 @@ public class UserController {
 
     @PostMapping("/forgot-password")
     public String processForgotPassword(@RequestParam("email") String email, Model model) {
-        userClient.forgotPassword(email);
-
-        model.addAttribute("message", "Линк за възобновяване на парола беше изпратен успешно.");
+        boolean result = userClient.forgotPassword(email);
+        if (result) {
+            model.addAttribute("message", "Линк за възобновяване на парола беше изпратен успешно.");
+        } else
+            model.addAttribute("error", "Няма потребител регистриран с този email адрес.");
         return "User/forgot-password";
     }
 
