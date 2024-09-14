@@ -39,7 +39,11 @@ document.addEventListener("DOMContentLoaded", function() {
               </div>
               <div class="text-center">
                 <a href="/client/create" class="btn btn-primary">Добави Клиент</a>
-              </div>
+              </div><br>
+              <th:block th:if="${session.sessionToken != null and session.sessionRole == 'ADMIN'}">
+                <div class="text-center">
+                  <a href="/customerCustomPrice/create" class="btn btn-warning">Персонализиране на цени</a>
+                </div>
               <div class="card-body">
                 <div class="row mb-3">
                   <div class="col">
