@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Scan EAN-13 Barcode</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
+    <style>
+        /* Контейнер за инпут полето с бутон вътре */
+        .input-container {
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        /* Стил за инпут полето */
+        .input-container input[type="text"] {
+            width: 100%;
+            padding: 10px 40px 10px 10px;  /* Оставяме място за иконата отдясно */
+            font-size: 16px;
+        }
+
+        /* Бутонът с иконата вътре в инпут полето */
+        .input-container button {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 20px;
+            color: #555;
+        }
+
+        /* Промяна на цвета на иконата при задържане с мишката */
+        .input-container button:hover {
+            color: #000;
+        }
+
+        /* Видео поток */
+        video {
+            margin-top: 20px;
+        }
+
+        /* Стил за сканиране */
+        #interactive {
+            position: relative;
+            width: 100%;
+            max-width: 640px;
+        }
+
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body>
+<h1>Scan EAN-13 Barcode</h1>
+
+<!-- Контейнер за инпут полето и бутона с иконка на камера -->
+<form method="POST" action="/submit-string">
+    <div class="input-container">
+        <input type="text" id="inputText" name="inputText" placeholder="Enter barcode manually" required>
+        <button id="toggleCamera" type="button"><i class="fas fa-camera"></i></button> <!-- Бутонът с иконката -->
+    </div>
+    <button type="submit">Submit</button>
+</form>
+
+<!-- Видео поток от камерата и canvas за баркод сканиране -->
+<div id="interactive" class="viewport">
+    <video id="video" width="640" height="480" autoplay></video>
+</div>
+<script src="/js/barcodeScanner.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        new BarcodeScanner('video', 'inputText', 'toggleCamera');
+    });
+</script>
+</body>
+</html>
