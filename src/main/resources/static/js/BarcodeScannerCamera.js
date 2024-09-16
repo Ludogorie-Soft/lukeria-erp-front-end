@@ -1,19 +1,35 @@
-class BarcodeScanner {
-    constructor({ videoElementId, inputElementId, toggleButtonId }) {
+class BarcodeScannerCamera {
+    constructor({ videoElementId, inputElementId, toggleButtonId, modalId }) {
         this.videoElement = document.getElementById(videoElementId);
         this.inputElement = document.getElementById(inputElementId);
         this.toggleButton = document.getElementById(toggleButtonId);
+        this.modal = document.getElementById(modalId);
         this.cameraStream = null;
         this.isScanning = false;
         this.initialize();
     }
 
     initialize() {
-        // Constructor remains unchanged
-    }
+        this.toggleButton.addEventListener('click', () => {
+            if (this.cameraStream) {
+                this.stopCamera();
+            } else {
+                this.startCamera();
+            }
+        });
 
-    toggleCamera() {
-        this.cameraStream ? this.stopCamera() : this.startCamera();
+        const closeModal = this.modal.querySelector('.close');
+        closeModal.addEventListener('click', () => {
+            this.modal.style.display = 'none';
+            this.stopCamera();
+        });
+
+        window.addEventListener('click', (event) => {
+            if (event.target === this.modal) {
+                this.modal.style.display = 'none';
+                this.stopCamera();
+            }
+        });
     }
 
     startCamera() {
@@ -22,6 +38,7 @@ class BarcodeScanner {
                 this.cameraStream = stream;
                 this.videoElement.srcObject = stream;
                 this.toggleButton.innerHTML = '<i class="fas fa-stop"></i>';
+                this.modal.style.display = 'block';
                 this.startScanner();
             })
             .catch(error => console.error('Error accessing camera:', error));
@@ -59,7 +76,7 @@ class BarcodeScanner {
             Quagga.onDetected(data => {
                 this.inputElement.value = data.codeResult.code;
                 this.stopCamera();
-                this.closeModal(); // Затваряне на модалния прозорец
+                this.closeModal();
             });
         }
     }
@@ -72,9 +89,8 @@ class BarcodeScanner {
     }
 
     closeModal() {
-        const modal = document.getElementById('cameraModal');
-        modal.style.display = 'none'; // Затваряне на модалния прозорец
+        this.modal.style.display = 'none';
     }
 }
 
-window.BarcodeScanner = BarcodeScanner;
+window.BarcodeScannerCamera = BarcodeScannerCamera;
