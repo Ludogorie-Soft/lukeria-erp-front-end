@@ -6,39 +6,6 @@ margin: 0 auto; /* Опционално: Центриране на карта х
 .yellow-cell {
   background-color: yellow;
 }
-.input-container {
-    position: relative;
-    width: 100%; /* Или задайте конкретна ширина, ако е необходимо */
-}
-
-.form-control {
-    width: 100%;
-    padding-right: 50px; /* Оставя място за бутона */
-}
-
-.btn {
-    position: absolute;
-    right: 0; /* Позиционира бутона до края на инпут полето */
-    top: 50%;
-    transform: translateY(-50%); /* Центрира бутона вертикално */
-    border: none;
-    background-color: transparent;
-    cursor: pointer;
-    z-index: 1; /* Уверява се, че бутона е над инпут полето */
-    padding: 0 10px; /* Оставя място за иконата */
-}
-
-/* Опционално: Добавете стилове за бутон, за да изглежда добре */
-.btn i {
-    font-size: 18px; /* Размер на иконата */
-    color: #555; /* Цвят на иконата */
-}
-
-.btn:hover i {
-    color: #000; /* Цвят на иконата при ховър */
-}
-
-
 .red-cell {
   background-color: red;
 }
