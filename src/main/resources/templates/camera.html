@@ -1,9 +1,11 @@
 <!DOCTYPE html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Scan EAN-13 Barcode</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
-    <!-- Връзка към CSS файловете -->
     <link rel="stylesheet" href="/css/modalStyles.css"> <!-- Нов CSS файл за модалния прозорец -->
     <link rel="stylesheet" href="/css/videoStyles.css"> <!-- Нов CSS файл за видео стиловете -->
 </head>
@@ -17,11 +19,6 @@
     </div>
     <button type="submit">Submit</button>
 </form>
-
-<!-- Видео поток от камерата и canvas за баркод сканиране -->
-<div id="interactive" class="viewport">
-    <video id="video" width="640" height="480" autoplay></video>
-</div>
 
 <!-- Модален прозорец -->
 <div id="cameraModal" class="modal">
