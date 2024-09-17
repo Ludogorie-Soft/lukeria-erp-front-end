@@ -61,7 +61,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 </a>
             </li>
             </th:block>
-            <th:block th:if="${session.sessionToken != null and (session.sessionRole == 'PRODUCTION_MANAGER' or session.sessionRole == 'TRANSPORT_MANAGER' or session.sessionRole == 'CUSTOMER')}">
+            <th:block th:if="${session.sessionToken != null and (session.sessionRole == 'PRODUCTION_MANAGER' or session.sessionRole == 'TRANSPORT_MANAGER')}">
                 <li class="sidebar-item">
                     <a id="nav-show16" class="sidebar-link" href="/show">
                         <i class="fas fa-box-open align-middle"></i> <span class="align-middle">Кашони</span>
@@ -89,7 +89,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 </a>
             </li>
             </th:block>
-            <th:block th:if="${session.sessionToken != null and (session.sessionRole == 'PRODUCTION_MANAGER' or session.sessionRole == 'TRANSPORT_MANAGER' or session.sessionRole == 'CUSTOMER')}">
+            <th:block th:if="${session.sessionToken != null and (session.sessionRole == 'PRODUCTION_MANAGER' or session.sessionRole == 'TRANSPORT_MANAGER')}">
                 <li class="sidebar-item">
                     <a id="nav-show17" class="sidebar-link" href="/plate/show">
                         <i class="fas fa-box-open align-middle"></i> <span class="align-middle">Тарелки</span>
@@ -103,21 +103,21 @@ document.addEventListener("DOMContentLoaded", function() {
                 </a>
             </li>
             </th:block>
-            <th:block th:if="${session.sessionToken != null and (session.sessionRole == 'PRODUCTION_MANAGER' or session.sessionRole == 'TRANSPORT_MANAGER' or session.sessionRole == 'CUSTOMER')}">
+            <th:block th:if="${session.sessionToken != null and (session.sessionRole == 'PRODUCTION_MANAGER' or session.sessionRole == 'TRANSPORT_MANAGER')}">
                 <li class="sidebar-item">
                     <a id="nav-show15" class="sidebar-link" href="/product/show">
                         <i class="fas fa-box-open align-middle"></i> <span class="align-middle">Продукти Лукерия</span>
                     </a>
                 </li>
             </th:block>
-            <th:block th:if="${session.sessionToken != null and (session.sessionRole == 'PRODUCTION_MANAGER' or session.sessionRole == 'TRANSPORT_MANAGER')}">
+            <th:block th:if="${session.sessionToken != null and (session.sessionRole == 'PRODUCTION_MANAGER' or session.sessionRole == 'TRANSPORT_MANAGER' or session.sessionRole == 'CUSTOMER')}">
             <li class="sidebar-item">
                 <a id="nav-availableProducts" class="sidebar-link" href="/product/available-products">
                     <i class="fas fa-shopping-basket align-middle"></i> <span class="align-middle">Налични продукти</span>
                 </a>
             </th:block>
             </li>
-            <th:block th:if="${session.sessionToken != null}">
+            <th:block th:if="${session.sessionToken != null and (session.sessionRole == 'PRODUCTION_MANAGER' or session.sessionRole == 'TRANSPORT_MANAGER' or session.sessionRole == 'ADMIN')}">
             <li class="sidebar-item">
                 <a id="nav-show3" class="sidebar-link" href="/order/show">
                     <i class="fas fa-shopping-basket align-middle"></i> <span class="align-middle">Транспортиране на продукти</span>
