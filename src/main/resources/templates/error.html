@@ -14,6 +14,13 @@
 <div class="d-flex align-items-center justify-content-center vh-100">
     <div class="text-center">
         <h1 class="display-1 fw-bold">Грешка</h1>
+
+        <!-- Показване на статус код -->
+        <p class="fs-3"> <span class="text-danger">Код на грешката:</span> <span th:text="${statusCode}">500</span></p>
+
+        <!-- Показване на съобщение за грешка -->
+        <p class="fs-5"> <span class="text-danger">Съобщение:</span> <span th:text="${errorMessage}">Неочаквана грешка.</span></p>
+
         <p class="fs-3"> <span class="text-danger">Причини поради, които може да е възникнала грешката:
         </span></p>
         <p class="lead">
@@ -23,7 +30,7 @@
             - Страницата, която се опитвате да достъпите, не е налична или не съществува
         </p>
 
-        <p class="fs-5"> <span class="text-danger">Върнете се към предходната страница и проверете върността на въведените данни!
+        <p class="fs-5"> <span class="text-danger">Върнете се към предходната страница и проверете вярността на въведените данни!
         </span></p>
     </div>
 </div>
