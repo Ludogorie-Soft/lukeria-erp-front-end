@@ -110,7 +110,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     </a>
                 </li>
             </th:block>
-            <th:block th:if="${session.sessionToken != null}">
+            <th:block th:if="${session.sessionToken != null and session.sessionRole == 'CUSTOMER'}">
             <li class="sidebar-item">
                 <a id="nav-availableProducts" class="sidebar-link" href="/product/available-products">
                     <i class="fas fa-shopping-basket align-middle"></i> <span class="align-middle">Налични продукти</span>
