@@ -119,11 +119,7 @@
                                             <span th:if="${invoiceDTO.invoiceNumber >= 2000000000}"
                                                   th:text="${orderProductDTO.sellingPrice}" style="font-size: 12px;"></span>
                                             <span th:if="${invoiceDTO.invoiceNumber < 2000000000}" style="font-size: 12px;">
-                                                <script th:inline="javascript">
-                                                  var originalValue = /*[[${orderProductDTO.sellingPrice / 1.95583}]]*/ 0;
-                                                  var roundedValue = originalValue.toFixed(2);
-                                                  document.write(roundedValue);
-                                                </script>
+                                                <span th:text="${orderProductDTO.sellingPrice}" style="font-size: 12px;"></span>
                                             </span>
                                         </td>
                                         </td>
@@ -137,17 +133,7 @@
                                                   th:each="productDTO : ${productDTOS}"
                                                   th:if="${productDTO.id == orderProductDTO.packageId}"
                                                   th:id="${'productValue-' + productDTO.id}" style="font-size: 12px;">
-                                             <span th:if="${invoiceDTO.invoiceNumber >= 2000000000}"
-                                                   th:text="${productPrice * orderNumber}" style="font-size: 12px;"></span>
-                                             <span hidden th:unless="${invoiceDTO.invoiceNumber >= 2000000000}"
-                                                   th:text="${productPrice * orderNumber / 1.95583}" style="font-size: 12px;"></span>
-                                                <span th:unless="${invoiceDTO.invoiceNumber >= 2000000000}" style="font-size: 12px;">
-                                                    <script th:inline="javascript">
-                                                    var originalValue = /*[[${productPrice * orderNumber / 1.95583}]]*/ 0;
-                                                    var roundedValue = originalValue.toFixed(2);
-                                                    document.write(roundedValue);
-                                                    </script>
-                                                </span>
+                                             <span th:text="${productPrice * orderNumber}" style="font-size: 12px;"></span>
                                              </span>
                                         </td>
                                     </tr>
@@ -220,8 +206,8 @@
 
         var sellingPrice = [[${sellingPrice}]];
 
-        // Calculate the value based on the condition
-        var calculatedValue = invoiceId >= 2000000000 ? sellingPrice : sellingPrice / 1.95583;
+        // Calculate the value without dividing by 1.95583
+        var calculatedValue = sellingPrice;
 
         // Round the calculated value to two decimal places
         var roundedValue = roundValue(calculatedValue);
