@@ -38,29 +38,26 @@
             <div class="form-container">
                 <div class="card custom-card-width-lg">
                     <div class="card-header">
-                        <h5 class="card-title mb-0">Създай персонализирана цена</h5>
+                        <h5 class="card-title mb-0">Редактирай персонализирана цена</h5>
                     </div>
                     <div class="card-body">
-                        <form th:action="@{/customerCustomPrice/submit}" method="post" th:object="${customPrice}">
+                        <form th:action="@{/customerCustomPrice/edit}" method="post" th:object="${customPrice}">
                             <center>
                                 <div class="form-group">
                                     <label style="width: 100%">Клиент:</label>
-                                   <h3 th:text="${client.businessName}"/>
-                                    <input type="hidden" name="clientId" th:value="${client.id}">
+                                    <h3 th:text="${client.businessName}"/>
+                                    <input type="hidden" name="clientId" th:value="${client.id}"/>
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="productId" style="width: 100%">Продукти:</label>
-                                    <select class="form-select" id="productId" name="productId" required>
-                                        <option th:each="product : ${products}" th:value="${product.id}"
-                                                th:text="${product.productCode}"></option>
-                                    </select>
-                                </div>
+                                <label style="width: 100%">Продукт:</label>
+                                <h3 th:text="${product.productCode}"/>
+                                <input type="hidden" name="productId" th:value="${product.id}"/>
+                            </div>
 
                                 <div class="form-group">
                                     <label for="price">Цена</label>
                                     <input type="number" class="form-control" id="price" name="price"
-                                           th:field="*{price}"
                                            required min="0" step="0.01"/>
                                 </div>
                             </center>

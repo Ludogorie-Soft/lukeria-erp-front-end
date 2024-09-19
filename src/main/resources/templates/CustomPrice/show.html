@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <!--    LINKS  -->
+    <th:block th:insert="~{fragments/links}"></th:block>
+
+    <title>Персонализирани цени</title>
+    <link rel="icon" type="image/x-icon" href="/img/photos/noImage.png">
+    <link href="/css/show.css" rel="stylesheet">
+</head>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const navbar = document.getElementById("sidebar");
+        const toggler = document.querySelector("a.sidebar-toggle");
+        toggler.addEventListener("click", () => {
+        navbar.classList.toggle("collapsed");
+        });
+    });
+</script>
+<body>
+<div class="wrapper">
+    <!--    HEADER  -->
+    <th:block th:insert="~{fragments/header}"></th:block>
+    <div class="main">
+        <nav class="navbar navbar-expand navbar-light navbar-bg">
+            <a class="sidebar-toggle js-sidebar-toggle">
+                <i class="hamburger align-self-center"></i>
+            </a>
+        </nav>
+
+        <main class="content">
+            <div class="row">
+                <div class="col-lg-11 mx-auto">
+                    <div class="card custom-card-width-lg">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">Персонализирани цени</h5>
+                        </div>
+                        <th:block th:if="${session.sessionToken != null and session.sessionRole == 'ADMIN'}">
+                            <div class="text-center">
+                                <form th:action="@{/customerCustomPrice/create}" method="get">
+                                    <input type="hidden" name="clientId" th:value="${clientId}">
+                                    <button type="submit" class="btn btn-primary">Добави персонална цена за клиента</button>
+                                </form>
+                            </div>
+                        </th:block>
+                        <div class="card-body">
+                            <div class="row mb-3">
+                                <div class="col">
+                                    <input type="text" id="searchInput1" class="form-control"
+                                           placeholder="Търсене по код на продукт"><br>
+                                    <div class="alert alert-primary" role="alert">
+                                        <label>Резултати от търсенето: <span id="resultsCount"></span></label>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <input type="text" id="searchInput2" class="form-control"
+                                           placeholder="Търсене по име на продукт"><br>
+                                    <div class="alert alert-primary" role="alert">
+                                        <label>Резултати от търсенето: <span id="resultsCount2"></span></label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                    <tr>
+                                        <th>Снимка</th>
+                                        <th>Код на продукта</th>
+                                        <th>Име на Продукт</th>
+                                        <th>Наличност</th>
+                                        <th>Персонализирана Цена</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="productPrice, iter : ${allProducts}"
+                                        data-id="${productPrice.product.id}" class="plate-row">
+                                        <td>
+                                            <img th:if="${productPackageMapImages.containsKey(productPrice.product.packageId)}"
+                                                 th:src="@{${backendBaseUrl} + '/' + ${productPackageMapImages.get(productPrice.product.packageId)}}"
+                                                 height="100"
+                                                 width="100">
+                                            <img th:unless="${productPackageMapImages.containsKey(productPrice.product.packageId)}"
+                                                 class="card-img-top"
+                                                 src="/img/photos/noImage.png"
+                                                 height="100"
+                                                 width="100">
+                                        </td>
+
+                                        <td th:text="${productPrice.product.productCode}"></td>
+                                        <td th:text="${productPackageMap.get(productPrice.product.packageId)}"></td>
+                                        <td>
+                                            <span th:text="${productPrice.product.availableQuantity + ' Броя'}"
+                                                  th:class="${productPrice.product.availableQuantity <= 20 ? 'red-cell' : (productPrice.product.availableQuantity <= 100 ? 'yellow-cell' : '')}"></span>
+                                        </td>
+                                        <td th:text="${productPrice.price + ' Лв'}"></td>
+                                        <th:block
+                                                th:if="${session.sessionToken != null and session.sessionRole == 'ADMIN'}">
+                                            <td>
+                                                <form th:action="@{/customerCustomPrice/delete}"
+                                                      method="post"
+                                                      th:attr="onsubmit='return confirm(\'Сигурни ли сте, че искате да изтриете персонализираната цена за клинет с id: ' + ${clientId} + '?\');'">
+                                                    <input type="hidden" name="clientId" th:value="${clientId}">
+                                                    <input type="hidden" name="productId" th:value="${productPrice.product.id}">
+                                                    <button type="submit" class="btn btn-danger">Изтрий</button>
+                                                </form>
+                                            </td>
+                                            <td>
+                                                <form th:action="@{/customerCustomPrice/edit}"
+                                                      method="get"
+                                                      th:attr="onsubmit='return confirm(\'Сигурни ли сте, че искате да редактирате персонализираната цена за клинет с id: ' + ${clientId} + '?\');'">
+                                                    <input type="hidden" name="clientId" th:value="${clientId}">
+                                                    <input type="hidden" name="productId" th:value="${productPrice.product.id}">
+                                                    <button type="submit" class="btn btn-primary">Редактирай</button>
+                                                </form>
+                                            </td>
+                                        </th:block>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+<script src="/js/app.js"></script>
+<script>
+    $(document).ready(function() {
+    $('#packageId').select2();
+    });
+
+    // Function to filter by product code
+    document.getElementById('searchInput1').addEventListener('input', function () {
+        var input, filter, table, tr, td, i, txtValue;
+        input = document.getElementById('searchInput1');
+        filter = input.value.toUpperCase();
+        table = document.querySelector('table');
+        tr = table.getElementsByTagName('tr');
+        var count = 0;
+
+        for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName('td')[1]; // Accessing product code
+            if (td) {
+                txtValue = td.textContent || td.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = '';
+                    count++;
+                } else {
+                    tr[i].style.display = 'none';
+                }
+            }
+        }
+
+        var resultsCountElement = document.getElementById('resultsCount');
+        if (resultsCountElement) {
+            resultsCountElement.textContent = count;
+        } else {
+            resultsCountElement = document.createElement('div');
+            resultsCountElement.id = 'resultsCount';
+            resultsCountElement.textContent = count;
+            input.parentNode.appendChild(resultsCountElement);
+        }
+    });
+
+    // Function to filter by product name
+    document.getElementById('searchInput2').addEventListener('input', function () {
+        var input, filter, table, tr, td, i, txtValue;
+        input = document.getElementById('searchInput2');
+        filter = input.value.toUpperCase();
+        table = document.querySelector('table');
+        tr = table.getElementsByTagName('tr');
+        var count = 0;
+
+        for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName('td')[2]; // Accessing product name
+            if (td) {
+                txtValue = td.textContent || td.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = '';
+                    count++;
+                } else {
+                    tr[i].style.display = 'none';
+                }
+            }
+        }
+
+        var resultsCountElement = document.getElementById('resultsCount2');
+        if (resultsCountElement) {
+            resultsCountElement.textContent = count;
+        } else {
+            resultsCountElement = document.createElement('div');
+            resultsCountElement.id = 'resultsCount2';
+            resultsCountElement.textContent = count;
+            input.parentNode.appendChild(resultsCountElement);
+        }
+    });
+</script>
+</body>
+</html>
