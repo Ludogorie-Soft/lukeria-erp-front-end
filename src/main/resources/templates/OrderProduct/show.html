@@ -38,38 +38,16 @@ document.addEventListener("DOMContentLoaded", function() {
                         <div class="card-header">
                             <h5 class="card-title mb-0">Всички поръчки</h5>
                         </div>
-                        <th:block th:if="${session.sessionToken != null and session.sessionRole == 'ADMIN'}">
-                            <div class="text-center">
-                                <a href="/order/create" class="btn btn-primary">Транспортиране на стоки</a>
-                            </div>
-                            <br>
-                            <div class="text-center">
-                                <a href="/order/monthly/create" class="btn btn-primary">Транспортиране към месечна поръчка</a>
-                            </div>
-                        </th:block>
-                        <br>
-                        <th:block
-                                th:if="${session.sessionToken != null and session.sessionRole == 'TRANSPORT_MANAGER'}">
-                            <div class="text-center">
-                                <a href="/order/create" class="btn btn-primary">Транспортиране на стоки</a>
-                            </div>
-                            <br>
-                            <div class="text-center">
-                                <a href="/order/monthly/create" class="btn btn-primary">Транспортиране към месечна поръчка</a>
-                            </div>
-                        </th:block>
-                        <th:block th:if="${session.sessionToken != null and session.sessionRole == 'ADMIN'}">
-                            <div class="text-center">
-                                <a href="/material-order/all-materials" class="btn btn-warning">Провери налични
-                                    Материали за Всички Поръчки</a>
-                            </div>
-                        </th:block>
-                        <br>
-                        <th:block
-                                th:if="${session.sessionToken != null and session.sessionRole == 'PRODUCTION_MANAGER'}">
-                            <div class="text-center">
-                                <a href="/material-order/all-materials" class="btn btn-warning">Провери налични
-                                    Материали за Всички Поръчки</a>
+                        <th:block th:if="${session.sessionToken != null}">
+                            <div class="d-flex justify-content-center flex-wrap">
+                                <th:block th:if="${session.sessionRole == 'ADMIN' or session.sessionRole == 'TRANSPORT_MANAGER'}">
+                                    <a href="/order/create" class="btn btn-success mx-2 mb-2">Транспортиране на стоки</a>
+                                    <a href="/order/monthly/create" class="btn btn-primary mx-2 mb-2">Транспортиране към месечна поръчка</a>
+                                </th:block>
+
+                                <th:block th:if="${session.sessionRole == 'ADMIN' or session.sessionRole == 'PRODUCTION_MANAGER'}">
+                                    <a href="/material-order/all-materials" class="btn btn-warning mx-2 mb-2">Провери налични Материали за Всички Поръчки</a>
+                                </th:block>
                             </div>
                         </th:block>
                         <div class="card-body">

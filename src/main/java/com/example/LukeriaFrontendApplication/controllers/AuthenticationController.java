@@ -26,10 +26,7 @@ public class AuthenticationController {
     public String login(Model model, AuthenticationRequest authenticationRequest) {
         return "login";
     }
-//    @GetMapping("/dunno")
-//    public String dunno() {
-//        return "login";
-//    }
+
 
     @GetMapping("/logout")
     public ModelAndView logout(HttpServletRequest request) {

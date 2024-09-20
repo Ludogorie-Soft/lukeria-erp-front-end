@@ -68,6 +68,8 @@ public class ProductController {
     @GetMapping("/create")
     public String createProduct(Model model, HttpServletRequest request) {
         modelAtributes(model, request);
+        ProductDTO product = new ProductDTO();
+        model.addAttribute("product", product);
         return "Product/create";
     }
 
