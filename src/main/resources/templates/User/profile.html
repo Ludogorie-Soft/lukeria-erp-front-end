@@ -32,7 +32,7 @@
                         <div class="card-body">
                             <div class="row mb-3">
                                 <div class="col">
-                                    <h3>Профил на потребителя</h3>
+                                    <h3>  Профил на: <span th:text="${user.firstname} + ' ' + ${user.lastname}"></span></h3>
                                 </div>
                             </div>
                             <div class="table-responsive">
@@ -92,6 +92,16 @@
 </div>
 <script src="/js/app.js"></script>
 <script>
+
+    document.addEventListener("DOMContentLoaded", function() {
+    const navbar = document.getElementById("sidebar");
+    console.log(navbar);
+    const toggler = document.querySelector("a.sidebar-toggle");
+    toggler.addEventListener("click", () => {
+    navbar.classList.toggle("collapsed");
+    });
+});
+
     document.getElementById('searchInput2').addEventListener('input', function () {
     var input, filter, table, tr, td, i, txtValue;
     input = document.getElementById('searchInput2');
