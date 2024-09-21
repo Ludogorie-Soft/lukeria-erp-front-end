@@ -53,7 +53,7 @@
                                     <label for="productId" style="width: 100%">Продукти:</label>
                                     <select class="form-select" id="productId" name="productId" required>
                                         <option th:each="product : ${products}" th:value="${product.id}"
-                                                th:text="${product.productCode}"></option>
+                                                th:text="${product.productCode} + ' - ' +${productPackageMap.get(product.packageId)}"></option>
                                     </select>
                                 </div>
 

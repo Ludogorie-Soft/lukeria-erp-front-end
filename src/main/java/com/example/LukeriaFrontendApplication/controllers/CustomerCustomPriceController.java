@@ -59,9 +59,17 @@ public class CustomerCustomPriceController {
                         .noneMatch(customPrice -> customPrice.getProductId().equals(product.getId()) && customPrice.getClientId().equals(id)))
                 .collect(Collectors.toList());
 
+        List<PackageDTO> packages = packageClient.getAllPackages(token);
+
+        Map<Long, String> productPackageMap = new HashMap<>();
+        for (PackageDTO packageDTO : packages) {
+            productPackageMap.put(packageDTO.getId(), packageDTO.getName());
+        }
+
         model.addAttribute("customPrice", new CustomerCustomPriceDTO());
         model.addAttribute("client", client);
         model.addAttribute("products", filteredProducts);
+        model.addAttribute("productPackageMap", productPackageMap);
 
         return "CustomPrice/create";
     }
@@ -117,13 +125,16 @@ public class CustomerCustomPriceController {
         return new ModelAndView("redirect:/customerCustomPrice/allForClient/" + clientId);
     }
     @GetMapping("/edit")
-    public String update(@RequestParam(name = "clientId") Long clientId, @RequestParam(name = "productId") Long productId, HttpServletRequest request,Model model) {
+    public String update(@RequestParam(name = "clientId") Long clientId, @RequestParam(name = "productId") Long productId,@RequestParam(name = "price")BigDecimal price, HttpServletRequest request,Model model) {
         String token = (String) request.getSession().getAttribute("sessionToken");
 
         ClientDTO client = clientClient.getClientById(clientId, token);
         ProductDTO product = productClient.getProductById(productId, token);
 
-        model.addAttribute("customPrice", new CustomerCustomPriceDTO());
+        CustomerCustomPriceDTO customPriceDTO = new CustomerCustomPriceDTO();
+        customPriceDTO.setPrice(price);
+
+        model.addAttribute("customPrice", customPriceDTO);
         model.addAttribute("client", client);
         model.addAttribute("product", product);
 

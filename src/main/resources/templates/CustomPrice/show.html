@@ -110,6 +110,7 @@
                                                       th:attr="onsubmit='return confirm(\'Сигурни ли сте, че искате да редактирате персонализираната цена за клинет с id: ' + ${clientId} + '?\');'">
                                                     <input type="hidden" name="clientId" th:value="${clientId}">
                                                     <input type="hidden" name="productId" th:value="${productPrice.product.id}">
+                                                    <input type="hidden" name="price" th:value="${productPrice.price}">
                                                     <button type="submit" class="btn btn-primary">Редактирай</button>
                                                 </form>
                                             </td>
