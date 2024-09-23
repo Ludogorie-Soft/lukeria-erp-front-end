@@ -1,182 +1,198 @@
 <th:block xmlns:th="http://www.w3.org/1999/xhtml">
-<script xmlns:th="http://www.w3.org/1999/xhtml">
-document.addEventListener("DOMContentLoaded", function() {
-  var currentPageUrl = window.location.href;
-  var sidebarLinks = document.querySelectorAll('.sidebar-link');
+    <script xmlns:th="http://www.w3.org/1999/xhtml">
+        document.addEventListener("DOMContentLoaded", function() {
+          var currentPageUrl = window.location.href;
+          var sidebarLinks = document.querySelectorAll('.sidebar-link');
 
-  sidebarLinks.forEach(function(link) {
-    if (link.href === currentPageUrl) {
-      link.parentNode.classList.add('active');
-    }
-  });
-});
-</script>
-<nav id="sidebar" class="sidebar js-sidebar">
-    <div class="sidebar-content js-simplebar">
-        <a class="sidebar-brand" href="/index">
-            <span class="align-middle">Lukeria</span>
-        </a>
+          sidebarLinks.forEach(function(link) {
+            if (link.href === currentPageUrl) {
+              link.parentNode.classList.add('active');
+            }
+          });
+        });
+    </script>
+    <nav id="sidebar" class="sidebar js-sidebar">
+        <div class="sidebar-content js-simplebar">
+            <a class="sidebar-brand" href="/index">
+                <span class="align-middle">Lukeria</span>
+            </a>
 
-        <ul class="sidebar-nav">
-            <li class="sidebar-item">
-                <a id="nav-index" class="sidebar-link" href="/index">
-                    <i class="fas fa-ellipsis-h align-middle"></i> <span class="align-middle">Главна страница</span>
-                </a>
-            </li>
-            <th:block th:if="${session.sessionToken == null}">
-            <li class="sidebar-item">
-                <a id="nav-login" class="sidebar-link" href="/login">
-                    <i class="fas fa-registered align-middle"></i> <span class="align-middle">Впиши се</span>
-                </a>
-            </li>
-            </th:block>
-            <th:block th:if="${session.sessionToken != null}">
+            <ul class="sidebar-nav">
                 <li class="sidebar-item">
-                    <a id="nav-logout" class="sidebar-link" href="/logout">
-                        <i class="fas fa-registered align-middle"></i> <span class="align-middle">Излез</span>
+                    <a id="nav-index" class="sidebar-link" href="/index">
+                        <i class="fas fa-ellipsis-h align-middle"></i> <span class="align-middle">Главна страница</span>
                     </a>
                 </li>
-                <li class="sidebar-item">
-                    <a id="profile" class="sidebar-link" href="/user/profile">
-                        <i class="fas fa-registered align-middle"></i> <span class="align-middle">Профил</span>
-                    </a>
+                <th:block th:if="${session.sessionToken == null}">
+                    <li class="sidebar-item">
+                        <a id="nav-login" class="sidebar-link" href="/login">
+                            <i class="fas fa-registered align-middle"></i> <span class="align-middle">Впиши се</span>
+                        </a>
+                    </li>
+                </th:block>
+                <th:block th:if="${session.sessionToken != null}">
+                    <li class="sidebar-item">
+                        <a id="nav-logout" class="sidebar-link" href="/logout">
+                            <i class="fas fa-registered align-middle"></i> <span class="align-middle">Излез</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a id="profile" class="sidebar-link" href="/user/profile">
+                            <i class="fas fa-registered align-middle"></i> <span class="align-middle">Профил</span>
+                        </a>
+                    </li>
+                </th:block>
+                <th:block th:if="${session.sessionToken != null and session.sessionRole == 'ADMIN'}">
+                    <li class="sidebar-item">
+                        <a id="nav-show6" class="sidebar-link" href="/user/show">
+                            <i class="fas fa-users align-middle"></i> <span class="align-middle">Потребители</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a id="nav-show2" class="sidebar-link" href="/client/show">
+                            <i class="fas fa-user-plus align-middle"></i> <span class="align-middle">Клиенти</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a id="nav-show10" class="sidebar-link" href="/client-user/show">
+                            <i class="fas fa-user-plus align-middle"></i> <span class="align-middle">Клиенти потребители</span>
+                        </a>
+                    </li>
+                </th:block>
+                <th:block th:if="${session.sessionToken != null and session.sessionRole == 'ADMIN'}">
+                    <li class="sidebar-item">
+                        <a id="nav-show" class="sidebar-link" href="/show">
+                            <i class="fas fa-box-open align-middle"></i> <span class="align-middle">Кашони</span>
+                        </a>
+                    </li>
+                </th:block>
+                <th:block
+                        th:if="${session.sessionToken != null and (session.sessionRole == 'PRODUCTION_MANAGER' or session.sessionRole == 'TRANSPORT_MANAGER')}">
+                    <li class="sidebar-item">
+                        <a id="nav-show16" class="sidebar-link" href="/show">
+                            <i class="fas fa-box-open align-middle"></i> <span class="align-middle">Кашони</span>
+                        </a>
+                    </li>
+                </th:block>
+                <th:block th:if="${session.sessionToken != null and session.sessionRole == 'ADMIN'}">
+                    <li class="sidebar-item">
+                        <a id="nav-package-show" class="sidebar-link" href="/package/show">
+                            <i class="fas fa-box-open align-middle"></i> <span class="align-middle">Кутии</span>
+                        </a>
+                    </li>
+                </th:block>
+                <th:block
+                        th:if="${session.sessionToken != null and (session.sessionRole == 'PRODUCTION_MANAGER' or session.sessionRole == 'TRANSPORT_MANAGER')}">
+                    <li class="sidebar-item">
+                        <a id="nav-package-show17" class="sidebar-link" href="/package/show">
+                            <i class="fas fa-box-open align-middle"></i> <span class="align-middle">Кутии</span>
+                        </a>
+                    </li>
+                </th:block>
+                <th:block th:if="${session.sessionToken != null and session.sessionRole == 'ADMIN'}">
+                    <li class="sidebar-item">
+                        <a id="nav-show1" class="sidebar-link" href="/plate/show">
+                            <i class="fas fa-box-open align-middle"></i> <span class="align-middle">Тарелки</span>
+                        </a>
+                    </li>
+                </th:block>
+                <th:block
+                        th:if="${session.sessionToken != null and (session.sessionRole == 'PRODUCTION_MANAGER' or session.sessionRole == 'TRANSPORT_MANAGER')}">
+                    <li class="sidebar-item">
+                        <a id="nav-show17" class="sidebar-link" href="/plate/show">
+                            <i class="fas fa-box-open align-middle"></i> <span class="align-middle">Тарелки</span>
+                        </a>
+                    </li>
+                </th:block>
+                <th:block th:if="${session.sessionToken != null and session.sessionRole == 'ADMIN'}">
+                    <li class="sidebar-item">
+                        <a id="nav-show5" class="sidebar-link" href="/product/show">
+                            <i class="fas fa-box-open align-middle"></i> <span
+                                class="align-middle">Продукти Лукерия</span>
+                        </a>
+                    </li>
+                </th:block>
+                <th:block
+                        th:if="${session.sessionToken != null and (session.sessionRole == 'PRODUCTION_MANAGER' or session.sessionRole == 'TRANSPORT_MANAGER')}">
+                    <li class="sidebar-item">
+                        <a id="nav-show15" class="sidebar-link" href="/product/show">
+                            <i class="fas fa-box-open align-middle"></i> <span
+                                class="align-middle">Продукти Лукерия</span>
+                        </a>
+                    </li>
+                </th:block>
+                <th:block
+                        th:if="${session.sessionToken != null and (session.sessionRole == 'PRODUCTION_MANAGER' or session.sessionRole == 'TRANSPORT_MANAGER' or session.sessionRole == 'CUSTOMER')}">
+                    <li class="sidebar-item">
+                        <a id="nav-availableProducts" class="sidebar-link" href="/product/available-products">
+                            <i class="fas fa-shopping-basket align-middle"></i> <span class="align-middle">Налични продукти</span>
+                        </a>
+                </th:block>
                 </li>
-            </th:block>
-            <th:block th:if="${session.sessionToken != null and session.sessionRole == 'ADMIN'}">
-            <li class="sidebar-item">
-                <a id="nav-show6" class="sidebar-link" href="/user/show">
-                    <i class="fas fa-users align-middle"></i> <span class="align-middle">Потребители</span>
-                </a>
-            </li>
-            <li class="sidebar-item">
-                <a id="nav-show2" class="sidebar-link" href="/client/show">
-                    <i class="fas fa-user-plus align-middle"></i> <span class="align-middle">Клиенти</span>
-                </a>
-            </li>
-            </th:block>
-            <th:block th:if="${session.sessionToken != null and session.sessionRole == 'ADMIN'}">
-            <li class="sidebar-item">
-                <a id="nav-show" class="sidebar-link" href="/show">
-                    <i class="fas fa-box-open align-middle"></i> <span class="align-middle">Кашони</span>
-                </a>
-            </li>
-            </th:block>
-            <th:block th:if="${session.sessionToken != null and (session.sessionRole == 'PRODUCTION_MANAGER' or session.sessionRole == 'TRANSPORT_MANAGER')}">
-                <li class="sidebar-item">
-                    <a id="nav-show16" class="sidebar-link" href="/show">
-                        <i class="fas fa-box-open align-middle"></i> <span class="align-middle">Кашони</span>
-                    </a>
-                </li>
-            </th:block>
-            <th:block th:if="${session.sessionToken != null and session.sessionRole == 'ADMIN'}">
-            <li class="sidebar-item">
-                <a id="nav-package-show" class="sidebar-link" href="/package/show">
-                    <i class="fas fa-box-open align-middle"></i> <span class="align-middle">Кутии</span>
-                </a>
-            </li>
-            </th:block>
-            <th:block th:if="${session.sessionToken != null and (session.sessionRole == 'PRODUCTION_MANAGER' or session.sessionRole == 'TRANSPORT_MANAGER')}">
-                <li class="sidebar-item">
-                    <a id="nav-package-show17" class="sidebar-link" href="/package/show">
-                        <i class="fas fa-box-open align-middle"></i> <span class="align-middle">Кутии</span>
-                    </a>
-                </li>
-            </th:block>
-            <th:block th:if="${session.sessionToken != null and session.sessionRole == 'ADMIN'}">
-            <li class="sidebar-item">
-                <a id="nav-show1" class="sidebar-link" href="/plate/show">
-                    <i class="fas fa-box-open align-middle"></i> <span class="align-middle">Тарелки</span>
-                </a>
-            </li>
-            </th:block>
-            <th:block th:if="${session.sessionToken != null and (session.sessionRole == 'PRODUCTION_MANAGER' or session.sessionRole == 'TRANSPORT_MANAGER')}">
-                <li class="sidebar-item">
-                    <a id="nav-show17" class="sidebar-link" href="/plate/show">
-                        <i class="fas fa-box-open align-middle"></i> <span class="align-middle">Тарелки</span>
-                    </a>
-                </li>
-            </th:block>
-            <th:block th:if="${session.sessionToken != null and session.sessionRole == 'ADMIN'}">
-            <li class="sidebar-item">
-                <a id="nav-show5" class="sidebar-link" href="/product/show">
-                    <i class="fas fa-box-open align-middle"></i> <span class="align-middle">Продукти Лукерия</span>
-                </a>
-            </li>
-            </th:block>
-            <th:block th:if="${session.sessionToken != null and (session.sessionRole == 'PRODUCTION_MANAGER' or session.sessionRole == 'TRANSPORT_MANAGER')}">
-                <li class="sidebar-item">
-                    <a id="nav-show15" class="sidebar-link" href="/product/show">
-                        <i class="fas fa-box-open align-middle"></i> <span class="align-middle">Продукти Лукерия</span>
-                    </a>
-                </li>
-            </th:block>
-            <th:block th:if="${session.sessionToken != null and (session.sessionRole == 'PRODUCTION_MANAGER' or session.sessionRole == 'TRANSPORT_MANAGER' or session.sessionRole == 'CUSTOMER')}">
-            <li class="sidebar-item">
-                <a id="nav-availableProducts" class="sidebar-link" href="/product/available-products">
-                    <i class="fas fa-shopping-basket align-middle"></i> <span class="align-middle">Налични продукти</span>
-                </a>
-            </th:block>
-            </li>
-            <th:block th:if="${session.sessionToken != null and (session.sessionRole == 'PRODUCTION_MANAGER' or session.sessionRole == 'TRANSPORT_MANAGER' or session.sessionRole == 'ADMIN')}">
-            <li class="sidebar-item">
-                <a id="nav-show3" class="sidebar-link" href="/order/show">
-                    <i class="fas fa-shopping-basket align-middle"></i> <span class="align-middle">Транспортиране на продукти</span>
-                </a>
-            </li>
-            </th:block>
-            <th:block th:if="${session.sessionToken != null and session.sessionRole == 'ADMIN'}">
-            <li class="sidebar-item">
-                <a id="nav-show93" class="sidebar-link" href="/monthlyOrder/show">
-                    <i class="fas fa-shopping-basket align-middle"></i> <span class="align-middle">Поръчки</span>
-                </a>
-            </li>
-            </th:block>
-            <th:block th:if="${session.sessionToken != null and session.sessionRole == 'PRODUCTION_MANAGER'}">
-                <li class="sidebar-item">
-                    <a id="nav-show13" class="sidebar-link" href="/monthlyOrder/show">
-                        <i class="fas fa-shopping-basket align-middle"></i> <span class="align-middle">Поръчки</span>
-                    </a>
-                </li>
-            </th:block>
-            <th:block th:if="${session.sessionToken != null and session.sessionRole == 'TRANSPORT_MANAGER'}">
-                <li class="sidebar-item">
-                    <a id="nav-show18" class="sidebar-link" href="/monthlyOrder/show">
-                        <i class="fas fa-shopping-basket align-middle"></i> <span class="align-middle">Поръчки</span>
-                    </a>
-                </li>
-            </th:block>
-            <th:block th:if="${session.sessionToken != null and session.sessionRole == 'ADMIN'}">
-            <li class="sidebar-item">
-                <a id="nav-show4" class="sidebar-link" href="/material-order/show">
-                    <i class="fas fa-shopping-basket align-middle"></i> <span class="align-middle">Поръчки на материали</span>
-                </a>
-            </li>
-            </th:block>
-            <th:block th:if="${session.sessionToken != null and session.sessionRole == 'PRODUCTION_MANAGER'}">
-                <li class="sidebar-item">
-                    <a id="nav-show14" class="sidebar-link" href="/material-order/show">
-                        <i class="fas fa-shopping-basket align-middle"></i> <span class="align-middle">Поръчки на материали</span>
-                    </a>
-                </li>
-            </th:block>
-            <th:block th:if="${session.sessionToken != null and session.sessionRole == 'ADMIN'}">
-            <li class="sidebar-item ">
-                <a id="nav-show9" class="sidebar-link" href="/invoice/showAllInvoices">
-                    <i class="fas fa-file-pdf align-middle"></i> <span class="align-middle">Фактури</span>
-                </a>
-            </li>
-            <li class="sidebar-item">
-                <a id="nav-show7" class="sidebar-link" href="/invoice/certificate/show">
-                    <i class="fas fa-file-pdf align-middle"></i> <span class="align-middle">Сертификати</span>
-                </a>
-            </li>
-            <li class="sidebar-item">
-                <a id="nav-show8" class="sidebar-link" href="/invoice/confirmation/show">
-                    <i class="fas fa-file-pdf align-middle"></i> <span class="align-middle">Confirmations</span>
-                </a>
-            </li>
-            </th:block>
-        </ul>
-    </div>
-</nav>
+                <th:block
+                        th:if="${session.sessionToken != null and (session.sessionRole == 'PRODUCTION_MANAGER' or session.sessionRole == 'TRANSPORT_MANAGER' or session.sessionRole == 'ADMIN')}">
+                    <li class="sidebar-item">
+                        <a id="nav-show3" class="sidebar-link" href="/order/show">
+                            <i class="fas fa-shopping-basket align-middle"></i> <span class="align-middle">Транспортиране на продукти</span>
+                        </a>
+                    </li>
+                </th:block>
+                <th:block th:if="${session.sessionToken != null and session.sessionRole == 'ADMIN'}">
+                    <li class="sidebar-item">
+                        <a id="nav-show93" class="sidebar-link" href="/monthlyOrder/show">
+                            <i class="fas fa-shopping-basket align-middle"></i> <span
+                                class="align-middle">Поръчки</span>
+                        </a>
+                    </li>
+                </th:block>
+                <th:block th:if="${session.sessionToken != null and session.sessionRole == 'PRODUCTION_MANAGER'}">
+                    <li class="sidebar-item">
+                        <a id="nav-show13" class="sidebar-link" href="/monthlyOrder/show">
+                            <i class="fas fa-shopping-basket align-middle"></i> <span
+                                class="align-middle">Поръчки</span>
+                        </a>
+                    </li>
+                </th:block>
+                <th:block th:if="${session.sessionToken != null and session.sessionRole == 'TRANSPORT_MANAGER'}">
+                    <li class="sidebar-item">
+                        <a id="nav-show18" class="sidebar-link" href="/monthlyOrder/show">
+                            <i class="fas fa-shopping-basket align-middle"></i> <span
+                                class="align-middle">Поръчки</span>
+                        </a>
+                    </li>
+                </th:block>
+                <th:block th:if="${session.sessionToken != null and session.sessionRole == 'ADMIN'}">
+                    <li class="sidebar-item">
+                        <a id="nav-show4" class="sidebar-link" href="/material-order/show">
+                            <i class="fas fa-shopping-basket align-middle"></i> <span class="align-middle">Поръчки на материали</span>
+                        </a>
+                    </li>
+                </th:block>
+                <th:block th:if="${session.sessionToken != null and session.sessionRole == 'PRODUCTION_MANAGER'}">
+                    <li class="sidebar-item">
+                        <a id="nav-show14" class="sidebar-link" href="/material-order/show">
+                            <i class="fas fa-shopping-basket align-middle"></i> <span class="align-middle">Поръчки на материали</span>
+                        </a>
+                    </li>
+                </th:block>
+                <th:block th:if="${session.sessionToken != null and session.sessionRole == 'ADMIN'}">
+                    <li class="sidebar-item ">
+                        <a id="nav-show9" class="sidebar-link" href="/invoice/showAllInvoices">
+                            <i class="fas fa-file-pdf align-middle"></i> <span class="align-middle">Фактури</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a id="nav-show7" class="sidebar-link" href="/invoice/certificate/show">
+                            <i class="fas fa-file-pdf align-middle"></i> <span class="align-middle">Сертификати</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a id="nav-show8" class="sidebar-link" href="/invoice/confirmation/show">
+                            <i class="fas fa-file-pdf align-middle"></i> <span class="align-middle">Confirmations</span>
+                        </a>
+                    </li>
+                </th:block>
+            </ul>
+        </div>
+    </nav>
 </th:block>
