@@ -66,6 +66,11 @@ document.addEventListener("DOMContentLoaded", function() {
                                             <input type="number" class="form-control" id="availableQuantity"
                                                    name="availableQuantity" th:field="*{availableQuantity}" required min="1">
                                         </div>
+                                        <div class="form-group">
+                                            <label for="barcode">Баркод на продукта</label>
+                                            <input type="text" class="form-control" id="barcode" name="barcode" th:field="*{barcode}"
+                                                   th:value="${product.barcode}" minlength="2" maxlength="10">
+                                        </div>
                                         <div class="text-center">
                                             <button type="submit" class="btn btn-primary">Създай</button>
                                         </div>
