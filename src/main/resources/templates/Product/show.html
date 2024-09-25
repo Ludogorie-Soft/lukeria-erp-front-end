@@ -238,6 +238,48 @@ document.getElementById('searchInput1').addEventListener('input', function () {
     }
 });
 
+     document.getElementById('searchInputBarcode').addEventListener('input', searchByBarcode);
+
+// Trigger search when Enter is pressed (common after scanning a barcode)
+document.getElementById('searchInputBarcode').addEventListener('keypress', function (e) {
+    if (e.key === 'Enter') {
+        searchByBarcode();
+    }
+});
+
+function searchByBarcode() {
+    var input, filter, table, tr, td, i, txtValue;
+    input = document.getElementById('searchInputBarcode');
+    filter = input.value.toUpperCase();
+    table = document.querySelector('table');
+    tr = table.getElementsByTagName('tr');
+    var count = 0; // Initialize the count variable
+
+    for (i = 0; i < tr.length; i++) {
+        td = tr[i].getElementsByTagName('td')[4]; // Barcode is in the 5th column (index 4)
+        if (td) {
+            txtValue = td.textContent || td.innerText;
+            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                tr[i].style.display = '';
+                count++; // Increment the count when a match is found
+            } else {
+                tr[i].style.display = 'none';
+            }
+        }
+    }
+
+    // Display the results count for the barcode search input
+    var resultsCountElement = document.getElementById('resultsCountBarcode');
+    if (resultsCountElement) {
+        resultsCountElement.textContent = count;
+    } else {
+        // If the element doesn't exist, you can create and append it
+        resultsCountElement = document.createElement('div');
+        resultsCountElement.id = 'resultsCountBarcode';
+        resultsCountElement.textContent = count;
+        input.parentNode.appendChild(resultsCountElement); // Appending to the parent of the input
+    }
+}
 </script>
 </body>
 </html>

@@ -60,6 +60,7 @@ class BarcodeScanner {
                 this.inputElement.value = data.codeResult.code;
                 this.stopCamera();
                 this.closeModal(); // Затваряне на модалния прозорец
+                searchByBarcode();
             });
         }
     }
