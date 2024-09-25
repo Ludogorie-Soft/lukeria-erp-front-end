@@ -77,6 +77,7 @@ class BarcodeScannerCamera {
                 this.inputElement.value = data.codeResult.code;
                 this.stopCamera();
                 this.closeModal();
+                searchByBarcode();
             });
         }
     }
