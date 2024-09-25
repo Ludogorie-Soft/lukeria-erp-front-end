@@ -9,16 +9,7 @@
     <link rel="icon" type="image/x-icon" href="/img/photos/noImage.png">
     <link href="/css/form.css" rel="stylesheet">
 </head>
-<script>
-document.addEventListener("DOMContentLoaded", function() {
-    const navbar = document.getElementById("sidebar");
-    console.log(navbar);
-    const toggler = document.querySelector("a.sidebar-toggle");
-    toggler.addEventListener("click", () => {
-    navbar.classList.toggle("collapsed");
-    });
-});
-</script>
+
 <body>
 <div class="wrapper">
     <!--    HEADER  -->
@@ -38,54 +29,70 @@ document.addEventListener("DOMContentLoaded", function() {
                     <div class="card-body">
                         <form action="/material-order/submit" method="post">
                             <div class="form-group">
-                            <label for="materialId">Вид на материала:</label>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="materialType" value="CARTON" id="materialType">
-                                <label class="form-check-label" for="materialType">
-                                    Кашон
-                                </label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="materialType" value="PACKAGE" id="materialType1">
-                                <label class="form-check-label" for="materialType1">
-                                    Кутия
-                                </label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="materialType" value="PLATE" id="materialType2">
-                                <label class="form-check-label" for="materialType2">
-                                    Тарелка
-                                </label>
-                            </div>
-                            </div>
-                            <div class="form-group">
-                                <div id="plateDropdown" style="display: none;">
-                                    <label for="materialId">Тарелки:</label>
-                                    <select class="form-select" size="3" aria-label="size 3 select example" id="plateId" name="materialId" style="width: 200px;">
-                                        <option th:each="plate : ${plates}" th:value="${plate.id}" th:text="${plate.id} + ' - ' + ${plate.name}"></option>
-                                    </select>
+                                <label for="materialId">Вид на материала:</label>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="materialType" value="CARTON" id="materialType">
+                                    <label class="form-check-label" for="materialType">Кашон</label>
                                 </div>
-                                <div id="cartonDropdown" style="display: none;">
-                                    <label for="materialId">Кашони:</label>
-                                    <select class="form-select" size="3" aria-label="size 3 select example" id="materialId" name="materialId" style="width: 200px;">
-                                        <option th:each="carton : ${cartons}" th:value="${carton.id}" th:text="${carton.id} + ' - ' + ${carton.name}"></option>
-                                    </select>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="materialType" value="PACKAGE" id="materialType1">
+                                    <label class="form-check-label" for="materialType1">Кутия</label>
                                 </div>
-                                <div id="packageDropdown" style="display: none;">
-                                    <label for="materialId">Кутии:</label>
-                                    <select class="form-select" size="3" aria-label="size 3 select example" id="packageId" name="materialId" style="width: 200px;">
-                                        <option th:each="package : ${packages}" th:value="${package.id}" th:text="${package.id} + ' - ' + ${package.name}"></option>
-                                    </select>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="materialType" value="PLATE" id="materialType2">
+                                    <label class="form-check-label" for="materialType2">Тарелка</label>
                                 </div>
                             </div>
+                            <!-- Plate dropdown (with image) -->
+                            <div id="plateDropdown" class="material-dropdown" style="display: none;">
+                                <label for="plateId">Тарелки:</label>
+                                <select class="form-select select2" id="plateId" name="materialId">
+                                    <option th:each="plate : ${plates}"
+                                            th:value="${plate.id}"
+                                            th:data-image-url="@{${backendBaseUrl} + '/' + ${plate.photo}}"
+                                            th:text="${plate.id} + ' - ' + ${plate.name}">
+                                        <img th:if="${plate.photo != null}"
+                                             th:src="@{${backendBaseUrl} + '/' + ${plate.photo}}"
+                                             alt="no image" height="50" width="50">
+                                        <span th:text="${plate.name}"></span>
+                                    </option>
+                                </select>
+                            </div>
+
+                            <!-- Carton dropdown (without image) -->
+                            <div id="cartonDropdown" class="material-dropdown" style="display: none;">
+                                <label for="cartonId">Кашони:</label>
+                                <select class="form-select select2" id="cartonId" name="materialId">
+                                    <option th:each="carton : ${cartons}"
+                                            th:value="${carton.id}"
+                                            th:text="${carton.id} + ' - ' + ${carton.name}">
+                                    </option>
+                                </select>
+                            </div>
+
+                            <!-- Package dropdown (with image) -->
+                            <div id="packageDropdown" class="material-dropdown" style="display: none;">
+                                <label for="packageId">Кутии:</label>
+                                <select class="form-select select2" id="packageId" name="materialId">
+                                    <option th:each="package : ${packages}"
+                                            th:value="${package.id}"
+                                            th:data-image-url="@{${backendBaseUrl} + '/' + ${package.photo}}"
+                                            th:text="${package.id} + ' - ' + ${package.name}">
+                                        <img th:if="${package.photo != null}"
+                                             th:src="@{${backendBaseUrl} + '/' + ${package.photo}}"
+                                             alt="no image" height="50" width="50">
+                                        <span th:text="${package.name}"></span>
+                                    </option>
+                                </select>
+                            </div>
+
                             <div class="form-group">
                                 <label for="orderedQuantity">Брой:</label>
                                 <input type="number" id="orderedQuantity" name="orderedQuantity" required
-                                       th:field="${order.orderedQuantity}"/>
+                                       th:field="${order.orderedQuantity}" min="1" oninput="validity.valid||(value='');"/>
                             </div>
                             <div class="text-center">
-                                <button type="submit" class="btn btn-primary" >Поръчай</button>
-                            </div>
+                                <button type="submit" class="btn btn-primary">Поръчай</button>
                             </div>
                         </form>
                     </div>
@@ -94,45 +101,11 @@ document.addEventListener("DOMContentLoaded", function() {
         </main>
     </div>
 </div>
-<script src="js/app.js"></script>
-<script>
-        $(document).ready(function() {
-            $('input[type=radio][name=materialType]').change(function() {
-                var materialType = $(this).val();
-                $('#plateDropdown').toggle(materialType === 'PLATE');
-                $('#cartonDropdown').toggle(materialType === 'CARTON');
-                $('#packageDropdown').toggle(materialType === 'PACKAGE');
-            });
-        });
-    </script>
 
-<script>
+<!-- External Scripts -->
+<script src="/js/app.js"></script>
+<script src="/js/material-order.js"></script>
 
-       $(document).ready(function() {
-           $('#materialId').select2();
-       });
 
-       $(document).ready(function() {
-           $('#plateId').select2();
-       });
-   </script>
-<script>
-$(document).ready(function() {
-    $('#packageId').select2({
-        templateResult: formatState
-    });
-});
-
-function formatState(state) {
-    if (!state.id) {
-        return state.text;
-    }
-    var imageUrl = state.element.getAttribute('data-image-url');
-    var $state = $(
-        '<span><img src="' + imageUrl + '" width="50" height="50" /> ' + state.text + '</span>'
-    );
-    return $state;
-}
-</script>
 </body>
 </html>
