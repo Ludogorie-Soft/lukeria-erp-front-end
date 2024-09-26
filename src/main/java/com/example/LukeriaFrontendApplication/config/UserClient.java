@@ -4,10 +4,7 @@ import com.example.LukeriaFrontendApplication.dtos.AuthenticationResponse;
 import com.example.LukeriaFrontendApplication.dtos.UserDTO;
 import jakarta.validation.Valid;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.io.IOException;
 import java.util.List;
 
 @FeignClient(name = "lukeria-erp-user", url = "${backend.base-url}/user")
@@ -38,4 +35,11 @@ public interface UserClient {
 
     @PutMapping("/change-pass")
     boolean changePassword(@RequestBody UserDTO userDTO, @RequestHeader("Authorization") String auth);
+
+    @PostMapping("/forgot-password")
+     Boolean forgotPassword(@RequestParam String email);
+
+    @PostMapping("/reset-password")
+     Boolean processResetPassword(@RequestParam("token") String token,
+                                                        @RequestParam("password") String newPassword);
 }

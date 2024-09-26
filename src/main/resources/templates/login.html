@@ -7,14 +7,14 @@
     <link rel="icon" type="image/x-icon" href="img/photos/noImage.png">
 </head>
 <script>
-document.addEventListener("DOMContentLoaded", function() {
-    const navbar = document.getElementById("sidebar");
-    console.log(navbar);
-    const toggler = document.querySelector("a.sidebar-toggle");
-    toggler.addEventListener("click", () => {
-    navbar.classList.toggle("collapsed");
+    document.addEventListener("DOMContentLoaded", function() {
+        const navbar = document.getElementById("sidebar");
+        console.log(navbar);
+        const toggler = document.querySelector("a.sidebar-toggle");
+        toggler.addEventListener("click", () => {
+        navbar.classList.toggle("collapsed");
+        });
     });
-});
 </script>
 <body>
 <div class="wrapper">
@@ -44,15 +44,30 @@ document.addEventListener("DOMContentLoaded", function() {
                                         <form th:action="@{/login}" method="post">
                                             <div class="mb-3">
                                                 <label class="form-label" style="font-size: 18px;">Имейл</label>
-                                                <input class="form-control form-control-lg" type="email" name="email" placeholder="Въведете имейла си" style="height: 50px; font-size: 16px;" />
+                                                <input class="form-control form-control-lg" type="email" name="email"
+                                                       placeholder="Въведете имейла си"
+                                                       style="height: 50px; font-size: 16px;"/>
                                             </div>
                                             <div class="mb-3">
                                                 <label class="form-label" style="font-size: 18px;">Парола</label>
-                                                <input class="form-control form-control-lg" type="password" name="password" placeholder="Въведете паролата си" style="height: 50px; font-size: 16px;" />
+                                                <input class="form-control form-control-lg" type="password"
+                                                       name="password" placeholder="Въведете паролата си"
+                                                       style="height: 50px; font-size: 16px;"/>
+                                                <div th:if="${param.error}" class="text-danger"
+                                                     style="margin-top: 15px;">
+                                                    <p th:text="${param.error}"></p>
+                                                </div>
+                                                <div th:if="${param.message}" class="text-success"
+                                                     style="margin-top: 15px;">
+                                                    <p th:text="${param.message}"></p>
+                                                </div>
+                                                <input type="submit"
+                                                       class="btn btn-block btn-primary text-white py-3 px-5"
+                                                       value="Влез">
                                             </div>
-                                            <p th:if="${param.error}" class="text-danger" style="margin-top: 15px;">Невалиден имейл или парола!</p>
-                                            <div class="d-grid gap-2 mt-3">
-                                               <input type="submit" class="btn btn-block btn-primary text-white py-3 px-5" value="Влез">
+                                            <div class="text-center mt-3">
+                                                <a th:href="@{/user/forgot-password}" class="text-muted"
+                                                   style="font-size: 16px;">Забравена парола?</a>
                                             </div>
                                         </form>
                                     </div>
@@ -73,7 +88,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 </html>
 <script>
-	.custom-card-width {
+    .custom-card-width {
   width: 80%;
   margin: 0 auto; /* Optional: Centers the card horizontally */
 }
