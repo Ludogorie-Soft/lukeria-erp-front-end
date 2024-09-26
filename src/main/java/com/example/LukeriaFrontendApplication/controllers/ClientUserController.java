@@ -41,7 +41,7 @@ public class ClientUserController {
         for (ClientUserDTO clientUser: clientUsers) {
             ClientDTO client = clientClient.getClientById(clientUser.getClientId(), token);
             UserDTO user = userClient.getUserById(clientUser.getUserId(), token);
-            allClientUsers.add(new ClientUserHelperDTO(client, user, clientUser.getId()));
+            allClientUsers.add(new ClientUserHelperDTO(clientUser.getId(), client, user));
         }
         model.addAttribute("clientUsers", allClientUsers);
         return "ClientUser/show";
