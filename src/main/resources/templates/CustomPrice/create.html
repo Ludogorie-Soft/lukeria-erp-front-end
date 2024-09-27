@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+
+<head>
+    <!--    LINKS  -->
+    <th:block th:insert="~{fragments/links}"></th:block>
+
+    <title>Персонализирана цена</title>
+    <link rel="icon" type="image/x-icon" href="/img/photos/noImage.png">
+    <link href="/css/form.css" rel="stylesheet">
+    <link href="/css/select2.min.css" rel="stylesheet"> <!-- Include Select2 CSS -->
+
+</head>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const navbar = document.getElementById("sidebar");
+        console.log(navbar);
+        const toggler = document.querySelector("a.sidebar-toggle");
+        toggler.addEventListener("click", () => {
+            navbar.classList.toggle("collapsed");
+        });
+    });
+</script>
+
+<body>
+<div class="wrapper">
+    <!--    HEADER  -->
+    <th:block th:insert="~{fragments/header}"></th:block>
+    <div class="main">
+        <nav class="navbar navbar-expand navbar-light navbar-bg">
+            <a class="sidebar-toggle js-sidebar-toggle">
+                <i class="hamburger align-self-center"></i>
+            </a>
+        </nav>
+
+        <main class="content">
+            <div class="form-container">
+                <div class="card custom-card-width-lg">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Създай персонализирана цена</h5>
+                    </div>
+                    <div class="card-body">
+                        <form th:action="@{/customerCustomPrice/submit}" method="post" th:object="${customPrice}">
+                            <center>
+                                <div class="form-group">
+                                    <label style="width: 100%">Клиент:</label>
+                                   <h3 th:text="${client.businessName}"/>
+                                    <input type="hidden" name="clientId" th:value="${client.id}">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="productId" style="width: 100%">Продукти:</label>
+                                    <select class="form-select" id="productId" name="productId" required>
+                                        <option th:each="product : ${products}" th:value="${product.id}"
+                                                th:text="${product.productCode} + ' - ' +${productPackageMap.get(product.packageId)}"></option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="price">Цена</label>
+                                    <input type="number" class="form-control" id="price" name="price"
+                                           th:field="*{price}"
+                                           required min="0" step="0.01"/>
+                                </div>
+                            </center>
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-primary">Създай</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<!-- Include jQuery and Select2 JS -->
+<script src="/js/jquery.min.js"></script>
+<script src="/js/select2.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#clientId').select2({
+            width: 'resolve', // Make sure the select fits the form width
+            placeholder: "Изберете клиент"
+        });
+        $('#productId').select2({
+            width: 'resolve',
+            placeholder: "Изберете продукт"
+        });
+    });
+</script>
+</body>
+
+</html>
