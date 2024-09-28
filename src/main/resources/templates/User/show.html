@@ -9,14 +9,14 @@
     <link href="/css/show.css" rel="stylesheet">
 </head>
 <script>
-document.addEventListener("DOMContentLoaded", function() {
-    const navbar = document.getElementById("sidebar");
-    console.log(navbar);
-    const toggler = document.querySelector("a.sidebar-toggle");
-    toggler.addEventListener("click", () => {
-    navbar.classList.toggle("collapsed");
+    document.addEventListener("DOMContentLoaded", function() {
+        const navbar = document.getElementById("sidebar");
+        console.log(navbar);
+        const toggler = document.querySelector("a.sidebar-toggle");
+        toggler.addEventListener("click", () => {
+        navbar.classList.toggle("collapsed");
+        });
     });
-});
 </script>
 <body>
 <div class="wrapper">
@@ -35,28 +35,30 @@ document.addEventListener("DOMContentLoaded", function() {
                 <div class="col-lg-11 mx-auto">
                     <div class="card custom-card-width-lg">
                         <div class="card-header">
-                                <h5 class="card-title mb-0">Всички Потребители</h5>
-                            </div>
-                            <div class="text-center">
-                                <a href="/user/create" class="btn btn-primary">Добави Потребител</a>
-                            </div>
-                            <div class="card-body">
-                                <div class="row mb-3">
-                                    <div class="col">
-                                        <input type="text" id="searchInput1" class="form-control" placeholder="Търсене по първо име"><br>
-                                        <div class="alert alert-primary" role="alert">
-                                            <label>Резултати от търсенето: <span id="resultsCount"></span></label>
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <input type="text" id="searchInput2" class="form-control" placeholder="Търсене по фамилия"><br>
-                                        <div class="alert alert-primary" role="alert">
-                                            <label>Резултати от търсенето: <span id="resultsCount2"></span></label>
-                                        </div>
+                            <h5 class="card-title mb-0">Всички Потребители</h5>
+                        </div>
+                        <div class="text-center">
+                            <a href="/user/create" class="btn btn-primary">Добави Потребител</a>
+                        </div>
+                        <div class="card-body">
+                            <div class="row mb-3">
+                                <div class="col">
+                                    <input type="text" id="searchInput1" class="form-control"
+                                           placeholder="Търсене по първо име"><br>
+                                    <div class="alert alert-primary" role="alert">
+                                        <label>Резултати от търсенето: <span id="resultsCount"></span></label>
                                     </div>
                                 </div>
-                                <div class="table-responsive">
-                                    <table class="table">
+                                <div class="col">
+                                    <input type="text" id="searchInput2" class="form-control"
+                                           placeholder="Търсене по фамилия"><br>
+                                    <div class="alert alert-primary" role="alert">
+                                        <label>Резултати от търсенето: <span id="resultsCount2"></span></label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table">
                                     <thead>
                                     <tr>
                                         <th>ID</th>
@@ -66,40 +68,40 @@ document.addEventListener("DOMContentLoaded", function() {
                                         <th>Адрес</th>
                                         <th>Е-поща</th>
                                         <th>Роля</th>
-                                        <th>Управител на Фирма </th>
+                                        <th>Управител на Фирма</th>
                                     </tr>
                                     </thead>
-                                        <tbody>
-                                        <tr th:each="user : ${users}">
-                                            <td th:text="${user.id}"></td>
-                                            <td th:text="${user.username}"></td>
-                                            <td th:text="${user.firstname}"></td>
-                                            <td th:text="${user.lastname}"></td>
-                                            <td th:text="${user.address}"></td>
-                                            <td th:text="${user.email}"></td>
-                                            <td th:text="${user.role}"></td>
-                                            <td>
+                                    <tbody>
+                                    <tr th:each="user : ${users}">
+                                        <td th:text="${user.id}"></td>
+                                        <td th:text="${user.username}"></td>
+                                        <td th:text="${user.firstname}"></td>
+                                        <td th:text="${user.lastname}"></td>
+                                        <td th:text="${user.address}"></td>
+                                        <td th:text="${user.email}"></td>
+                                        <td th:text="${user.role}"></td>
+                                        <td>
         <span th:if="${user.clientID != null}">
-            <span th:each="client : ${clients}"
-                  th:if="${client.id == user.clientID}"
-                  th:text="${client.businessName}"></span>
-        </span>
-                                                <span th:if="${user.clientID == null}"></span>
-                                            </td>
-                                            <td>
-                                                <form th:action="@{'/user/delete/' + ${user.id}}" method="post"
-                                                      th:attr="onsubmit='return confirm(\'Сигурни ли сте, че искате да изтриете Потребител с име: ' + ${user.firstname} + '?\');'">
-                                                    <button type="submit" class="btn btn-danger">Изтрий</button>
-                                                </form>
-                                            </td>
-                                            <td>
-                                                <form th:action="@{'/user/editUser/' + ${user.id}}" method="get"
-                                                      th:attr="onsubmit='return confirm(\'Сигурни ли сте, че искате да редактирате Потребител с име: ' + ${user.firstname} + '?\');'">
-                                                    <button type="submit" class="btn btn-primary">Редактирай</button>
-                                                </form>
-                                            </td>
-                                        </tr>
-                                        </tbody>
+    <span th:each="client : ${clients}" th:if="${client.id == user.clientID}">
+        <a th:href="@{'/client/show/' + ${client.id}}" th:text="${client.businessName}"></a>
+    </span>
+</span>
+                                            <span th:if="${user.clientID == null}"></span>
+                                        </td>
+                                        <td>
+                                            <form th:action="@{'/user/delete/' + ${user.id}}" method="post"
+                                                  th:attr="onsubmit='return confirm(\'Сигурни ли сте, че искате да изтриете Потребител с име: ' + ${user.firstname} + '?\');'">
+                                                <button type="submit" class="btn btn-danger">Изтрий</button>
+                                            </form>
+                                        </td>
+                                        <td>
+                                            <form th:action="@{'/user/editUser/' + ${user.id}}" method="get"
+                                                  th:attr="onsubmit='return confirm(\'Сигурни ли сте, че искате да редактирате Потребител с име: ' + ${user.firstname} + '?\');'">
+                                                <button type="submit" class="btn btn-primary">Редактирай</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                    </tbody>
                                 </table>
                             </div>
                         </div>

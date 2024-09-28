@@ -1,7 +1,11 @@
 package com.example.LukeriaFrontendApplication.controllers;
 
 import com.example.LukeriaFrontendApplication.config.ClientClient;
+import com.example.LukeriaFrontendApplication.config.ClientUserClient;
+import com.example.LukeriaFrontendApplication.config.UserClient;
 import com.example.LukeriaFrontendApplication.dtos.ClientDTO;
+import com.example.LukeriaFrontendApplication.dtos.ClientUserDTO;
+import com.example.LukeriaFrontendApplication.dtos.UserDTO;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +26,8 @@ public class ClientController {
 
     private static final String REDIRECTTXT = "redirect:/client/show";
     private final ClientClient clientClient;
+    private final UserClient userClient;
+    private final ClientUserClient clientUserClient;
 
     @GetMapping("/show")
     public String index(Model model, HttpServletRequest request) {
@@ -34,10 +40,22 @@ public class ClientController {
     }
 
     @GetMapping("/show/{id}")
-    String getClientById(@PathVariable(name = "id") Long id, Model model, HttpServletRequest request) {
+    public String getClientById(@PathVariable(name = "id") Long id, Model model, HttpServletRequest request) {
         String token = (String) request.getSession().getAttribute(SESSION_TOKEN);
         ClientDTO client = clientClient.getClientById(id, token);
+
+        List<ClientUserDTO> userClientDtoList = clientUserClient.getAllClientUsers(token);
+
+        Long userId = userClientDtoList.stream()
+                .filter(clientUserDTO -> clientUserDTO.getClientId().equals(client.getId()))
+                .map(ClientUserDTO::getUserId)
+                .findFirst().orElse(null);
+
+        UserDTO userDTO = userClient.getUserById(userId, token);
+
         model.addAttribute(CLIENT, client);
+        model.addAttribute("user", userDTO);
+
         return "Client/showById";
     }
 
