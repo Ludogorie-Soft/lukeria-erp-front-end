@@ -1,5 +1,6 @@
 package com.example.LukeriaFrontendApplication.controllers;
 
+import com.example.LukeriaFrontendApplication.config.ClientClient;
 import com.example.LukeriaFrontendApplication.config.ClientUserClient;
 import com.example.LukeriaFrontendApplication.config.UserClient;
 import com.example.LukeriaFrontendApplication.dtos.AuthenticationResponse;
@@ -15,7 +16,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @org.springframework.stereotype.Controller
 @RequiredArgsConstructor
@@ -29,12 +32,28 @@ public class UserController {
 
     private final UserClient userClient;
     private final ClientUserClient clientUserClient;
+    private final ClientClient clientClient;
     private final SessionManager sessionManager;
 
     @GetMapping("/show")
     public String index(Model model, HttpServletRequest request) {
         String token = (String) request.getSession().getAttribute(SESSION_TOKEN);
+
+        List<ClientDTO> clients = clientClient.getAllClients(token);
         List<UserDTO> users = userClient.getAllUsers(token);
+        List<ClientUserDTO> clientUsers = clientUserClient.getAllClientUsers(token);
+
+        Map<Long, Long> clientUserMap = new HashMap<>();
+        for (ClientUserDTO clientUser : clientUsers) {
+            clientUserMap.put(clientUser.getUserId(), clientUser.getClientId());
+        }
+
+        for (UserDTO user : users) {
+            if (clientUserMap.containsKey(user.getId())) {
+                user.setClientID(clientUserMap.get(user.getId()));
+            }
+        }
+        model.addAttribute("clients", clients);
         model.addAttribute("users", users);
         return "User/show";
     }
