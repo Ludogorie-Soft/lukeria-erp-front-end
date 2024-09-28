@@ -13,7 +13,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 @org.springframework.stereotype.Controller
@@ -32,10 +34,31 @@ public class ClientController {
     @GetMapping("/show")
     public String index(Model model, HttpServletRequest request) {
         String token = (String) request.getSession().getAttribute(SESSION_TOKEN);
-        List<ClientDTO> clients = clientClient.getAllClients(token);
-        model.addAttribute("deleteMessageBoolean", true);
 
+        List<ClientDTO> clients = clientClient.getAllClients(token);
+        List<UserDTO> users = userClient.getAllUsers(token);
+        List<ClientUserDTO> clientUsers = clientUserClient.getAllClientUsers(token);
+
+        Map<Long, Long> clientUserMap = new HashMap<>();
+        for (ClientUserDTO clientUser : clientUsers) {
+            clientUserMap.put(clientUser.getUserId(), clientUser.getClientId());
+        }
+
+        for (ClientDTO clientDTO : clients) {
+            Long associatedUserId = clientUserMap.entrySet()
+                    .stream()
+                    .filter(entry -> entry.getValue().equals(clientDTO.getId()))
+                    .map(Map.Entry::getKey)
+                    .findFirst()
+                    .orElse(null);
+
+            clientDTO.setCustomer(associatedUserId);
+        }
+
+        model.addAttribute("deleteMessageBoolean", true);
         model.addAttribute("clients", clients);
+        model.addAttribute("users", users);
+
         return "Client/show";
     }
 
