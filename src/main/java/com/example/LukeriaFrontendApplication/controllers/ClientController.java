@@ -17,7 +17,7 @@ import java.util.Objects;
 @Slf4j
 @RequestMapping("/client")
 public class ClientController {
-    private static final String CARTONTXT = "client";
+    private static final String CLIENT = "client";
     private static final String SESSION_TOKEN = "sessionToken";
 
     private static final String REDIRECTTXT = "redirect:/client/show";
@@ -37,7 +37,7 @@ public class ClientController {
     String getClientById(@PathVariable(name = "id") Long id, Model model, HttpServletRequest request) {
         String token = (String) request.getSession().getAttribute(SESSION_TOKEN);
         ClientDTO client = clientClient.getClientById(id, token);
-        model.addAttribute(CARTONTXT, client);
+        model.addAttribute(CLIENT, client);
         return "Client/showById";
     }
 
@@ -45,7 +45,7 @@ public class ClientController {
     @GetMapping("/create")
     String createClient(Model model) {
         ClientDTO client = new ClientDTO();
-        model.addAttribute(CARTONTXT, client);
+        model.addAttribute(CLIENT, client);
         return "Client/create";
     }
 
@@ -53,7 +53,7 @@ public class ClientController {
     String editClient(@PathVariable(name = "id") Long id, Model model, HttpServletRequest request) {
         String token = (String) request.getSession().getAttribute(SESSION_TOKEN);
         ClientDTO existingClient = clientClient.getClientById(id, token);
-        model.addAttribute(CARTONTXT, existingClient);
+        model.addAttribute(CLIENT, existingClient);
         return "Client/edit";
     }
 

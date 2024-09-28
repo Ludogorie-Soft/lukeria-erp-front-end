@@ -1,0 +1,80 @@
+ body {
+        background-color: #f0f2f5; /* Light gray-blue background for a modern look */
+        font-family: Arial, sans-serif;
+    }
+
+    .card {
+        border: none;
+        border-radius: 10px;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+        background-color: #ffffff;
+        padding: 20px;
+    }
+
+    .card-header {
+        color: #ffffff;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+        padding: 15px;
+    }
+
+    .card-title {
+        margin: 0;
+        font-size: 1.8rem; /* Increased font size for the title */
+        font-weight: bold;
+    }
+
+    .card-body div {
+        margin-bottom: 1.5rem;
+        font-size: 1.2rem; /* Increased font size for client information */
+    }
+
+    .card-body strong {
+        font-weight: bold;
+    }
+
+    .btn {
+        border-radius: 8px;
+        font-size: 1.1rem; /* Bigger font size for buttons */
+        padding: 10px 20px;
+        transition: background-color 0.3s, transform 0.3s;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        border-color: #007bff;
+        color: #ffffff;
+    }
+
+    .btn-danger {
+        background-color: #dc3545;
+        border-color: #dc3545;
+        color: #ffffff;
+    }
+
+    .btn-secondary {
+        background-color: #6c757d;
+        border-color: #6c757d;
+        color: #ffffff;
+    }
+
+    .btn:hover {
+        opacity: 0.9;
+        transform: scale(1.05); /* Slight scaling effect for hover */
+    }
+
+    .footer-links {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 2rem;
+        align-items: center;
+    }
+
+    .footer-links form {
+        display: inline-block;
+    }
+
+    .card-body span {
+        display: inline-block;
+        color: #333333;
+    }
