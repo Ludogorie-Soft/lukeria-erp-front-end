@@ -25,5 +25,6 @@ public class User {
     private Role role;
 
     private boolean deleted;
+    private Long clientID;
 }
 

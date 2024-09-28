@@ -1,7 +1,10 @@
 package com.example.LukeriaFrontendApplication.controllers;
 
+import com.example.LukeriaFrontendApplication.config.ClientUserClient;
 import com.example.LukeriaFrontendApplication.config.UserClient;
 import com.example.LukeriaFrontendApplication.dtos.AuthenticationResponse;
+import com.example.LukeriaFrontendApplication.dtos.ClientDTO;
+import com.example.LukeriaFrontendApplication.dtos.ClientUserDTO;
 import com.example.LukeriaFrontendApplication.dtos.UserDTO;
 import com.example.LukeriaFrontendApplication.models.User;
 import com.example.LukeriaFrontendApplication.session.SessionManager;
@@ -25,7 +28,7 @@ public class UserController {
     private static final String ERRORTXT = "error";
 
     private final UserClient userClient;
-
+    private final ClientUserClient clientUserClient;
     private final SessionManager sessionManager;
 
     @GetMapping("/show")
@@ -37,8 +40,14 @@ public class UserController {
     }
 
     @GetMapping("/create")
-    String createUser(Model model) {
+    String createUser(Model model, HttpServletRequest request) {
+        String token = (String) request.getSession().getAttribute(SESSION_TOKEN);
+
+        List<ClientDTO> clients = clientUserClient.getAllClientWithNoUser(token);
+
         User user = new User();
+
+        model.addAttribute("clientsForSelect", clients);
         model.addAttribute("user", user);
         return "User/create";
     }
@@ -46,7 +55,12 @@ public class UserController {
     @PostMapping("/submit")
     public ModelAndView submitUser(@ModelAttribute("user") UserDTO user, HttpServletRequest request) {
         String token = (String) request.getSession().getAttribute(SESSION_TOKEN);
-        userClient.createUser(user, token);
+        UserDTO createdUser = userClient.createUser(user, token);
+
+        if (user.getClientID() != null) {
+            ClientUserDTO clientUserDTO = new ClientUserDTO(null, user.getClientID(), createdUser.getId());
+            clientUserClient.createClientUser(clientUserDTO, token);
+        }
         return new ModelAndView(REDIRECTTXT);
     }
 
