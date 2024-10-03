@@ -22,6 +22,7 @@ public class UserController {
     private static final String REDIRECTTXT = "redirect:/user/show";
     private static final String REDIRECTTXT2 = "redirect:/user/profile";
     private static final String SESSION_TOKEN = "sessionToken";
+    private static final String ERRORTXT = "error";
 
     private final UserClient userClient;
 
@@ -105,7 +106,7 @@ public class UserController {
         boolean ifPassMatch = userClient.ifPassMatch(userDTO.getPassword(), token);
         if (!ifPassMatch) {
             ModelAndView modelAndView = new ModelAndView("redirect:/user/password");
-            modelAndView.addObject("error", "Грешна парола!");
+            modelAndView.addObject(ERRORTXT, "Грешна парола!");
             return modelAndView;
         }
         return new ModelAndView("redirect:/user/change-password");
@@ -125,7 +126,7 @@ public class UserController {
             return new ModelAndView(REDIRECTTXT2);
         }
         ModelAndView modelAndView = new ModelAndView("redirect:/user/change-password");
-        modelAndView.addObject("error", "Паролите не съвпадат!");
+        modelAndView.addObject(ERRORTXT, "Паролите не съвпадат!");
         return modelAndView;
     }
 
@@ -140,7 +141,7 @@ public class UserController {
         if (result) {
             model.addAttribute("message", "Линк за възобновяване на парола беше изпратен успешно.");
         } else
-            model.addAttribute("error", "Няма потребител регистриран с този email адрес.");
+            model.addAttribute(ERRORTXT, "Няма потребител регистриран с този email адрес.");
         return "User/forgot-password";
     }
 
@@ -160,7 +161,7 @@ public class UserController {
         if (Boolean.TRUE.equals(isPasswordResetSuccessful)) {
             modelAndView.addObject("message", "Паролата е променена успешно!");
         } else {
-            modelAndView.addObject("error", "Паролата не е променена успешно! Опитайте отново.");
+            modelAndView.addObject(ERRORTXT, "Паролата не е променена успешно! Опитайте отново.");
         }
         return modelAndView;
     }

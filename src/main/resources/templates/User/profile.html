@@ -62,7 +62,7 @@
                                         <th>Е-поща</th>
                                         <td th:text="${user.email}"></td>
                                     </tr>
-                                    <tr>
+                                    <tr th:if="${#strings.trim(user.role) != 'CUSTOMER'}">
                                         <th>Роля</th>
                                         <td th:text="${user.role}"></td>
                                     </tr>
