@@ -88,7 +88,10 @@ public class UserController {
         String token = (String) request.getSession().getAttribute(SESSION_TOKEN);
         UserDTO existingUser = userClient.getUserById(id, token);
         model.addAttribute("user", existingUser);
+
         UserDTO authenticatedUser = userClient.findAuthenticatedUser(token);
+        List<ClientDTO> clients = clientUserClient.getAllClientWithNoUser(token);
+        model.addAttribute("clientsForSelect", clients);
 
         if (existingUser.equals(authenticatedUser)) {
             return "User/profile-edit";

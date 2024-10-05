@@ -89,15 +89,15 @@
                                             <span th:if="${user.clientID == null}"></span>
                                         </td>
                                         <td>
-                                            <form th:action="@{'/user/delete/' + ${user.id}}" method="post"
-                                                  th:attr="onsubmit='return confirm(\'Сигурни ли сте, че искате да изтриете Потребител с име: ' + ${user.firstname} + '?\');'">
-                                                <button type="submit" class="btn btn-danger">Изтрий</button>
-                                            </form>
-                                        </td>
-                                        <td>
                                             <form th:action="@{'/user/editUser/' + ${user.id}}" method="get"
                                                   th:attr="onsubmit='return confirm(\'Сигурни ли сте, че искате да редактирате Потребител с име: ' + ${user.firstname} + '?\');'">
                                                 <button type="submit" class="btn btn-primary">Редактирай</button>
+                                            </form>
+                                        </td>
+                                        <td>
+                                            <form th:action="@{'/user/delete/' + ${user.id}}" method="post"
+                                                  th:attr="onsubmit='return confirm(\'Сигурни ли сте, че искате да изтриете Потребител с име: ' + ${user.firstname} + '?\');'">
+                                                <button type="submit" class="btn btn-danger">Изтрий</button>
                                             </form>
                                         </td>
                                     </tr>
