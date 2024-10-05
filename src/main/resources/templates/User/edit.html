@@ -10,14 +10,28 @@
     <link href="/css/form.css" rel="stylesheet">
 </head>
 <script>
-document.addEventListener("DOMContentLoaded", function() {
-    const navbar = document.getElementById("sidebar");
-    console.log(navbar);
-    const toggler = document.querySelector("a.sidebar-toggle");
-    toggler.addEventListener("click", () => {
-    navbar.classList.toggle("collapsed");
+    document.addEventListener("DOMContentLoaded", function() {
+       const navbar = document.getElementById("sidebar");
+       const toggler = document.querySelector("a.sidebar-toggle");
+       toggler.addEventListener("click", () => {
+           navbar.classList.toggle("collapsed");
+       });
+     const roleSelect = document.getElementById("role");
+
+        function checkRole() {
+            if (roleSelect.value === "CUSTOMER") {
+                roleSelect.disabled = true;
+            } else {
+                roleSelect.disabled = false;
+            }
+        }
+
+        checkRole();
+
+        roleSelect.addEventListener("change", function() {
+            checkRole();
+        });
     });
-});
 </script>
 <body>
 <div class="wrapper">
@@ -39,7 +53,6 @@ document.addEventListener("DOMContentLoaded", function() {
                             </div>
                             <div class="card-body">
                                 <form th:action="@{'/user/edit/' + ${user.id}}" method="post" th:object="${user}">
-<!--                                    <form th:action="@{'/client/edit/' + ${client.id}}" method="get" th:object="${client}">-->
                                     <div class="form-group">
                                         <label for="username">Потребителско име</label>
                                         <input type="text" class="form-control" id="username" name="username"
@@ -72,6 +85,7 @@ document.addEventListener("DOMContentLoaded", function() {
                                             <option value="ADMIN">Администратор</option>
                                             <option value="PRODUCTION_MANAGER">Мениджър производство</option>
                                             <option value="TRANSPORT_MANAGER">Мениджър транспорт</option>
+                                            <option value="CUSTOMER">Клиент</option>
                                         </select>
                                     </div>
                                     <div class="text-center">

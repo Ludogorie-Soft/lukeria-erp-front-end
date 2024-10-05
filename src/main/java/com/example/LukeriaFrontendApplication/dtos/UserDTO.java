@@ -25,4 +25,5 @@ public class UserDTO {
     @Email
     private String email;
     private Role role;
+    private Long clientID;
 }

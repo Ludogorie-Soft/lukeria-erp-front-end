@@ -28,6 +28,7 @@ public class ClientDTO {
     private String contactPhone;
     private String deliveryAddress;
     private String information;
+    private Long customer;
 
     // I did the fiend String because otherwise it always gets value of FALSE from the html form and only this way i could fix it
     private String isBulgarianClient;
