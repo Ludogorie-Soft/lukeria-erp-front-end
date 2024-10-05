@@ -74,10 +74,12 @@ public class ClientController {
                 .map(ClientUserDTO::getUserId)
                 .findFirst().orElse(null);
 
-        UserDTO userDTO = userClient.getUserById(userId, token);
+        if (userId != null) {
+            UserDTO userDTO = userClient.getUserById(userId, token);
+            model.addAttribute("user", userDTO);
+        }
 
         model.addAttribute(CLIENT, client);
-        model.addAttribute("user", userDTO);
 
         return "Client/showById";
     }
