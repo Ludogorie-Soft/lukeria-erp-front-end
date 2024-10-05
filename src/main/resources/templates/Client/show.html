@@ -68,7 +68,7 @@
                                         <th>Адрес</th>
                                         <th>Български клиент</th>
                                         <th>МОЛ</th>
-                                        <th>Управляващ Профил</th>
+                                        <th>Допълнителна Информация</th>
                                         <th>Действия</th>
                                     </tr>
                                     </thead>
@@ -82,11 +82,10 @@
                                         <td th:text="${client.isBulgarianClient ? 'ДА' : 'НЕ'}"></td>
                                         <td th:text="${client.isBulgarianClient ? client.mol : client.englishMol}"></td>
                                         <td>
-        <span th:if="${client.customer != null}">
-    <span th:each="user : ${users}" th:if="${user.id == client.customer}">
+    <span>
         <a th:href="@{'/client/show/' + ${client.id}}" th:text=Информация></a>
     </span>
-</span></td>
+</td>
                                         <td>
                                             <form th:action="@{'/client/delete/' + ${client.id}}" method="post"
                                                   th:attr="onsubmit='return confirm(\'Сигурни ли сте, че искате да изтриете клинет с id: ' + ${client.id} + '?\');'">

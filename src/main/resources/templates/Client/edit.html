@@ -144,18 +144,23 @@ document.addEventListener("DOMContentLoaded", function() {
                                        title="Номера по ЕИК трябва да бъде последователност от 5 знака!"
                                        th:field="*{idNumEIK}"/>
                                 <div class="error-message"></div>
+
                                 <div class="form-group">
                                     <label for="contactPhone">Телефон за връзка:</label>
-                                    <input type="text" id="contactPhone" name="contactPhone"/>
+                                    <input type="text" id="contactPhone" name="contactPhone"
+                                           th:field="*{contactPhone}"/>
                                 </div>
+
                                 <div class="form-group">
                                     <label for="deliveryAddress">Адрес за доставка:</label>
-                                    <input type="text" id="deliveryAddress" name="deliveryAddress"/>
+                                    <input type="text" id="deliveryAddress" name="deliveryAddress"
+                                           th:field="*{deliveryAddress}"/>
                                 </div>
 
                                 <div class="form-group">
                                     <label for="information">Допълнителна информация:</label>
-                                    <textarea id="information" name="information" rows="4" cols="45"></textarea>
+                                    <textarea id="information" name="information" rows="4" cols="45"
+                                              th:field="*{information}"></textarea>
                                 </div>
                             </div>
                             <div class="form-check">
