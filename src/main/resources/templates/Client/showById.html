@@ -63,6 +63,16 @@
 
                                         <strong>МОЛ:</strong>
                                         <span th:text="${client.isBulgarianClient ? client.mol : client.englishMol}"></span>
+
+                                        <strong>Адрес за доставка :</strong>
+                                        <span th:text="${client.deliveryAddress}"></span>
+
+                                        <strong>Телефон за контакт:</strong>
+                                        <span th:text="${client.contactPhone}"></span>
+
+                                        <strong>Допълнителна информация:</strong>
+                                        <span th:text="${client.information}"></span>
+
                                     </div>
 
                                     <div class="separator"></div> <!-- Разделителна лента -->
@@ -83,6 +93,7 @@
                                             <strong>Адрес:</strong>
                                             <span th:text="${user.address}"></span>
                                         </div>
+
                                     </div>
                                 </div>
                             </div>
