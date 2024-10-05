@@ -33,12 +33,12 @@
                 <th:block th:if="${session.sessionToken != null}">
                     <li class="sidebar-item">
                         <a id="nav-logout" class="sidebar-link" href="/logout">
-                            <i class="fas fa-registered align-middle"></i> <span class="align-middle">Излез</span>
+                            <i class="fas fa-sign-out-alt"></i> <span class="align-middle">Излез</span>
                         </a>
                     </li>
                     <li class="sidebar-item">
                         <a id="profile" class="sidebar-link" href="/user/profile">
-                            <i class="fas fa-registered align-middle"></i> <span class="align-middle">Профил</span>
+                            <i class="fas fa-user-tie"></i> <span class="align-middle">Профил</span>
                         </a>
                     </li>
                 </th:block>
@@ -57,7 +57,8 @@
                 <th:block th:if="${session.sessionToken != null and session.sessionRole == 'ADMIN'}">
                     <li class="sidebar-item">
                         <a id="nav-show" class="sidebar-link" href="/show">
-                            <i class="fas fa-box-open align-middle"></i> <span class="align-middle">Кашони</span>
+                            <i class="fas fa-box-open align-middle"></i>
+                            <span class="align-middle">Кашони</span>
                         </a>
                     </li>
                 </th:block>
@@ -72,7 +73,7 @@
                 <th:block th:if="${session.sessionToken != null and session.sessionRole == 'ADMIN'}">
                     <li class="sidebar-item">
                         <a id="nav-package-show" class="sidebar-link" href="/package/show">
-                            <i class="fas fa-box-open align-middle"></i> <span class="align-middle">Кутии</span>
+                            <i class="fas fa-folder"></i> <span class="align-middle">Кутии</span>
                         </a>
                     </li>
                 </th:block>
@@ -80,14 +81,14 @@
                         th:if="${session.sessionToken != null and (session.sessionRole == 'PRODUCTION_MANAGER' or session.sessionRole == 'TRANSPORT_MANAGER')}">
                     <li class="sidebar-item">
                         <a id="nav-package-show17" class="sidebar-link" href="/package/show">
-                            <i class="fas fa-box-open align-middle"></i> <span class="align-middle">Кутии</span>
+                            <i class="fas fa-folder"></i> <span class="align-middle">Кутии</span>
                         </a>
                     </li>
                 </th:block>
                 <th:block th:if="${session.sessionToken != null and session.sessionRole == 'ADMIN'}">
                     <li class="sidebar-item">
                         <a id="nav-show1" class="sidebar-link" href="/plate/show">
-                            <i class="fas fa-box-open align-middle"></i> <span class="align-middle">Тарелки</span>
+                            <i class="fas fa-columns"></i> <span class="align-middle">Тарелки</span>
                         </a>
                     </li>
                 </th:block>
@@ -95,15 +96,15 @@
                         th:if="${session.sessionToken != null and (session.sessionRole == 'PRODUCTION_MANAGER' or session.sessionRole == 'TRANSPORT_MANAGER')}">
                     <li class="sidebar-item">
                         <a id="nav-show17" class="sidebar-link" href="/plate/show">
-                            <i class="fas fa-box-open align-middle"></i> <span class="align-middle">Тарелки</span>
+                            <i class="fas fa-columns"></i> <span class="align-middle">Тарелки</span>
                         </a>
                     </li>
                 </th:block>
                 <th:block th:if="${session.sessionToken != null and session.sessionRole == 'ADMIN'}">
                     <li class="sidebar-item">
                         <a id="nav-show5" class="sidebar-link" href="/product/show">
-                            <i class="fas fa-box-open align-middle"></i> <span
-                                class="align-middle">Продукти Лукерия</span>
+                            <i class="fas fa-boxes"></i>
+                            <span>Продукти Лукерия</span>
                         </a>
                     </li>
                 </th:block>
@@ -111,7 +112,7 @@
                         th:if="${session.sessionToken != null and (session.sessionRole == 'PRODUCTION_MANAGER' or session.sessionRole == 'TRANSPORT_MANAGER')}">
                     <li class="sidebar-item">
                         <a id="nav-show15" class="sidebar-link" href="/product/show">
-                            <i class="fas fa-box-open align-middle"></i> <span
+                            <i class="fas fa-boxes"></i><span>
                                 class="align-middle">Продукти Лукерия</span>
                         </a>
                     </li>
@@ -120,7 +121,7 @@
                         th:if="${session.sessionToken != null and (session.sessionRole == 'PRODUCTION_MANAGER' or session.sessionRole == 'TRANSPORT_MANAGER' or session.sessionRole == 'CUSTOMER')}">
                     <li class="sidebar-item">
                         <a id="nav-availableProducts" class="sidebar-link" href="/product/available-products">
-                            <i class="fas fa-shopping-basket align-middle"></i> <span class="align-middle">Налични продукти</span>
+                            <i class="fas fa-cubes"></i> <span class="align-middle">Налични продукти</span>
                         </a>
                 </th:block>
                 </li>
@@ -128,7 +129,7 @@
                         th:if="${session.sessionToken != null and (session.sessionRole == 'PRODUCTION_MANAGER' or session.sessionRole == 'TRANSPORT_MANAGER' or session.sessionRole == 'ADMIN')}">
                     <li class="sidebar-item">
                         <a id="nav-show3" class="sidebar-link" href="/order/show">
-                            <i class="fas fa-shopping-basket align-middle"></i> <span class="align-middle">Транспортиране на продукти</span>
+                            <i class="fas fa-shipping-fast"></i> <span class="align-middle">Транспортиране на продукти</span>
                         </a>
                     </li>
                 </th:block>
@@ -159,14 +160,14 @@
                 <th:block th:if="${session.sessionToken != null and session.sessionRole == 'ADMIN'}">
                     <li class="sidebar-item">
                         <a id="nav-show4" class="sidebar-link" href="/material-order/show">
-                            <i class="fas fa-shopping-basket align-middle"></i> <span class="align-middle">Поръчки на материали</span>
+                            <i class="fas fa-warehouse"></i> <span class="align-middle">Поръчки на материали</span>
                         </a>
                     </li>
                 </th:block>
                 <th:block th:if="${session.sessionToken != null and session.sessionRole == 'PRODUCTION_MANAGER'}">
                     <li class="sidebar-item">
                         <a id="nav-show14" class="sidebar-link" href="/material-order/show">
-                            <i class="fas fa-shopping-basket align-middle"></i> <span class="align-middle">Поръчки на материали</span>
+                            <i class="fas fa-warehouse"></i> <span class="align-middle">Поръчки на материали</span>
                         </a>
                     </li>
                 </th:block>
