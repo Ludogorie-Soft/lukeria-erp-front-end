@@ -68,7 +68,11 @@
                                         <th>Адрес</th>
                                         <th>Български клиент</th>
                                         <th>МОЛ</th>
+                                        <th>Телефон за контакт</th> <!-- New field -->
+                                        <th>Адрес за доставка</th>  <!-- New field -->
+                                        <th>Допълнителна информация</th>
                                         <th>Управляващ Профил</th>
+                                        <th>Действия</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -80,6 +84,10 @@
                                         <td th:text="${client.isBulgarianClient ? client.address : client.englishAddress}"></td>
                                         <td th:text="${client.isBulgarianClient ? 'ДА' : 'НЕ'}"></td>
                                         <td th:text="${client.isBulgarianClient ? client.mol : client.englishMol}"></td>
+                                      <td th:text="${client.contactPhone}"></td> <!-- Display contactPhone -->
+                      <td th:text="${client.deliveryAddress}"></td> <!-- Display deliveryAddress -->
+                      <td th:text="${client.information}"></td> <!-- Display information -->
+                                        <td>
                                         <td>
         <span th:if="${client.customer != null}">
     <span th:each="user : ${users}" th:if="${user.id == client.customer}">
@@ -88,7 +96,6 @@
 </span>
                                             <span th:if="${client.customer == null}"></span>
                                         </td>
-                                        <td>
                                             <form th:action="@{'/client/delete/' + ${client.id}}" method="post"
                                                   th:attr="onsubmit='return confirm(\'Сигурни ли сте, че искате да изтриете клинет с id: ' + ${client.id} + '?\');'">
                                                 <button type="submit" class="btn btn-danger">Изтрий</button>
