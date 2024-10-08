@@ -127,6 +127,28 @@ public class ClientController {
         clientClient.deleteClientById(id, token);
         return new ModelAndView(REDIRECTTXT);
     }
+    @PostMapping("/deleteByUserAndClient/{userID}/{clientId}")
+    ModelAndView deleteClientUser(@PathVariable Long userID, @PathVariable Long clientId,  Model model, HttpServletRequest request) {
+        String token = (String) request.getSession().getAttribute(SESSION_TOKEN);
+        clientUserClient.deleteClientUser(userID,clientId,token);
+        ClientDTO client = clientClient.getClientById(clientId, token);
+
+        List<ClientUserDTO> userClientDtoList = clientUserClient.getAllClientUsers(token);
+
+        Long userId = userClientDtoList.stream()
+                .filter(clientUserDTO -> clientUserDTO.getClientId().equals(client.getId()))
+                .map(ClientUserDTO::getUserId)
+                .findFirst().orElse(null);
+
+        if (userId != null) {
+            UserDTO userDTO = userClient.getUserById(userId, token);
+            model.addAttribute("user", userDTO);
+        }
+
+        model.addAttribute(CLIENT, client);
+
+        return new ModelAndView("redirect:/client/show/"+clientId);
+    }
 
 }
 

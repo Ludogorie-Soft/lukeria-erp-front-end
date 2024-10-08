@@ -113,6 +113,13 @@
                                     </button>
                                 </form>
                             </div>
+                            <form th:action="@{'/client/deleteByUserAndClient/' + ${user.id} + '/' + ${client.id}}" method="post"
+                                  th:if="${user != null}"
+                                  th:attr="onsubmit='return confirm(\'Сигурни ли сте, че искате да премахнете профила на управляващия с id: ' + ${user.id} + ' за клиент с id: ' + ${client.id} + '?\');'">
+                                <button type="submit" class="btn btn-warning">
+                                    <i class="fas fa-user-minus"></i> Премахни Профил На Управляващ
+                                </button>
+                            </form>
                             <a th:href="@{/client/show}" class="btn btn-secondary">
                                 <i class="fas fa-arrow-left"></i> Назад
                             </a>

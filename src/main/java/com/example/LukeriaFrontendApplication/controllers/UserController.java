@@ -104,6 +104,10 @@ public class UserController {
         String token = (String) request.getSession().getAttribute(SESSION_TOKEN);
         UserDTO authenticatedUser = userClient.findAuthenticatedUser(token);
         UserDTO existingUser = userClient.getUserById(id, token);
+
+        if (userDTO.getClientID() != null) {
+            clientUserClient.createClientUser(new ClientUserDTO(null, userDTO.getClientID(), userDTO.getId()), token);
+        }
         if (existingUser.equals(authenticatedUser)) {
             AuthenticationResponse authenticationResponse = userClient.updateAuthenticatedUser(id, userDTO, token);
             sessionManager.setSessionToken(request, authenticationResponse.getAccessToken(), authenticationResponse.getUser().getRole().toString());

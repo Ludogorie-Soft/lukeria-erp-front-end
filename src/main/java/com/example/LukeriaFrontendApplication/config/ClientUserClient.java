@@ -21,4 +21,6 @@ public interface ClientUserClient {
     ClientUserDTO updateClientUser(@PathVariable Long id, @RequestBody ClientUserDTO clientUserDTO, @RequestHeader("Authorization")String auth);
     @DeleteMapping("/{id}")
     void deleteClientUser(@PathVariable Long id, @RequestHeader("Authorization")String auth);
+    @DeleteMapping("/deleteByUserAndClient/{userId}/{clientId}")
+     void deleteClientUser(@PathVariable Long userId, @PathVariable Long clientId, @RequestHeader("Authorization") String auth);
 }
