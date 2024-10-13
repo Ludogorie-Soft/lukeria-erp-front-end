@@ -10,14 +10,49 @@
     <link href="/css/form.css" rel="stylesheet">
 </head>
 <script>
-document.addEventListener("DOMContentLoaded", function() {
-    const navbar = document.getElementById("sidebar");
-    console.log(navbar);
-    const toggler = document.querySelector("a.sidebar-toggle");
-    toggler.addEventListener("click", () => {
-    navbar.classList.toggle("collapsed");
+    document.addEventListener("DOMContentLoaded", function() {
+       const navbar = document.getElementById("sidebar");
+       const toggler = document.querySelector("a.sidebar-toggle");
+       toggler.addEventListener("click", () => {
+           navbar.classList.toggle("collapsed");
+       });
+
+
+        // Show/hide client selection based on role selection
+        const roleSelect = document.getElementById("role");
+        const clientSelection = document.getElementById("clientSelection");
+        const clientID = document.getElementById("clientID");
+
+        roleSelect.addEventListener("change", function() {
+            if (this.value === "CUSTOMER") {
+                clientSelection.style.display = "block";
+                clientID.selectedIndex = 0; // Reset client selection
+                clientID.required = true; // Make clientID required
+            } else {
+                clientSelection.style.display = "none";
+                clientID.selectedIndex = 0; // Reset to the first option
+                clientID.required = false; // Remove required attribute
+                clientID.value = ""; // Optionally reset value
+            }
+        });
+
+        // Set clientID to null if not selected on form submission
+        const form = document.querySelector("form");
+        form.addEventListener("submit", function(event) {
+            if (roleSelect.value === "CUSTOMER" && clientID.value === "") {
+                event.preventDefault(); // Prevent form submission
+                alert("Моля, изберете клиент!"); // Alert for required selection
+            } else if (roleSelect.value !== "CUSTOMER") {
+                clientID.value = null; // Set clientID to null if role is not CUSTOMER
+            }
+        });
+
+        // Initialize visibility on page load
+        if (roleSelect.value !== "CUSTOMER") {
+            clientSelection.style.display = "none";
+            clientID.required = false; // Ensure required is false
+        }
     });
-});
 </script>
 <body>
 <div class="wrapper">
@@ -39,7 +74,6 @@ document.addEventListener("DOMContentLoaded", function() {
                             </div>
                             <div class="card-body">
                                 <form th:action="@{'/user/edit/' + ${user.id}}" method="post" th:object="${user}">
-<!--                                    <form th:action="@{'/client/edit/' + ${client.id}}" method="get" th:object="${client}">-->
                                     <div class="form-group">
                                         <label for="username">Потребителско име</label>
                                         <input type="text" class="form-control" id="username" name="username"
@@ -72,6 +106,16 @@ document.addEventListener("DOMContentLoaded", function() {
                                             <option value="ADMIN">Администратор</option>
                                             <option value="PRODUCTION_MANAGER">Мениджър производство</option>
                                             <option value="TRANSPORT_MANAGER">Мениджър транспорт</option>
+                                            <option value="CUSTOMER">Клиент</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group" id="clientSelection" style="display: none;">
+                                        <label for="clientID">Управление за Клиент:</label>
+                                        <select class="form-control" id="clientID" name="clientID" th:field="*{clientID}">
+                                            <option value="" disabled selected>Изберете клиент</option>
+                                            <option th:each="client : ${clientsForSelect}"
+                                                    th:value="${client.id}"
+                                                    th:text="${client.idNumEIK} + ' - ' + ${client.businessName}"></option>
                                         </select>
                                     </div>
                                     <div class="text-center">
