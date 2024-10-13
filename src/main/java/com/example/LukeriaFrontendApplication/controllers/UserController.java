@@ -1,7 +1,11 @@
 package com.example.LukeriaFrontendApplication.controllers;
 
+import com.example.LukeriaFrontendApplication.config.ClientClient;
+import com.example.LukeriaFrontendApplication.config.ClientUserClient;
 import com.example.LukeriaFrontendApplication.config.UserClient;
 import com.example.LukeriaFrontendApplication.dtos.AuthenticationResponse;
+import com.example.LukeriaFrontendApplication.dtos.ClientDTO;
+import com.example.LukeriaFrontendApplication.dtos.ClientUserDTO;
 import com.example.LukeriaFrontendApplication.dtos.UserDTO;
 import com.example.LukeriaFrontendApplication.models.User;
 import com.example.LukeriaFrontendApplication.session.SessionManager;
@@ -12,7 +16,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @org.springframework.stereotype.Controller
 @RequiredArgsConstructor
@@ -25,20 +31,42 @@ public class UserController {
     private static final String ERRORTXT = "error";
 
     private final UserClient userClient;
-
+    private final ClientUserClient clientUserClient;
+    private final ClientClient clientClient;
     private final SessionManager sessionManager;
 
     @GetMapping("/show")
     public String index(Model model, HttpServletRequest request) {
         String token = (String) request.getSession().getAttribute(SESSION_TOKEN);
+
+        List<ClientDTO> clients = clientClient.getAllClients(token);
         List<UserDTO> users = userClient.getAllUsers(token);
+        List<ClientUserDTO> clientUsers = clientUserClient.getAllClientUsers(token);
+
+        Map<Long, Long> clientUserMap = new HashMap<>();
+        for (ClientUserDTO clientUser : clientUsers) {
+            clientUserMap.put(clientUser.getUserId(), clientUser.getClientId());
+        }
+
+        for (UserDTO user : users) {
+            if (clientUserMap.containsKey(user.getId())) {
+                user.setClientID(clientUserMap.get(user.getId()));
+            }
+        }
+        model.addAttribute("clients", clients);
         model.addAttribute("users", users);
         return "User/show";
     }
 
     @GetMapping("/create")
-    String createUser(Model model) {
+    String createUser(Model model, HttpServletRequest request) {
+        String token = (String) request.getSession().getAttribute(SESSION_TOKEN);
+
+        List<ClientDTO> clients = clientUserClient.getAllClientWithNoUser(token);
+
         User user = new User();
+
+        model.addAttribute("clientsForSelect", clients);
         model.addAttribute("user", user);
         return "User/create";
     }
@@ -46,7 +74,12 @@ public class UserController {
     @PostMapping("/submit")
     public ModelAndView submitUser(@ModelAttribute("user") UserDTO user, HttpServletRequest request) {
         String token = (String) request.getSession().getAttribute(SESSION_TOKEN);
-        userClient.createUser(user, token);
+        UserDTO createdUser = userClient.createUser(user, token);
+
+        if (user.getClientID() != null) {
+            ClientUserDTO clientUserDTO = new ClientUserDTO(null, user.getClientID(), createdUser.getId());
+            clientUserClient.createClientUser(clientUserDTO, token);
+        }
         return new ModelAndView(REDIRECTTXT);
     }
 
@@ -55,7 +88,10 @@ public class UserController {
         String token = (String) request.getSession().getAttribute(SESSION_TOKEN);
         UserDTO existingUser = userClient.getUserById(id, token);
         model.addAttribute("user", existingUser);
+
         UserDTO authenticatedUser = userClient.findAuthenticatedUser(token);
+        List<ClientDTO> clients = clientUserClient.getAllClientWithNoUser(token);
+        model.addAttribute("clientsForSelect", clients);
 
         if (existingUser.equals(authenticatedUser)) {
             return "User/profile-edit";
@@ -68,6 +104,10 @@ public class UserController {
         String token = (String) request.getSession().getAttribute(SESSION_TOKEN);
         UserDTO authenticatedUser = userClient.findAuthenticatedUser(token);
         UserDTO existingUser = userClient.getUserById(id, token);
+
+        if (userDTO.getClientID() != null) {
+            clientUserClient.createClientUser(new ClientUserDTO(null, userDTO.getClientID(), userDTO.getId()), token);
+        }
         if (existingUser.equals(authenticatedUser)) {
             AuthenticationResponse authenticationResponse = userClient.updateAuthenticatedUser(id, userDTO, token);
             sessionManager.setSessionToken(request, authenticationResponse.getAccessToken(), authenticationResponse.getUser().getRole().toString());
