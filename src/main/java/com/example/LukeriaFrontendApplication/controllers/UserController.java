@@ -7,6 +7,7 @@ import com.example.LukeriaFrontendApplication.dtos.AuthenticationResponse;
 import com.example.LukeriaFrontendApplication.dtos.ClientDTO;
 import com.example.LukeriaFrontendApplication.dtos.ClientUserDTO;
 import com.example.LukeriaFrontendApplication.dtos.UserDTO;
+import com.example.LukeriaFrontendApplication.enums.Role;
 import com.example.LukeriaFrontendApplication.models.User;
 import com.example.LukeriaFrontendApplication.session.SessionManager;
 import jakarta.servlet.http.HttpServletRequest;
@@ -90,8 +91,12 @@ public class UserController {
         model.addAttribute("user", existingUser);
 
         UserDTO authenticatedUser = userClient.findAuthenticatedUser(token);
-        List<ClientDTO> clients = clientUserClient.getAllClientWithNoUser(token);
-        model.addAttribute("clientsForSelect", clients);
+
+        if (authenticatedUser.getRole().equals(Role.ADMIN)){
+            List<ClientDTO> clients = clientUserClient.getAllClientWithNoUser(token);
+            model.addAttribute("clientsForSelect", clients);
+        }
+
 
         if (existingUser.equals(authenticatedUser)) {
             return "User/profile-edit";
