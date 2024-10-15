@@ -16,7 +16,7 @@ public interface PackageClient {
     @GetMapping("/{id}")
     PackageDTO getPackageById(@PathVariable(name = "id") Long id, @RequestHeader("Authorization") String auth);
     @GetMapping("/materials/{id}")
-     void getAllMaterialsForPackageById(@PathVariable(name = "id") Long id, @RequestHeader("Authorization") String auth) ;
+     Boolean getAllMaterialsForPackageById(@PathVariable(name = "id") Long id, @RequestHeader("Authorization") String auth) ;
 
     @PostMapping
     PackageDTO createPackage(@Valid @RequestBody PackageDTO packageDTO, @RequestHeader("Authorization") String auth);
