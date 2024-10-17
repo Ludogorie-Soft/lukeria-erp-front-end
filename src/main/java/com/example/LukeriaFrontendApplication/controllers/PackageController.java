@@ -73,6 +73,13 @@ public class PackageController {
         return new ModelAndView(REDIRECTTXT);
     }
 
+    @GetMapping("/package/materials/{id}")
+    public ModelAndView getAllMaterialsForPackageById(@PathVariable(name = "id") Long id, HttpServletRequest request) {
+        String token = (String) request.getSession().getAttribute(SESSION_TOKEN);
+        packageClient.getAllMaterialsForPackageById(id, token);
+        return new ModelAndView(REDIRECTTXT);
+    }
+
     @GetMapping("/package/editPackage/{id}")
     public String editPackage(@PathVariable(name = "id") Long id, Model model, HttpServletRequest request) {
         String token = (String) request.getSession().getAttribute(SESSION_TOKEN);
