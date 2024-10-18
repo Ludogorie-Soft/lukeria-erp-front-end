@@ -35,6 +35,9 @@ public interface CustomerCustomPriceClient {
     @GetMapping("/allForClient/{id}")
     List<CustomerCustomPriceDTO> allProductsWithAndWithoutCustomPrice(@PathVariable(name = "id") Long clientId, @RequestHeader("Authorization") String auth);
 
-}
+    @GetMapping("/findByClientAndProduct")
+    CustomerCustomPriceDTO customPriceByClientAndProduct(@RequestParam Long clientId, @RequestParam Long productId, @RequestHeader("Authorization") String auth);
+
+    }
 
 
