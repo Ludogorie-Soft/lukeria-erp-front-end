@@ -109,9 +109,10 @@ public class ProductController {
             try {
                 if(clientId == null){
                     allProductsForSale.add(new ProductPriceDTO(productDTO, productDTO.getPrice()));
+                }else{
+                    CustomerCustomPriceDTO customPriceForClient = customerCustomPriceClient.customPriceByClientAndProduct(clientId, productDTO.getId(), token);
+                    allProductsForSale.add(new ProductPriceDTO(productDTO, customPriceForClient.getPrice()));
                 }
-                CustomerCustomPriceDTO customPriceForClient = customerCustomPriceClient.customPriceByClientAndProduct(clientId, productDTO.getId(), token);
-                allProductsForSale.add(new ProductPriceDTO(productDTO, customPriceForClient.getPrice()));
             } catch (FeignException.NotFound e) {
                 // If NotFoundException is thrown, use the product's default price
                 allProductsForSale.add(new ProductPriceDTO(productDTO, productDTO.getPrice()));
