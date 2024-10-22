@@ -9,14 +9,14 @@
     <link href="/css/show.css" rel="stylesheet">
 </head>
 <script>
-document.addEventListener("DOMContentLoaded", function() {
-    const navbar = document.getElementById("sidebar");
-    console.log(navbar);
-    const toggler = document.querySelector("a.sidebar-toggle");
-    toggler.addEventListener("click", () => {
-    navbar.classList.toggle("collapsed");
+    document.addEventListener("DOMContentLoaded", function() {
+        const navbar = document.getElementById("sidebar");
+        console.log(navbar);
+        const toggler = document.querySelector("a.sidebar-toggle");
+        toggler.addEventListener("click", () => {
+        navbar.classList.toggle("collapsed");
+        });
     });
-});
 
 </script>
 <body>
@@ -79,10 +79,10 @@ document.addEventListener("DOMContentLoaded", function() {
                                         <th>Код на продукта</th>
                                         <th>Име на Продукт</th>
                                         <th>Наличност</th>
-                                        <th:block
-                                                th:if="${session.sessionToken != null and session.sessionRole == 'ADMIN'}">
+                                        <th:block th:if="${session.sessionToken != null and session.sessionRole == 'ADMIN'}">
                                             <th>Цена за брой</th>
                                         </th:block>
+                                        <th>Действие</th> <!-- New column for the "Купи" button -->
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -98,22 +98,31 @@ document.addEventListener("DOMContentLoaded", function() {
                                                  height="100"
                                                  width="100">
                                         </td>
-
                                         <td th:text="${product.productCode}"></td>
                                         <td th:text="${productPackageMap.get(product.packageId)}"></td>
                                         <td>
-                                            <span th:text="${product.availableQuantity + ' Броя'}"
-                                                  th:class="${product.availableQuantity <= 20 ? 'red-cell' : (product.availableQuantity <= 100 ? 'yellow-cell' : '')}"></span>
+                <span th:text="${product.availableQuantity + ' Броя'}"
+                      th:class="${product.availableQuantity <= 20 ? 'red-cell' : (product.availableQuantity <= 100 ? 'yellow-cell' : '')}"></span>
                                         </td>
-                                        <th:block
-                                                th:if="${session.sessionToken != null and session.sessionRole == 'ADMIN'}">
+                                        <th:block th:if="${session.sessionToken != null and session.sessionRole == 'ADMIN'}">
                                             <td th:text="${product.price + ' Лв'}"></td>
-                                            </td>
                                         </th:block>
+                                        <td>
+                                            <!-- New form to submit order -->
+                                            <form id="orderForm" action="/order/place" method="get">
+                                                <!-- The hidden field for productId that the @RequestParam("product.id") expects -->
+                                                <input type="hidden" name="product.id" th:value="${product.id}"/>
+                                                <input type="hidden" name="quantity" value="1"/>
+
+                                                <!-- Submit button -->
+                                                <button type="submit" class="btn btn-primary">Направи поръчка</button>
+                                            </form>
+                                        </td>
                                     </tr>
                                     </tbody>
                                 </table>
                             </div>
+
                         </div>
                     </div>
                 </div>
@@ -123,75 +132,75 @@ document.addEventListener("DOMContentLoaded", function() {
 </div>
 <script src="/js/app.js"></script>
 <script>
-$(document).ready(function() {
-$('#packageId').select2();
-});
-document.getElementById('searchInput1').addEventListener('input', function () {
-    var input, filter, table, tr, td, i, txtValue;
-    input = document.getElementById('searchInput1');
-    filter = input.value.toUpperCase();
-    table = document.querySelector('table');
-    tr = table.getElementsByTagName('tr');
-    var count = 0; // Initialize the count variable
+    $(document).ready(function() {
+    $('#packageId').select2();
+    });
+    document.getElementById('searchInput1').addEventListener('input', function () {
+        var input, filter, table, tr, td, i, txtValue;
+        input = document.getElementById('searchInput1');
+        filter = input.value.toUpperCase();
+        table = document.querySelector('table');
+        tr = table.getElementsByTagName('tr');
+        var count = 0; // Initialize the count variable
 
-    for (i = 0; i < tr.length; i++) {
-        td = tr[i].getElementsByTagName('td')[1];
-        if (td) {
-            txtValue = td.textContent || td.innerText;
-            if (txtValue.toUpperCase().indexOf(filter) > -1) {
-                tr[i].style.display = '';
-                count++; // Increment the count when a match is found
-            } else {
-                tr[i].style.display = 'none';
+        for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName('td')[1];
+            if (td) {
+                txtValue = td.textContent || td.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = '';
+                    count++; // Increment the count when a match is found
+                } else {
+                    tr[i].style.display = 'none';
+                }
             }
         }
-    }
 
-    // Display the results count
-    var resultsCountElement = document.getElementById('resultsCount');
-    if (resultsCountElement) {
-        resultsCountElement.textContent = count;
-    } else {
-        // If the element doesn't exist, you can create and append it
-        resultsCountElement = document.createElement('div');
-        resultsCountElement.id = 'resultsCount';
-        resultsCountElement.textContent = count;
-        input.parentNode.appendChild(resultsCountElement); // Appending to the parent of the input
-    }
-});
-     document.getElementById('searchInput2').addEventListener('input', function () {
-    var input, filter, table, tr, td, i, txtValue;
-    input = document.getElementById('searchInput2');
-    filter = input.value.toUpperCase();
-    table = document.querySelector('table');
-    tr = table.getElementsByTagName('tr');
-    var count = 0; // Initialize the count variable
+        // Display the results count
+        var resultsCountElement = document.getElementById('resultsCount');
+        if (resultsCountElement) {
+            resultsCountElement.textContent = count;
+        } else {
+            // If the element doesn't exist, you can create and append it
+            resultsCountElement = document.createElement('div');
+            resultsCountElement.id = 'resultsCount';
+            resultsCountElement.textContent = count;
+            input.parentNode.appendChild(resultsCountElement); // Appending to the parent of the input
+        }
+    });
+         document.getElementById('searchInput2').addEventListener('input', function () {
+        var input, filter, table, tr, td, i, txtValue;
+        input = document.getElementById('searchInput2');
+        filter = input.value.toUpperCase();
+        table = document.querySelector('table');
+        tr = table.getElementsByTagName('tr');
+        var count = 0; // Initialize the count variable
 
-    for (i = 0; i < tr.length; i++) {
-        td = tr[i].getElementsByTagName('td')[2];
-        if (td) {
-            txtValue = td.textContent || td.innerText;
-            if (txtValue.toUpperCase().indexOf(filter) > -1) {
-                tr[i].style.display = '';
-                count++; // Increment the count when a match is found
-            } else {
-                tr[i].style.display = 'none';
+        for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName('td')[2];
+            if (td) {
+                txtValue = td.textContent || td.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = '';
+                    count++; // Increment the count when a match is found
+                } else {
+                    tr[i].style.display = 'none';
+                }
             }
         }
-    }
 
-    // Display the results count for the second search input
-    var resultsCountElement = document.getElementById('resultsCount2');
-    if (resultsCountElement) {
-        resultsCountElement.textContent = count;
-    } else {
-        // If the element doesn't exist, you can create and append it
-        resultsCountElement = document.createElement('div');
-        resultsCountElement.id = 'resultsCount2';
-        resultsCountElement.textContent = count;
-        input.parentNode.appendChild(resultsCountElement); // Appending to the parent of the input
-    }
-});
+        // Display the results count for the second search input
+        var resultsCountElement = document.getElementById('resultsCount2');
+        if (resultsCountElement) {
+            resultsCountElement.textContent = count;
+        } else {
+            // If the element doesn't exist, you can create and append it
+            resultsCountElement = document.createElement('div');
+            resultsCountElement.id = 'resultsCount2';
+            resultsCountElement.textContent = count;
+            input.parentNode.appendChild(resultsCountElement); // Appending to the parent of the input
+        }
+    });
 
 </script>
 </body>
