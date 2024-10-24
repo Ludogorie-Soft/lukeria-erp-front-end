@@ -118,8 +118,14 @@ document.addEventListener("DOMContentLoaded", function() {
                                             </a>
                                         </td>
                                         <td th:text="${package.piecesCarton}"></td>
-                                        <th:block
-                                                th:if="${session.sessionToken != null and session.sessionRole == 'ADMIN'}">
+                                        <th:block th:if="${session.sessionToken != null and session.sessionRole == 'ADMIN'}">
+                                            <td>
+                                                <form th:action="@{'/package/materials/' + ${package.id}}" method="get">
+                                                    <button type="submit" style="background: none; border: none; padding: 0; cursor: pointer;" title="Натисни, за да получиш емаил с налични материали за тази кутия">
+                                                        <i class="fas fa-paper-plane"></i>
+                                                    </button>
+                                                </form>
+                                            </td>
                                             <td>
                                                 <form th:action="@{'/package/delete/' + ${package.id}}" method="post"
                                                       th:attr="onsubmit='return confirm(\'Сигурни ли сте, че искате да изтриете пакет с име: ' + ${package.name} + '?\');'">
@@ -127,8 +133,7 @@ document.addEventListener("DOMContentLoaded", function() {
                                                 </form>
                                             </td>
                                             <td>
-                                                <form th:action="@{'/package/editPackage/' + ${package.id}}"
-                                                      method="get"
+                                                <form th:action="@{'/package/editPackage/' + ${package.id}}" method="get"
                                                       th:attr="onsubmit='return confirm(\'Сигурни ли сте, че искате да редактирате пакет с име: ' + ${package.name} + '?\');'">
                                                     <button type="submit" class="btn btn-primary">Редактирай</button>
                                                 </form>
