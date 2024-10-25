@@ -101,20 +101,19 @@
                                                  src="/img/photos/noImage.png"
                                                  style="height: 100px; width: 150px;" >
                                         </td>
-                                        <td th:text="${product.productCode}"></td>
-                                        <td th:text="${productPackageMap.get(product.packageId)}"></td>
+
+                                        <td th:text="${productPrice.product.productCode}"></td>
+                                        <td th:text="${productPackageMap.get(productPrice.product.packageId)}"></td>
                                         <td>
-                <span th:text="${product.availableQuantity + ' Броя'}"
-                      th:class="${product.availableQuantity <= 20 ? 'red-cell' : (product.availableQuantity <= 100 ? 'yellow-cell' : '')}"></span>
+        <span th:text="${productPrice.product.availableQuantity + ' Броя'}"
+              th:class="${productPrice.product.availableQuantity <= 20 ? 'red-cell' : (productPrice.product.availableQuantity <= 100 ? 'yellow-cell' : '')}"></span>
                                         </td>
-                                        <th:block th:if="${session.sessionToken != null and session.sessionRole == 'ADMIN'}">
-                                            <td th:text="${product.price + ' Лв'}"></td>
-                                        </th:block>
+                                        <td th:text="${productPrice.price + ' Лв'}"></td>
                                         <td>
                                             <!-- New form to submit order -->
                                             <form id="orderForm" action="/order/place" method="get">
                                                 <!-- The hidden field for productId that the @RequestParam("product.id") expects -->
-                                                <input type="hidden" name="product.id" th:value="${product.id}"/>
+                                                <input type="hidden" name="product.id" th:value="${productPrice.product.id}"/>
                                                 <input type="hidden" name="quantity" value="1"/>
 
                                                 <!-- Submit button -->
