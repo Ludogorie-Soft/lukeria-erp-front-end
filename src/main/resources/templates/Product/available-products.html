@@ -7,6 +7,10 @@
     <title>Продукти Лукерия</title>
     <link rel="icon" type="image/x-icon" href="/img/photos/noImage.png">
     <link href="/css/show.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
+    <link rel="stylesheet" href="/css/modalStyles.css">
+    <link rel="stylesheet" href="/css/videoStyles.css">
 </head>
 <script>
     document.addEventListener("DOMContentLoaded", function() {
@@ -17,7 +21,6 @@
         navbar.classList.toggle("collapsed");
         });
     });
-
 </script>
 <body>
 <div class="wrapper">
@@ -87,17 +90,16 @@
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    <tr th:each="product, iter : ${products}" data-id="${product.id}" class="plate-row">
+                                    <tr th:each="productPrice, iter : ${products}"
+                                        data-id="${productPrice.product.id}" class="plate-row">
                                         <td>
-                                            <img th:if="${productPackageMapImages.containsKey(product.packageId)}"
-                                                 th:src="@{${backendBaseUrl} + '/' + ${productPackageMapImages.get(product.packageId)}}"
-                                                 height="100"
-                                                 width="100">
-                                            <img th:unless="${productPackageMapImages.containsKey(product.packageId)}"
+                                            <img th:if="${productPackageMapImages.containsKey(productPrice.product.packageId)}"
+                                                 th:src="@{${backendBaseUrl} + '/' + ${productPackageMapImages.get(productPrice.product.packageId)}}"
+                                                 style="height: 100px; width: 150px;">
+                                            <img th:unless="${productPackageMapImages.containsKey(productPrice.product.packageId)}"
                                                  class="card-img-top"
                                                  src="/img/photos/noImage.png"
-                                                 height="100"
-                                                 width="100">
+                                                 style="height: 100px; width: 150px;" >
                                         </td>
                                         <td th:text="${product.productCode}"></td>
                                         <td th:text="${productPackageMap.get(product.packageId)}"></td>
