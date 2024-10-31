@@ -60,13 +60,14 @@
                                 <div class="col-md-6">
                                     <p>Код: <span th:text="${product.productCode}">0001</span></p>
                                     <p>Наличност: <span th:text="${product.availableQuantity}">10</span></p>
-                                    <p>Цена за брой: <span th:text="${product.price + ' Лв'}">15.00 Лв</span></p>
+
+                                    <!-- Display price with conditional custom price -->
+                                    <p>Цена за брой:
+                                        <span th:text="${price != null ? price : product.price} + ' Лв'">15.00 Лв</span>
+                                    </p>
 
                                     <!-- Form to choose quantity and proceed with the order -->
                                     <form action="/order/submit" method="post">
-                                        <!-- Required hidden CSRF token if needed -->
-<!--                                        <input type="hidden" name="_csrf" th:value="${_csrf.token}" />-->
-
                                         <div class="form-group">
                                             <label for="quantity">Количество:</label>
                                             <input type="number"
@@ -79,20 +80,21 @@
                                                    required>
                                         </div>
 
-                                        <!-- Hidden fields for product ID, price, and available quantity -->
+                                        <!-- Hidden fields for product ID, selected price, and available quantity -->
                                         <input type="hidden" id="availableQuantity" th:value="${product.availableQuantity}" />
-                                        <input type="hidden" id="pricePerUnit" th:value="${product.price}" />
+                                        <input type="hidden" id="pricePerUnit" th:value="${price != null ? price : product.price}" />
                                         <input type="hidden" name="product.id" th:value="${product.id}"/>
 
                                         <!-- Error message area -->
                                         <div id="error-message" style="color: red;"></div>
 
-                                        <!-- Display total price -->
-                                        <p>Обща цена: <span id="totalPrice" th:text="${product.price + ' Лв'}">15.00 Лв</span></p>
+                                        <!-- Display total price, dynamically calculated in JavaScript -->
+                                        <p>Обща цена: <span id="totalPrice" th:text="${price != null ? price : product.price} + ' Лв'">15.00 Лв</span></p>
 
                                         <button type="submit" class="btn btn-success mt-3">Продължи към плащане</button>
                                     </form>
                                 </div>
+
                             </div>
                         </div>
                     </div>

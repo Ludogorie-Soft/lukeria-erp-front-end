@@ -29,6 +29,7 @@ public class OrderController {
     private final ProductClient productClient;
     private final PackageClient packageClient;
     private final OrderProductClient orderProductClient;
+    private final CustomerCustomPriceClient customerCustomPriceClient;
     @Value("${backend.base-url}/images")
     private String backendBaseUrl;
 
@@ -110,7 +111,14 @@ public class OrderController {
 
         // Retrieve the product by productId
         ProductDTO productDTO = productClient.getProductById(productId, token);
-
+        UserDTO userDTO = userClient.findAuthenticatedUser(token);
+        List<ClientUserDTO> clientUserDTOS = clientUserClient.getAllClientUsers(token);
+        for (int i = 0; i < clientUserDTOS.size(); i++) {
+            if(clientUserDTOS.get(i).getUserId().equals(userDTO.getId())){
+                Optional<CustomerCustomPriceDTO> customerCustomPriceDTO = Optional.ofNullable(customerCustomPriceClient.customPriceByClientAndProduct(clientUserDTOS.get(i).getClientId(), productId, token));
+                customerCustomPriceDTO.ifPresent(customPriceDTO -> model.addAttribute("price", customPriceDTO.getPrice()));
+            }
+        }
         // Get package details if necessary
         PackageDTO packageDTO = packageClient.getPackageById(productDTO.getPackageId(), token);
 
