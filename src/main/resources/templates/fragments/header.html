@@ -123,8 +123,14 @@
                         <a id="nav-availableProducts" class="sidebar-link" href="/product/available-products">
                             <i class="fas fa-cubes"></i> <span class="align-middle">Налични продукти</span>
                         </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a id="nav-forSale" class="sidebar-link" href="/product/for-sale">
+                            <i class="fas fa-cubes"></i> <span class="align-middle">Продукти за продажба</span>
+                        </a>
+                    </li>
                 </th:block>
-                </li>
+
                 <th:block
                         th:if="${session.sessionToken != null and (session.sessionRole == 'PRODUCTION_MANAGER' or session.sessionRole == 'TRANSPORT_MANAGER' or session.sessionRole == 'ADMIN')}">
                     <li class="sidebar-item">
