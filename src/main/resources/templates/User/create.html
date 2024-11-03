@@ -97,6 +97,9 @@
                                         <label for="email">Е-поща</label>
                                         <input type="email" class="form-control" id="email" name="email"
                                                th:field="*{email}" required>
+                                        <div th:if="${emailAlreadyExists}"
+                                           class="text-danger" style="margin-top: 15px;"
+                                        th:text="${emailAlreadyExists}"></div>
                                     </div>
                                     <div class="form-group">
                                         <label for="password">Парола</label>

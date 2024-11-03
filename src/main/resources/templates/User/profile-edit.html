@@ -64,6 +64,7 @@ document.addEventListener("DOMContentLoaded", function() {
                                         <label for="email">Е-поща</label>
                                         <input type="email" class="form-control" id="email" name="email"
                                                th:field="*{email}" required>
+                                        <p th:if="${param.error}" class="text-danger" style="margin-top: 15px;"> Потребител с този имейл вече съществува! </p>
                                     </div>
                                     <input type="hidden" th:field="*{password}" th:value="${user.password}">
                                     <input type="hidden" th:field="*{role}" th:value="${user.role}">
