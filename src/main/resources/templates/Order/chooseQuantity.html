@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <th:block th:insert="~{fragments/links}"></th:block>
+    <title>Избор на количество и плащане</title>
+    <link rel="icon" type="image/x-icon" href="/img/photos/noImage.png">
+    <link href="/css/show.css" rel="stylesheet">
+</head>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const quantityInput = document.getElementById("quantity");
+        const pricePerUnit = parseFloat(document.getElementById("pricePerUnit").value);
+        const totalPriceElement = document.getElementById("totalPrice");
+        const availableQuantity = parseInt(document.getElementById("availableQuantity").value);
+        const errorMessage = document.getElementById("error-message");
+
+        // Function to update the total price based on quantity input
+        quantityInput.addEventListener("input", function() {
+            const quantity = parseInt(quantityInput.value);
+            if (quantity > availableQuantity) {
+                errorMessage.textContent = "Въведеното количество надвишава наличното!";
+                totalPriceElement.textContent = "Недопустимо";
+            } else if (quantity <= 0) {
+                errorMessage.textContent = "Моля, въведете валидно количество!";
+                totalPriceElement.textContent = "Недопустимо";
+            } else {
+                errorMessage.textContent = ""; // Clear error message
+                const totalPrice = pricePerUnit * quantity;
+                totalPriceElement.textContent = totalPrice.toFixed(2) + " Лв";
+            }
+        });
+    });
+</script>
+
+<body>
+<div class="wrapper">
+    <th:block th:insert="~{fragments/header}"></th:block>
+    <div class="main">
+        <nav class="navbar navbar-expand navbar-light navbar-bg">
+            <a class="sidebar-toggle js-sidebar-toggle">
+                <i class="hamburger align-self-center"></i>
+            </a>
+        </nav>
+
+        <main class="content">
+            <div class="row" style="font-size: 1.2rem;">
+                <div class="col-lg-11 mx-auto">
+                    <div class="card custom-card-width-lg">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">Избор на количество и плащане</h5>
+                        </div>
+
+                        <div class="card-body">
+                            <div class="row mb-3">
+                                <!-- Display product details with image -->
+                                <div class="col-md-6">
+                                    <img th:src="@{${productImageUrl}}" alt="Product Image" height="500" width="500">
+                                </div>
+                                <div class="col-md-6">
+                                    <p>Код: <span th:text="${product.productCode}">0001</span></p>
+                                    <p>Наличност: <span th:text="${product.availableQuantity}">10</span></p>
+
+                                    <!-- Display price with conditional custom price -->
+                                    <p>Цена за брой:
+                                        <span th:text="${price != null ? price : product.price} + ' Лв'">15.00 Лв</span>
+                                    </p>
+
+                                    <!-- Form to choose quantity and proceed with the order -->
+                                    <form action="/order/submit" method="post">
+                                        <div class="form-group">
+                                            <label for="quantity">Количество:</label>
+                                            <input type="number"
+                                                   id="quantity"
+                                                   name="quantity"
+                                                   class="form-control"
+                                                   th:min="1"
+                                                   th:max="${product.availableQuantity}"
+                                                   th:value="1"
+                                                   required>
+                                        </div>
+
+                                        <!-- Hidden fields for product ID, selected price, and available quantity -->
+                                        <input type="hidden" id="availableQuantity" th:value="${product.availableQuantity}" />
+                                        <input type="hidden" id="pricePerUnit" th:value="${price != null ? price : product.price}" />
+                                        <input type="hidden" name="product.id" th:value="${product.id}"/>
+
+                                        <!-- Error message area -->
+                                        <div id="error-message" style="color: red;"></div>
+
+                                        <!-- Display total price, dynamically calculated in JavaScript -->
+                                        <p>Обща цена: <span id="totalPrice" th:text="${price != null ? price : product.price} + ' Лв'">15.00 Лв</span></p>
+
+                                        <button type="submit" class="btn btn-success mt-3">Продължи към плащане</button>
+                                    </form>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<script src="/js/app.js"></script>
+</body>
+</html>

@@ -1,22 +1,17 @@
 package com.example.LukeriaFrontendApplication.controllers;
 
-import com.example.LukeriaFrontendApplication.config.ClientClient;
-import com.example.LukeriaFrontendApplication.config.MonthlyOrderClient;
-import com.example.LukeriaFrontendApplication.config.OrderClient;
-import com.example.LukeriaFrontendApplication.dtos.ClientDTO;
-import com.example.LukeriaFrontendApplication.dtos.MonthlyOrderDTO;
-import com.example.LukeriaFrontendApplication.dtos.OrderDTO;
+import com.example.LukeriaFrontendApplication.config.*;
+import com.example.LukeriaFrontendApplication.dtos.*;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.time.LocalDate;
+import java.util.*;
 
 @org.springframework.stereotype.Controller
 @RequiredArgsConstructor
@@ -27,8 +22,16 @@ public class OrderController {
     private static final String ORDERTXT = "order";
     private static final String REDIRECTTXT = "redirect:/order/show";
     private final OrderClient orderClient;
+    private final UserClient userClient;
     private final ClientClient clientClient;
+    private final ClientUserClient clientUserClient;
     private final MonthlyOrderClient monthlyOrderClient;
+    private final ProductClient productClient;
+    private final PackageClient packageClient;
+    private final OrderProductClient orderProductClient;
+    private final CustomerCustomPriceClient customerCustomPriceClient;
+    @Value("${backend.base-url}/images")
+    private String backendBaseUrl;
 
     @GetMapping("/create")
     String createOrder(Model model, HttpServletRequest request) {
@@ -59,12 +62,77 @@ public class OrderController {
         return "OrderProduct/create";
     }
 
+    //    @PostMapping("/submit")
+//    public ModelAndView submitOrder(@ModelAttribute("order") OrderDTO orderDTO, HttpServletRequest request) {
+//        String token = (String) request.getSession().getAttribute("sessionToken");
+//        orderClient.createOrder(orderDTO, token);
+//        return new ModelAndView("redirect:/orderProduct/addProduct");
+//    }
     @PostMapping("/submit")
-    public ModelAndView submitOrder(@ModelAttribute("order") OrderDTO orderDTO, HttpServletRequest request) {
+    public String submitOrder(@RequestParam("product.id") Long productId, @RequestParam("quantity") int quantity, HttpServletRequest request) {
+        OrderDTO orderDTO = new OrderDTO();
         String token = (String) request.getSession().getAttribute("sessionToken");
-        orderClient.createOrder(orderDTO, token);
-        return new ModelAndView("redirect:/orderProduct/addProduct");
+
+        // Get clientId from the logged-in user with the Customer role
+        UserDTO userDTO = userClient.findAuthenticatedUser(token);
+        List<ClientUserDTO> clientUserDTOS = clientUserClient.getAllClientUsers(token);
+        for (ClientUserDTO clientUserDTO : clientUserDTOS) {
+            if (clientUserDTO.getUserId().equals(userDTO.getId())) {
+                orderDTO.setClientId(clientUserDTO.getClientId());
+            }
+        }
+
+        // Set the orderDate to now
+        orderDTO.setOrderDate(java.sql.Date.valueOf(LocalDate.now()));
+
+        // Set invoiced to false
+        orderDTO.setInvoiced(false);
+
+        // Submit the order
+        ProductDTO productDTO = productClient.getProductById(productId, token);
+        Long orderId = orderClient.createOrder(orderDTO, token).getBody().getId();
+        if ((orderId != null)) {
+            OrderProductDTO orderProductDTO = new OrderProductDTO();
+            orderProductDTO.setOrderId(orderId);
+            orderProductDTO.setNumber(quantity);
+            orderProductDTO.setPackageId(productDTO.getPackageId());
+            orderProductDTO.setSellingPrice(productDTO.getPrice());
+            orderProductClient.createOrderProduct(orderProductDTO, token);
+            return "Order/buy";
+        }
+//
+        // If there is an error, stay on the order creation page
+        return "redirect:/order/place";
     }
+
+    @GetMapping("/place")
+    public String chooseQuantityAndPayment(@RequestParam("product.id") Long productId, Model model, HttpServletRequest request) {
+        String token = (String) request.getSession().getAttribute("sessionToken");
+
+        // Retrieve the product by productId
+        ProductDTO productDTO = productClient.getProductById(productId, token);
+        UserDTO userDTO = userClient.findAuthenticatedUser(token);
+        List<ClientUserDTO> clientUserDTOS = clientUserClient.getAllClientUsers(token);
+        for (int i = 0; i < clientUserDTOS.size(); i++) {
+            if(clientUserDTOS.get(i).getUserId().equals(userDTO.getId())){
+                Optional<CustomerCustomPriceDTO> customerCustomPriceDTO = Optional.ofNullable(customerCustomPriceClient.customPriceByClientAndProduct(clientUserDTOS.get(i).getClientId(), productId, token));
+                customerCustomPriceDTO.ifPresent(customPriceDTO -> model.addAttribute("price", customPriceDTO.getPrice()));
+            }
+        }
+        // Get package details if necessary
+        PackageDTO packageDTO = packageClient.getPackageById(productDTO.getPackageId(), token);
+
+        // Prepare the image URL
+        String productImageUrl = (packageDTO.getPhoto() != null)
+                ? backendBaseUrl + "/" + packageDTO.getPhoto()
+                : "/img/photos/noImage.png";
+
+        // Add the product and image to the model
+        model.addAttribute("product", productDTO);
+        model.addAttribute("productImageUrl", productImageUrl);
+        return "Order/chooseQuantity"; // Return the view for choosing quantity and payment
+    }
+
 
     @GetMapping("/show")
     public String index(Model model, HttpServletRequest request) {
