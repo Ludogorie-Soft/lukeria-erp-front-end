@@ -31,4 +31,7 @@ public interface ProductClient {
 
     @PostMapping("/produce")
     ResponseEntity<ProductDTO> produceProduct(@RequestParam("productId") Long productId, @RequestParam("producedQuantity") int producedQuantity, @RequestHeader("Authorization") String auth);
+
+    @GetMapping("/for-sale")
+    List<ProductDTO> getProductsForSaleWithoutLookingForQuantity(@RequestHeader("Authorization") String auth);
 }

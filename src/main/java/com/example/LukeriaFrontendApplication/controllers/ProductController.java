@@ -85,11 +85,72 @@ public class ProductController {
     }
 
     @GetMapping("/available-products")
-    public String showProductsForSale(Model model, HttpServletRequest request) {
+    public String showAvailableProductsForSale(Model model, HttpServletRequest request) {
         List<ProductPriceDTO> allProductsForSale = new ArrayList<>();
 
         String token = (String) request.getSession().getAttribute(SESSION_TOKEN);
         List<ProductDTO> productsForSale = productClient.getProductsForSale(token);
+
+        UserDTO authenticatedUser = userClient.findAuthenticatedUser(token);
+
+        List<ClientUserDTO> userClientDtoList = clientUserClient.getAllClientUsers(token);
+
+        Long clientId = userClientDtoList.stream()
+                .filter(clientUserDTO -> clientUserDTO.getUserId().equals(authenticatedUser.getId()))  // Filter by userId instead of clientId
+                .map(ClientUserDTO::getClientId)  // Map to clientId instead of userId
+                .findFirst().orElse(null);
+
+
+        List<ProductDTO> sortedProducts = productsForSale.stream()
+                .sorted(Comparator.comparingInt(ProductDTO::getAvailableQuantity).reversed())
+                .toList();
+
+        for (ProductDTO productDTO : sortedProducts) {
+            try {
+                if(clientId == null){
+                    allProductsForSale.add(new ProductPriceDTO(productDTO, productDTO.getPrice()));
+                }else{
+                    CustomerCustomPriceDTO customPriceForClient = customerCustomPriceClient.customPriceByClientAndProduct(clientId, productDTO.getId(), token);
+                    allProductsForSale.add(new ProductPriceDTO(productDTO, customPriceForClient.getPrice()));
+                }
+            } catch (FeignException.NotFound e) {
+                // If NotFoundException is thrown, use the product's default price
+                allProductsForSale.add(new ProductPriceDTO(productDTO, productDTO.getPrice()));
+            }
+        }
+
+        List<PackageDTO> packages = packageClient.getAllPackages(token);
+
+
+        Map<Long, String> productPackageMap = new HashMap<>();
+        for (PackageDTO packageDTO : packages) {
+            productPackageMap.put(packageDTO.getId(), packageDTO.getName());
+        }
+        Map<Long, String> productPackageMapImages = new HashMap<>();
+        for (PackageDTO packageDTO : packages) {
+            if (packageDTO.getPhoto() != null) {
+                productPackageMapImages.put(packageDTO.getId(), packageDTO.getPhoto());
+            }
+        }
+        for (PackageDTO packageDTO : packages) {
+            if (packageDTO.getPhoto() != null) {
+                imageService.getImage(packageDTO.getPhoto());
+            }
+        }
+        model.addAttribute("productPackageMapImages", productPackageMapImages);
+        model.addAttribute("backendBaseUrl", backendBaseUrl);
+        model.addAttribute("products", allProductsForSale);
+        model.addAttribute("packages", packages);
+        model.addAttribute("productPackageMap", productPackageMap);
+        return "Product/available-products";
+    }
+
+    @GetMapping("/for-sale")
+    public String showProductsForSale(Model model, HttpServletRequest request) {
+        List<ProductPriceDTO> allProductsForSale = new ArrayList<>();
+
+        String token = (String) request.getSession().getAttribute(SESSION_TOKEN);
+        List<ProductDTO> productsForSale = productClient.getProductsForSaleWithoutLookingForQuantity(token);
 
         UserDTO authenticatedUser = userClient.findAuthenticatedUser(token);
 
