@@ -6,10 +6,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -72,6 +74,7 @@ public class OrderController {
     public String submitOrder(@RequestParam("product.id") Long productId, @RequestParam("quantity") int quantity, HttpServletRequest request) {
         OrderDTO orderDTO = new OrderDTO();
         String token = (String) request.getSession().getAttribute("sessionToken");
+        Long clientId = 0L;
 
         // Get clientId from the logged-in user with the Customer role
         UserDTO userDTO = userClient.findAuthenticatedUser(token);
@@ -79,6 +82,7 @@ public class OrderController {
         for (ClientUserDTO clientUserDTO : clientUserDTOS) {
             if (clientUserDTO.getUserId().equals(userDTO.getId())) {
                 orderDTO.setClientId(clientUserDTO.getClientId());
+                clientId = clientUserDTO.getClientId();
             }
         }
 
@@ -96,7 +100,7 @@ public class OrderController {
             orderProductDTO.setOrderId(orderId);
             orderProductDTO.setNumber(quantity);
             orderProductDTO.setPackageId(productDTO.getPackageId());
-            orderProductDTO.setSellingPrice(productDTO.getPrice());
+            orderProductDTO.setSellingPrice(customerCustomPriceClient.customPriceByClientAndProduct(clientId, productId, token).getPrice().multiply(BigDecimal.valueOf(quantity)));
             orderProductClient.createOrderProduct(orderProductDTO, token);
             return "Order/buy";
         }
@@ -114,7 +118,7 @@ public class OrderController {
         UserDTO userDTO = userClient.findAuthenticatedUser(token);
         List<ClientUserDTO> clientUserDTOS = clientUserClient.getAllClientUsers(token);
         for (int i = 0; i < clientUserDTOS.size(); i++) {
-            if(clientUserDTOS.get(i).getUserId().equals(userDTO.getId())){
+            if (clientUserDTOS.get(i).getUserId().equals(userDTO.getId())) {
                 Optional<CustomerCustomPriceDTO> customerCustomPriceDTO = Optional.ofNullable(customerCustomPriceClient.customPriceByClientAndProduct(clientUserDTOS.get(i).getClientId(), productId, token));
                 customerCustomPriceDTO.ifPresent(customPriceDTO -> model.addAttribute("price", customPriceDTO.getPrice()));
             }
@@ -171,4 +175,66 @@ public class OrderController {
         orderClient.updateOrder(id, orderDTO, token);
         return new ModelAndView(REDIRECTTXT);
     }
+
+
+    @GetMapping("/my-orders")
+    String getOrdersForClient(Model model, HttpServletRequest request) {
+        String token = (String) request.getSession().getAttribute("sessionToken");
+        UserDTO userDTO = userClient.findAuthenticatedUser(token);
+        List<ClientUserDTO> clientUserDTOS = clientUserClient.getAllClientUsers(token);
+
+        // Map to store package names and corresponding product links
+        Map<Long, String> packageNames = new HashMap<>();
+        Map<Long, String> productLinks = new HashMap<>();
+
+        for (ClientUserDTO clientUserDTO : clientUserDTOS) {
+            if (clientUserDTO.getUserId().equals(userDTO.getId())) {
+                // Fetch the orders and products for the client
+                List<OrderWithProductsDTO> orderWithProductsDTOS =
+                        orderProductClient.getOrderProductDTOsByOrderDTOs(clientUserDTO.getClientId(), token).getBody();
+
+                if (orderWithProductsDTOS != null) {
+                    for (OrderWithProductsDTO orderWithProducts : orderWithProductsDTOS) {
+                        for (OrderProductDTO orderProductDTO : orderWithProducts.getOrderProductDTOs()) {
+                            // Fetch the package name and store it in the map
+                            String packageName = packageClient.getPackageById(orderProductDTO.getPackageId(), token).getName();
+                            packageNames.put(orderProductDTO.getId(), packageName);
+
+                            // Fetch the product by package ID
+                            ProductDTO productDTO = productClient.getProductByPackage(orderProductDTO.getPackageId(), token).getBody();
+                            if (productDTO != null) {
+                                // Generate the link for the product and store it
+                                String productLink = "http://localhost:8080/order/place?product.id=" + productDTO.getId() + "&quantity=1";
+                                productLinks.put(orderProductDTO.getId(), productLink);
+                            }
+                        }
+                    }
+                }
+
+                // Add the fetched data to the Thymeleaf model
+                model.addAttribute("orderWithProductsList", orderWithProductsDTOS);
+                model.addAttribute("packageNames", packageNames);
+                model.addAttribute("productLinks", productLinks);
+
+                return "Order/myOrders";
+            }
+        }
+        return "redirect:/login";
+    }
+
+
+
+
+//        String token = (String) request.getSession().getAttribute("sessionToken");
+//        UserDTO userDTO = userClient.findAuthenticatedUser(token);
+//        List<ClientUserDTO> clientUserDTOS = clientUserClient.getAllClientUsers(token);
+//        for (int i = 0; i < clientUserDTOS.size(); i++) {
+//            if (clientUserDTOS.get(i).getUserId().equals(userDTO.getId())) {
+//                List<OrderDTO> orderDTOS = orderClient.getOrdersForClient(clientUserDTOS.get(i).getClientId(), token).getBody();
+//                List<OrderProductDTO> orderProductDTOS = orderProductClient.
+//                model.addAttribute("orderDTOs", orderDTOS);
+//                return "Order/myOrders";
+//            }
+//        }
+//        return "redirect:/login";
 }
