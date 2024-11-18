@@ -2,6 +2,7 @@ package com.example.LukeriaFrontendApplication.controllers;
 
 import com.example.LukeriaFrontendApplication.config.*;
 import com.example.LukeriaFrontendApplication.dtos.*;
+import feign.FeignException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -177,50 +178,152 @@ public class OrderController {
     }
 
 
-    @GetMapping("/my-orders")
-    String getOrdersForClient(Model model, HttpServletRequest request) {
+//    @GetMapping("/my-orders")
+//    String getOrdersForClient(Model model, HttpServletRequest request) {
+//        String token = (String) request.getSession().getAttribute("sessionToken");
+//        UserDTO userDTO = userClient.findAuthenticatedUser(token);
+//        List<ClientUserDTO> clientUserDTOS = clientUserClient.getAllClientUsers(token);
+//
+//        // Map to store package names and corresponding product links
+//        Map<Long, String> packageNames = new HashMap<>();
+//        Map<Long, String> productLinks = new HashMap<>();
+//
+//        for (ClientUserDTO clientUserDTO : clientUserDTOS) {
+//            if (clientUserDTO.getUserId().equals(userDTO.getId())) {
+//                // Fetch the orders and products for the client
+//                List<OrderWithProductsDTO> orderWithProductsDTOS =
+//                        orderProductClient.getOrderProductDTOsByOrderDTOs(clientUserDTO.getClientId(), token).getBody();
+//
+//                if (orderWithProductsDTOS != null) {
+//                    for (OrderWithProductsDTO orderWithProducts : orderWithProductsDTOS) {
+//                        for (OrderProductDTO orderProductDTO : orderWithProducts.getOrderProductDTOs()) {
+//                            // Fetch the package name and store it in the map
+//                            String packageName = packageClient.getPackageById(orderProductDTO.getPackageId(), token).getName();
+//                            packageNames.put(orderProductDTO.getId(), packageName);
+//
+//                            // Fetch the product by package ID
+//                            ProductDTO productDTO = productClient.getProductByPackage(orderProductDTO.getPackageId(), token).getBody();
+//                            if (productDTO != null) {
+//                                // Generate the link for the product and store it
+//                                String productLink = "http://localhost:8080/order/place?product.id=" + productDTO.getId() + "&quantity=1";
+//                                productLinks.put(orderProductDTO.getId(), productLink);
+//                            }
+//                        }
+//                    }
+//                }
+//
+//                // Add the fetched data to the Thymeleaf model
+//                model.addAttribute("orderWithProductsList", orderWithProductsDTOS);
+//                model.addAttribute("packageNames", packageNames);
+//                model.addAttribute("productLinks", productLinks);
+//
+//                return "Order/myOrders";
+//            }
+//        }
+//        return "redirect:/login";
+//    }
+@GetMapping("/my-orders")
+String getOrdersForClient(Model model, HttpServletRequest request) {
+    String token = (String) request.getSession().getAttribute("sessionToken");
+    UserDTO userDTO = userClient.findAuthenticatedUser(token);
+    List<ClientUserDTO> clientUserDTOS = clientUserClient.getAllClientUsers(token);
+
+    List<OrderDTO> orderDTOS = new ArrayList<>();
+
+    for (ClientUserDTO clientUserDTO : clientUserDTOS) {
+        if (clientUserDTO.getUserId().equals(userDTO.getId())) {
+            List<OrderWithProductsDTO> orderWithProductsDTOS =
+                    orderProductClient.getOrderProductDTOsByOrderDTOs(clientUserDTO.getClientId(), token).getBody();
+
+            if (orderWithProductsDTOS != null) {
+                for (OrderWithProductsDTO orderWithProducts : orderWithProductsDTOS) {
+                    orderDTOS.add(orderWithProducts.getOrderDTO());
+                }
+            }
+
+            // Add orders to the model
+            model.addAttribute("orderList", orderDTOS);
+            return "Order/myOrders";
+        }
+    }
+    return "redirect:/login";
+}
+    @GetMapping("/{orderId}/products")
+    public String getOrderProducts(@PathVariable Long orderId, Model model, HttpServletRequest request) {
         String token = (String) request.getSession().getAttribute("sessionToken");
         UserDTO userDTO = userClient.findAuthenticatedUser(token);
         List<ClientUserDTO> clientUserDTOS = clientUserClient.getAllClientUsers(token);
 
-        // Map to store package names and corresponding product links
         Map<Long, String> packageNames = new HashMap<>();
-        Map<Long, String> productLinks = new HashMap<>();
+        //Map<Long, String> productLinks = new HashMap<>();
+        Map<Long, ProductDTO> productDetails = new HashMap<>();
+        Map<Long, String> productImageUrls = new HashMap<>();
+        List<OrderProductDTO> orderProducts = new ArrayList<>();
 
         for (ClientUserDTO clientUserDTO : clientUserDTOS) {
             if (clientUserDTO.getUserId().equals(userDTO.getId())) {
-                // Fetch the orders and products for the client
                 List<OrderWithProductsDTO> orderWithProductsDTOS =
                         orderProductClient.getOrderProductDTOsByOrderDTOs(clientUserDTO.getClientId(), token).getBody();
 
                 if (orderWithProductsDTOS != null) {
                     for (OrderWithProductsDTO orderWithProducts : orderWithProductsDTOS) {
-                        for (OrderProductDTO orderProductDTO : orderWithProducts.getOrderProductDTOs()) {
-                            // Fetch the package name and store it in the map
-                            String packageName = packageClient.getPackageById(orderProductDTO.getPackageId(), token).getName();
-                            packageNames.put(orderProductDTO.getId(), packageName);
+                        if (orderWithProducts.getOrderDTO().getId().equals(orderId)) {
+                            for (OrderProductDTO orderProductDTO : orderWithProducts.getOrderProductDTOs()) {
+                                // Retrieve package and product details
+                                String packageName = packageClient.getPackageById(orderProductDTO.getPackageId(), token).getName();
+                                packageNames.put(orderProductDTO.getId(), packageName);
 
-                            // Fetch the product by package ID
-                            ProductDTO productDTO = productClient.getProductByPackage(orderProductDTO.getPackageId(), token).getBody();
-                            if (productDTO != null) {
-                                // Generate the link for the product and store it
-                                String productLink = "http://localhost:8080/order/place?product.id=" + productDTO.getId() + "&quantity=1";
-                                productLinks.put(orderProductDTO.getId(), productLink);
+                                ProductDTO productDTO = productClient.getProductByPackage(orderProductDTO.getPackageId(), token).getBody();
+                                if (productDTO != null) {
+//                                    String productLink = "http://localhost:8080/order/place?product.id=" + productDTO.getId() + "&quantity=1";
+//                                    productLinks.put(orderProductDTO.getId(), productLink);
+
+                                    // Check for custom price with fallback
+                                    BigDecimal price;
+                                    try {
+                                        CustomerCustomPriceDTO customPriceDTO = customerCustomPriceClient
+                                                .customPriceByClientAndProduct(clientUserDTO.getClientId(), productDTO.getId(), token);
+                                        price = customPriceDTO.getPrice(); // Use custom price if available
+                                    } catch (FeignException.NotFound ex) {
+                                        price = productDTO.getPrice(); // Fall back to the default price
+                                    }
+                                    orderProductDTO.setSellingPrice(price);
+
+                                    // Add product details to maps
+                                    productDetails.put(orderProductDTO.getId(), productDTO);
+
+                                    // Get product image
+                                    PackageDTO packageDTO = packageClient.getPackageById(orderProductDTO.getPackageId(), token);
+                                    String productImageUrl = (packageDTO.getPhoto() != null)
+                                            ? backendBaseUrl + "/" + packageDTO.getPhoto()
+                                            : "/img/photos/noImage.png";
+                                    productImageUrls.put(orderProductDTO.getId(), productImageUrl);
+                                }
+                                orderProducts.add(orderProductDTO);
                             }
                         }
                     }
                 }
-
-                // Add the fetched data to the Thymeleaf model
-                model.addAttribute("orderWithProductsList", orderWithProductsDTOS);
-                model.addAttribute("packageNames", packageNames);
-                model.addAttribute("productLinks", productLinks);
-
-                return "Order/myOrders";
+                break; // Stop iterating once the matching client is found
             }
         }
-        return "redirect:/login";
+
+        // Add data to the model
+        model.addAttribute("orderProducts", orderProducts);
+        model.addAttribute("packageNames", packageNames);
+//        model.addAttribute("productLinks", productLinks);
+        model.addAttribute("productDetails", productDetails);
+        model.addAttribute("productImageUrls", productImageUrls);
+
+        return "Order/orderProducts"; // Return the view for order products
     }
+
+
+
+
+
+
+
 
 
 
