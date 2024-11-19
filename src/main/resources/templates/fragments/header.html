@@ -194,6 +194,13 @@
                         </a>
                     </li>
                 </th:block>
+                <th:block th:if="${session.sessionToken != null and session.sessionRole == 'CUSTOMER'}">
+                    <li class="sidebar-item">
+                        <a id="nav-my-orders" class="sidebar-link" href="/order/my-orders">
+                            <i class="fas fa-shopping-cart"></i> <span class="align-middle">Моите Поръчки</span>
+                        </a>
+                    </li>
+                </th:block>
             </ul>
         </div>
     </nav>

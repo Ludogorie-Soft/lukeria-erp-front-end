@@ -1,12 +1,16 @@
 package com.example.LukeriaFrontendApplication.config;
 
+import com.example.LukeriaFrontendApplication.dtos.OrderDTO;
 import com.example.LukeriaFrontendApplication.dtos.OrderProductDTO;
+import com.example.LukeriaFrontendApplication.dtos.OrderWithProductsDTO;
 import jakarta.validation.Valid;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @FeignClient(name = "lukeria-erp-orderProduct", url = "${backend.base-url}/orderProduct")
 public interface OrderProductClient {
@@ -27,5 +31,8 @@ public interface OrderProductClient {
 
     @GetMapping("/lessening")
     ResponseEntity<Boolean> findInvoiceOrderProductsByInvoiceIdLessening(@RequestParam Long invoiceId, @RequestHeader("Authorization") String auth);
-
+    @GetMapping("/order-products-by-orders")
+    ResponseEntity<List<OrderWithProductsDTO>> getOrderProductDTOsByOrderDTOs(
+            @RequestParam(name = "id") Long id,
+            @RequestHeader("Authorization") String auth);
 }

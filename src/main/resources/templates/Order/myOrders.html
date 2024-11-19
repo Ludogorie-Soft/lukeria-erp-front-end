@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <!-- Links and CSS Imports -->
+    <th:block th:insert="~{fragments/links}"></th:block>
+    <title>Моите Поръчки</title>
+    <link rel="icon" type="image/x-icon" href="/img/photos/noImage.png">
+    <link href="/css/show.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .btn-custom-yellow {
+    background-color: #FFD700; /* Soft yellow background */
+    color: #000; /* Black text for readability */
+    border: none; /* Remove default border */
+    padding: 10px 15px; /* Adjust padding for better appearance */
+    border-radius: 5px; /* Slightly rounded corners */
+    text-align: center;
+    font-weight: bold;
+    text-decoration: none; /* Remove underline */
+}
+
+.btn-custom-yellow:hover {
+    background-color: #FFCC00; /* Slightly darker yellow on hover */
+    color: #fff; /* White text on hover */
+    transition: background-color 0.3s ease; /* Smooth hover transition */
+}
+
+.btn-custom-yellow:focus {
+    outline: none; /* Remove default focus outline */
+}
+    </style>
+</head>
+<body>
+<div class="wrapper">
+    <th:block th:insert="~{fragments/header}"></th:block>
+    <div class="main">
+        <main class="content">
+            <div class="row">
+                <div class="col-lg-11 mx-auto">
+                    <div class="card custom-card-width-lg">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">Моите Поръчки</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <!-- Start of Orders Table -->
+                                <table class="table table-striped">
+                                    <thead>
+                                    <tr>
+                                        <th>Дата на Поръчката</th>
+                                        <th>Фактурирана</th>
+                                        <th>Действия</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <!-- Iterate through each OrderDTO -->
+                                    <tr th:each="order : ${orderList}">
+                                        <!-- Order Details -->
+                                        <td th:text="${#dates.format(order.orderDate, 'dd/MM/yyyy')}">Order Date</td>
+                                        <td th:text="${order.invoiced ? 'Да' : 'Не'}">Invoiced</td>
+                                        <td>
+                                            <!-- Button linking to products of this order -->
+                                            <a th:href="@{/order/{orderId}/products(orderId=${order.id})}" class="btn btn-custom-yellow">
+                                                Поръчани продукти
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                                <!-- End of Orders Table -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<script src="/js/app.js"></script>
+</body>
+</html>

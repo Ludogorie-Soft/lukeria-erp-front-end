@@ -34,4 +34,6 @@ public interface ProductClient {
 
     @GetMapping("/for-sale")
     List<ProductDTO> getProductsForSaleWithoutLookingForQuantity(@RequestHeader("Authorization") String auth);
+    @GetMapping("/product-by-package-id")
+    ResponseEntity<ProductDTO> getProductByPackage(@RequestParam("packageId") Long packageId, @RequestHeader("Authorization") String auth);
 }
