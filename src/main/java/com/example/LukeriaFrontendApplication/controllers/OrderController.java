@@ -7,7 +7,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -72,7 +71,7 @@ public class OrderController {
 //        return new ModelAndView("redirect:/orderProduct/addProduct");
 //    }
     @PostMapping("/submit")
-    public String submitOrder(@RequestParam("product.id") Long productId, @RequestParam("quantity") int quantity, HttpServletRequest request) {
+    public String submitOrder(@RequestParam("product.id") Long productId, @RequestParam("quantity") int quantity, HttpServletRequest request){
         OrderDTO orderDTO = new OrderDTO();
         String token = (String) request.getSession().getAttribute("sessionToken");
         Long clientId = 0L;
@@ -101,7 +100,11 @@ public class OrderController {
             orderProductDTO.setOrderId(orderId);
             orderProductDTO.setNumber(quantity);
             orderProductDTO.setPackageId(productDTO.getPackageId());
-            orderProductDTO.setSellingPrice(customerCustomPriceClient.customPriceByClientAndProduct(clientId, productId, token).getPrice().multiply(BigDecimal.valueOf(quantity)));
+            try {
+                orderProductDTO.setSellingPrice(customerCustomPriceClient.customPriceByClientAndProduct(clientId, productId, token).getPrice().multiply(BigDecimal.valueOf(quantity)));
+            } catch(FeignException.NotFound e){
+                orderProductDTO.setSellingPrice(productDTO.getPrice().multiply(BigDecimal.valueOf(quantity)));
+            }
             orderProductClient.createOrderProduct(orderProductDTO, token);
             return "Order/buy";
         }
@@ -120,8 +123,15 @@ public class OrderController {
         List<ClientUserDTO> clientUserDTOS = clientUserClient.getAllClientUsers(token);
         for (int i = 0; i < clientUserDTOS.size(); i++) {
             if (clientUserDTOS.get(i).getUserId().equals(userDTO.getId())) {
-                Optional<CustomerCustomPriceDTO> customerCustomPriceDTO = Optional.ofNullable(customerCustomPriceClient.customPriceByClientAndProduct(clientUserDTOS.get(i).getClientId(), productId, token));
-                customerCustomPriceDTO.ifPresent(customPriceDTO -> model.addAttribute("price", customPriceDTO.getPrice()));
+                try {
+                    Optional<CustomerCustomPriceDTO> customerCustomPriceDTO =
+                            Optional.ofNullable(customerCustomPriceClient.customPriceByClientAndProduct(
+                                    clientUserDTOS.get(i).getClientId(), productId, token));
+
+                    customerCustomPriceDTO.ifPresent(customPriceDTO ->
+                            model.addAttribute("price", customPriceDTO.getPrice()));
+                } catch (FeignException.NotFound ignored) {
+                }
             }
         }
         // Get package details if necessary
