@@ -76,7 +76,7 @@
                                         data-id="${cartItem.product.id}" class="plate-row">
                                         <td>
                                             <img th:if="${productPackageMapImages.containsKey(cartItem.product.packageId)}"
-                                                 th:src="@{${backendBaseUrl} + '/' + ${productPackageMapImages.get(productPrice.product.packageId)}}"
+                                                 th:src="@{${backendBaseUrl} + '/' + ${productPackageMapImages.get(cartItem.product.packageId)}}"
                                                  style="height: 100px; width: 150px;">
                                             <img th:unless="${productPackageMapImages.containsKey(cartItem.product.packageId)}"
                                                  class="card-img-top"
@@ -88,7 +88,7 @@
                                         <td th:text="${productPackageMap.get(cartItem.product.packageId)}"></td>
                                         <td th:text="${cartItem.quantity}"></td>
 
-                                        <td th:text="${cartItem.price + ' Лв'}"></td>
+                                        <td th:text="${#numbers.formatDecimal(cartItem.price, 1, '2', 'POINT')} + ' Лв'"></td>
                                         <td>
                                             <form th:action="@{/shoppingCart/removeItem}" method="post"
                                                   th:attr="onsubmit='return confirm(\'Сигурни ли сте, че искате да махнете продуктът от количката\');'">
@@ -102,7 +102,7 @@
                             </div>
                         </div>
                         <div class="card-total-price" style="position: absolute; bottom: 10px; right: 10px; font-weight: bold; font-size: 1.2em;">
-                            <span th:text="'Общо: ' + ${totalPrice} + ' Лв'"></span>
+                            <span th:text="'Общо: ' + ${#numbers.formatDecimal(totalPrice, 1, '2', 'POINT')} + ' Лв'"></span>
                         </div>
                     </div>
                 </div>

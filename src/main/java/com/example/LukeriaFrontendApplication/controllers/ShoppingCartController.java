@@ -8,9 +8,7 @@ import com.example.LukeriaFrontendApplication.dtos.CartItemDTO;
 import com.example.LukeriaFrontendApplication.dtos.CartItemHelper;
 import com.example.LukeriaFrontendApplication.dtos.PackageDTO;
 import com.example.LukeriaFrontendApplication.dtos.ProductDTO;
-import com.example.LukeriaFrontendApplication.dtos.ShoppingCartDTO;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -66,7 +64,7 @@ public class ShoppingCartController {
         for(CartItemDTO cartItem : cartItems ){
             ProductDTO product = productClient.getProductById(cartItem.getProductId(),token);
             BigDecimal price = BigDecimal.valueOf(cartItem.getPrice()*cartItem.getQuantity());
-            totalPrice = totalPrice.add(price);;
+            totalPrice = totalPrice.add(price);
             cartItemsForShowing.add(new CartItemHelper(cartItem.getId(),product,cartItem.getQuantity(),price));
         }
         List<PackageDTO> packages = packageClient.getAllPackages(token);
