@@ -203,7 +203,7 @@ public class ProductController {
         model.addAttribute("products", allProductsForSale);
         model.addAttribute("packages", packages);
         model.addAttribute("productPackageMap", productPackageMap);
-        return "Product/available-products";
+        return "Product/for-sale";
     }
 
 
