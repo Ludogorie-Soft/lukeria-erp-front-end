@@ -38,7 +38,7 @@ class BarcodeScannerCamera {
                 this.cameraStream = stream;
                 this.videoElement.srcObject = stream;
                 this.toggleButton.innerHTML = '<i class="fas fa-stop"></i>';
-                this.modal.style.display = 'block';
+                this.modal.style.display = 'flex';
                 this.startScanner();
             })
             .catch(error => console.error('Error accessing camera:', error));
