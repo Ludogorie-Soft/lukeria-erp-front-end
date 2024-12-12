@@ -17,9 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.Base64;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 @org.springframework.stereotype.Controller
 @RequiredArgsConstructor
@@ -38,16 +36,23 @@ public class PackageController {
     public String showPackage(Model model, HttpServletRequest request) {
         String token = (String) request.getSession().getAttribute(SESSION_TOKEN);
         List<PackageDTO> packages = packageClient.getAllPackages(token);
+
+        Map<Long, String> packageImages = new HashMap<>();
+
         for (PackageDTO aPackage : packages) {
             if (aPackage.getPhoto() != null) {
-                imageService.getImage(aPackage.getPhoto());
+                byte[] imageBytes = imageService.getImage(aPackage.getPhoto());
+                if (imageBytes != null) {
+                    String imageUrl = "data:image/jpeg;base64," + Base64.getEncoder().encodeToString(imageBytes);
+                    packageImages.put(aPackage.getId(), imageUrl);
+                }
             }
         }
-        List<PackageDTO> sortedPackage = packages.stream()
+        List<PackageDTO> sortedPackages = packages.stream()
                 .sorted(Comparator.comparingInt(PackageDTO::getAvailableQuantity).reversed())
                 .toList();
-        model.addAttribute("packages", sortedPackage);
-        model.addAttribute("backendBaseUrl", backendBaseUrl);
+        model.addAttribute("packages", sortedPackages);
+        model.addAttribute("packageImages", packageImages);
         return "Package/show";
     }
 

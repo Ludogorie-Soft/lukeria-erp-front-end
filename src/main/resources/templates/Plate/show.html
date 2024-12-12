@@ -69,17 +69,17 @@ document.addEventListener("DOMContentLoaded", function() {
                                     <tbody>
                                     <tr th:each="plate : ${plates}" data-id="${plate.id}" class="plate-row">
                                         <td>
-                                            <img th:if="${plate.photo != null}"
-                                                 th:src="@{${backendBaseUrl} + '/' + ${plate.photo}}"
-                                                 alt="no image"
+                                            <img th:if="${plateImages[plate.id] != null}"
+                                                 th:src="${plateImages[plate.id]}"
+                                                 alt="Plate Image"
                                                  height="100"
-                                                 width="100">
-                                            <img th:unless="${plate.photo != null}"
+                                                 width="100" />
+                                            <img th:unless="${plateImages[plate.id] != null}"
                                                  class="card-img-top"
-                                                 src="/img/photos/logo2.png"
+                                                 src="/img/photos/logo.png"
                                                  alt="Default Image"
                                                  height="100"
-                                                 width="100">
+                                                 width="100" />
                                         </td>
                                         <td th:text="${plate.id}"></td>
                                         <td th:text="${plate.name}"></td>
