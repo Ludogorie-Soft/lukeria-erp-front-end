@@ -116,7 +116,6 @@ public class ProductController {
                     allProductsForSale.add(new ProductPriceDTO(productDTO, customPriceForClient.getPrice()));
                 }
             } catch (FeignException.NotFound e) {
-                // If NotFoundException is thrown, use the product's default price
                 allProductsForSale.add(new ProductPriceDTO(productDTO, productDTO.getPrice()));
             }
         }

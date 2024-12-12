@@ -11,7 +11,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -63,20 +62,19 @@ public class OrderController {
         model.addAttribute(ORDERTXT, orderDTO);
         return "OrderProduct/create";
     }
+        @PostMapping("/admin/submit")
+        public ModelAndView submitOrder(@ModelAttribute("order") OrderDTO orderDTO, HttpServletRequest request) {
+        String token = (String) request.getSession().getAttribute("sessionToken");
+        orderClient.createOrder(orderDTO, token);
+        return new ModelAndView("redirect:/orderProduct/addProduct");
+    }
 
-    //    @PostMapping("/submit")
-//    public ModelAndView submitOrder(@ModelAttribute("order") OrderDTO orderDTO, HttpServletRequest request) {
-//        String token = (String) request.getSession().getAttribute("sessionToken");
-//        orderClient.createOrder(orderDTO, token);
-//        return new ModelAndView("redirect:/orderProduct/addProduct");
-//    }
     @PostMapping("/submit")
     public String submitOrder(@RequestParam("product.id") Long productId, @RequestParam("quantity") int quantity, HttpServletRequest request){
         OrderDTO orderDTO = new OrderDTO();
         String token = (String) request.getSession().getAttribute("sessionToken");
         Long clientId = 0L;
 
-        // Get clientId from the logged-in user with the Customer role
         UserDTO userDTO = userClient.findAuthenticatedUser(token);
         List<ClientUserDTO> clientUserDTOS = clientUserClient.getAllClientUsers(token);
         for (ClientUserDTO clientUserDTO : clientUserDTOS) {
@@ -86,13 +84,9 @@ public class OrderController {
             }
         }
 
-        // Set the orderDate to now
         orderDTO.setOrderDate(java.sql.Date.valueOf(LocalDate.now()));
-
-        // Set invoiced to false
         orderDTO.setInvoiced(false);
 
-        // Submit the order
         ProductDTO productDTO = productClient.getProductById(productId, token);
         Long orderId = orderClient.createOrder(orderDTO, token).getBody().getId();
         if ((orderId != null)) {
@@ -115,7 +109,6 @@ public class OrderController {
     public String chooseQuantityAndPayment(@RequestParam("product.id") Long productId, Model model, HttpServletRequest request) {
         String token = (String) request.getSession().getAttribute("sessionToken");
 
-        // Retrieve the product by productId
         ProductDTO productDTO = productClient.getProductById(productId, token);
         UserDTO userDTO = userClient.findAuthenticatedUser(token);
         List<ClientUserDTO> clientUserDTOS = clientUserClient.getAllClientUsers(token);
@@ -132,20 +125,16 @@ public class OrderController {
                 }
             }
         }
-        // Get package details if necessary
         PackageDTO packageDTO = packageClient.getPackageById(productDTO.getPackageId(), token);
 
-        // Prepare the image URL
         String productImageUrl = (packageDTO.getPhoto() != null)
                 ? backendBaseUrl + "/" + packageDTO.getPhoto()
                 : "/img/photos/noImage.png";
 
-        // Add the product and image to the model
         model.addAttribute("product", productDTO);
         model.addAttribute("productImageUrl", productImageUrl);
-        return "Order/chooseQuantity"; // Return the view for choosing quantity and payment
+        return "Order/chooseQuantity";
     }
-
 
     @GetMapping("/show")
     public String index(Model model, HttpServletRequest request) {
@@ -203,104 +192,10 @@ String getOrdersForClient(Model model, HttpServletRequest request) {
                     orderDTOS.add(orderWithProducts.getOrderDTO());
                 }
             }
-
-            // Add orders to the model
             model.addAttribute("orderList", orderDTOS);
             return "Order/myOrders";
         }
     }
     return "redirect:/login";
 }
-    @GetMapping("/{orderId}/products")
-    public String getOrderProducts(@PathVariable Long orderId, Model model, HttpServletRequest request) {
-        String token = (String) request.getSession().getAttribute("sessionToken");
-        UserDTO userDTO = userClient.findAuthenticatedUser(token);
-        List<ClientUserDTO> clientUserDTOS = clientUserClient.getAllClientUsers(token);
-
-        Map<Long, String> packageNames = new HashMap<>();
-        //Map<Long, String> productLinks = new HashMap<>();
-        Map<Long, ProductDTO> productDetails = new HashMap<>();
-        Map<Long, String> productImageUrls = new HashMap<>();
-        List<OrderProductDTO> orderProducts = new ArrayList<>();
-
-        for (ClientUserDTO clientUserDTO : clientUserDTOS) {
-            if (clientUserDTO.getUserId().equals(userDTO.getId())) {
-                List<OrderWithProductsDTO> orderWithProductsDTOS =
-                        orderProductClient.getOrderProductDTOsByOrderDTOs(clientUserDTO.getClientId(), token).getBody();
-
-                if (orderWithProductsDTOS != null) {
-                    for (OrderWithProductsDTO orderWithProducts : orderWithProductsDTOS) {
-                        if (orderWithProducts.getOrderDTO().getId().equals(orderId)) {
-                            for (OrderProductDTO orderProductDTO : orderWithProducts.getOrderProductDTOs()) {
-                                // Retrieve package and product details
-                                String packageName = packageClient.getPackageById(orderProductDTO.getPackageId(), token).getName();
-                                packageNames.put(orderProductDTO.getId(), packageName);
-
-                                ProductDTO productDTO = productClient.getProductByPackage(orderProductDTO.getPackageId(), token).getBody();
-                                if (productDTO != null) {
-//                                    String productLink = "http://localhost:8080/order/place?product.id=" + productDTO.getId() + "&quantity=1";
-//                                    productLinks.put(orderProductDTO.getId(), productLink);
-
-                                    // Check for custom price with fallback
-                                    BigDecimal price;
-                                    try {
-                                        CustomerCustomPriceDTO customPriceDTO = customerCustomPriceClient
-                                                .customPriceByClientAndProduct(clientUserDTO.getClientId(), productDTO.getId(), token);
-                                        price = customPriceDTO.getPrice(); // Use custom price if available
-                                    } catch (FeignException.NotFound ex) {
-                                        price = productDTO.getPrice(); // Fall back to the default price
-                                    }
-                                    orderProductDTO.setSellingPrice(price);
-
-                                    // Add product details to maps
-                                    productDetails.put(orderProductDTO.getId(), productDTO);
-
-                                    // Get product image
-                                    PackageDTO packageDTO = packageClient.getPackageById(orderProductDTO.getPackageId(), token);
-                                    String productImageUrl = (packageDTO.getPhoto() != null)
-                                            ? backendBaseUrl + "/" + packageDTO.getPhoto()
-                                            : "/img/photos/noImage.png";
-                                    productImageUrls.put(orderProductDTO.getId(), productImageUrl);
-                                }
-                                orderProducts.add(orderProductDTO);
-                            }
-                        }
-                    }
-                }
-                break; // Stop iterating once the matching client is found
-            }
-        }
-
-        // Add data to the model
-        model.addAttribute("orderProducts", orderProducts);
-        model.addAttribute("packageNames", packageNames);
-//        model.addAttribute("productLinks", productLinks);
-        model.addAttribute("productDetails", productDetails);
-        model.addAttribute("productImageUrls", productImageUrls);
-
-        return "Order/orderProducts"; // Return the view for order products
-    }
-
-
-
-
-
-
-
-
-
-
-
-//        String token = (String) request.getSession().getAttribute("sessionToken");
-//        UserDTO userDTO = userClient.findAuthenticatedUser(token);
-//        List<ClientUserDTO> clientUserDTOS = clientUserClient.getAllClientUsers(token);
-//        for (int i = 0; i < clientUserDTOS.size(); i++) {
-//            if (clientUserDTOS.get(i).getUserId().equals(userDTO.getId())) {
-//                List<OrderDTO> orderDTOS = orderClient.getOrdersForClient(clientUserDTOS.get(i).getClientId(), token).getBody();
-//                List<OrderProductDTO> orderProductDTOS = orderProductClient.
-//                model.addAttribute("orderDTOs", orderDTOS);
-//                return "Order/myOrders";
-//            }
-//        }
-//        return "redirect:/login";
 }

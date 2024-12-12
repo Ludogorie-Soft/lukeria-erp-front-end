@@ -119,7 +119,7 @@
                                         </td>
                                         <td>
                                             <input type="number" step="0.01" class="price-input"
-                                                   th:value="${orderProductDTO.sellingPrice}"
+                                                   th:value="${orderProductDTO.sellingPrice != null ? orderProductDTO.sellingPrice : productDTOS.get(orderProductDTO.packageId-1).getPrice}"
                                                    id="priceInput" name="priceInput">
                                         </td>
                                         <td>
