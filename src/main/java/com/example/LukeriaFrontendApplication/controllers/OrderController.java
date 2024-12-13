@@ -62,15 +62,16 @@ public class OrderController {
         model.addAttribute(ORDERTXT, orderDTO);
         return "OrderProduct/create";
     }
-        @PostMapping("/admin/submit")
-        public ModelAndView submitOrder(@ModelAttribute("order") OrderDTO orderDTO, HttpServletRequest request) {
+
+    @PostMapping("/admin/submit")
+    public ModelAndView submitOrder(@ModelAttribute("order") OrderDTO orderDTO, HttpServletRequest request) {
         String token = (String) request.getSession().getAttribute("sessionToken");
         orderClient.createOrder(orderDTO, token);
         return new ModelAndView("redirect:/orderProduct/addProduct");
     }
 
     @PostMapping("/submit")
-    public String submitOrder(@RequestParam("product.id") Long productId, @RequestParam("quantity") int quantity, HttpServletRequest request){
+    public String submitOrder(@RequestParam("product.id") Long productId, @RequestParam("quantity") int quantity, HttpServletRequest request) {
         OrderDTO orderDTO = new OrderDTO();
         String token = (String) request.getSession().getAttribute("sessionToken");
         Long clientId = 0L;
@@ -96,7 +97,7 @@ public class OrderController {
             orderProductDTO.setPackageId(productDTO.getPackageId());
             try {
                 orderProductDTO.setSellingPrice(customerCustomPriceClient.customPriceByClientAndProduct(clientId, productId, token).getPrice());
-            } catch(FeignException.NotFound e){
+            } catch (FeignException.NotFound e) {
                 orderProductDTO.setSellingPrice(productDTO.getPrice());
             }
             orderProductClient.createOrderProduct(orderProductDTO, token);
@@ -104,6 +105,7 @@ public class OrderController {
         }
         return "redirect:/order/place";
     }
+
 
     @GetMapping("/place")
     public String chooseQuantityAndPayment(@RequestParam("product.id") Long productId, Model model, HttpServletRequest request) {
@@ -174,28 +176,40 @@ public class OrderController {
         return new ModelAndView(REDIRECTTXT);
     }
 
-@GetMapping("/my-orders")
-String getOrdersForClient(Model model, HttpServletRequest request) {
-    String token = (String) request.getSession().getAttribute("sessionToken");
-    UserDTO userDTO = userClient.findAuthenticatedUser(token);
-    List<ClientUserDTO> clientUserDTOS = clientUserClient.getAllClientUsers(token);
+    @GetMapping("/my-orders")
+    String getOrdersForClient(Model model, HttpServletRequest request) {
+        String token = (String) request.getSession().getAttribute("sessionToken");
+        UserDTO userDTO = userClient.findAuthenticatedUser(token);
+        List<ClientUserDTO> clientUserDTOS = clientUserClient.getAllClientUsers(token);
 
-    List<OrderDTO> orderDTOS = new ArrayList<>();
+        List<OrderDTO> orderDTOS = new ArrayList<>();
 
-    for (ClientUserDTO clientUserDTO : clientUserDTOS) {
-        if (clientUserDTO.getUserId().equals(userDTO.getId())) {
-            List<OrderWithProductsDTO> orderWithProductsDTOS =
-                    orderProductClient.getOrderProductDTOsByOrderDTOs(clientUserDTO.getClientId(), token).getBody();
+        for (ClientUserDTO clientUserDTO : clientUserDTOS) {
+            if (clientUserDTO.getUserId().equals(userDTO.getId())) {
+                List<OrderWithProductsDTO> orderWithProductsDTOS =
+                        orderProductClient.getOrderProductDTOsByOrderDTOs(clientUserDTO.getClientId(), token).getBody();
 
-            if (orderWithProductsDTOS != null) {
-                for (OrderWithProductsDTO orderWithProducts : orderWithProductsDTOS) {
-                    orderDTOS.add(orderWithProducts.getOrderDTO());
+                if (orderWithProductsDTOS != null) {
+                    for (OrderWithProductsDTO orderWithProducts : orderWithProductsDTOS) {
+                        orderDTOS.add(orderWithProducts.getOrderDTO());
+                    }
                 }
+                model.addAttribute("orderList", orderDTOS);
+                return "Order/myOrders";
             }
-            model.addAttribute("orderList", orderDTOS);
-            return "Order/myOrders";
         }
+        return "redirect:/login";
     }
-    return "redirect:/login";
-}
+
+    @GetMapping("/buyPage")
+    private String buyPage(){
+        return "Order/buy";
+    }
+    @PostMapping("/createFromCart")
+    public String createOrderFormShoppingCart(HttpServletRequest request){
+        String token = (String) request.getSession().getAttribute("sessionToken");
+        orderClient.createOrder(token);
+        return "redirect:/order/buyPage";
+    }
+
 }

@@ -100,6 +100,11 @@
                                     </tbody>
                                 </table>
                             </div>
+                            <div class="text-center mt-4" th:if="${!#lists.isEmpty(items)}">
+                                <form action="#" th:action="@{/order/createFromCart}" method="post">
+                                    <button type="submit" class="btn btn-primary btn-lg">Поръчай сега</button>
+                                </form>
+                            </div>
                         </div>
                         <div class="card-total-price" style="position: absolute; bottom: 10px; right: 10px; font-weight: bold; font-size: 1.2em;">
                             <span th:text="'Общо: ' + ${#numbers.formatDecimal(totalPrice, 1, '2', 'POINT')} + ' Лв'"></span>
