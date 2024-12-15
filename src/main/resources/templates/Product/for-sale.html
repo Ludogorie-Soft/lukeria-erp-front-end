@@ -158,29 +158,59 @@
                                                             </div>
                                                             <div class="modal-body">
                                                                 <div class="d-flex flex-column align-items-center">
-                                                                    <!-- Изображение на продукта -->
                                                                     <img th:if="${productPackageMapImages.containsKey(productPrice.product.packageId)}"
                                                                          th:src="@{${backendBaseUrl} + '/' + ${productPackageMapImages.get(productPrice.product.packageId)}}"
                                                                          class="img-fluid mb-3" style="max-height: 250px; max-width: 250px;">
                                                                     <img th:unless="${productPackageMapImages.containsKey(productPrice.product.packageId)}"
                                                                          src="/img/photos/noImage.png" class="img-fluid mb-3" style="max-height: 250px; max-width: 250px;">
-
-                                                                    <!-- Информация за цената и наличността -->
                                                                     <div class="text-center mb-3">
-                                                                        <p class="price-display" th:text="'Цена: ' + ${productPrice.price} + ' Лв'"></p>
+                                                                        <p class="price-display">
+                                                                            Цена: <span th:id="'price-display-' + ${productPrice.product.id}" th:text="${productPrice.price}"></span> Лв
+                                                                        </p>
                                                                     </div>
-
-                                                                    <!-- Форма за добавяне в количката -->
                                                                     <form action="/shoppingCart/addToCart" method="post" class="w-100">
                                                                         <input type="hidden" name="productId" th:value="${productPrice.product.id}" />
                                                                         <div class="mb-3">
-                                                                            <label for="quantity" class="form-label">Количество</label>
-                                                                            <input type="number" name="quantity" id="quantity" class="form-control" min="1" th:max="${productPrice.product.availableQuantity}" required/>
+                                                                            <label th:for="'quantity-' + ${productPrice.product.id}" class="form-label">Количество</label>
+                                                                            <input
+                                                                                    type="number"
+                                                                                    name="quantity"
+                                                                                    th:id="'quantity-' + ${productPrice.product.id}"
+                                                                                    class="form-control"
+                                                                                    min="${mapProductsAndPieces[productPrice.product]}"
+                                                                                    th:step="${mapProductsAndPieces[productPrice.product]}"
+                                                                                    th:max="${productPrice.product.availableQuantity}"
+                                                                                    required
+                                                                            />
+                                                                            <small class="form-text text-muted"
+                                                                                   th:text="'Един пакет съдържа ' + ${mapProductsAndPieces[productPrice.product]} + ' броя. Моля, въведете количество, кратно на ' + ${mapProductsAndPieces[productPrice.product]} + ' броя.'">
+                                                                            </small>
                                                                         </div>
                                                                         <button type="submit" class="btn btn-primary w-100">
                                                                             <i class="fas fa-shopping-cart"></i> Добави в количката
                                                                         </button>
                                                                     </form>
+                                                                    <script>
+                                                                        document.addEventListener("DOMContentLoaded", function () {
+                                                                            const modals = document.querySelectorAll('.modal');
+                                                                            modals.forEach(modal => {
+                                                                                const productId = modal.getAttribute('id').replace('exampleModal', '');
+                                                                                const priceDisplay = modal.querySelector(`#price-display-${productId}`);
+                                                                                const quantityInput = modal.querySelector(`#quantity-${productId}`);
+
+                                                                                // Ensure both elements are found
+                                                                                if(priceDisplay && quantityInput) {
+                                                                                    const basePrice = parseFloat(priceDisplay.textContent.trim());
+
+                                                                                    quantityInput.addEventListener("input", function () {
+                                                                                        const quantity = parseInt(quantityInput.value) || 0; // Default to 0 if input is invalid
+                                                                                        const newPrice = (basePrice * quantity).toFixed(2); // Calculate new price
+                                                                                        priceDisplay.textContent = newPrice; // Reflect new price
+                                                                                    });
+                                                                                }
+                                                                            });
+                                                                        });
+                                                                    </script>
                                                                 </div>
                                                             </div>
                                                         </div>
