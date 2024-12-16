@@ -13,9 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.io.IOException;
-import java.util.Base64;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 @org.springframework.stereotype.Controller
 @RequiredArgsConstructor
@@ -30,23 +28,33 @@ public class PlateController {
     private String backendBaseUrl;
 
     @GetMapping("/show")
-    public String index(Model model, HttpServletRequest request) {
-        String token = (String) request.getSession().getAttribute("sessionToken");
-        List<PlateDTO> plates = plateClient.getAllPlates(token);
-        for (PlateDTO plate : plates) {
-            if (plate.getPhoto() != null) {
-                imageService.getImage(plate.getPhoto());
+public String index(Model model, HttpServletRequest request) {
+    String token = (String) request.getSession().getAttribute("sessionToken");
+    List<PlateDTO> plates = plateClient.getAllPlates(token);
+
+    // Карта за съхраняване на изображения
+    Map<Long, String> plateImages = new HashMap<>();
+
+    for (PlateDTO plate : plates) {
+        if (plate.getPhoto() != null) {
+            byte[] imageBytes = imageService.getImage(plate.getPhoto());
+            if (imageBytes != null) {
+                String imageUrl = "data:image/jpeg;base64," + Base64.getEncoder().encodeToString(imageBytes);
+                plateImages.put(plate.getId(), imageUrl); // Асoциираме ID с Base64 URL
             }
         }
-        List<PlateDTO> sortedPlates = plates.stream()
-                .sorted(Comparator.comparingInt(PlateDTO::getAvailableQuantity).reversed())
-                .toList();
-        model.addAttribute("backendBaseUrl", backendBaseUrl);
-        model.addAttribute("deleteMessageBoolean", true);
-        model.addAttribute("plates", sortedPlates);
-        return "Plate/show";
     }
 
+    List<PlateDTO> sortedPlates = plates.stream()
+            .sorted(Comparator.comparingInt(PlateDTO::getAvailableQuantity).reversed())
+            .toList();
+
+    model.addAttribute("plates", sortedPlates);
+    model.addAttribute("plateImages", plateImages);
+    model.addAttribute("backendBaseUrl", backendBaseUrl);
+
+    return "Plate/show";
+}
     @GetMapping("/show/{id}")
     String getPlateById(@PathVariable(name = "id") Long id, Model model, HttpServletRequest request) {
         String token = (String) request.getSession().getAttribute("sessionToken");

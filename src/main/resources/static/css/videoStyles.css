@@ -2,7 +2,9 @@
 video {
     width: 100%;
     height: auto;
-    border: 1px solid #ddd; /* Тънка граница около видеото */
+    max-height: 70vh; /* Максимална височина - 70% от височината на екрана */
+    border: 1px solid #ddd;
+    object-fit: contain; /* Прави видеото да се мащабира правилно */
 }
 
 /* Други стилове */

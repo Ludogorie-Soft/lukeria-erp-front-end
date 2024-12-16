@@ -41,29 +41,31 @@ public class ProductController {
         List<ProductDTO> sortedProducts = productClient.getAllProducts(token).stream()
                 .sorted(Comparator.comparingInt(ProductDTO::getAvailableQuantity).reversed())
                 .toList();
+
         List<PackageDTO> packages = packageClient.getAllPackages(token);
 
         Map<Long, String> productPackageMap = new HashMap<>();
         for (PackageDTO packageDTO : packages) {
             productPackageMap.put(packageDTO.getId(), packageDTO.getName());
         }
+
         Map<Long, String> productPackageMapImages = new HashMap<>();
+
         for (PackageDTO packageDTO : packages) {
             if (packageDTO.getPhoto() != null) {
-                productPackageMapImages.put(packageDTO.getId(), packageDTO.getPhoto());
+                byte[] imageBytes = imageService.getImage(packageDTO.getPhoto());
+                if (imageBytes != null) {
+                    String imageUrl = "data:image/jpeg;base64," + Base64.getEncoder().encodeToString(imageBytes);
+                    productPackageMapImages.put(packageDTO.getId(), imageUrl);
+                }
             }
         }
-        for (PackageDTO packageDTO : packages) {
-            if (packageDTO.getPhoto() != null) {
-                imageService.getImage(packageDTO.getPhoto());
-            }
-        }
+
         model.addAttribute("productPackageMapImages", productPackageMapImages);
         model.addAttribute("backendBaseUrl", backendBaseUrl);
         model.addAttribute("products", sortedProducts);
         model.addAttribute("packages", packages);
         model.addAttribute("productPackageMap", productPackageMap);
-
     }
 
     @GetMapping("/show")
@@ -110,7 +112,6 @@ public class ProductController {
                     allProductsForSale.add(new ProductPriceDTO(productDTO, customPriceForClient.getPrice()));
                 }
             } catch (FeignException.NotFound e) {
-                // If NotFoundException is thrown, use the product's default price
                 allProductsForSale.add(new ProductPriceDTO(productDTO, productDTO.getPrice()));
             }
         }

@@ -84,17 +84,14 @@ document.addEventListener("DOMContentLoaded", function() {
                                     <tbody>
                                     <tr th:each="package : ${packages}" data-id="${package.id}" class="package-row">
                                         <td>
-                                            <img th:if="${package.photo != null}"
-                                                 th:src="@{${backendBaseUrl} + '/' + ${package.photo}}"
-                                                 alt="no image"
+                                            <img th:if="${packageImages[package.id] != null}"
+                                                 th:src="${packageImages[package.id]}"
                                                  height="100"
-                                                 width="100">
-                                            <img th:unless="${package.photo != null}"
-                                                 class="card-img-top"
+                                                 width="100" />
+                                            <img th:unless="${packageImages[package.id] != null}"
                                                  src="/img/photos/noImage.png"
-                                                 alt="Default Image"
                                                  height="100"
-                                                 width="100">
+                                                 width="100" />
                                         </td>
                                         <td th:text="${package.productCode}"></td>
                                         <td th:text="${package.name}"></td>
@@ -150,7 +147,6 @@ document.addEventListener("DOMContentLoaded", function() {
         </main>
     </div>
 </div>
-<script src="/js/app.js"></script>
 <script>
     document.getElementById('searchInput2').addEventListener('input', function () {
     var input, filter, table, tr, td, i, txtValue;

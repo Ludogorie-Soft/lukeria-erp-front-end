@@ -5,60 +5,7 @@
     <title>Продукти от поръчка</title>
     <link rel="icon" type="image/x-icon" href="/img/photos/noImage.png">
     <link href="/css/show.css" rel="stylesheet">
-    <style>
-        /* Ensure background color is applied to the entire page */
-        body {
-            background-color: #B5B5B5; /* Set grey background color */
-            margin: 0;
-            padding: 0;
-        }
-
-<!--        /* Make sure that main content area takes the full height of the viewport */-->
-<!--        .main {-->
-<!--            background-color: #B5B5B5; /* Set grey background color */-->
-<!--            min-height: 100vh; /* Ensure the main content takes the full viewport height */-->
-<!--        }-->
-
-<!--        /* Set greyish background for the card and table */-->
-<!--        .card, .table-striped {-->
-<!--            background-color: #B5B5B5; /* Set grey background color */-->
-<!--        }-->
-
-<!--        /* Table styling for better readability */-->
-<!--        .table-striped th, .table-striped td {-->
-<!--            padding: 10px;-->
-<!--            color: #000; /* Ensure text color is black for contrast */-->
-<!--        }-->
-
-<!--        /* Ensure the background for rows is grey (#B5B5B5) */-->
-<!--        .table-striped tbody tr {-->
-<!--            background-color: #B5B5B5; /* Set row background color */-->
-<!--        }-->
-
-<!--        /* Add hover effect for rows */-->
-<!--        .table-striped tbody tr:hover {-->
-<!--            background-color: #9E9E9E; /* Slightly darker grey for hover effect */-->
-<!--        }-->
-
-        /* Set images in the table to be bigger */
-        img {
-            width: 300px; /* Adjust image size */
-            height: auto;
-        }
-
-        /* Adjust font size and color for text */
-        h5, .card-title, .table th, .table td {
-            color: #000; /* Ensure text is readable on grey background */
-        }
-
-<!--        /* Set the header color for the table and the title */-->
-<!--        .card-header, .table thead {-->
-<!--            background-color: #B5B5B5; /* Set grey background color for header */-->
-<!--            color: #000; /* Ensure text in header is black for contrast */-->
-<!--        }-->
-    </style>
 </head>
-
 <body>
 <div class="wrapper">
     <th:block th:insert="~{fragments/header}"></th:block>
@@ -96,10 +43,8 @@
                                     </td>
                                     <td th:text="${packageNames[orderProduct.id]}">Пакет</td>
                                     <td th:text="${productDetails[orderProduct.id].productCode}">Продуктов код</td>
-                                    <!-- Display the custom price (sellingPrice) -->
                                     <td th:text="${orderProduct.sellingPrice}">Цена</td>
                                     <td th:text="${orderProduct.number}">1</td>
-                                    <!-- Calculate total based on custom price -->
                                     <td th:text="${orderProduct.sellingPrice.multiply(orderProduct.number)}">Обща цена</td>
                                 </tr>
                                 </tbody>
@@ -112,6 +57,5 @@
     </div>
 </div>
 
-<script src="/js/app.js"></script>
 </body>
 </html>
