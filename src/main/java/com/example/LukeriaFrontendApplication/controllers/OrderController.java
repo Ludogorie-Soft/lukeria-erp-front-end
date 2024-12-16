@@ -11,8 +11,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @org.springframework.stereotype.Controller
 @RequiredArgsConstructor
@@ -31,6 +33,8 @@ public class OrderController {
     private final PackageClient packageClient;
     private final OrderProductClient orderProductClient;
     private final CustomerCustomPriceClient customerCustomPriceClient;
+    private final ImageClient imageService;
+
     @Value("${backend.base-url}/images")
     private String backendBaseUrl;
 
@@ -201,12 +205,74 @@ public class OrderController {
         return "redirect:/login";
     }
 
+    @GetMapping("/orderedProducts/{id}")
+    public String orderProductsFromOrder(@PathVariable("id") Long id, HttpServletRequest request, Model model) {
+        String token = (String) request.getSession().getAttribute("sessionToken");
+        UserDTO userDTO = userClient.findAuthenticatedUser(token);
+        List<ClientUserDTO> clientUserDTOS = clientUserClient.getAllClientUsers(token);
+        List<OrderProductDTO> orderedProductsDTOs = new ArrayList<>();
+        List<OrderProductHelper> orderProductsForShowing = new ArrayList<>();
+        List<ProductDTO> allProducts = productClient.getAllProducts(token);
+
+        boolean flag = false;
+
+        for(ClientUserDTO clientUserDTO : clientUserDTOS){
+            if(clientUserDTO.getUserId().equals(userDTO.getId())){
+                flag = true;
+            }
+        }
+
+        if (flag) {
+            orderedProductsDTOs = orderProductClient.orderProducts(id, token);
+        }
+
+        for(OrderProductDTO orderProductDTO : orderedProductsDTOs){
+            OrderProductHelper orderProductHelper = new OrderProductHelper();
+            ProductDTO productDTO = allProducts.stream()
+                    .filter(product -> product.getPackageId().equals(orderProductDTO.getPackageId()))
+                    .findFirst()
+                    .orElseThrow(() -> new RuntimeException("Product not found for package ID: " + orderProductDTO.getPackageId()));
+            orderProductHelper.setOrderId(orderProductDTO.getOrderId());
+            orderProductHelper.setProduct(productDTO);
+            orderProductHelper.setQuantity(orderProductDTO.getNumber());
+            orderProductHelper.setPrice(orderProductDTO.getSellingPrice().multiply(BigDecimal.valueOf(orderProductDTO.getNumber())));
+            orderProductsForShowing.add(orderProductHelper);
+        }
+
+        List<PackageDTO> packages = packageClient.getAllPackages(token);
+
+        Map<Long, String> productPackageMap = new HashMap<>();
+        for (PackageDTO packageDTO : packages) {
+            productPackageMap.put(packageDTO.getId(), packageDTO.getName());
+        }
+        Map<Long, String> productPackageMapImages = new HashMap<>();
+        for (PackageDTO packageDTO : packages) {
+            if (packageDTO.getPhoto() != null) {
+                productPackageMapImages.put(packageDTO.getId(), packageDTO.getPhoto());
+            }
+        }
+        for (PackageDTO packageDTO : packages) {
+            if (packageDTO.getPhoto() != null) {
+                imageService.getImage(packageDTO.getPhoto());
+            }
+        }
+        model.addAttribute("items", orderProductsForShowing);
+        model.addAttribute("productPackageMapImages", productPackageMapImages);
+        model.addAttribute("backendBaseUrl", backendBaseUrl);
+        model.addAttribute("packages", packages);
+        model.addAttribute("productPackageMap", productPackageMap);
+
+        return "Order/orderProducts";
+    }
+
+
     @GetMapping("/buyPage")
-    private String buyPage(){
+    private String buyPage() {
         return "Order/buy";
     }
+
     @PostMapping("/createFromCart")
-    public String createOrderFormShoppingCart(HttpServletRequest request){
+    public String createOrderFormShoppingCart(HttpServletRequest request) {
         String token = (String) request.getSession().getAttribute("sessionToken");
         orderClient.createOrder(token);
         return "redirect:/order/buyPage";
