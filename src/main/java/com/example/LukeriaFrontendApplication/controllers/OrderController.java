@@ -4,6 +4,7 @@ import com.example.LukeriaFrontendApplication.config.*;
 import com.example.LukeriaFrontendApplication.dtos.*;
 import feign.FeignException;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -224,6 +225,8 @@ public class OrderController {
 
         if (flag) {
             orderedProductsDTOs = orderProductClient.orderProducts(id, token);
+        }else{
+            throw new ValidationException("User is not client !");
         }
 
         for(OrderProductDTO orderProductDTO : orderedProductsDTOs){
