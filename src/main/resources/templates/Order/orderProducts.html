@@ -1,13 +1,50 @@
 <!DOCTYPE html>
-<html lang="bg" xmlns:th="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
+    <!-- LINKS -->
     <th:block th:insert="~{fragments/links}"></th:block>
-    <title>Продукти от поръчка</title>
+
+    <title>Поръчани продукти</title>
     <link rel="icon" type="image/x-icon" href="/img/photos/noImage.png">
     <link href="/css/show.css" rel="stylesheet">
+    <style>
+        .btn-sm {
+            padding: 5px 10px; /* Намаляване на отстоянието вътре в бутона */
+            font-size: 0.85em; /* По-малък размер на шрифта */
+            border-radius: 5px; /* Закръгляване на ъглите за по-мек изглед */
+        }
+        .btn-danger {
+            background-color: #dc3545; /* Червен цвят за бутона */
+            border-color: #dc3545;
+        }
+        .btn-danger:hover {
+            background-color: #c82333; /* По-тъмен червен цвят при задържане */
+            border-color: #bd2130;
+        }
+        .quantity-control {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .quantity-input {
+            width: 50px;
+            text-align: center;
+        }
+    </style>
 </head>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const navbar = document.getElementById("sidebar");
+        console.log(navbar);
+        const toggler = document.querySelector("a.sidebar-toggle");
+        toggler.addEventListener("click", () => {
+        navbar.classList.toggle("collapsed");
+        });
+    });
+</script>
 <body>
 <div class="wrapper">
+    <!-- HEADER -->
     <th:block th:insert="~{fragments/header}"></th:block>
     <div class="main">
         <nav class="navbar navbar-expand navbar-light navbar-bg">
@@ -15,47 +52,54 @@
                 <i class="hamburger align-self-center"></i>
             </a>
         </nav>
-
         <main class="content">
-            <div class="row" style="font-size: 1rem;">
+            <div class="row">
                 <div class="col-lg-11 mx-auto">
-                    <div class="card custom-card-width-lg">
+                    <div class="card custom-card-width-lg" style="position: relative;">
                         <div class="card-header">
-                            <h5 class="card-title mb-0">Продукти от поръчка</h5>
+                            <h5 class="card-title mb-0">Поръчани продукти</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                    <tr>
+                                        <th>Снимка</th>
+                                        <th>Код на продукта</th>
+                                        <th>Име на Продукт</th>
+                                        <th>Количество</th>
+                                        <th>Обща Цена</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="orderProduct, iter : ${items}"
+                                        data-id="${cartItem.product.id}" class="plate-row">
+                                        <td>
+                                            <img th:if="${productPackageMapImages.containsKey(orderProduct.product.packageId)}"
+                                                 th:src="@{${backendBaseUrl} + '/' + ${productPackageMapImages.get(orderProduct.product.packageId)}}"
+                                                 style="height: 100px; width: 150px;">
+                                            <img th:unless="${productPackageMapImages.containsKey(orderProduct.product.packageId)}"
+                                                 class="card-img-top"
+                                                 src="/img/photos/noImage.png"
+                                                 style="height: 100px; width: 150px;">
+                                        </td>
+
+                                        <td th:text="${orderProduct.product.productCode}"></td>
+                                        <td th:text="${productPackageMap.get(orderProduct.product.packageId)}"></td>
+                                        <td th:text="${orderProduct.quantity}"></td>
+
+                                        <td th:text="${#numbers.formatDecimal(orderProduct.price, 1, '2', 'POINT')} + ' Лв'"></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
 
-                        <div class="card-body">
-                            <table class="table table-striped">
-                                <thead>
-                                <tr>
-                                    <th>Изображение</th>
-                                    <th>Пакет</th>
-                                    <th>Продуктов код</th>
-                                    <th>Цена за брой</th>
-                                    <th>Количеството</th>
-                                    <th>Обща цена</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr th:each="orderProduct : ${orderProducts}">
-                                    <td>
-                                        <img th:src="@{${productImageUrls[orderProduct.id]}}" alt="Product Image">
-                                    </td>
-                                    <td th:text="${packageNames[orderProduct.id]}">Пакет</td>
-                                    <td th:text="${productDetails[orderProduct.id].productCode}">Продуктов код</td>
-                                    <td th:text="${orderProduct.sellingPrice}">Цена</td>
-                                    <td th:text="${orderProduct.number}">1</td>
-                                    <td th:text="${orderProduct.sellingPrice.multiply(orderProduct.number)}">Обща цена</td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </div>
                     </div>
                 </div>
             </div>
         </main>
     </div>
 </div>
-
 </body>
 </html>

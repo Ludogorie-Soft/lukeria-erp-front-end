@@ -35,4 +35,7 @@ public interface OrderProductClient {
     ResponseEntity<List<OrderWithProductsDTO>> getOrderProductDTOsByOrderDTOs(
             @RequestParam(name = "id") Long id,
             @RequestHeader("Authorization") String auth);
-}
+    @GetMapping("/getOrderProducts")
+    List<OrderProductDTO> orderProducts(@RequestParam("orderId")Long id,@RequestHeader("Authorization") String auth );
+
+    }
