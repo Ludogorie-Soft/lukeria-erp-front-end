@@ -249,16 +249,25 @@ public class ProductController {
         for (PackageDTO packageDTO : packages) {
             productPackageMap.put(packageDTO.getId(), packageDTO.getName());
         }
+
         Map<Long, String> productPackageMapImages = new HashMap<>();
         for (PackageDTO packageDTO : packages) {
-            productPackageMapImages.put(packageDTO.getId(), packageDTO.getPhoto());
+            if (packageDTO.getPhoto() != null) {
+                byte[] imageBytes = imageService.getImage(packageDTO.getPhoto());
+                if (imageBytes != null) {
+                    String imageUrl = "data:image/jpeg;base64," + Base64.getEncoder().encodeToString(imageBytes);
+                    productPackageMapImages.put(packageDTO.getId(), imageUrl);
+                }
+            }
         }
+
         model.addAttribute("products", products);
         model.addAttribute("backendBaseUrl", backendBaseUrl);
         model.addAttribute("productPackageMap", productPackageMap);
         model.addAttribute("productPackageMapImages", productPackageMapImages);
         return "Product/produce";
     }
+
 
     @PostMapping("/produce")
     ModelAndView produceProduct(@RequestParam("productId") Long productId, @RequestParam("producedQuantity") int producedQuantity, HttpServletRequest request) {

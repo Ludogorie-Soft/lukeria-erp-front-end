@@ -7,16 +7,17 @@
     <title>Производство на продукт</title>
     <link rel="icon" type="image/x-icon" href="/img/photos/noImage.png">
     <link href="/css/form.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet">
 </head>
 <script>
-document.addEventListener("DOMContentLoaded", function() {
-    const navbar = document.getElementById("sidebar");
-    console.log(navbar);
-    const toggler = document.querySelector("a.sidebar-toggle");
-    toggler.addEventListener("click", () => {
-    navbar.classList.toggle("collapsed");
+    document.addEventListener("DOMContentLoaded", function() {
+        const navbar = document.getElementById("sidebar");
+        console.log(navbar);
+        const toggler = document.querySelector("a.sidebar-toggle");
+        toggler.addEventListener("click", () => {
+            navbar.classList.toggle("collapsed");
+        });
     });
-});
 </script>
 <body>
 <div class="wrapper">
@@ -44,18 +45,20 @@ document.addEventListener("DOMContentLoaded", function() {
                                         <div class="form-group" th:if="${products}">
                                             <label for="productId" style="width: 100%;">Произведен продукт:</label>
                                             <select id="productId" name="productId" style="width: 100%;">
-                                                <option th:each="product : ${products}" th:value="${product.id}"
-                                                        th:text="${product.productCode} + ' - ' +  ${productPackageMap.get(product.packageId)}"
-                                                        th:data-image-url="@{${backendBaseUrl} + '/' + ${productPackageMapImages.get(product.packageId)}}">
-                                                    <img th:src="@{'${backendBaseUrl}' + '/' + ${productPackageMapImages.get(product.packageId)}}"  width="50" height="50">
+                                                <option th:each="product : ${products}"
+                                                        th:value="${product.id}"
+                                                        th:text="${product.productCode} + ' - ' + ${productPackageMap.get(product.packageId)}"
+                                                        th:data-image-url="${productPackageMapImages.get(product.packageId)}">
                                                 </option>
                                             </select>
                                         </div>
+
                                         <div class="form-group">
                                             <label for="producedQuantity">Произведен брой</label>
                                             <input type="number" class="form-control" id="producedQuantity"
-                                                   name="producedQuantity"  required min="1">
+                                                   name="producedQuantity" required min="1">
                                         </div>
+
                                         <div class="text-center">
                                             <button type="submit" class="btn btn-primary">Създай</button>
                                         </div>
@@ -69,23 +72,30 @@ document.addEventListener("DOMContentLoaded", function() {
         </div>
     </div>
 </div>
-<script>
-$(document).ready(function() {
-    $('#productId').select2({
-        templateResult: formatState
-    });
-});
 
-function formatState(state) {
-    if (!state.id) {
-        return state.text;
+<!-- Select2 and Image Integration -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#productId').select2({
+            templateResult: formatState,
+            templateSelection: formatState
+        });
+    });
+
+    // Функция за форматиране на елемента в dropdown
+    function formatState(state) {
+        if (!state.id) {
+            return state.text;
+        }
+        var imageUrl = state.element.getAttribute('data-image-url');
+        if (imageUrl) {
+            return $('<span><img src="' + imageUrl + '" width="50" height="50" style="margin-right:10px;"/> ' + state.text + '</span>');
+        } else {
+            return state.text;
+        }
     }
-    var imageUrl = state.element.getAttribute('data-image-url');
-    var $state = $(
-        '<span><img src="' + imageUrl + '" width="50" height="50" /> ' + state.text + '</span>'
-    );
-    return $state;
-}
 </script>
 
 </body>
