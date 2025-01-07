@@ -1,10 +1,11 @@
-name: backend-build
+name: frontend-build
 
 on:
-  push:
-    branches: [docker-deployment]
-    paths:
-      - '.github/workflows/frontend-build.yml'
+  pull_request:
+    types:
+      - closed
+    branches:
+      - main
 
 jobs:
   compile:
