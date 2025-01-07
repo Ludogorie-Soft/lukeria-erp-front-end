@@ -91,6 +91,6 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: docker-files/backend/Dockerfile
+          file: Dockerfile
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/lukeria-frontend:${{ steps.extract_version.outputs.VERSION }}
