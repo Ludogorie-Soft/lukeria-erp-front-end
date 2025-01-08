@@ -1,5 +1,6 @@
 package com.example.LukeriaFrontendApplication.config;
 
+
 import com.example.LukeriaFrontendApplication.dtos.CustomerCustomPriceDTO;
 import com.example.LukeriaFrontendApplication.dtos.ProductDTO;
 import jakarta.validation.Valid;
