@@ -160,7 +160,7 @@
                                                                 <div class="d-flex flex-column align-items-center">
                                                                     <!-- Изображение на продукта -->
                                                                     <img th:if="${productPackageMapImages.containsKey(productPrice.product.packageId)}"
-                                                                         th:src="@{${backendBaseUrl} + '/' + ${productPackageMapImages.get(productPrice.product.packageId)}}"
+                                                                         th:src="${productPackageMapImages[productPrice.product.packageId]}"
                                                                          class="img-fluid mb-3" style="max-height: 250px; max-width: 250px;">
                                                                     <img th:unless="${productPackageMapImages.containsKey(productPrice.product.packageId)}"
                                                                          src="/img/photos/noImage.png" class="img-fluid mb-3" style="max-height: 250px; max-width: 250px;">
