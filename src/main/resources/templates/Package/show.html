@@ -41,11 +41,16 @@ document.addEventListener("DOMContentLoaded", function() {
                         <div class="card-header">
                             <h5 class="card-title mb-0">Всички Кутии</h5>
                         </div>
-                        <th:block th:if="${session.sessionToken != null and session.sessionRole == 'ADMIN'}">
-                            <div class="text-center">
+
+                        <div style="display: flex; justify-content: center; gap: 10px;">
+                            <th:block th:if="${session.sessionToken != null and session.sessionRole == 'ADMIN'}">
                                 <a href="/package/create" class="btn btn-primary">Добави Кутия</a>
-                            </div>
-                        </th:block>
+                            </th:block>
+
+                            <th:block th:if="${session.sessionToken != null and (session.sessionRole == 'ADMIN' or session.sessionRole == 'PRODUCTION_MANAGER')}">
+                                <a href="/stock/show" class="btn btn-warning">Сток Материали</a>
+                            </th:block>
+                        </div>
                         <div class="card-body">
                             <div class="row mb-3">
                                 <div class="col">

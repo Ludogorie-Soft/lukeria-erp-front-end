@@ -7,6 +7,8 @@
     <link rel="icon" type="image/x-icon" href="/img/photos/noImage.png">
     <link href="/css/app.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
     <style>
         /* Стилове за таблицата */
@@ -49,16 +51,45 @@
         .table-responsive {
             overflow-x: auto;
         }
+
+        /* Позициониране и намаляване на размера на бутона */
+        .export-button-container {
+            margin-top: 20px;
+            margin-bottom: 20px; /* Добавено разстояние между бутона и другите елементи */
+            text-align: left; /* Преместваме бутона вляво */
+        }
+
+        .export-button-container button {
+            padding: 5px 10px;  /* Намаляване на padding-а */
+            font-size: 14px;    /* Намаляване на размера на текста */
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center; /* Центриране на иконката и текста */
+        }
+
+        .export-button-container button i {
+            margin-right: 8px; /* Разстояние между иконката и текста */
+        }
+
+        .export-button-container button:hover {
+            background-color: #0056b3;
+        }
     </style>
 </head>
 
 <script>
     document.addEventListener("DOMContentLoaded", function() {
-        const navbar = document.getElementById("sidebar");
-        const toggler = document.querySelector("a.sidebar-toggle");
-        toggler.addEventListener("click", () => {
-            navbar.classList.toggle("collapsed");
-        });
+    const navbar = document.getElementById("sidebar");
+    console.log(navbar);
+    const toggler = document.querySelector("a.sidebar-toggle");
+    toggler.addEventListener("click", () => {
+    navbar.classList.toggle("collapsed");
+    });
+});
 
         // Универсална функция за търсене
         function setupSearch(inputId, columnIdx, resultCountId) {
@@ -90,6 +121,34 @@
         setupSearch('searchInput1', 1, 'resultsCount');
         setupSearch('searchInput2', 2, 'resultsCount2');
     });
+
+    document.addEventListener("DOMContentLoaded", function() {
+        // Бутон за експортиране в Excel
+        const exportButton = document.getElementById('exportExcel');
+        if (exportButton) {
+            exportButton.addEventListener('click', function () {
+                const table = document.querySelector('table');
+                const rows = Array.from(table.rows);
+
+                // Вземаме заглавията на колоните
+                const header = rows[0].cells;
+                const data = rows.slice(1).map(row => {
+                    const rowData = Array.from(row.cells).map(cell => cell.textContent);
+                    return rowData;
+                });
+
+                // Създаване на нов Excel файл
+                const wb = XLSX.utils.book_new();
+                const ws = XLSX.utils.aoa_to_sheet([Array.from(header).map(cell => cell.textContent), ...data]);
+                XLSX.utils.book_append_sheet(wb, ws, "Таблица");
+
+                // Записваме Excel файла
+                XLSX.writeFile(wb, "Сток Материали Лукерия.xlsx");
+            });
+        } else {
+            console.log('Бутонът за експортиране не беше намерен!');
+        }
+    });
 </script>
 
 <body>
@@ -110,6 +169,13 @@
                             <h5 class="card-title mb-0">Сток Материали</h5>
                         </div>
                         <div class="card-body">
+                            <!-- Контейнер за центриране на бутона за експортиране -->
+                            <div class="export-button-container">
+                                <button id="exportExcel" class="btn btn-primary">
+                                    <i class="fas fa-file-excel"></i> Експортиране в Excel
+                                </button>
+                            </div>
+
                             <div class="row mb-3">
                                 <div class="col">
                                     <input type="text" id="searchInput1" class="form-control"
@@ -139,7 +205,6 @@
                                         <th>Налично количество на Тарелки</th>
                                         <th>Налично количество на Кашон</th>
                                         <th></th>
-
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -157,13 +222,13 @@
                                         <td th:text="${package.productCode}"></td>
                                         <td th:text="${package.name}"></td>
 
-                                        <td><span th:text="${package.availableQuantity}"></span></td>
-
                                         <td>
                                             <span th:if="${productMap[package.id] != null}"
                                                   th:text="${productMap[package.id].availableQuantity}"></span>
                                             <span th:unless="${productMap[package.id] != null}">N/A</span>
                                         </td>
+                                        <td><span th:text="${package.availableQuantity}"></span></td>
+
                                         <td>
                                             <a th:if="${plateMap[package.plateId] != null}"
                                                th:href="@{/plate/{plateId}(plateId=${package.plateId})}"
