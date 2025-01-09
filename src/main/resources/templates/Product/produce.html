@@ -93,80 +93,84 @@
 <!-- JavaScript за Select2 и добавяне на нови полета -->
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-    // Инициализация на Select2 за първия елемент
-    initializeSelect2("#productId1");
+       // Инициализация на Select2 за първия елемент
+       initializeSelect2("#productId1");
 
-    let productCounter = 1;
+       let productCounter = 1; // Брояч за редове
 
-    // Добавяне на нов ред
-    $("#add-product").on("click", function () {
-        productCounter++;
+       // Функция за добавяне на нов ред
+       $("#add-product").on("click", function () {
+           productCounter++;
 
-        // Създаване на нов <select> елемент с опции от products
-        const newSelect = $(`
-            <select id="productId${productCounter}" name="productId${productCounter}" class="custom-select-lg" style="width: 100%;"></select>
-        `);
+           // Създаване на нов <select> елемент
+           const newSelect = $(`
+               <select id="productId${productCounter}" name="productId${productCounter}" class="custom-select-lg" style="width: 100%;"></select>
+           `);
 
-        products.forEach(product => {
-            const productCode = product.productCode;
-            const packageId = product.packageId;
-            const packageText = productPackageMap[packageId];
-            const imageUrl = productPackageMapImages[packageId];
-            const option = $(`<option></option>`)
-                .val(product.id)
-                .text(`${productCode} - ${packageText}`)
-                .data("image-url", imageUrl);
-            newSelect.append(option);
-        });
+           // Добавяне на опции към <select>
+           products.forEach(product => {
+               const productCode = product.productCode;
+               const packageId = product.packageId;
+               const packageText = productPackageMap[packageId];
+               const imageUrl = productPackageMapImages[packageId];
 
-        const newRow = $(`
-            <div class="product-row form-group" id="row${productCounter}">
-                <label for="productId${productCounter}" style="width: 100%;">Произведен продукт:</label>
-                <div class="d-flex align-items-center">
-                    ${newSelect[0].outerHTML}
-                    <input type="number" class="form-control ml-3" id="producedQuantity${productCounter}" name="producedQuantity${productCounter}" required min="1" placeholder="Количество">
-                    <button type="button" class="btn btn-danger ml-3 remove-row" data-row-id="${productCounter}">Премахни</button>
-                </div>
-            </div>
-        `);
+               // Създаване на опция с данни
+               const option = $(`<option></option>`)
+                   .val(product.id)
+                   .text(`${productCode} - ${packageText}`)
+                   .attr("data-image-url", imageUrl); // Задаване на атрибут за изображението
 
-        // Добавяне на нов ред към контейнера
-        $("#product-rows").append(newRow);
+               newSelect.append(option);
+           });
 
-        // Инициализация на Select2 за новия елемент
-        initializeSelect2(`#productId${productCounter}`);
-    });
+           // Създаване на нов ред
+           const newRow = $(`
+               <div class="product-row form-group" id="row${productCounter}">
+                   <label for="productId${productCounter}" style="width: 100%;">Произведен продукт:</label>
+                   <div class="d-flex align-items-center">
+                       ${newSelect[0].outerHTML}
+                       <input type="number" class="form-control ml-3" id="producedQuantity${productCounter}" name="producedQuantity${productCounter}" required min="1" placeholder="Количество">
+                       <button type="button" class="btn btn-danger ml-3 remove-row" data-row-id="${productCounter}">Премахни</button>
+                   </div>
+               </div>
+           `);
 
-    // Премахване на ред
-    $(document).on("click", ".remove-row", function () {
-        const rowId = $(this).data("row-id");
-        $(`#row${rowId}`).remove();
-    });
+           // Добавяне на новия ред към контейнера
+           $("#product-rows").append(newRow);
 
-    // Функция за инициализация на Select2
-    function initializeSelect2(selector) {
-        $(selector).select2({
-            templateResult: formatState,
-            templateSelection: formatState,
-            width: '100%'
-        });
-    }
+           // Инициализация на Select2 за новия елемент
+           initializeSelect2(`#productId${productCounter}`);
+       });
 
-    // Функция за форматиране на опции в Select2
-    function formatState(state) {
-        if (!state.id) {
-            return state.text;
-        }
-        let imageUrl = $(state.element).data("image-url");
-        if (imageUrl) {
-            return $(
-                '<span><img src="' + imageUrl + '" width="40" height="40" style="margin-right: 10px;" /> ' + state.text + '</span>'
-            );
-        }
-        return state.text;
-    }
-});
+       // Функция за премахване на ред
+       $(document).on("click", ".remove-row", function () {
+           const rowId = $(this).data("row-id");
+           $(`#row${rowId}`).remove();
+       });
 
+       // Функция за инициализация на Select2
+       function initializeSelect2(selector) {
+           $(selector).select2({
+               templateResult: formatState,
+               templateSelection: formatState,
+               width: '100%'
+           });
+       }
+
+       // Функция за форматиране на опции в Select2
+       function formatState(state) {
+           if (!state.id) {
+               return state.text;
+           }
+           const imageUrl = $(state.element).data("image-url"); // Взема атрибута data-image-url
+           if (imageUrl) {
+               return $(
+                   `<span><img src="${imageUrl}" width="40" height="40" style="margin-right: 10px;" /> ${state.text}</span>`
+               );
+           }
+           return state.text;
+       }
+   });
 </script>
 </body>
 </html>
