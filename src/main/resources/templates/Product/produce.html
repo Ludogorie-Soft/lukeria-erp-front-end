@@ -1,123 +1,35 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
-    <!-- LINKS -->
     <th:block th:insert="~{fragments/links}"></th:block>
-
     <title>Производство на продукт</title>
     <link rel="icon" type="image/x-icon" href="/img/photos/noImage.png">
     <link href="/css/form.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet">
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const navbar = document.getElementById("sidebar");
-            console.log(navbar);
-            const toggler = document.querySelector("a.sidebar-toggle");
-            toggler.addEventListener("click", () => {
-            navbar.classList.toggle("collapsed");
-            });
-        });
-    </script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
     <style>
-        /* Уголемяване на полето за избор */
-        #productId {
-            height: 100px; /* Увеличена височина на полето */
-            font-size: 1.2em; /* По-голям шрифт */
-            padding: 10px; /* Вътрешен отстъп за повече пространство */
-            border-radius: 5px; /* Закръглени ъгли */
+        .product-row {
+            margin-bottom: 15px;
         }
 
-        /* Уголемяване на Select2 контейнера */
         .select2-container .select2-selection--single {
-            height: 100px !important; /* Височина на контейнера */
-            line-height: 80px !important;
-            font-size: 1.2em; /* Голям шрифт */
-            padding: 10px;
+            height: 40px !important;
             display: flex;
             align-items: center;
         }
 
         .select2-container .select2-selection--single .select2-selection__rendered {
-            line-height: 80px !important; /* Вертикално центриране на текста */
-            font-size: 1.2em; /* Увеличен шрифт */
+            line-height: 40px !important;
         }
 
         .select2-container .select2-selection--single .select2-selection__arrow {
-            height: 100px !important; /* Вертикално центриране на стрелката */
-        }
-
-        /* Dropdown стилизиране */
-        .select2-dropdown {
-            font-size: 1.2em; /* По-голям шрифт в dropdown */
-        }
-
-        .select2-results__option {
-            padding: 10px; /* Вътрешен отстъп на опциите */
-            font-size: 1.2em; /* По-голям шрифт за опциите */
-        }
-
-        .select2-results__option img {
-            margin-right: 10px; /* Разстояние между изображението и текста */
-            vertical-align: middle;
-        }
-
-        /* 🌟 Оптимизация за мобилни устройства */
-        @media (max-width: 768px) {
-            #productId {
-                height: 60px; /* По-малка височина за мобилни устройства */
-                font-size: 1em; /* По-малък шрифт */
-            }
-
-            .select2-container .select2-selection--single {
-                height: 60px !important;
-                line-height: 60px !important;
-                font-size: 1em;
-            }
-
-            .select2-container .select2-selection--single .select2-selection__rendered {
-                line-height: 60px !important;
-                font-size: 1em;
-            }
-
-            .select2-container .select2-selection--single .select2-selection__arrow {
-                height: 60px !important;
-            }
-
-            .select2-results__option {
-                font-size: 1em; /* По-малък шрифт за dropdown опциите */
-            }
-        }
-
-        @media (max-width: 480px) {
-            #productId {
-                height: 50px;
-                font-size: 0.9em;
-            }
-
-            .select2-container .select2-selection--single {
-                height: 50px !important;
-                line-height: 50px !important;
-                font-size: 0.9em;
-            }
-
-            .select2-container .select2-selection--single .select2-selection__rendered {
-                line-height: 50px !important;
-                font-size: 0.9em;
-            }
-
-            .select2-container .select2-selection--single .select2-selection__arrow {
-                height: 50px !important;
-            }
-
-            .select2-results__option {
-                font-size: 0.9em;
-            }
+            height: 40px !important;
         }
     </style>
 </head>
 <body>
 <div class="wrapper">
-    <!-- HEADER -->
     <th:block th:insert="~{fragments/header}"></th:block>
     <div class="main">
         <nav class="navbar navbar-expand navbar-light navbar-bg">
@@ -126,75 +38,117 @@
             </a>
         </nav>
 
-        <div class="main">
-            <main class="content">
-                <div class="d-flex justify-content-center">
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="card custom-card-width-lg">
-                                <div class="card-header">
-                                    <h5 class="card-title mb-0">Производство на продукт</h5>
-                                </div>
-                                <div class="card-body">
-                                    <form th:action="@{/product/produce}" method="post">
-                                        <!-- Поле за избор на продукт -->
-                                        <div class="form-group" th:if="${products}">
-                                            <label for="productId" style="width: 100%;">Произведен продукт:</label>
-                                            <select id="productId" name="productId" class="custom-select-lg" style="width: 100%;">
-                                                <option th:each="product : ${products}"
-                                                        th:value="${product.id}"
-                                                        th:text="${product.productCode} + ' - ' + ${productPackageMap.get(product.packageId)}"
-                                                        th:data-image-url="${productPackageMapImages.get(product.packageId)}">
-                                                </option>
-                                            </select>
+        <main class="content">
+            <div class="d-flex justify-content-center">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card custom-card-width-lg">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">Производство на продукт</h5>
+                            </div>
+                            <div class="card-body">
+                                <form th:action="@{/product/produce}" method="post">
+                                    <div id="product-rows">
+                                        <!-- Полета за избор на продукт и количество -->
+                                        <div class="product-row form-group" id="row1">
+                                            <label for="productId1" style="width: 100%;">Произведен продукт:</label>
+                                            <div class="d-flex align-items-center">
+                                                <select id="productId1" name="productId1" class="custom-select-lg" style="width: 100%;">
+                                                    <option th:each="product : ${products}"
+                                                            th:value="${product.id}"
+                                                            th:text="${product.productCode} + ' - ' + ${productPackageMap.get(product.packageId)}"
+                                                            th:data-image-url="${productPackageMapImages.get(product.packageId)}">
+                                                    </option>
+                                                </select>
+                                                <input type="number" class="form-control ml-3" id="producedQuantity1" name="producedQuantity1" required min="1" placeholder="Количество">
+                                                <button type="button" class="btn btn-danger ml-3 remove-row" data-row-id="1">Премахни</button>
+                                            </div>
                                         </div>
+                                    </div>
 
-                                        <!-- Поле за въвеждане на количество -->
-                                        <div class="form-group">
-                                            <label for="producedQuantity">Произведен брой</label>
-                                            <input type="number" class="form-control" id="producedQuantity"
-                                                   name="producedQuantity" required min="1">
-                                        </div>
+                                    <!-- Бутон за добавяне на още продукти -->
+                                    <div class="text-center mb-3">
+                                        <button type="button" id="add-product" class="btn btn-secondary">Добави още продукт</button>
+                                    </div>
 
-                                        <!-- Бутон за изпращане -->
-                                        <div class="text-center">
-                                            <button type="submit" class="btn btn-primary">Създай</button>
-                                        </div>
-                                    </form>
-                                </div>
+                                    <!-- Бутон за изпращане -->
+                                    <div class="text-center">
+                                        <button type="submit" class="btn btn-primary">Създай</button>
+                                    </div>
+                                </form>
                             </div>
                         </div>
                     </div>
                 </div>
-            </main>
-        </div>
+            </div>
+        </main>
     </div>
 </div>
 
-<!-- JavaScript за Select2 и функционалност -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+<!-- JavaScript за Select2 и добавяне на нови полета -->
 <script>
-    $(document).ready(function() {
-        $('#productId').select2({
+    document.addEventListener("DOMContentLoaded", function () {
+        const navbar = document.getElementById("sidebar");
+        const toggler = document.querySelector("a.sidebar-toggle");
+        toggler.addEventListener("click", () => {
+            navbar.classList.toggle("collapsed");
+        });
+
+        $("#productId1").select2({
             templateResult: formatState,
             templateSelection: formatState,
-            width: '100%' // Уверява се, че полето за избор използва пълната ширина
+            width: '100%'
         });
-    });
 
-    // Функция за форматиране на елемента в dropdown
-    function formatState(state) {
-        if (!state.id) {
+        let productCounter = 1;
+
+        // Добавяне на нов ред
+        $("#add-product").on("click", function () {
+            productCounter++;
+            const newRow = $(
+                `<div class="product-row form-group" id="row${productCounter}">
+                    <label for="productId${productCounter}" style="width: 100%;">Произведен продукт:</label>
+                    <div class="d-flex align-items-center">
+                        <select id="productId${productCounter}" name="productId${productCounter}" class="custom-select-lg" style="width: 100%;">
+                            <option th:each="product : ${products}"
+                                    th:value="${product.id}"
+                                    th:text="${product.productCode} + ' - ' + ${productPackageMap.get(product.packageId)}"
+                                    th:data-image-url="${productPackageMapImages.get(product.packageId)}">
+                            </option>
+                        </select>
+                        <input type="number" class="form-control ml-3" id="producedQuantity${productCounter}" name="producedQuantity${productCounter}" required min="1" placeholder="Количество">
+                        <button type="button" class="btn btn-danger ml-3 remove-row" data-row-id="${productCounter}">Премахни</button>
+                    </div>
+                </div>`
+            );
+
+            $("#product-rows").append(newRow);
+            $(`#productId${productCounter}`).select2({
+                templateResult: formatState,
+                templateSelection: formatState,
+                width: '100%'
+            });
+        });
+
+        // Премахване на ред
+        $(document).on("click", ".remove-row", function () {
+            const rowId = $(this).data("row-id");
+            $(`#row${rowId}`).remove();
+        });
+
+        function formatState(state) {
+            if (!state.id) {
+                return state.text;
+            }
+            let imageUrl = $(state.element).data("image-url");
+            if (imageUrl) {
+                return $(
+                    '<span><img src="' + imageUrl + '" width="40" height="40" style="margin-right: 10px;" /> ' + state.text + '</span>'
+                );
+            }
             return state.text;
         }
-        var imageUrl = state.element.getAttribute('data-image-url');
-        if (imageUrl) {
-            return $('<span><img src="' + imageUrl + '" width="50" height="50" style="margin-right:10px;"/> ' + state.text + '</span>');
-        } else {
-            return state.text;
-        }
-    }
+    });
 </script>
 </body>
 </html>
