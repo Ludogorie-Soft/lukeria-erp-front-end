@@ -9,6 +9,7 @@
     <link rel="icon" type="image/x-icon" href="/img/photos/noImage.png">
     <link href="/css/app.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <script>
 document.addEventListener("DOMContentLoaded", function() {
@@ -44,11 +45,13 @@ document.addEventListener("DOMContentLoaded", function() {
 
                         <div style="display: flex; justify-content: center; gap: 10px;">
                             <th:block th:if="${session.sessionToken != null and session.sessionRole == 'ADMIN'}">
-                                <a href="/package/create" class="btn btn-primary">Добави Кутия</a>
-                            </th:block>
+                            <a href="/package/create" class="btn btn-success">Добави Кутия</a> <!-- Зелен бутон -->
+                        </th:block>
 
                             <th:block th:if="${session.sessionToken != null and (session.sessionRole == 'ADMIN' or session.sessionRole == 'PRODUCTION_MANAGER')}">
-                                <a href="/stock/show" class="btn btn-warning">Сток Материали</a>
+                                <a href="/stock/show" class="btn btn-info">
+                                    <i class="fas fa-file-excel"></i> Сток Материали
+                                </a>
                             </th:block>
                         </div>
                         <div class="card-body">

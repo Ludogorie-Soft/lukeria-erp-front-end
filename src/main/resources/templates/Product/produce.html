@@ -11,46 +11,46 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
     <style>
         .btn-success {
-  background-color: #28a745;
-  border-color: #28a745;
-  color: white;
-}
+            background-color: #28a745;
+            border-color: #28a745;
+            color: white;
+        }
 
-.btn-danger {
-    background-color: #dc3545 !important;
-    border-color: #dc3545 !important;
-    color: white !important;
-}
+        .btn-danger {
+            background-color: #dc3545 !important;
+            border-color: #dc3545 !important;
+            color: white !important;
+        }
 
-.btn:hover {
-  opacity: 0.9;
-}
-      .product-row {
-          margin-bottom: 15px;
-      }
+        .btn:hover {
+            opacity: 0.9;
+        }
 
-      .select2-container .select2-selection--single {
-          height: 40px !important;
-          display: flex;
-          align-items: center;
-      }
+        .product-row {
+            margin-bottom: 15px;
+        }
 
-      .select2-container .select2-selection--single .select2-selection__rendered {
-          line-height: 40px !important;
-      }
+        .select2-container .select2-selection--single {
+            height: 40px !important;
+            display: flex;
+            align-items: center;
+        }
 
-      .select2-container .select2-selection--single .select2-selection__arrow {
-          height: 40px !important;
-      }
+        .select2-container .select2-selection--single .select2-selection__rendered {
+            line-height: 40px !important;
+        }
+
+        .select2-container .select2-selection--single .select2-selection__arrow {
+            height: 40px !important;
+        }
     </style>
 </head>
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         const navbar = document.getElementById("sidebar");
-        console.log(navbar);
         const toggler = document.querySelector("a.sidebar-toggle");
         toggler.addEventListener("click", () => {
-        navbar.classList.toggle("collapsed");
+            navbar.classList.toggle("collapsed");
         });
     });
 </script>
@@ -79,34 +79,26 @@
                                         <div class="product-row form-group" id="row1">
                                             <label for="productId1" style="width: 100%;">Произведен продукт:</label>
                                             <div class="d-flex align-items-center">
-                                                <select id="productId1" name="productId1" class="custom-select-lg"
-                                                        style="width: 100%;">
+                                                <select id="productId1" name="productId[]" class="custom-select-lg" style="width: 100%;">
                                                     <option th:each="product : ${products}"
                                                             th:value="${product.id}"
                                                             th:text="${product.productCode} + ' - ' + ${productPackageMap.get(product.packageId)}"
                                                             th:data-image-url="${productPackageMapImages.get(product.packageId)}">
                                                     </option>
                                                 </select>
-                                                <input type="number" class="form-control ml-3" id="producedQuantity1"
-                                                       name="producedQuantity1" required min="1"
+                                                <input type="number" class="form-control ml-3" id="producedQuantity1" name="producedQuantity[]" required min="1"
                                                        placeholder="Количество">
-
                                                 <button type="button" class="btn btn-danger ml-3 remove-row" data-row-id="1">
                                                     <i class="bi bi-x-lg"></i>
                                                 </button>
-
                                             </div>
                                         </div>
                                     </div>
 
-                                    <!-- Бутон за добавяне на още продукти -->
                                     <div class="text-center mb-3">
-                                        <button type="button" id="add-product" class="btn btn-success">Добави още
-                                            продукт
-                                        </button>
+                                        <button type="button" id="add-product" class="btn btn-success">Добави още продукт</button>
                                     </div>
 
-                                    <!-- Бутон за изпращане -->
                                     <div class="text-center">
                                         <button type="submit" class="btn btn-primary">Създай</button>
                                     </div>
@@ -128,87 +120,87 @@
 <!-- JavaScript за Select2 и добавяне на нови полета -->
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-       // Инициализация на Select2 за първия елемент
-       initializeSelect2("#productId1");
+        // Инициализация на Select2 за първия елемент
+        initializeSelect2("#productId1");
 
-       let productCounter = 1; // Брояч за редове
+        let productCounter = 1; // Брояч за редове
 
-       // Функция за добавяне на нов ред
-       $("#add-product").on("click", function () {
-           productCounter++;
+        // Функция за добавяне на нов ред
+        $("#add-product").on("click", function () {
+            productCounter++;
 
-           // Създаване на нов <select> елемент
-           const newSelect = $(`
-               <select id="productId${productCounter}" name="productId${productCounter}" class="custom-select-lg" style="width: 100%;"></select>
-           `);
+            // Създаване на нов <select> елемент
+            const newSelect = $(`
+                <select id="productId${productCounter}" name="productId[]" class="custom-select-lg" style="width: 100%;"></select>
+            `);
 
-           // Добавяне на опции към <select>
-           products.forEach(product => {
-               const productCode = product.productCode;
-               const packageId = product.packageId;
-               const packageText = productPackageMap[packageId];
-               const imageUrl = productPackageMapImages[packageId];
+            // Добавяне на опции към <select>
+            products.forEach(product => {
+                const productCode = product.productCode;
+                const packageId = product.packageId;
+                const packageText = productPackageMap[packageId];
+                const imageUrl = productPackageMapImages[packageId];
 
-               // Създаване на опция с данни
-               const option = $(`<option></option>`)
-                   .val(product.id)
-                   .text(`${productCode} - ${packageText}`)
-                   .attr("data-image-url", imageUrl); // Задаване на атрибут за изображението
+                // Създаване на опция с данни
+                const option = $(`<option></option>`)
+                    .val(product.id)
+                    .text(`${productCode} - ${packageText}`)
+                    .attr("data-image-url", imageUrl); // Задаване на атрибут за изображението
 
-               newSelect.append(option);
-           });
+                newSelect.append(option);
+            });
 
-           // Създаване на нов ред
-      const newRow = $(`
-    <div class="product-row form-group" id="row${productCounter}">
-        <label for="productId${productCounter}" style="width: 100%;">Произведен продукт:</label>
-        <div class="d-flex align-items-center">
-            ${newSelect[0].outerHTML}
-            <input type="number" class="form-control ml-3" id="producedQuantity${productCounter}" name="producedQuantity${productCounter}" required min="1" placeholder="Количество">
-            <button type="button" class="btn btn-danger ml-3 remove-row" data-row-id="${productCounter}">
-                <i class="bi bi-x-lg"></i>
-            </button>
-        </div>
-    </div>
-`);
+            // Създаване на нов ред с продукт и количество
+            const newRow = $(`
+                <div class="product-row form-group" id="row${productCounter}">
+                    <label for="productId${productCounter}" style="width: 100%;">Произведен продукт:</label>
+                    <div class="d-flex align-items-center">
+                        ${newSelect[0].outerHTML}
+                        <input type="number" class="form-control ml-3" id="producedQuantity${productCounter}"
+                            name="producedQuantity[]" required min="1" placeholder="Количество">
+                        <button type="button" class="btn btn-danger ml-3 remove-row" data-row-id="${productCounter}">
+                            <i class="bi bi-x-lg"></i>
+                        </button>
+                    </div>
+                </div>
+            `);
 
+            // Добавяне на новия ред към контейнера
+            $("#product-rows").append(newRow);
 
-           // Добавяне на новия ред към контейнера
-           $("#product-rows").append(newRow);
+            // Инициализация на Select2 за новия елемент
+            initializeSelect2(`#productId${productCounter}`);
+        });
 
-           // Инициализация на Select2 за новия елемент
-           initializeSelect2(`#productId${productCounter}`);
-       });
+        // Функция за премахване на ред
+        $(document).on("click", ".remove-row", function () {
+            const rowId = $(this).data("row-id");
+            $(`#row${rowId}`).remove();
+        });
 
-       // Функция за премахване на ред
-       $(document).on("click", ".remove-row", function () {
-           const rowId = $(this).data("row-id");
-           $(`#row${rowId}`).remove();
-       });
+        // Функция за инициализация на Select2
+        function initializeSelect2(selector) {
+            $(selector).select2({
+                templateResult: formatState,
+                templateSelection: formatState,
+                width: '100%'
+            });
+        }
 
-       // Функция за инициализация на Select2
-       function initializeSelect2(selector) {
-           $(selector).select2({
-               templateResult: formatState,
-               templateSelection: formatState,
-               width: '100%'
-           });
-       }
-
-       // Функция за форматиране на опции в Select2
-       function formatState(state) {
-           if (!state.id) {
-               return state.text;
-           }
-           const imageUrl = $(state.element).data("image-url"); // Взема атрибута data-image-url
-           if (imageUrl) {
-               return $(
-                   `<span><img src="${imageUrl}" width="40" height="40" style="margin-right: 10px;" /> ${state.text}</span>`
-               );
-           }
-           return state.text;
-       }
-   });
+        // Функция за форматиране на опции в Select2
+        function formatState(state) {
+            if (!state.id) {
+                return state.text;
+            }
+            const imageUrl = $(state.element).data("image-url"); // Взема атрибута data-image-url
+            if (imageUrl) {
+                return $(
+                    `<span><img src="${imageUrl}" width="40" height="40" style="margin-right: 10px;" /> ${state.text}</span>`
+                );
+            }
+            return state.text;
+        }
+    });
 </script>
 </body>
 </html>
