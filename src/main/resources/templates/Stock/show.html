@@ -38,7 +38,6 @@
             background-color: #f1f1f1;
         }
 
-        /* Акцентиране на резултатите */
         .alert {
             background-color: #f8f9fa;
             border: 1px solid #ddd;
@@ -52,27 +51,26 @@
             overflow-x: auto;
         }
 
-        /* Позициониране и намаляване на размера на бутона */
         .export-button-container {
             margin-top: 20px;
-            margin-bottom: 20px; /* Добавено разстояние между бутона и другите елементи */
-            text-align: left; /* Преместваме бутона вляво */
+            margin-bottom: 20px;
+            text-align: left;
         }
 
         .export-button-container button {
-            padding: 5px 10px;  /* Намаляване на padding-а */
-            font-size: 14px;    /* Намаляване на размера на текста */
+            padding: 10px 15px;
+            font-size: 14px;
             background-color: #007bff;
             color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
             display: flex;
-            align-items: center; /* Центриране на иконката и текста */
+            align-items: center;
         }
 
         .export-button-container button i {
-            margin-right: 8px; /* Разстояние между иконката и текста */
+            margin-right: 8px;
         }
 
         .export-button-container button:hover {
@@ -82,14 +80,12 @@
 </head>
 
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
-    const navbar = document.getElementById("sidebar");
-    console.log(navbar);
-    const toggler = document.querySelector("a.sidebar-toggle");
-    toggler.addEventListener("click", () => {
-    navbar.classList.toggle("collapsed");
-    });
-});
+    document.addEventListener("DOMContentLoaded", function () {
+        const navbar = document.getElementById("sidebar");
+        const toggler = document.querySelector("a.sidebar-toggle");
+        toggler.addEventListener("click", () => {
+            navbar.classList.toggle("collapsed");
+        });
 
         // Универсална функция за търсене
         function setupSearch(inputId, columnIdx, resultCountId) {
@@ -99,7 +95,7 @@
                 const tr = table.getElementsByTagName('tr');
                 let count = 0;
 
-                for (let i = 0; i < tr.length; i++) {
+                for (let i = 1; i < tr.length; i++) { // Започваме от ред 1, защото ред 0 е заглавната част
                     const td = tr[i].getElementsByTagName('td')[columnIdx];
                     if (td) {
                         const txtValue = td.textContent || td.innerText;
@@ -117,12 +113,10 @@
             });
         }
 
-        // Инициализиране на търсенето за двата входа
+        // Инициализиране на търсенето за двата филтъра
         setupSearch('searchInput1', 1, 'resultsCount');
         setupSearch('searchInput2', 2, 'resultsCount2');
-    });
 
-    document.addEventListener("DOMContentLoaded", function() {
         // Бутон за експортиране в Excel
         const exportButton = document.getElementById('exportExcel');
         if (exportButton) {
@@ -131,22 +125,24 @@
                 const rows = Array.from(table.rows);
 
                 // Вземаме заглавията на колоните
-                const header = rows[0].cells;
+                const header = Array.from(rows[0].cells).map(cell => cell.textContent);
                 const data = rows.slice(1).map(row => {
-                    const rowData = Array.from(row.cells).map(cell => cell.textContent);
-                    return rowData;
+                    return Array.from(row.cells).map(cell => cell.textContent);
                 });
 
                 // Създаване на нов Excel файл
                 const wb = XLSX.utils.book_new();
-                const ws = XLSX.utils.aoa_to_sheet([Array.from(header).map(cell => cell.textContent), ...data]);
+                const ws = XLSX.utils.aoa_to_sheet([header, ...data]);
                 XLSX.utils.book_append_sheet(wb, ws, "Таблица");
 
-                // Записваме Excel файла
-                XLSX.writeFile(wb, "Сток Материали Лукерия.xlsx");
+               const currentDate = new Date();
+               const formattedDate = `${String(currentDate.getDate()).padStart(2, '0')}-${String(currentDate.getMonth() + 1).padStart(2, '0')}-${currentDate.getFullYear()}`;
+
+               const fileName = `Сток Материали Лукерия ${formattedDate}.xlsx`;
+
+               XLSX.writeFile(wb, fileName);
+
             });
-        } else {
-            console.log('Бутонът за експортиране не беше намерен!');
         }
     });
 </script>
@@ -169,7 +165,6 @@
                             <h5 class="card-title mb-0">Сток Материали</h5>
                         </div>
                         <div class="card-body">
-                            <!-- Контейнер за центриране на бутона за експортиране -->
                             <div class="export-button-container">
                                 <button id="exportExcel" class="btn btn-primary">
                                     <i class="fas fa-file-excel"></i> Експортиране в Excel
@@ -181,14 +176,14 @@
                                     <input type="text" id="searchInput1" class="form-control"
                                            placeholder="Търсене по код на кутия"><br>
                                     <div class="alert alert-primary" role="alert">
-                                        <label>Резултати от търсенето: <span id="resultsCount"></span></label>
+                                        <label>Резултати от търсенето: <span id="resultsCount">0</span></label>
                                     </div>
                                 </div>
                                 <div class="col">
                                     <input type="text" id="searchInput2" class="form-control"
                                            placeholder="Търсене по име на кутия"> <br>
                                     <div class="alert alert-primary" role="alert">
-                                        <label>Резултати от търсенето: <span id="resultsCount2"></span></label>
+                                        <label>Резултати от търсенето: <span id="resultsCount2">0</span></label>
                                     </div>
                                 </div>
                             </div>
@@ -212,23 +207,21 @@
                                         <td>
                                             <img th:if="${packageImages[package.id] != null}"
                                                  th:src="${packageImages[package.id]}"
-                                                 height="100"
-                                                 width="100"/>
+                                                 height="100" width="100"/>
                                             <img th:unless="${packageImages[package.id] != null}"
                                                  src="/img/photos/noImage.png"
-                                                 height="100"
-                                                 width="100"/>
+                                                 height="100" width="100"/>
                                         </td>
                                         <td th:text="${package.productCode}"></td>
-                                        <td th:text="${package.name}"></td>
-
+                                        <td>
+                                            <a th:href="@{/package/{id}(id=${package.id})}" th:text="${package.name}"></a>
+                                        </td>
                                         <td>
                                             <span th:if="${productMap[package.id] != null}"
                                                   th:text="${productMap[package.id].availableQuantity}"></span>
                                             <span th:unless="${productMap[package.id] != null}">N/A</span>
                                         </td>
                                         <td><span th:text="${package.availableQuantity}"></span></td>
-
                                         <td>
                                             <a th:if="${plateMap[package.plateId] != null}"
                                                th:href="@{/plate/{plateId}(plateId=${package.plateId})}"
