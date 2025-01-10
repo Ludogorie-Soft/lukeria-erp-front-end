@@ -6,33 +6,33 @@
     <link rel="icon" type="image/x-icon" href="/img/photos/noImage.png">
     <link href="/css/styles.css" rel="stylesheet">
     <style>
-        .accordion-button {
-            background-color: #007bff;
-            color: white;
+        .accordion-header {
             font-weight: bold;
-            border-radius: 5px;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .accordion-button:hover {
-            background-color: #0056b3;
-            transform: scale(1.02);
+            font-size: 1.5rem;
+            margin-bottom: 10px;
         }
 
         .accordion-body {
             display: flex;
-            flex-wrap: wrap;
+            align-items: flex-start;
             gap: 20px;
-            align-items: center;
-            justify-content: space-between;
+        }
+
+        .accordion-body img {
+            max-width: 200px; /* Constrain image size */
+            border-radius: 5px;
+            margin-left: auto; /* Push the image to the right */
         }
 
         .accordion-body p {
             margin: 0;
-            flex: 1 1 45%; /* Makes the elements wrap and occupy half the row width */
+            flex: 1;
+        }
+
+        hr {
+            border: none;
+            border-top: 2px solid #ddd;
+            margin: 20px 0;
         }
 
         .btn-primary {
@@ -48,15 +48,6 @@
         .btn-primary:hover {
             transform: scale(1.05);
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-        }
-
-        img.img-fluid {
-            max-width: 100px; /* Constrain image size */
-            border-radius: 5px;
-        }
-
-        .accordion-body img {
-            margin-top: 10px;
         }
     </style>
 </head>
@@ -79,123 +70,66 @@
                             <h2>Подробности за пакет</h2>
                         </div>
                         <div class="card-body">
-                            <!-- Dropdown Sections -->
-                            <div class="accordion" id="detailsAccordion">
-                                <!-- Product Section -->
-                                <div class="accordion-item">
-                                    <h2 class="accordion-header" id="productHeading">
-                                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                                                data-bs-target="#productCollapse" aria-expanded="true"
-                                                aria-controls="productCollapse">
-                                            Продукт
-                                        </button>
-                                    </h2>
-                                    <div id="productCollapse" class="accordion-collapse collapse show"
-                                         aria-labelledby="productHeading" data-bs-parent="#detailsAccordion">
-                                        <div class="accordion-body">
-                                            <p><strong>Код на продукта:</strong> <span
-                                                    th:text="${selectedProduct.productCode}"></span></p>
-                                            <p><strong>Цена:</strong> <span
-                                                    th:text="${selectedProduct.price}"></span> BGN</p>
-                                            <p><strong>Наличност:</strong> <span
-                                                    th:text="${selectedProduct.availableQuantity}"></span> бр.</p>
-                                            <p><strong>За продажба:</strong>
-                                                <span th:text="${selectedProduct.forSale ? 'Да' : 'Не'}"></span></p>
-                                            <p><strong>Баркод:</strong> <span
-                                                    th:text="${selectedProduct.barcode}"></span></p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- Package Section -->
-                                <div class="accordion-item">
-                                    <h2 class="accordion-header" id="packageHeading">
-                                        <button class="accordion-button collapsed" type="button"
-                                                data-bs-toggle="collapse" data-bs-target="#packageCollapse"
-                                                aria-expanded="false" aria-controls="packageCollapse">
-                                            Пакет
-                                        </button>
-                                    </h2>
-                                    <div id="packageCollapse" class="accordion-collapse collapse"
-                                         aria-labelledby="packageHeading" data-bs-parent="#detailsAccordion">
-                                        <div class="accordion-body">
-                                            <p><strong>Име на пакет:</strong> <span
-                                                    th:text="${selectedPackage.name}"></span></p>
-                                            <p><strong>Английско на пакет:</strong> <span
-                                                    th:text="${selectedPackage.englishName}"></span></p>
-                                            <p><strong>Наличните бройки:</strong> <span
-                                                    th:text="${selectedPackage.availableQuantity}"></span></p>
-                                            <p><strong>Брой картони:</strong> <span
-                                                    th:text="${selectedPackage.piecesCarton}"></span></p>
-                                            <p><strong>Продуктов код:</strong> <span
-                                                    th:text="${selectedPackage.productCode}"></span></p>
-                                            <p><strong>Цена:</strong> <span
-                                                    th:text="${selectedPackage.price}"></span></p>
-                                            <div>
-                                                <strong>Снимка:</strong>
-                                                <div th:if="${packageImage != null}">
-                                                    <img th:src="${packageImage}" alt="Снимка на пакет" class="img-fluid">
-                                                </div>
-                                                <div th:if="${packageImage == null}">
-                                                    <p>Няма налична снимка.</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- Carton Section -->
-                                <div class="accordion-item">
-                                    <h2 class="accordion-header" id="cartonHeading">
-                                        <button class="accordion-button collapsed" type="button"
-                                                data-bs-toggle="collapse" data-bs-target="#cartonCollapse"
-                                                aria-expanded="false" aria-controls="cartonCollapse">
-                                            Кашон
-                                        </button>
-                                    </h2>
-                                    <div id="cartonCollapse" class="accordion-collapse collapse"
-                                         aria-labelledby="cartonHeading" data-bs-parent="#detailsAccordion">
-                                        <div class="accordion-body">
-                                            <p><strong>Име на кашон:</strong> <span
-                                                    th:text="${selectedCarton.name}"></span></p>
-                                            <p><strong>Размер:</strong> <span
-                                                    th:text="${selectedCarton.size}"></span></p>
-                                            <p><strong>Наличните бройки:</strong> <span
-                                                    th:text="${selectedCarton.availableQuantity}"></span></p>
-                                            <p><strong>Име на цена:</strong> <span
-                                                    th:text="${selectedCarton.price}"></span></p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- Plate Section -->
-                                <div class="accordion-item">
-                                    <h2 class="accordion-header" id="plateHeading">
-                                        <button class="accordion-button collapsed" type="button"
-                                                data-bs-toggle="collapse" data-bs-target="#plateCollapse"
-                                                aria-expanded="false" aria-controls="plateCollapse">
-                                            Тарелка
-                                        </button>
-                                    </h2>
-                                    <div id="plateCollapse" class="accordion-collapse collapse"
-                                         aria-labelledby="plateHeading" data-bs-parent="#detailsAccordion">
-                                        <div class="accordion-body">
-                                            <p><strong>Име на тарелка:</strong> <span
-                                                    th:text="${selectedPlate.name}"></span></p>
-                                            <p><strong>Наличните бройки:</strong> <span
-                                                    th:text="${selectedPlate.availableQuantity}"></span></p>
-                                            <p><strong>цена:</strong> <span
-                                                    th:text="${selectedPlate.price}"></span></p>
-                                            <div>
-                                                <strong>Снимка:</strong>
-                                                <div th:if="${plateImage != null}">
-                                                    <img th:src="${plateImage}" alt="Снимка на плоча" class="img-fluid">
-                                                </div>
-                                                <div th:if="${plateImage == null}">
-                                                    <p>Няма налична снимка.</p>
-                                                </div>
-                                            </div>
-                                        </div>
+                            <!-- Product Section -->
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">Продукт</h2>
+                                <div class="accordion-body">
+                                    <div>
+                                        <p><strong>Код на продукта:</strong> <span th:text="${selectedProduct.productCode}"></span></p>
+                                        <p><strong>Цена:</strong> <span th:text="${selectedProduct.price}"></span> BGN</p>
+                                        <p><strong>Наличност:</strong> <span th:text="${selectedProduct.availableQuantity}"></span> бр.</p>
+                                        <p><strong>За продажба:</strong> <span th:text="${selectedProduct.forSale ? 'Да' : 'Не'}"></span></p>
+                                        <p><strong>Баркод:</strong> <span th:text="${selectedProduct.barcode}"></span></p>
                                     </div>
                                 </div>
                             </div>
+                            <hr>
+
+                            <!-- Package Section -->
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">Пакет</h2>
+                                <div class="accordion-body">
+                                    <div>
+                                        <p><strong>Име на пакет:</strong> <span th:text="${selectedPackage.name}"></span></p>
+                                        <p><strong>Английско име на пакет:</strong> <span th:text="${selectedPackage.englishName}"></span></p>
+                                        <p><strong>Наличните бройки:</strong> <span th:text="${selectedPackage.availableQuantity}"></span></p>
+                                        <p><strong>Брой картони:</strong> <span th:text="${selectedPackage.piecesCarton}"></span></p>
+                                        <p><strong>Продуктов код:</strong> <span th:text="${selectedPackage.productCode}"></span></p>
+                                        <p><strong>Цена:</strong> <span th:text="${selectedPackage.price}"></span></p>
+                                    </div>
+                                    <img th:src="${packageImage}" alt="Снимка на пакет" class="img-fluid">
+                                </div>
+                            </div>
+                            <hr>
+
+                            <!-- Carton Section -->
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">Кашон</h2>
+                                <div class="accordion-body">
+                                    <div>
+                                        <p><strong>Име на кашон:</strong> <span th:text="${selectedCarton.name}"></span></p>
+                                        <p><strong>Размер:</strong> <span th:text="${selectedCarton.size}"></span></p>
+                                        <p><strong>Наличните бройки:</strong> <span th:text="${selectedCarton.availableQuantity}"></span></p>
+                                        <p><strong>Цена:</strong> <span th:text="${selectedCarton.price}"></span></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr>
+
+                            <!-- Plate Section -->
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">Тарелка</h2>
+                                <div class="accordion-body">
+                                    <div>
+                                        <p><strong>Име на тарелка:</strong> <span th:text="${selectedPlate.name}"></span></p>
+                                        <p><strong>Наличните бройки:</strong> <span th:text="${selectedPlate.availableQuantity}"></span></p>
+                                        <p><strong>Цена:</strong> <span th:text="${selectedPlate.price}"></span></p>
+                                    </div>
+                                    <img th:src="${plateImage}" alt="Снимка на тарелка" class="img-fluid">
+                                </div>
+                            </div>
+                            <hr>
+
                             <a href="/package/show" class="btn btn-primary mt-3">Назад</a>
                         </div>
                     </div>
