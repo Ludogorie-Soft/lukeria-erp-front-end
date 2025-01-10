@@ -92,17 +92,21 @@ document.addEventListener("DOMContentLoaded", function() {
                                     <tbody>
                                     <tr th:each="package : ${packages}" data-id="${package.id}" class="package-row">
                                         <td>
-                                            <img th:if="${packageImages[package.id] != null}"
-                                                 th:src="${packageImages[package.id]}"
-                                                 height="100"
-                                                 width="100" />
-                                            <img th:unless="${packageImages[package.id] != null}"
-                                                 src="/img/photos/noImage.png"
-                                                 height="100"
-                                                 width="100" />
+                                            <a th:href="@{/package/{id}(id=${package.id})}">
+                                                <img th:if="${packageImages[package.id] != null}"
+                                                     th:src="${packageImages[package.id]}"
+                                                     height="100"
+                                                     width="100" />
+                                                <img th:unless="${packageImages[package.id] != null}"
+                                                     src="/img/photos/noImage.png"
+                                                     height="100"
+                                                     width="100" />
+                                            </a>
                                         </td>
                                         <td th:text="${package.productCode}"></td>
-                                        <td th:text="${package.name}"></td>
+                                        <td>
+                                            <a th:href="@{/package/{id}(id=${package.id})}" th:text="${package.name}"></a>
+                                        </td>
                                         <td th:text="${package.englishName}"></td>
                                         <td>
                                             <span th:text="${package.availableQuantity + ' Броя'}"

@@ -1,13 +1,12 @@
 package com.example.LukeriaFrontendApplication.controllers;
 
 
-import com.example.LukeriaFrontendApplication.config.CartonClient;
-import com.example.LukeriaFrontendApplication.config.ImageClient;
-import com.example.LukeriaFrontendApplication.config.PackageClient;
-import com.example.LukeriaFrontendApplication.config.PlateClient;
+import com.example.LukeriaFrontendApplication.config.*;
 import com.example.LukeriaFrontendApplication.dtos.CartonDTO;
 import com.example.LukeriaFrontendApplication.dtos.PackageDTO;
 import com.example.LukeriaFrontendApplication.dtos.PlateDTO;
+import com.example.LukeriaFrontendApplication.dtos.ProductDTO;
+import feign.FeignException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +26,7 @@ public class PackageController {
     private static final String SESSION_TOKEN = "sessionToken";
     private final PackageClient packageClient;
     private final CartonClient cartonClient;
+    private final ProductClient productClient;
     private final PlateClient plateClient;
     private final ImageClient imageService;
     @Value("${backend.base-url}/images")
@@ -54,6 +54,55 @@ public class PackageController {
         model.addAttribute("packages", sortedPackages);
         model.addAttribute("packageImages", packageImages);
         return "Package/show";
+    }
+
+    @GetMapping("/package/{id}")
+    public String packageInformation(@PathVariable Long id, Model model, HttpServletRequest request) {
+        // Retrieve the token from the session
+        String token = (String) request.getSession().getAttribute(SESSION_TOKEN);
+
+        // Fetch the package, product, carton, and plate details
+        ProductDTO selectedProduct;
+        PackageDTO selectedPackage;
+        CartonDTO selectedCarton;
+        PlateDTO selectedPlate;
+        try {
+            selectedPackage = packageClient.getPackageById(id, token);
+            selectedProduct = productClient.getProductByPackage(selectedPackage.getId(), token).getBody();
+            selectedCarton = cartonClient.getCartonById(selectedPackage.getCartonId(), token);
+            selectedPlate = plateClient.getPlateById(selectedPackage.getPlateId(), token);
+        } catch (FeignException.NotFound e) {
+            return "redirect:/package/show"; // Or a custom error page like "Package/error"
+        }
+
+        // Retrieve and encode the package's image, if it exists
+        String packageImage = null;
+        if (selectedPackage.getPhoto() != null) {
+            byte[] imageBytes = imageService.getImage(selectedPackage.getPhoto());
+            if (imageBytes != null) {
+                packageImage = "data:image/jpeg;base64," + Base64.getEncoder().encodeToString(imageBytes);
+            }
+        }
+
+        // Retrieve and encode the plate's image, if it exists
+        String plateImage = null;
+        if (selectedPlate.getPhoto() != null) {
+            byte[] imageBytes = imageService.getImage(selectedPlate.getPhoto());
+            if (imageBytes != null) {
+                plateImage = "data:image/jpeg;base64," + Base64.getEncoder().encodeToString(imageBytes);
+            }
+        }
+
+        // Add the selected package, product, carton, plate, and images to the model
+        model.addAttribute("selectedPackage", selectedPackage);
+        model.addAttribute("selectedProduct", selectedProduct);
+        model.addAttribute("selectedCarton", selectedCarton);
+        model.addAttribute("selectedPlate", selectedPlate);
+        model.addAttribute("packageImage", packageImage);
+        model.addAttribute("plateImage", plateImage);
+
+        // Return the package details page
+        return "Package/details"; // Ensure you create this template to display package, product, carton, and plate information
     }
 
     @GetMapping("/package/create")
