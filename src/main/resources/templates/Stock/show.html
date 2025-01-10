@@ -213,7 +213,9 @@
                                                  height="100" width="100"/>
                                         </td>
                                         <td th:text="${package.productCode}"></td>
-                                        <td th:text="${package.name}"></td>
+                                        <td>
+                                            <a th:href="@{/package/{id}(id=${package.id})}" th:text="${package.name}"></a>
+                                        </td>
                                         <td>
                                             <span th:if="${productMap[package.id] != null}"
                                                   th:text="${productMap[package.id].availableQuantity}"></span>
