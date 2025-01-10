@@ -128,11 +128,12 @@
                                     <tr th:each="productPrice : ${products}">
                                         <td>
                                             <img th:if="${productPackageMapImages.containsKey(productPrice.product.packageId)}"
-                                                 th:src="@{${backendBaseUrl} + '/' + ${productPackageMapImages.get(productPrice.product.packageId)}}"
-                                                 style="height: 100px; width: 150px;">
+                                                 th:src="${productPackageMapImages[productPrice.product.packageId]}"
+                                                 style="height: 100px; width: 150px;"/>
                                             <img th:unless="${productPackageMapImages.containsKey(productPrice.product.packageId)}"
+                                                 class="card-img-top"
                                                  src="/img/photos/noImage.png"
-                                                 style="height: 100px; width: 150px;">
+                                                 style="height: 100px; width: 150px;" />
                                         </td>
                                         <td th:text="${productPrice.product.productCode}"></td>
                                         <td th:text="${productPackageMap.get(productPrice.product.packageId)}"></td>

@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns="http://www.w3.org/1999/html">
+<head>
+    <th:block th:insert="~{fragments/links}"></th:block>
+
+    <title>Сток Материали</title>
+    <link rel="icon" type="image/x-icon" href="/img/photos/noImage.png">
+    <link href="/css/app.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <style>
+        /* Стилове за таблицата */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f4f4f4;
+            font-weight: bold;
+        }
+
+        td {
+            background-color: #fff;
+        }
+
+        /* Ховер ефект за редовете */
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        /* Акцентиране на резултатите */
+        .alert {
+            background-color: #f8f9fa;
+            border: 1px solid #ddd;
+        }
+
+        .alert label {
+            font-weight: bold;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        /* Позициониране и намаляване на размера на бутона */
+        .export-button-container {
+            margin-top: 20px;
+            margin-bottom: 20px; /* Добавено разстояние между бутона и другите елементи */
+            text-align: left; /* Преместваме бутона вляво */
+        }
+
+        .export-button-container button {
+            padding: 5px 10px;  /* Намаляване на padding-а */
+            font-size: 14px;    /* Намаляване на размера на текста */
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center; /* Центриране на иконката и текста */
+        }
+
+        .export-button-container button i {
+            margin-right: 8px; /* Разстояние между иконката и текста */
+        }
+
+        .export-button-container button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+    const navbar = document.getElementById("sidebar");
+    console.log(navbar);
+    const toggler = document.querySelector("a.sidebar-toggle");
+    toggler.addEventListener("click", () => {
+    navbar.classList.toggle("collapsed");
+    });
+});
+
+        // Универсална функция за търсене
+        function setupSearch(inputId, columnIdx, resultCountId) {
+            document.getElementById(inputId).addEventListener('input', function () {
+                const filter = this.value.toUpperCase();
+                const table = document.querySelector('table');
+                const tr = table.getElementsByTagName('tr');
+                let count = 0;
+
+                for (let i = 0; i < tr.length; i++) {
+                    const td = tr[i].getElementsByTagName('td')[columnIdx];
+                    if (td) {
+                        const txtValue = td.textContent || td.innerText;
+                        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                            tr[i].style.display = '';
+                            count++;
+                        } else {
+                            tr[i].style.display = 'none';
+                        }
+                    }
+                }
+
+                const resultsCountElement = document.getElementById(resultCountId);
+                resultsCountElement.textContent = count;
+            });
+        }
+
+        // Инициализиране на търсенето за двата входа
+        setupSearch('searchInput1', 1, 'resultsCount');
+        setupSearch('searchInput2', 2, 'resultsCount2');
+    });
+
+    document.addEventListener("DOMContentLoaded", function() {
+        // Бутон за експортиране в Excel
+        const exportButton = document.getElementById('exportExcel');
+        if (exportButton) {
+            exportButton.addEventListener('click', function () {
+                const table = document.querySelector('table');
+                const rows = Array.from(table.rows);
+
+                // Вземаме заглавията на колоните
+                const header = rows[0].cells;
+                const data = rows.slice(1).map(row => {
+                    const rowData = Array.from(row.cells).map(cell => cell.textContent);
+                    return rowData;
+                });
+
+                // Създаване на нов Excel файл
+                const wb = XLSX.utils.book_new();
+                const ws = XLSX.utils.aoa_to_sheet([Array.from(header).map(cell => cell.textContent), ...data]);
+                XLSX.utils.book_append_sheet(wb, ws, "Таблица");
+
+                // Записваме Excel файла
+                XLSX.writeFile(wb, "Сток Материали Лукерия.xlsx");
+            });
+        } else {
+            console.log('Бутонът за експортиране не беше намерен!');
+        }
+    });
+</script>
+
+<body>
+<div class="wrapper">
+    <th:block th:insert="~{fragments/header}"></th:block>
+
+    <div class="main">
+        <nav class="navbar navbar-expand navbar-light navbar-bg">
+            <a class="sidebar-toggle js-sidebar-toggle">
+                <i class="hamburger align-self-center"></i>
+            </a>
+        </nav>
+        <main class="content">
+            <div class="row">
+                <div class="col-lg-12 mx-auto">
+                    <div class="card custom-card-width-lg">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">Сток Материали</h5>
+                        </div>
+                        <div class="card-body">
+                            <!-- Контейнер за центриране на бутона за експортиране -->
+                            <div class="export-button-container">
+                                <button id="exportExcel" class="btn btn-primary">
+                                    <i class="fas fa-file-excel"></i> Експортиране в Excel
+                                </button>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col">
+                                    <input type="text" id="searchInput1" class="form-control"
+                                           placeholder="Търсене по код на кутия"><br>
+                                    <div class="alert alert-primary" role="alert">
+                                        <label>Резултати от търсенето: <span id="resultsCount"></span></label>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <input type="text" id="searchInput2" class="form-control"
+                                           placeholder="Търсене по име на кутия"> <br>
+                                    <div class="alert alert-primary" role="alert">
+                                        <label>Резултати от търсенето: <span id="resultsCount2"></span></label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                    <tr>
+                                        <th>Снимка</th>
+                                        <th>Код</th>
+                                        <th>Име</th>
+                                        <th>Налично количество на готови Продукти</th>
+                                        <th>Налично количество на Кутии</th>
+                                        <th>Налично количество на Тарелки</th>
+                                        <th>Налично количество на Кашон</th>
+                                        <th></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="package : ${packages}" data-id="${package.id}" class="package-row">
+                                        <td>
+                                            <img th:if="${packageImages[package.id] != null}"
+                                                 th:src="${packageImages[package.id]}"
+                                                 height="100"
+                                                 width="100"/>
+                                            <img th:unless="${packageImages[package.id] != null}"
+                                                 src="/img/photos/noImage.png"
+                                                 height="100"
+                                                 width="100"/>
+                                        </td>
+                                        <td th:text="${package.productCode}"></td>
+                                        <td th:text="${package.name}"></td>
+
+                                        <td>
+                                            <span th:if="${productMap[package.id] != null}"
+                                                  th:text="${productMap[package.id].availableQuantity}"></span>
+                                            <span th:unless="${productMap[package.id] != null}">N/A</span>
+                                        </td>
+                                        <td><span th:text="${package.availableQuantity}"></span></td>
+
+                                        <td>
+                                            <a th:if="${plateMap[package.plateId] != null}"
+                                               th:href="@{/plate/{plateId}(plateId=${package.plateId})}"
+                                               th:text="${plateMap[package.plateId].availableQuantity}"></a>
+                                            <span th:unless="${plateMap[package.plateId] != null}">N/A</span>
+                                        </td>
+                                        <td>
+                                            <a th:if="${cartonMap[package.cartonId] != null}"
+                                               th:href="@{/carton/{cartonId}(cartonId=${package.cartonId})}"
+                                               th:text="${cartonMap[package.cartonId].availableQuantity}"></a>
+                                            <span th:unless="${cartonMap[package.cartonId] != null}">N/A</span>
+                                        </td>
+                                        <td>
+                                            <form th:action="@{'/package/materials/' + ${package.id}}" method="get">
+                                                <button type="submit"
+                                                        style="background: none; border: none; padding: 0; cursor: pointer;"
+                                                        title="Натисни, за да получиш емаил с налични материали за тази кутия">
+                                                    <i class="fas fa-paper-plane"></i>
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+</body>
+</html>
