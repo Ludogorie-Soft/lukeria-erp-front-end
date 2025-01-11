@@ -1,11 +1,6 @@
 package com.example.LukeriaFrontendApplication.controllers;
 
-import com.example.LukeriaFrontendApplication.config.ClientUserClient;
-import com.example.LukeriaFrontendApplication.config.CustomerCustomPriceClient;
-import com.example.LukeriaFrontendApplication.config.ImageClient;
-import com.example.LukeriaFrontendApplication.config.PackageClient;
-import com.example.LukeriaFrontendApplication.config.ProductClient;
-import com.example.LukeriaFrontendApplication.config.UserClient;
+import com.example.LukeriaFrontendApplication.config.*;
 import com.example.LukeriaFrontendApplication.dtos.ClientUserDTO;
 import com.example.LukeriaFrontendApplication.dtos.CustomerCustomPriceDTO;
 import com.example.LukeriaFrontendApplication.dtos.PackageDTO;
@@ -36,6 +31,7 @@ public class ProductController {
     private final UserClient userClient;
     private final CustomerCustomPriceClient customerCustomPriceClient;
     private final ClientUserClient clientUserClient;
+    private final CartonClient cartonClient;
     @Value("${backend.base-url}/images")
     private String backendBaseUrl;
 
@@ -179,6 +175,11 @@ public class ProductController {
                 imageService.getImage(packageDTO.getPhoto());
             }
         }
+        Map<ProductDTO, Integer> mapProductsAndPieces = new HashMap<>();
+        for (int i = 0; i < productsForSale.size(); i++) {
+            mapProductsAndPieces.put(productsForSale.get(i), packageClient.getPackageById(productsForSale.get(i).getPackageId(), token).getPiecesCarton());
+        }
+        model.addAttribute("mapProductsAndPieces", mapProductsAndPieces); // Add the map to the model
         model.addAttribute("productPackageMapImages", productPackageMapImages);
         model.addAttribute("backendBaseUrl", backendBaseUrl);
         model.addAttribute("products", allProductsForSale);
