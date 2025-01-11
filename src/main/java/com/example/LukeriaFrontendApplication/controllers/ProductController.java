@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @org.springframework.stereotype.Controller
 @RequiredArgsConstructor
@@ -111,9 +110,9 @@ public class ProductController {
 
         for (ProductDTO productDTO : sortedProducts) {
             try {
-                if(clientId == null){
+                if (clientId == null) {
                     allProductsForSale.add(new ProductPriceDTO(productDTO, productDTO.getPrice()));
-                }else{
+                } else {
                     CustomerCustomPriceDTO customPriceForClient = customerCustomPriceClient.customPriceByClientAndProduct(clientId, productDTO.getId(), token);
                     allProductsForSale.add(new ProductPriceDTO(productDTO, customPriceForClient.getPrice()));
                 }
@@ -122,7 +121,7 @@ public class ProductController {
             }
         }
 
-        modelAtributes(model,request);
+        modelAtributes(model, request);
         model.addAttribute("products", allProductsForSale);
         return "Product/available-products";
     }
@@ -150,9 +149,9 @@ public class ProductController {
 
         for (ProductDTO productDTO : sortedProducts) {
             try {
-                if(clientId == null){
+                if (clientId == null) {
                     allProductsForSale.add(new ProductPriceDTO(productDTO, productDTO.getPrice()));
-                }else{
+                } else {
                     CustomerCustomPriceDTO customPriceForClient = customerCustomPriceClient.customPriceByClientAndProduct(clientId, productDTO.getId(), token);
                     allProductsForSale.add(new ProductPriceDTO(productDTO, customPriceForClient.getPrice()));
                 }
@@ -242,6 +241,10 @@ public class ProductController {
             }
         }
 
+        List<Long> emptyProductIdList = new ArrayList<>();
+        List<Integer> emptyQuantityList = new ArrayList<>();
+        model.addAttribute("emptyProductIdList", emptyProductIdList);
+        model.addAttribute("emptyQuantityList", emptyQuantityList);
         model.addAttribute("products", products);
         model.addAttribute("backendBaseUrl", backendBaseUrl);
         model.addAttribute("productPackageMap", productPackageMap);
@@ -251,9 +254,15 @@ public class ProductController {
 
 
     @PostMapping("/produce")
-    ModelAndView produceProduct(@RequestParam("productId") Long productId, @RequestParam("producedQuantity") int producedQuantity, HttpServletRequest request) {
+    public ModelAndView produceProduct(
+            @RequestParam("productId[]") List<Long> productIds,
+            @RequestParam("producedQuantity[]") List<Integer> producedQuantities,
+            HttpServletRequest request) {
         String token = (String) request.getSession().getAttribute(SESSION_TOKEN);
-        productClient.produceProduct(productId, producedQuantity, token);
+
+        for (int i = 0; i < productIds.size(); i++) {
+            productClient.produceProduct(productIds.get(i), producedQuantities.get(i), token);
+        }
         return new ModelAndView(REDIRECTTXT);
     }
 }

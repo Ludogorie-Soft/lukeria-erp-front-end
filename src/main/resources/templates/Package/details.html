@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="bg" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <th:block th:insert="~{fragments/links}"></th:block>
+    <title>Подробности за пакет</title>
+    <link rel="icon" type="image/x-icon" href="/img/photos/noImage.png">
+    <link href="/css/styles.css" rel="stylesheet">
+    <style>
+        .accordion-header {
+            font-weight: bold;
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        .accordion-body {
+            display: flex;
+            align-items: flex-start;
+            gap: 20px;
+        }
+
+        .accordion-body img {
+            max-width: 200px; /* Constrain image size */
+            border-radius: 5px;
+            margin-left: auto; /* Push the image to the right */
+        }
+
+        .accordion-body p {
+            margin: 0;
+            flex: 1;
+        }
+
+        hr {
+            border: none;
+            border-top: 2px solid #ddd;
+            margin: 20px 0;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #007bff, #0056b3);
+            border: none;
+            color: white;
+            font-size: 1.1rem;
+            padding: 10px 20px;
+            border-radius: 25px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .btn-primary:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body>
+<div class="wrapper">
+    <!-- HEADER -->
+    <th:block th:insert="~{fragments/header}"></th:block>
+
+    <div class="main">
+        <nav class="navbar navbar-expand navbar-light navbar-bg">
+            <a class="sidebar-toggle js-sidebar-toggle">
+                <i class="hamburger align-self-center"></i>
+            </a>
+        </nav>
+        <main class="content">
+            <div class="row">
+                <div class="col-lg-8 mx-auto">
+                    <div class="card">
+                        <div class="card-header text-center">
+                            <h2>Подробности за пакет</h2>
+                        </div>
+                        <div class="card-body">
+                            <!-- Product Section -->
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">Продукт</h2>
+                                <div class="accordion-body">
+                                    <div>
+                                        <p><strong>Код на продукта:</strong> <span th:text="${selectedProduct.productCode}"></span></p>
+                                        <p><strong>Цена:</strong> <span th:text="${selectedProduct.price}"></span> BGN</p>
+                                        <p><strong>Наличност:</strong> <span th:text="${selectedProduct.availableQuantity}"></span> бр.</p>
+                                        <p><strong>За продажба:</strong> <span th:text="${selectedProduct.forSale ? 'Да' : 'Не'}"></span></p>
+                                        <p><strong>Баркод:</strong> <span th:text="${selectedProduct.barcode}"></span></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr>
+
+                            <!-- Package Section -->
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">Пакет</h2>
+                                <div class="accordion-body">
+                                    <div>
+                                        <p><strong>Име на пакет:</strong> <span th:text="${selectedPackage.name}"></span></p>
+                                        <p><strong>Английско име на пакет:</strong> <span th:text="${selectedPackage.englishName}"></span></p>
+                                        <p><strong>Наличните бройки:</strong> <span th:text="${selectedPackage.availableQuantity}"></span></p>
+                                        <p><strong>Брой картони:</strong> <span th:text="${selectedPackage.piecesCarton}"></span></p>
+                                        <p><strong>Продуктов код:</strong> <span th:text="${selectedPackage.productCode}"></span></p>
+                                        <p><strong>Цена:</strong> <span th:text="${selectedPackage.price}"></span></p>
+                                    </div>
+                                    <img th:src="${packageImage}" alt="Снимка на пакет" class="img-fluid">
+                                </div>
+                            </div>
+                            <hr>
+
+                            <!-- Carton Section -->
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">Кашон</h2>
+                                <div class="accordion-body">
+                                    <div>
+                                        <p><strong>Име на кашон:</strong> <span th:text="${selectedCarton.name}"></span></p>
+                                        <p><strong>Размер:</strong> <span th:text="${selectedCarton.size}"></span></p>
+                                        <p><strong>Наличните бройки:</strong> <span th:text="${selectedCarton.availableQuantity}"></span></p>
+                                        <p><strong>Цена:</strong> <span th:text="${selectedCarton.price}"></span></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr>
+
+                            <!-- Plate Section -->
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">Тарелка</h2>
+                                <div class="accordion-body">
+                                    <div>
+                                        <p><strong>Име на тарелка:</strong> <span th:text="${selectedPlate.name}"></span></p>
+                                        <p><strong>Наличните бройки:</strong> <span th:text="${selectedPlate.availableQuantity}"></span></p>
+                                        <p><strong>Цена:</strong> <span th:text="${selectedPlate.price}"></span></p>
+                                    </div>
+                                    <img th:src="${plateImage}" alt="Снимка на тарелка" class="img-fluid">
+                                </div>
+                            </div>
+                            <hr>
+
+                            <a href="/package/show" class="btn btn-primary mt-3">Назад</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

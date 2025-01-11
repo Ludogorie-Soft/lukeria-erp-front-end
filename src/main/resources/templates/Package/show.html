@@ -9,6 +9,7 @@
     <link rel="icon" type="image/x-icon" href="/img/photos/noImage.png">
     <link href="/css/app.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <script>
 document.addEventListener("DOMContentLoaded", function() {
@@ -41,11 +42,18 @@ document.addEventListener("DOMContentLoaded", function() {
                         <div class="card-header">
                             <h5 class="card-title mb-0">Всички Кутии</h5>
                         </div>
-                        <th:block th:if="${session.sessionToken != null and session.sessionRole == 'ADMIN'}">
-                            <div class="text-center">
-                                <a href="/package/create" class="btn btn-primary">Добави Кутия</a>
-                            </div>
+
+                        <div style="display: flex; justify-content: center; gap: 10px;">
+                            <th:block th:if="${session.sessionToken != null and session.sessionRole == 'ADMIN'}">
+                            <a href="/package/create" class="btn btn-success">Добави Кутия</a> <!-- Зелен бутон -->
                         </th:block>
+
+                            <th:block th:if="${session.sessionToken != null and (session.sessionRole == 'ADMIN' or session.sessionRole == 'PRODUCTION_MANAGER')}">
+                                <a href="/stock/show" class="btn btn-info">
+                                    <i class="fas fa-file-excel"></i> Сток Материали
+                                </a>
+                            </th:block>
+                        </div>
                         <div class="card-body">
                             <div class="row mb-3">
                                 <div class="col">
@@ -84,17 +92,21 @@ document.addEventListener("DOMContentLoaded", function() {
                                     <tbody>
                                     <tr th:each="package : ${packages}" data-id="${package.id}" class="package-row">
                                         <td>
-                                            <img th:if="${packageImages[package.id] != null}"
-                                                 th:src="${packageImages[package.id]}"
-                                                 height="100"
-                                                 width="100" />
-                                            <img th:unless="${packageImages[package.id] != null}"
-                                                 src="/img/photos/noImage.png"
-                                                 height="100"
-                                                 width="100" />
+                                            <a th:href="@{/package/{id}(id=${package.id})}">
+                                                <img th:if="${packageImages[package.id] != null}"
+                                                     th:src="${packageImages[package.id]}"
+                                                     height="100"
+                                                     width="100" />
+                                                <img th:unless="${packageImages[package.id] != null}"
+                                                     src="/img/photos/noImage.png"
+                                                     height="100"
+                                                     width="100" />
+                                            </a>
                                         </td>
                                         <td th:text="${package.productCode}"></td>
-                                        <td th:text="${package.name}"></td>
+                                        <td>
+                                            <a th:href="@{/package/{id}(id=${package.id})}" th:text="${package.name}"></a>
+                                        </td>
                                         <td th:text="${package.englishName}"></td>
                                         <td>
                                             <span th:text="${package.availableQuantity + ' Броя'}"
@@ -115,7 +127,8 @@ document.addEventListener("DOMContentLoaded", function() {
                                             </a>
                                         </td>
                                         <td th:text="${package.piecesCarton}"></td>
-                                        <th:block th:if="${session.sessionToken != null and session.sessionRole == 'ADMIN'}">
+
+                                        <th:block th:if="${session.sessionToken != null and (session.sessionRole == 'ADMIN' or session.sessionRole == 'PRODUCTION_MANAGER')}">
                                             <td>
                                                 <form th:action="@{'/package/materials/' + ${package.id}}" method="get">
                                                     <button type="submit" style="background: none; border: none; padding: 0; cursor: pointer;" title="Натисни, за да получиш емаил с налични материали за тази кутия">
@@ -123,6 +136,8 @@ document.addEventListener("DOMContentLoaded", function() {
                                                     </button>
                                                 </form>
                                             </td>
+                                        </th:block>
+                                        <th:block th:if="${session.sessionToken != null and session.sessionRole == 'ADMIN'}">
                                             <td>
                                                 <form th:action="@{'/package/delete/' + ${package.id}}" method="post"
                                                       th:attr="onsubmit='return confirm(\'Сигурни ли сте, че искате да изтриете пакет с име: ' + ${package.name} + '?\');'">
