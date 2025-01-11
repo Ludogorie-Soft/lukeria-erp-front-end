@@ -6,13 +6,13 @@
 </head>
 <body>
 <div class="container mt-5">
-    <h1 class="mb-4">Данни за пакети, тарелки, кашони и продукти</h1>
+    <h1 class="mb-4">Всички Данни</h1>
 
     <h2>Кутии</h2>
     <table class="table table-bordered">
         <thead>
         <tr>
-            <th>#</th>
+            <th>ID</th>
             <th>Име</th>
             <th>Име на английски</th>
             <th>Наличност</th>
@@ -44,7 +44,7 @@
     <table class="table table-bordered">
         <thead>
         <tr>
-            <th>#</th>
+            <th>ID</th>
             <th>Цена</th>
             <th>ID Кутия</th>
             <th>Наличност</th>
@@ -70,7 +70,7 @@
     <table class="table table-bordered">
         <thead>
         <tr>
-            <th>#</th>
+            <th>ID</th>
             <th>Име</th>
             <th>Наличност</th>
             <th>Цена</th>
@@ -90,7 +90,7 @@
     <table class="table table-bordered">
         <thead>
         <tr>
-            <th>#</th>
+            <th>ID</th>
             <th>Име</th>
             <th>Размер</th>
             <th>Наличност</th>
@@ -107,6 +107,85 @@
         </tr>
         </tbody>
     </table>
+
+    <h2>Клиенти</h2>
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Име на бизнес</th>
+            <th>Име на бизнес (английски)</th>
+            <th>Ид.Номер (ЕИК)</th>
+            <th>ДДС номер</th>
+            <th>Адрес</th>
+            <th>Адрес (английски)</th>
+            <th>МОЛ</th>
+            <th>МОЛ (английски)</th>
+            <th>Телефон</th>
+            <th>Адрес за доставка</th>
+            <th>Информация</th>
+            <th>Клиент ID</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="client : ${clientDTOS}">
+            <td th:text="${client.id}"></td>
+            <td th:text="${client.businessName}"></td>
+            <td th:text="${client.englishBusinessName}"></td>
+            <td th:text="${client.idNumEIK}"></td>
+            <td th:text="${client.hasIdNumDDS ? 'Да' : 'Не'}"></td>
+            <td th:text="${client.address}"></td>
+            <td th:text="${client.englishAddress}"></td>
+            <td th:text="${client.mol}"></td>
+            <td th:text="${client.englishMol}"></td>
+            <td th:text="${client.contactPhone}"></td>
+            <td th:text="${client.deliveryAddress}"></td>
+            <td th:text="${client.information}"></td>
+            <td th:text="${client.customer}"></td>
+        </tr>
+        </tbody>
+    </table>
+    <h2>Поръчки</h2>
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Клиент ID</th>
+            <th>Дата на поръчката</th>
+            <th>Издаден фактура</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="order : ${orderDTOS}">
+            <td th:text="${order.id}"></td>
+            <td th:text="${order.clientId}"></td>
+            <td th:text="${#dates.format(order.orderDate, 'yyyy-MM-dd')}"></td>
+            <td th:text="${order.invoiced ? 'Да' : 'Не'}"></td>
+        </tr>
+        </tbody>
+    </table>
+    <h2>Продукти от поръчки</h2>
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th>#</th>
+            <th>Брой</th>
+            <th>ID на поръчката</th>
+            <th>ID на пакета</th>
+            <th>Продажна цена</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="orderProduct : ${orderProductDTOS}">
+            <td th:text="${orderProduct.id}"></td>
+            <td th:text="${orderProduct.number}"></td>
+            <td th:text="${orderProduct.orderId}"></td>
+            <td th:text="${orderProduct.packageId}"></td>
+            <td th:text="${orderProduct.sellingPrice}"></td>
+        </tr>
+        </tbody>
+    </table>
+
 </div>
 </body>
 </html>

@@ -1,10 +1,7 @@
 package com.example.LukeriaFrontendApplication.controllers;
 
 import com.example.LukeriaFrontendApplication.config.*;
-import com.example.LukeriaFrontendApplication.dtos.CartonDTO;
-import com.example.LukeriaFrontendApplication.dtos.PackageDTO;
-import com.example.LukeriaFrontendApplication.dtos.PlateDTO;
-import com.example.LukeriaFrontendApplication.dtos.ProductDTO;
+import com.example.LukeriaFrontendApplication.dtos.*;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +22,6 @@ public class DatabaseController {
     private final CartonClient cartonClient;
     private final ProductClient productClient;
     private final PlateClient plateClient;
-    private final ImageClient imageService;
     private final ClientClient clientClient;
     private final CustomerCustomPriceClient customerCustomPriceClient;
     private final InvoiceClient invoiceClient;
@@ -46,8 +42,15 @@ public class DatabaseController {
         List<PlateDTO> plates = plateClient.getAllPlates(token);
         List<CartonDTO> cartons = cartonClient.getAllCartons(token);
         List<ProductDTO> productDTOS =productClient.getAllProducts(token);
-        model.addAttribute("productDTOS", productDTOS);
+        List<ClientDTO> clientDTOS=clientClient.getAllClients(token);
+        List<OrderDTO> orderDTOS=orderClient.getAllOrders(token);
+        List<OrderProductDTO> orderProductDTOS = orderProductClient.getAllOrderProducts(token);
 
+
+        model.addAttribute("orderDTOS", orderDTOS);
+        model.addAttribute("orderProductDTOS", orderProductDTOS);
+        model.addAttribute("clientDTOS", clientDTOS);
+        model.addAttribute("productDTOS", productDTOS);
         model.addAttribute("plates", plates);
         model.addAttribute("cartons", cartons);
         model.addAttribute("packages", packages);
