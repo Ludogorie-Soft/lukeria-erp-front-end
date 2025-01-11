@@ -4,6 +4,7 @@ import com.example.LukeriaFrontendApplication.config.*;
 import com.example.LukeriaFrontendApplication.dtos.*;
 import feign.FeignException;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,8 +12,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @org.springframework.stereotype.Controller
 @RequiredArgsConstructor
@@ -31,6 +34,8 @@ public class OrderController {
     private final PackageClient packageClient;
     private final OrderProductClient orderProductClient;
     private final CustomerCustomPriceClient customerCustomPriceClient;
+    private final ImageClient imageService;
+
     @Value("${backend.base-url}/images")
     private String backendBaseUrl;
 
@@ -62,15 +67,16 @@ public class OrderController {
         model.addAttribute(ORDERTXT, orderDTO);
         return "OrderProduct/create";
     }
-        @PostMapping("/admin/submit")
-        public ModelAndView submitOrder(@ModelAttribute("order") OrderDTO orderDTO, HttpServletRequest request) {
+
+    @PostMapping("/admin/submit")
+    public ModelAndView submitOrder(@ModelAttribute("order") OrderDTO orderDTO, HttpServletRequest request) {
         String token = (String) request.getSession().getAttribute("sessionToken");
         orderClient.createOrder(orderDTO, token);
         return new ModelAndView("redirect:/orderProduct/addProduct");
     }
 
     @PostMapping("/submit")
-    public String submitOrder(@RequestParam("product.id") Long productId, @RequestParam("quantity") int quantity, HttpServletRequest request){
+    public String submitOrder(@RequestParam("product.id") Long productId, @RequestParam("quantity") int quantity, HttpServletRequest request) {
         OrderDTO orderDTO = new OrderDTO();
         String token = (String) request.getSession().getAttribute("sessionToken");
         Long clientId = 0L;
@@ -96,7 +102,7 @@ public class OrderController {
             orderProductDTO.setPackageId(productDTO.getPackageId());
             try {
                 orderProductDTO.setSellingPrice(customerCustomPriceClient.customPriceByClientAndProduct(clientId, productId, token).getPrice());
-            } catch(FeignException.NotFound e){
+            } catch (FeignException.NotFound e) {
                 orderProductDTO.setSellingPrice(productDTO.getPrice());
             }
             orderProductClient.createOrderProduct(orderProductDTO, token);
@@ -104,6 +110,7 @@ public class OrderController {
         }
         return "redirect:/order/place";
     }
+
 
     @GetMapping("/place")
     public String chooseQuantityAndPayment(@RequestParam("product.id") Long productId, Model model, HttpServletRequest request) {
@@ -174,28 +181,104 @@ public class OrderController {
         return new ModelAndView(REDIRECTTXT);
     }
 
-@GetMapping("/my-orders")
-String getOrdersForClient(Model model, HttpServletRequest request) {
-    String token = (String) request.getSession().getAttribute("sessionToken");
-    UserDTO userDTO = userClient.findAuthenticatedUser(token);
-    List<ClientUserDTO> clientUserDTOS = clientUserClient.getAllClientUsers(token);
+    @GetMapping("/my-orders")
+    String getOrdersForClient(Model model, HttpServletRequest request) {
+        String token = (String) request.getSession().getAttribute("sessionToken");
+        UserDTO userDTO = userClient.findAuthenticatedUser(token);
+        List<ClientUserDTO> clientUserDTOS = clientUserClient.getAllClientUsers(token);
 
-    List<OrderDTO> orderDTOS = new ArrayList<>();
+        List<OrderDTO> orderDTOS = new ArrayList<>();
 
-    for (ClientUserDTO clientUserDTO : clientUserDTOS) {
-        if (clientUserDTO.getUserId().equals(userDTO.getId())) {
-            List<OrderWithProductsDTO> orderWithProductsDTOS =
-                    orderProductClient.getOrderProductDTOsByOrderDTOs(clientUserDTO.getClientId(), token).getBody();
+        for (ClientUserDTO clientUserDTO : clientUserDTOS) {
+            if (clientUserDTO.getUserId().equals(userDTO.getId())) {
+                List<OrderWithProductsDTO> orderWithProductsDTOS =
+                        orderProductClient.getOrderProductDTOsByOrderDTOs(clientUserDTO.getClientId(), token).getBody();
 
-            if (orderWithProductsDTOS != null) {
-                for (OrderWithProductsDTO orderWithProducts : orderWithProductsDTOS) {
-                    orderDTOS.add(orderWithProducts.getOrderDTO());
+                if (orderWithProductsDTOS != null) {
+                    for (OrderWithProductsDTO orderWithProducts : orderWithProductsDTOS) {
+                        orderDTOS.add(orderWithProducts.getOrderDTO());
+                    }
                 }
+                model.addAttribute("orderList", orderDTOS);
+                return "Order/myOrders";
             }
-            model.addAttribute("orderList", orderDTOS);
-            return "Order/myOrders";
         }
+        return "redirect:/login";
     }
-    return "redirect:/login";
-}
+
+    @GetMapping("/orderedProducts/{id}")
+    public String orderProductsFromOrder(@PathVariable("id") Long id, HttpServletRequest request, Model model) {
+        String token = (String) request.getSession().getAttribute("sessionToken");
+        UserDTO userDTO = userClient.findAuthenticatedUser(token);
+        List<ClientUserDTO> clientUserDTOS = clientUserClient.getAllClientUsers(token);
+        List<OrderProductDTO> orderedProductsDTOs = new ArrayList<>();
+        List<OrderProductHelper> orderProductsForShowing = new ArrayList<>();
+        List<ProductDTO> allProducts = productClient.getAllProducts(token);
+
+        boolean flag = false;
+
+        for(ClientUserDTO clientUserDTO : clientUserDTOS){
+            if(clientUserDTO.getUserId().equals(userDTO.getId())){
+                flag = true;
+            }
+        }
+
+        if (flag) {
+            orderedProductsDTOs = orderProductClient.orderProducts(id, token);
+        }else{
+            throw new ValidationException("User is not client !");
+        }
+
+        for(OrderProductDTO orderProductDTO : orderedProductsDTOs){
+            OrderProductHelper orderProductHelper = new OrderProductHelper();
+            ProductDTO productDTO = allProducts.stream()
+                    .filter(product -> product.getPackageId().equals(orderProductDTO.getPackageId()))
+                    .findFirst()
+                    .orElseThrow(() -> new RuntimeException("Product not found for package ID: " + orderProductDTO.getPackageId()));
+            orderProductHelper.setOrderId(orderProductDTO.getOrderId());
+            orderProductHelper.setProduct(productDTO);
+            orderProductHelper.setQuantity(orderProductDTO.getNumber());
+            orderProductHelper.setPrice(orderProductDTO.getSellingPrice().multiply(BigDecimal.valueOf(orderProductDTO.getNumber())));
+            orderProductsForShowing.add(orderProductHelper);
+        }
+
+        List<PackageDTO> packages = packageClient.getAllPackages(token);
+
+        Map<Long, String> productPackageMap = new HashMap<>();
+        for (PackageDTO packageDTO : packages) {
+            productPackageMap.put(packageDTO.getId(), packageDTO.getName());
+        }
+        Map<Long, String> productPackageMapImages = new HashMap<>();
+        for (PackageDTO packageDTO : packages) {
+            if (packageDTO.getPhoto() != null) {
+                productPackageMapImages.put(packageDTO.getId(), packageDTO.getPhoto());
+            }
+        }
+        for (PackageDTO packageDTO : packages) {
+            if (packageDTO.getPhoto() != null) {
+                imageService.getImage(packageDTO.getPhoto());
+            }
+        }
+        model.addAttribute("items", orderProductsForShowing);
+        model.addAttribute("productPackageMapImages", productPackageMapImages);
+        model.addAttribute("backendBaseUrl", backendBaseUrl);
+        model.addAttribute("packages", packages);
+        model.addAttribute("productPackageMap", productPackageMap);
+
+        return "Order/orderProducts";
+    }
+
+
+    @GetMapping("/buyPage")
+    private String buyPage() {
+        return "Order/buy";
+    }
+
+    @PostMapping("/createFromCart")
+    public String createOrderFormShoppingCart(HttpServletRequest request) {
+        String token = (String) request.getSession().getAttribute("sessionToken");
+        orderClient.createOrder(token);
+        return "redirect:/order/buyPage";
+    }
+
 }

@@ -112,13 +112,22 @@
                         th:if="${session.sessionToken != null and (session.sessionRole == 'PRODUCTION_MANAGER' or session.sessionRole == 'TRANSPORT_MANAGER')}">
                     <li class="sidebar-item">
                         <a id="nav-show15" class="sidebar-link" href="/product/show">
-                            <i class="fas fa-boxes"></i><span>
-                                class="align-middle">Продукти Лукерия</span>
+                            <i class="fas fa-boxes"></i>
+                            <span>Продукти Лукерия</span>
                         </a>
                     </li>
                 </th:block>
                 <th:block
-                        th:if="${session.sessionToken != null and (session.sessionRole == 'PRODUCTION_MANAGER' or session.sessionRole == 'TRANSPORT_MANAGER' or session.sessionRole == 'CUSTOMER')}">
+                        th:if="${session.sessionToken != null and (session.sessionRole == 'CUSTOMER')}">
+                    <li class="sidebar-item">
+                        <a id="nav-forSale1" class="sidebar-link" href="/product/for-sale">
+                            <i class="fas fa-cubes"></i> <span class="align-middle">Продукти</span>
+                        </a>
+                    </li>
+                </th:block>
+
+                <th:block
+                        th:if="${session.sessionToken != null and (session.sessionRole == 'PRODUCTION_MANAGER' or session.sessionRole == 'TRANSPORT_MANAGER')}">
                     <li class="sidebar-item">
                         <a id="nav-availableProducts" class="sidebar-link" href="/product/available-products">
                             <i class="fas fa-cubes"></i> <span class="align-middle">Налични продукти</span>

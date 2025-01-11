@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @org.springframework.stereotype.Controller
 @RequiredArgsConstructor
@@ -38,9 +37,6 @@ public class ProductController {
 
     public void modelAtributes(Model model, HttpServletRequest request) {
         String token = (String) request.getSession().getAttribute(SESSION_TOKEN);
-        List<ProductDTO> sortedProducts = productClient.getAllProducts(token).stream()
-                .sorted(Comparator.comparingInt(ProductDTO::getAvailableQuantity).reversed())
-                .toList();
 
         List<PackageDTO> packages = packageClient.getAllPackages(token);
 
@@ -63,13 +59,18 @@ public class ProductController {
 
         model.addAttribute("productPackageMapImages", productPackageMapImages);
         model.addAttribute("backendBaseUrl", backendBaseUrl);
-        model.addAttribute("products", sortedProducts);
         model.addAttribute("packages", packages);
         model.addAttribute("productPackageMap", productPackageMap);
     }
 
     @GetMapping("/show")
     public String showAllProducts(Model model, HttpServletRequest request) {
+        String token = (String) request.getSession().getAttribute(SESSION_TOKEN);
+
+        List<ProductDTO> sortedProducts = productClient.getAllProducts(token).stream()
+                .sorted(Comparator.comparingInt(ProductDTO::getAvailableQuantity).reversed())
+                .toList();
+        model.addAttribute("products", sortedProducts);
         modelAtributes(model, request);
         return "Product/show";
     }
@@ -87,7 +88,7 @@ public class ProductController {
         List<ProductPriceDTO> allProductsForSale = new ArrayList<>();
 
         String token = (String) request.getSession().getAttribute(SESSION_TOKEN);
-        List<ProductDTO> productsForSale = productClient.getProductsForSale(token);
+        List<ProductDTO> productsForSale = productClient.getAvailableProducts(token);
 
         UserDTO authenticatedUser = userClient.findAuthenticatedUser(token);
 
@@ -105,9 +106,9 @@ public class ProductController {
 
         for (ProductDTO productDTO : sortedProducts) {
             try {
-                if(clientId == null){
+                if (clientId == null) {
                     allProductsForSale.add(new ProductPriceDTO(productDTO, productDTO.getPrice()));
-                }else{
+                } else {
                     CustomerCustomPriceDTO customPriceForClient = customerCustomPriceClient.customPriceByClientAndProduct(clientId, productDTO.getId(), token);
                     allProductsForSale.add(new ProductPriceDTO(productDTO, customPriceForClient.getPrice()));
                 }
@@ -116,29 +117,8 @@ public class ProductController {
             }
         }
 
-        List<PackageDTO> packages = packageClient.getAllPackages(token);
-
-
-        Map<Long, String> productPackageMap = new HashMap<>();
-        for (PackageDTO packageDTO : packages) {
-            productPackageMap.put(packageDTO.getId(), packageDTO.getName());
-        }
-        Map<Long, String> productPackageMapImages = new HashMap<>();
-        for (PackageDTO packageDTO : packages) {
-            if (packageDTO.getPhoto() != null) {
-                productPackageMapImages.put(packageDTO.getId(), packageDTO.getPhoto());
-            }
-        }
-        for (PackageDTO packageDTO : packages) {
-            if (packageDTO.getPhoto() != null) {
-                imageService.getImage(packageDTO.getPhoto());
-            }
-        }
-        model.addAttribute("productPackageMapImages", productPackageMapImages);
-        model.addAttribute("backendBaseUrl", backendBaseUrl);
+        modelAtributes(model, request);
         model.addAttribute("products", allProductsForSale);
-        model.addAttribute("packages", packages);
-        model.addAttribute("productPackageMap", productPackageMap);
         return "Product/available-products";
     }
 
@@ -165,9 +145,9 @@ public class ProductController {
 
         for (ProductDTO productDTO : sortedProducts) {
             try {
-                if(clientId == null){
+                if (clientId == null) {
                     allProductsForSale.add(new ProductPriceDTO(productDTO, productDTO.getPrice()));
-                }else{
+                } else {
                     CustomerCustomPriceDTO customPriceForClient = customerCustomPriceClient.customPriceByClientAndProduct(clientId, productDTO.getId(), token);
                     allProductsForSale.add(new ProductPriceDTO(productDTO, customPriceForClient.getPrice()));
                 }
@@ -250,10 +230,22 @@ public class ProductController {
         for (PackageDTO packageDTO : packages) {
             productPackageMap.put(packageDTO.getId(), packageDTO.getName());
         }
+
         Map<Long, String> productPackageMapImages = new HashMap<>();
         for (PackageDTO packageDTO : packages) {
-            productPackageMapImages.put(packageDTO.getId(), packageDTO.getPhoto());
+            if (packageDTO.getPhoto() != null) {
+                byte[] imageBytes = imageService.getImage(packageDTO.getPhoto());
+                if (imageBytes != null) {
+                    String imageUrl = "data:image/jpeg;base64," + Base64.getEncoder().encodeToString(imageBytes);
+                    productPackageMapImages.put(packageDTO.getId(), imageUrl);
+                }
+            }
         }
+
+        List<Long> emptyProductIdList = new ArrayList<>();
+        List<Integer> emptyQuantityList = new ArrayList<>();
+        model.addAttribute("emptyProductIdList", emptyProductIdList);
+        model.addAttribute("emptyQuantityList", emptyQuantityList);
         model.addAttribute("products", products);
         model.addAttribute("backendBaseUrl", backendBaseUrl);
         model.addAttribute("productPackageMap", productPackageMap);
@@ -261,10 +253,17 @@ public class ProductController {
         return "Product/produce";
     }
 
+
     @PostMapping("/produce")
-    ModelAndView produceProduct(@RequestParam("productId") Long productId, @RequestParam("producedQuantity") int producedQuantity, HttpServletRequest request) {
+    public ModelAndView produceProduct(
+            @RequestParam("productId[]") List<Long> productIds,
+            @RequestParam("producedQuantity[]") List<Integer> producedQuantities,
+            HttpServletRequest request) {
         String token = (String) request.getSession().getAttribute(SESSION_TOKEN);
-        productClient.produceProduct(productId, producedQuantity, token);
+
+        for (int i = 0; i < productIds.size(); i++) {
+            productClient.produceProduct(productIds.get(i), producedQuantities.get(i), token);
+        }
         return new ModelAndView(REDIRECTTXT);
     }
 }

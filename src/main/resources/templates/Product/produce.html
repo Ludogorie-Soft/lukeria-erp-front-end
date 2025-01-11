@@ -1,26 +1,61 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
-    <!--    LINKS  -->
     <th:block th:insert="~{fragments/links}"></th:block>
-
     <title>Производство на продукт</title>
     <link rel="icon" type="image/x-icon" href="/img/photos/noImage.png">
     <link href="/css/form.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+    <style>
+        .btn-success {
+            background-color: #28a745;
+            border-color: #28a745;
+            color: white;
+        }
+
+        .btn-danger {
+            background-color: #dc3545 !important;
+            border-color: #dc3545 !important;
+            color: white !important;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        .product-row {
+            margin-bottom: 15px;
+        }
+
+        .select2-container .select2-selection--single {
+            height: 40px !important;
+            display: flex;
+            align-items: center;
+        }
+
+        .select2-container .select2-selection--single .select2-selection__rendered {
+            line-height: 40px !important;
+        }
+
+        .select2-container .select2-selection--single .select2-selection__arrow {
+            height: 40px !important;
+        }
+    </style>
 </head>
 <script>
-document.addEventListener("DOMContentLoaded", function() {
-    const navbar = document.getElementById("sidebar");
-    console.log(navbar);
-    const toggler = document.querySelector("a.sidebar-toggle");
-    toggler.addEventListener("click", () => {
-    navbar.classList.toggle("collapsed");
+    document.addEventListener("DOMContentLoaded", function() {
+        const navbar = document.getElementById("sidebar");
+        const toggler = document.querySelector("a.sidebar-toggle");
+        toggler.addEventListener("click", () => {
+            navbar.classList.toggle("collapsed");
+        });
     });
-});
 </script>
 <body>
 <div class="wrapper">
-    <!--    HEADER  -->
     <th:block th:insert="~{fragments/header}"></th:block>
     <div class="main">
         <nav class="navbar navbar-expand navbar-light navbar-bg">
@@ -29,64 +64,143 @@ document.addEventListener("DOMContentLoaded", function() {
             </a>
         </nav>
 
-        <div class="main">
-            <main class="content">
-                <div class="d-flex justify-content-center">
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="card custom-card-width-lg">
-                                <div class="card-header">
-                                    <h5 class="card-title mb-0">Производство на продукт</h5>
-                                </div>
-                                <div class="card-body">
-                                    <form th:action="@{/product/produce}" method="post">
+        <main class="content">
+            <div class="d-flex justify-content-center">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card custom-card-width-lg">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">Производство на продукт</h5>
+                            </div>
+                            <div class="card-body">
+                                <form th:action="@{/product/produce}" method="post">
+                                    <div id="product-rows">
+                                        <!-- Полета за избор на продукт и количество -->
+                                        <div class="product-row form-group" id="row1">
+                                            <label for="productId1" style="width: 100%;">Произведен продукт:</label>
+                                            <div class="d-flex align-items-center">
+                                                <select id="productId1" name="productId[]" class="custom-select-lg" style="width: 100%;">
+                                                    <option th:each="product : ${products}"
+                                                            th:value="${product.id}"
+                                                            th:text="${product.productCode} + ' - ' + ${productPackageMap.get(product.packageId)}"
+                                                            th:data-image-url="${productPackageMapImages.get(product.packageId)}">
+                                                    </option>
+                                                </select>
+                                                <input type="number" class="form-control ml-3" id="producedQuantity1" name="producedQuantity[]" required min="1"
+                                                       placeholder="Количество">
+                                                <button type="button" class="btn btn-danger ml-3 remove-row" data-row-id="1">
+                                                    <i class="bi bi-x-lg"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
 
-                                        <div class="form-group" th:if="${products}">
-                                            <label for="productId" style="width: 100%;">Произведен продукт:</label>
-                                            <select id="productId" name="productId" style="width: 100%;">
-                                                <option th:each="product : ${products}" th:value="${product.id}"
-                                                        th:text="${product.productCode} + ' - ' +  ${productPackageMap.get(product.packageId)}"
-                                                        th:data-image-url="@{${backendBaseUrl} + '/' + ${productPackageMapImages.get(product.packageId)}}">
-                                                    <img th:src="@{'${backendBaseUrl}' + '/' + ${productPackageMapImages.get(product.packageId)}}"  width="50" height="50">
-                                                </option>
-                                            </select>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="producedQuantity">Произведен брой</label>
-                                            <input type="number" class="form-control" id="producedQuantity"
-                                                   name="producedQuantity"  required min="1">
-                                        </div>
-                                        <div class="text-center">
-                                            <button type="submit" class="btn btn-primary">Създай</button>
-                                        </div>
-                                    </form>
-                                </div>
+                                    <div class="text-center mb-3">
+                                        <button type="button" id="add-product" class="btn btn-success">Добави още продукт</button>
+                                    </div>
+
+                                    <div class="text-center">
+                                        <button type="submit" class="btn btn-primary">Създай</button>
+                                    </div>
+                                </form>
                             </div>
                         </div>
                     </div>
                 </div>
-            </main>
-        </div>
+            </div>
+        </main>
     </div>
 </div>
-<script>
-$(document).ready(function() {
-    $('#productId').select2({
-        templateResult: formatState
-    });
-});
-
-function formatState(state) {
-    if (!state.id) {
-        return state.text;
-    }
-    var imageUrl = state.element.getAttribute('data-image-url');
-    var $state = $(
-        '<span><img src="' + imageUrl + '" width="50" height="50" /> ' + state.text + '</span>'
-    );
-    return $state;
-}
+<script th:inline="javascript">
+    var products = /*[[${products}]]*/ [];
+    var productPackageMap = /*[[${productPackageMap}]]*/ {};
+    var productPackageMapImages = /*[[${productPackageMapImages}]]*/ {};
 </script>
 
+<!-- JavaScript за Select2 и добавяне на нови полета -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Инициализация на Select2 за първия елемент
+        initializeSelect2("#productId1");
+
+        let productCounter = 1; // Брояч за редове
+
+        // Функция за добавяне на нов ред
+        $("#add-product").on("click", function () {
+            productCounter++;
+
+            // Създаване на нов <select> елемент
+            const newSelect = $(`
+                <select id="productId${productCounter}" name="productId[]" class="custom-select-lg" style="width: 100%;"></select>
+            `);
+
+            // Добавяне на опции към <select>
+            products.forEach(product => {
+                const productCode = product.productCode;
+                const packageId = product.packageId;
+                const packageText = productPackageMap[packageId];
+                const imageUrl = productPackageMapImages[packageId];
+
+                // Създаване на опция с данни
+                const option = $(`<option></option>`)
+                    .val(product.id)
+                    .text(`${productCode} - ${packageText}`)
+                    .attr("data-image-url", imageUrl); // Задаване на атрибут за изображението
+
+                newSelect.append(option);
+            });
+
+            // Създаване на нов ред с продукт и количество
+            const newRow = $(`
+                <div class="product-row form-group" id="row${productCounter}">
+                    <label for="productId${productCounter}" style="width: 100%;">Произведен продукт:</label>
+                    <div class="d-flex align-items-center">
+                        ${newSelect[0].outerHTML}
+                        <input type="number" class="form-control ml-3" id="producedQuantity${productCounter}"
+                            name="producedQuantity[]" required min="1" placeholder="Количество">
+                        <button type="button" class="btn btn-danger ml-3 remove-row" data-row-id="${productCounter}">
+                            <i class="bi bi-x-lg"></i>
+                        </button>
+                    </div>
+                </div>
+            `);
+
+            // Добавяне на новия ред към контейнера
+            $("#product-rows").append(newRow);
+
+            // Инициализация на Select2 за новия елемент
+            initializeSelect2(`#productId${productCounter}`);
+        });
+
+        // Функция за премахване на ред
+        $(document).on("click", ".remove-row", function () {
+            const rowId = $(this).data("row-id");
+            $(`#row${rowId}`).remove();
+        });
+
+        // Функция за инициализация на Select2
+        function initializeSelect2(selector) {
+            $(selector).select2({
+                templateResult: formatState,
+                templateSelection: formatState,
+                width: '100%'
+            });
+        }
+
+        // Функция за форматиране на опции в Select2
+        function formatState(state) {
+            if (!state.id) {
+                return state.text;
+            }
+            const imageUrl = $(state.element).data("image-url"); // Взема атрибута data-image-url
+            if (imageUrl) {
+                return $(
+                    `<span><img src="${imageUrl}" width="40" height="40" style="margin-right: 10px;" /> ${state.text}</span>`
+                );
+            }
+            return state.text;
+        }
+    });
+</script>
 </body>
 </html>

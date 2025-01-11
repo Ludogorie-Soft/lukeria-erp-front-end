@@ -75,7 +75,7 @@
                                         <td th:text="${order.invoiced ? 'Да' : 'Не'}">Invoiced</td>
                                         <td>
                                             <!-- Button linking to products of this order -->
-                                            <a th:href="@{/order/{orderId}/products(orderId=${order.id})}" class="btn btn-custom-yellow">
+                                            <a th:href="@{/order/orderedProducts/{id}(id=${order.id})}" class="btn btn-custom-yellow">
                                                 Поръчани продукти
                                             </a>
                                         </td>

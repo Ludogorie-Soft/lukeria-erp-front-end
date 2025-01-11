@@ -28,6 +28,9 @@ public interface OrderClient {
     @DeleteMapping("/{id}")
     String deleteOrderById(@PathVariable("id") Long id, @RequestHeader("Authorization") String auth);
 
+    @PostMapping("/create")
+    void createOrder(@RequestHeader("Authorization") String auth);
+
 //    @GetMapping("/client/orders")
 //    ResponseEntity<List<OrderDTO>> getOrdersForClient(@RequestParam(name = "id") Long id, @RequestHeader("Authorization") String auth);
 
