@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Данни от базата</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container mt-5">
+    <h1 class="mb-4">Данни за пакети, тарелки, кашони и продукти</h1>
+
+    <h2>Кутии</h2>
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th>#</th>
+            <th>Име</th>
+            <th>Име на английски</th>
+            <th>Наличност</th>
+            <th>ID на кашона</th>
+            <th>ID на тарелката</th>
+            <th>Брой продукти в кашон</th>
+            <th>Снимка</th>
+            <th>Цена</th>
+            <th>Код на продукта</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="package : ${packages}">
+            <td th:text="${package.id}"></td>
+            <td th:text="${package.name}"></td>
+            <td th:text="${package.englishName}"></td>
+            <td th:text="${package.availableQuantity}"></td>
+            <td th:text="${package.cartonId}"></td>
+            <td th:text="${package.plateId}"></td>
+            <td th:text="${package.piecesCarton}"></td>
+            <td th:text="${package.photo}"></td>
+            <td th:text="${package.price}"></td>
+            <td th:text="${package.productCode}"></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <h2>Продукти</h2>
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th>#</th>
+            <th>Цена</th>
+            <th>ID Кутия</th>
+            <th>Наличност</th>
+            <th>Код на продукта</th>
+            <th>За продажба</th>
+            <th>Баркод</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="product : ${productDTOS}">
+            <td th:text="${product.id}"></td>
+            <td th:text="${product.price}"></td>
+            <td th:text="${product.packageId}"></td>
+            <td th:text="${product.availableQuantity}"></td>
+            <td th:text="${product.productCode}"></td>
+            <td th:text="${product.forSale ? 'Да' : 'Не'}"></td>
+            <td th:text="${product.barcode}"></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <h2>Тарелки</h2>
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th>#</th>
+            <th>Име</th>
+            <th>Наличност</th>
+            <th>Цена</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="plate : ${plates}">
+            <td th:text="${plate.id}"></td>
+            <td th:text="${plate.name}"></td>
+            <td th:text="${plate.availableQuantity}"></td>
+            <td th:text="${plate.price}"></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <h2>Кашони</h2>
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th>#</th>
+            <th>Име</th>
+            <th>Размер</th>
+            <th>Наличност</th>
+            <th>Цена</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="carton : ${cartons}">
+            <td th:text="${carton.id}"></td>
+            <td th:text="${carton.name}"></td>
+            <td th:text="${carton.size}"></td>
+            <td th:text="${carton.availableQuantity}"></td>
+            <td th:text="${carton.price}"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
