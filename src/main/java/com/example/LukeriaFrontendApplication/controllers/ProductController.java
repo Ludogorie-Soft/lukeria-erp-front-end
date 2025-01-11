@@ -92,7 +92,7 @@ public class ProductController {
         List<ProductPriceDTO> allProductsForSale = new ArrayList<>();
 
         String token = (String) request.getSession().getAttribute(SESSION_TOKEN);
-        List<ProductDTO> productsForSale = productClient.getProductsForSale(token);
+        List<ProductDTO> productsForSale = productClient.getAvailableProducts(token);
 
         UserDTO authenticatedUser = userClient.findAuthenticatedUser(token);
 
