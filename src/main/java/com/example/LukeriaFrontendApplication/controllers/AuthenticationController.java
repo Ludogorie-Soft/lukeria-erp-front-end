@@ -23,10 +23,19 @@ public class AuthenticationController {
     private static final String REDIRECTTXT = "redirect:/index";
 
     @GetMapping("/login")
-    public String login(Model model, AuthenticationRequest authenticationRequest) {
+    public String login(Model model, AuthenticationRequest authenticationRequest, HttpServletRequest httpServletRequest) {
+        String message = httpServletRequest.getParameter("message");
+        if (message != null && message.equals("loginRequired")) {
+            model.addAttribute("message", "Моля, впишете се, за да достъпите защитеното съдържание.");
+        }
+
+        String error = (String) httpServletRequest.getAttribute("error");
+        if (error != null) {
+            model.addAttribute("error", error);
+        }
+
         return "login";
     }
-
 
     @GetMapping("/logout")
     public ModelAndView logout(HttpServletRequest request) {
@@ -38,12 +47,22 @@ public class AuthenticationController {
 
     @PostMapping("/login")
     public ModelAndView login(AuthenticationRequest authenticationRequest, HttpServletRequest httpServletRequest) {
+        ModelAndView modelAndView = new ModelAndView("login");
+
         try {
             ResponseEntity<AuthenticationResponse> authenticationResponse = authenticationClient.authenticate(authenticationRequest);
+
             sessionManager.setSessionToken(httpServletRequest, authenticationResponse.getBody().getAccessToken(), authenticationResponse.getBody().getUser().getRole().toString());
-            return new ModelAndView(REDIRECTTXT);
+
+            String redirectUrl = (String) httpServletRequest.getSession().getAttribute("redirectAfterLogin");
+            if (redirectUrl != null) {
+                httpServletRequest.getSession().removeAttribute("redirectAfterLogin");
+                return new ModelAndView("redirect:" + redirectUrl);
+            } else {
+                return new ModelAndView(REDIRECTTXT);
+            }
+
         } catch (Exception e) {
-            ModelAndView modelAndView = new ModelAndView("redirect:/login");
             modelAndView.addObject("error", "Невалидно име или парола");
             return modelAndView;
         }
