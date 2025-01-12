@@ -79,6 +79,7 @@ public class DatabaseController {
 
         return new ModelAndView(REDIRECTTXT);
     }
+
     @PostMapping("/edit/product/{id}")
     public ModelAndView editObjects(@PathVariable(name = "id") Long id,
                                     @ModelAttribute ProductDTO object,
@@ -119,6 +120,39 @@ public class DatabaseController {
 
         String token = (String) request.getSession().getAttribute(SESSION_TOKEN);
         packageClient.updatePackage(id, object, token);
+
+        return new ModelAndView(REDIRECTTXT);
+    }
+
+    @PostMapping("/edit/user/{id}")
+    public ModelAndView editObjects(@PathVariable(name = "id") Long id,
+                                    @ModelAttribute UserDTO object,
+                                    HttpServletRequest request) {
+
+        String token = (String) request.getSession().getAttribute(SESSION_TOKEN);
+        userClient.updateUser(id, object, token);
+
+        return new ModelAndView(REDIRECTTXT);
+    }
+
+    @PostMapping("/edit/client/{id}")
+    public ModelAndView editObjects(@PathVariable(name = "id") Long id,
+                                    @ModelAttribute ClientDTO object,
+                                    HttpServletRequest request) {
+
+        String token = (String) request.getSession().getAttribute(SESSION_TOKEN);
+        clientClient.updateClient(id, object, token);
+
+        return new ModelAndView(REDIRECTTXT);
+    }
+
+    //customerCustomPrice
+    @PostMapping("/edit/customerCustomPrice")
+    public ModelAndView editObjects(@ModelAttribute CustomerCustomPriceDTO object,
+                                    HttpServletRequest request) {
+
+        String token = (String) request.getSession().getAttribute(SESSION_TOKEN);
+        customerCustomPriceClient.updateCustomPrice(object, token);
 
         return new ModelAndView(REDIRECTTXT);
     }
