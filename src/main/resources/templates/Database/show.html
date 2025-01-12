@@ -143,7 +143,7 @@
     <table class="table table-bordered">
         <thead>
         <tr>
-            <th>#</th>
+            <th>ID</th>
             <th>Име</th>
             <th>Фамилия</th>
             <th>Потребителско име</th>
@@ -151,21 +151,36 @@
             <th>Имейл</th>
             <th>Роля</th>
             <th>ID на клиента</th>
+            <th>Действия</th>
         </tr>
         </thead>
         <tbody>
         <tr th:each="user : ${userDTOS}">
-            <td th:text="${user.id}"></td>
-            <td th:text="${user.firstname}"></td>
-            <td th:text="${user.lastname}"></td>
-            <td th:text="${user.username}"></td>
-            <td th:text="${user.address}"></td>
-            <td th:text="${user.email}"></td>
-            <td th:text="${user.role}"></td>
-            <td th:text="${user.clientID}"></td>
+            <form th:action="@{/database/edit/user/{id}(id=${user.id})}" method="post">
+                <td th:text="${user.id}"></td>
+                <td><input type="text" name="firstname" th:value="${user.firstname}" class="form-control"/></td>
+                <td><input type="text" name="lastname" th:value="${user.lastname}" class="form-control"/></td>
+                <td><input type="text" name="username" th:value="${user.username}" class="form-control"/></td>
+                <td><input type="text" name="address" th:value="${user.address}" class="form-control"/></td>
+                <td><input type="email" name="email" th:value="${user.email}" class="form-control"/></td>
+                <td>
+                    <select name="role" class="form-control">
+                        <option value="ADMIN" th:selected="${user.role == 'ADMIN'}">ADMIN</option>
+                        <option value="PRODUCTION_MANAGER" th:selected="${user.role == 'PRODUCTION_MANAGER'}">PRODUCTION_MANAGER</option>
+                        <option value="TRANSPORT_MANAGER" th:selected="${user.role == 'TRANSPORT_MANAGER'}">TRANSPORT_MANAGER</option>
+                        <option value="CUSTOMER" th:selected="${user.role == 'CUSTOMER'}">CUSTOMER</option>
+                    </select>
+                </td>
+                <td><input type="text" name="clientID" th:value="${user.clientID}" class="form-control"/></td>
+                <td>
+                    <input type="hidden" name="id" th:value="${user.id}"/>
+                    <button type="submit" class="btn btn-primary">Изпрати промени</button>
+                </td>
+            </form>
         </tr>
         </tbody>
     </table>
+
 
     <h2>Клиенти "client"</h2>
     <table class="table table-bordered">
@@ -184,46 +199,67 @@
             <th>Адрес за доставка</th>
             <th>Информация</th>
             <th>Клиент ID</th>
+            <th>Действия</th>
         </tr>
         </thead>
         <tbody>
         <tr th:each="client : ${clientDTOS}">
-            <td th:text="${client.id}"></td>
-            <td th:text="${client.businessName}"></td>
-            <td th:text="${client.englishBusinessName}"></td>
-            <td th:text="${client.idNumEIK}"></td>
-            <td th:text="${client.hasIdNumDDS ? 'Да' : 'Не'}"></td>
-            <td th:text="${client.address}"></td>
-            <td th:text="${client.englishAddress}"></td>
-            <td th:text="${client.mol}"></td>
-            <td th:text="${client.englishMol}"></td>
-            <td th:text="${client.contactPhone}"></td>
-            <td th:text="${client.deliveryAddress}"></td>
-            <td th:text="${client.information}"></td>
-            <td th:text="${client.customer}"></td>
+            <form th:action="@{/database/edit/client/{id}(id=${client.id})}" method="post">
+                <td th:text="${client.id}"></td>
+                <td><input type="text" name="businessName" th:value="${client.businessName}" class="form-control" /></td>
+                <td><input type="text" name="englishBusinessName" th:value="${client.englishBusinessName}" class="form-control" /></td>
+                <td><input type="text" name="idNumEIK" th:value="${client.idNumEIK}" class="form-control" /></td>
+                <td><input type="checkbox" name="hasIdNumDDS" th:checked="${client.hasIdNumDDS}" class="form-check-input" /> Да</td>
+                <td><input type="text" name="address" th:value="${client.address}" class="form-control" /></td>
+                <td><input type="text" name="englishAddress" th:value="${client.englishAddress}" class="form-control" /></td>
+                <td><input type="text" name="mol" th:value="${client.mol}" class="form-control" /></td>
+                <td><input type="text" name="englishMol" th:value="${client.englishMol}" class="form-control" /></td>
+                <td><input type="text" name="contactPhone" th:value="${client.contactPhone}" class="form-control" /></td>
+                <td><input type="text" name="deliveryAddress" th:value="${client.deliveryAddress}" class="form-control" /></td>
+                <td><input type="text" name="information" th:value="${client.information}" class="form-control" /></td>
+                <td><input type="text" name="customer" th:value="${client.customer}" class="form-control" /></td>
+                <td>
+                    <input type="hidden" name="id" th:value="${client.id}" />
+                    <button type="submit" class="btn btn-primary">Изпрати промени</button>
+                </td>
+            </form>
         </tr>
         </tbody>
     </table>
 
+
     <h2>Персонализирани цени на клиенти "customerCustomPrice"</h2>
-    <table class="table table-bordered">
-        <thead>
-        <tr>
-            <th>ID</th>
-            <th>ID на клиента</th>
-            <th>ID на продукта</th>
-            <th>Персонализирана цена</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="customPrice : ${customerCustomPriceDTOS}">
-            <td th:text="${customPrice.id}"></td>
-            <td th:text="${customPrice.clientId}"></td>
-            <td th:text="${customPrice.productId}"></td>
-            <td th:text="${customPrice.price}"></td>
-        </tr>
-        </tbody>
-    </table>
+    <form th:action="@{/database/edit/customerCustomPrice}" method="post">
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>ID на клиента</th>
+                <th>ID на продукта</th>
+                <th>Персонализирана цена</th>
+                <th>Действия</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="customPrice : ${customerCustomPriceDTOS}">
+                <td th:text="${customPrice.id}"></td>
+                <td>
+                    <input type="text" name="clientId" th:value="${customPrice.clientId}" class="form-control"/>
+                </td>
+                <td>
+                    <input type="text" name="productId" th:value="${customPrice.productId}" class="form-control"/>
+                </td>
+                <td>
+                    <input type="number" name="price" th:value="${customPrice.price}" class="form-control" step="0.01"/>
+                </td>
+                <td>
+                    <button type="submit" class="btn btn-primary">Изпрати промени</button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </form>
+
 
     <h2>Фактури "invoice"</h2>
     <table class="table table-bordered">
