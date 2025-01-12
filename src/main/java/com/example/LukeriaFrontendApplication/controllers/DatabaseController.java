@@ -2,13 +2,11 @@ package com.example.LukeriaFrontendApplication.controllers;
 
 import com.example.LukeriaFrontendApplication.config.*;
 import com.example.LukeriaFrontendApplication.dtos.*;
-import com.example.LukeriaFrontendApplication.models.User;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.*;
@@ -69,7 +67,7 @@ public class DatabaseController {
         return "Database/show";
     }
 
-    @PostMapping("/edit/{id}")
+    @PostMapping("/edit/orderProduct/{id}")
     public ModelAndView editObjects(@PathVariable(name = "id") Long id,
                                     @ModelAttribute OrderProductDTO object,
                                     HttpServletRequest request) {
@@ -195,6 +193,28 @@ public class DatabaseController {
 
         String token = (String) request.getSession().getAttribute(SESSION_TOKEN);
         materialOrderClient.updateMaterialOrder(id,object, token);
+
+        return new ModelAndView(REDIRECTTXT);
+    }
+
+    @PostMapping("/edit/monthlyOrder/{id}")
+    public ModelAndView editObjects(@PathVariable(name = "id") Long id,
+                                    @ModelAttribute MonthlyOrderDTO object,
+                                    HttpServletRequest request) {
+
+        String token = (String) request.getSession().getAttribute(SESSION_TOKEN);
+        monthlyOrderClient.updateMonthlyOrder(id,object, token);
+
+        return new ModelAndView(REDIRECTTXT);
+    }
+
+    @PostMapping("/edit/monthlyOrderProduct/{id}")
+    public ModelAndView editObjects(@PathVariable(name = "id") Long id,
+                                    @ModelAttribute MonthlyOrderProductDTO object,
+                                    HttpServletRequest request) {
+
+        String token = (String) request.getSession().getAttribute(SESSION_TOKEN);
+        monthlyOrderProductClient.updateMonthlyProductOrder(id,object, token);
 
         return new ModelAndView(REDIRECTTXT);
     }
