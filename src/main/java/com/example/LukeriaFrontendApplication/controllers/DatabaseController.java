@@ -79,5 +79,48 @@ public class DatabaseController {
 
         return new ModelAndView(REDIRECTTXT);
     }
+    @PostMapping("/edit/product/{id}")
+    public ModelAndView editObjects(@PathVariable(name = "id") Long id,
+                                    @ModelAttribute ProductDTO object,
+                                    HttpServletRequest request) {
+
+        String token = (String) request.getSession().getAttribute(SESSION_TOKEN);
+        productClient.updateProduct(id, object, token);
+
+        return new ModelAndView(REDIRECTTXT);
+    }
+
+    @PostMapping("/edit/plate/{id}")
+    public ModelAndView editObjects(@PathVariable(name = "id") Long id,
+                                    @ModelAttribute PlateDTO object,
+                                    HttpServletRequest request) {
+
+        String token = (String) request.getSession().getAttribute(SESSION_TOKEN);
+        plateClient.updatePlate(id, object, token);
+
+        return new ModelAndView(REDIRECTTXT);
+    }
+
+    @PostMapping("/edit/carton/{id}")
+    public ModelAndView editObjects(@PathVariable(name = "id") Long id,
+                                    @ModelAttribute CartonDTO object,
+                                    HttpServletRequest request) {
+
+        String token = (String) request.getSession().getAttribute(SESSION_TOKEN);
+        cartonClient.updateCarton(id, object, token);
+
+        return new ModelAndView(REDIRECTTXT);
+    }
+
+    @PostMapping("/edit/package/{id}")
+    public ModelAndView editObjects(@PathVariable(name = "id") Long id,
+                                    @ModelAttribute PackageDTO object,
+                                    HttpServletRequest request) {
+
+        String token = (String) request.getSession().getAttribute(SESSION_TOKEN);
+        packageClient.updatePackage(id, object, token);
+
+        return new ModelAndView(REDIRECTTXT);
+    }
 
 }

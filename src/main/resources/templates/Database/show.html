@@ -22,23 +22,29 @@
             <th>Снимка</th>
             <th>Цена</th>
             <th>Код на продукта</th>
+            <th>Действия</th>
         </tr>
         </thead>
         <tbody>
         <tr th:each="package : ${packages}">
-            <td th:text="${package.id}"></td>
-            <td th:text="${package.name}"></td>
-            <td th:text="${package.englishName}"></td>
-            <td th:text="${package.availableQuantity}"></td>
-            <td th:text="${package.cartonId}"></td>
-            <td th:text="${package.plateId}"></td>
-            <td th:text="${package.piecesCarton}"></td>
-            <td th:text="${package.photo}"></td>
-            <td th:text="${package.price}"></td>
-            <td th:text="${package.productCode}"></td>
+            <form th:action="@{/database/edit/package/{id}(id=${package.id})}" method="post">
+                <td th:text="${package.id}"></td>
+                <td><input type="text" name="name" th:value="${package.name}" class="form-control"/></td>
+                <td><input type="text" name="englishName" th:value="${package.englishName}" class="form-control"/></td>
+                <td><input type="number" name="availableQuantity" th:value="${package.availableQuantity}" class="form-control"/></td>
+                <td><input type="number" name="cartonId" th:value="${package.cartonId}" class="form-control"/></td>
+                <td><input type="number" name="plateId" th:value="${package.plateId}" class="form-control"/></td>
+                <td><input type="number" name="piecesCarton" th:value="${package.piecesCarton}" class="form-control"/></td>
+                <td><input type="text" name="photo" th:value="${package.photo}" class="form-control"/></td>
+                <td><input type="number" name="price" th:value="${package.price}" class="form-control" step="0.01"/></td>
+                <td><input type="text" name="productCode" th:value="${package.productCode}" class="form-control"/></td>
+                <input type="hidden" name="type" value="PackageDTO"/>
+                <td><button type="submit" class="btn btn-primary">Изпрати промени</button></td>
+            </form>
         </tr>
         </tbody>
     </table>
+
 
     <h2>Продукти "product"</h2>
     <table class="table table-bordered">
@@ -51,20 +57,28 @@
             <th>Код на продукта</th>
             <th>За продажба</th>
             <th>Баркод</th>
+            <th>Действия</th>
         </tr>
         </thead>
         <tbody>
         <tr th:each="product : ${productDTOS}">
-            <td th:text="${product.id}"></td>
-            <td th:text="${product.price}"></td>
-            <td th:text="${product.packageId}"></td>
-            <td th:text="${product.availableQuantity}"></td>
-            <td th:text="${product.productCode}"></td>
-            <td th:text="${product.forSale ? 'Да' : 'Не'}"></td>
-            <td th:text="${product.barcode}"></td>
+            <form th:action="@{/database/edit/product/{id}(id=${product.id})}" method="post">
+                <td th:text="${product.id}"></td>
+                <td><input type="number" name="price" th:value="${product.price}" class="form-control"/></td>
+                <td><input type="number" name="packageId" th:value="${product.packageId}" class="form-control"/></td>
+                <td><input type="number" name="availableQuantity" th:value="${product.availableQuantity}" class="form-control"/></td>
+                <td><input type="text" name="productCode" th:value="${product.productCode}" class="form-control"/></td>
+                <td><input type="checkbox" name="forSale" th:checked="${product.forSale}" /> За продажба</td>
+                <td><input type="text" name="barcode" th:value="${product.barcode}" class="form-control"/></td>
+                <td>
+                    <input type="hidden" name="type" value="ProductDTO"/>
+                    <button type="submit" class="btn btn-primary">Изпрати промени</button>
+                </td>
+            </form>
         </tr>
         </tbody>
     </table>
+
 
     <h2>Тарелки "plate"</h2>
     <table class="table table-bordered">
@@ -73,15 +87,24 @@
             <th>ID</th>
             <th>Име</th>
             <th>Наличност</th>
+            <th>Снимка</th>
             <th>Цена</th>
+            <th>Действия</th>
         </tr>
         </thead>
         <tbody>
         <tr th:each="plate : ${plates}">
-            <td th:text="${plate.id}"></td>
-            <td th:text="${plate.name}"></td>
-            <td th:text="${plate.availableQuantity}"></td>
-            <td th:text="${plate.price}"></td>
+            <form th:action="@{/database/edit/plate/{id}(id=${plate.id})}" method="post">
+                <td th:text="${plate.id}"></td>
+                <td><input type="text" name="name" th:value="${plate.name}" class="form-control"/></td>
+                <td><input type="number" name="availableQuantity" th:value="${plate.availableQuantity}" class="form-control"/></td>
+                <td><input type="text" name="photo" th:value="${plate.photo}" class="form-control"/></td>
+                <td><input type="number" name="price" th:value="${plate.price}" class="form-control" step="0.01"/></td>
+                <td>
+                    <input type="hidden" name="type" value="PlateDTO"/>
+                    <button type="submit" class="btn btn-primary">Изпрати промени</button>
+                </td>
+            </form>
         </tr>
         </tbody>
     </table>
@@ -95,18 +118,26 @@
             <th>Размер</th>
             <th>Наличност</th>
             <th>Цена</th>
+            <th>Действия</th>
         </tr>
         </thead>
         <tbody>
         <tr th:each="carton : ${cartons}">
-            <td th:text="${carton.id}"></td>
-            <td th:text="${carton.name}"></td>
-            <td th:text="${carton.size}"></td>
-            <td th:text="${carton.availableQuantity}"></td>
-            <td th:text="${carton.price}"></td>
+            <form th:action="@{/database/edit/carton/{id}(id=${carton.id})}" method="post">
+                <td th:text="${carton.id}"></td>
+                <td><input type="text" name="name" th:value="${carton.name}" class="form-control"/></td>
+                <td><input type="text" name="size" th:value="${carton.size}" class="form-control"/></td>
+                <td><input type="number" name="availableQuantity" th:value="${carton.availableQuantity}" class="form-control"/></td>
+                <td><input type="number" name="price" th:value="${carton.price}" class="form-control" step="0.01"/></td>
+                <td>
+                    <input type="hidden" name="type" value="CartonDTO"/>
+                    <button type="submit" class="btn btn-primary">Изпрати промени</button>
+                </td>
+            </form>
         </tr>
         </tbody>
     </table>
+
 
     <h2>Потребители "user"</h2>
     <table class="table table-bordered">
