@@ -146,7 +146,6 @@ public class DatabaseController {
         return new ModelAndView(REDIRECTTXT);
     }
 
-    //customerCustomPrice
     @PostMapping("/edit/customerCustomPrice")
     public ModelAndView editObjects(@ModelAttribute CustomerCustomPriceDTO object,
                                     HttpServletRequest request) {
@@ -157,4 +156,46 @@ public class DatabaseController {
         return new ModelAndView(REDIRECTTXT);
     }
 
+    @PostMapping("/edit/invoice/{id}")
+    public ModelAndView editObjects(@PathVariable(name = "id") Long id,
+                                    @ModelAttribute InvoiceDTO object,
+                                    HttpServletRequest request) {
+
+        String token = (String) request.getSession().getAttribute(SESSION_TOKEN);
+        invoiceClient.updateInvoice(id,object, token);
+
+        return new ModelAndView(REDIRECTTXT);
+    }
+
+    @PostMapping("/edit/order/{id}")
+    public ModelAndView editObjects(@PathVariable(name = "id") Long id,
+                                    @ModelAttribute OrderDTO object,
+                                    HttpServletRequest request) {
+
+        String token = (String) request.getSession().getAttribute(SESSION_TOKEN);
+        orderClient.updateOrder(id,object, token);
+
+        return new ModelAndView(REDIRECTTXT);
+    }
+
+    @PostMapping("/edit/invoiceOrderProduct/{id}")
+    public ModelAndView editObjects(@PathVariable(name = "id") Long id,
+                                    @ModelAttribute InvoiceOrderProductDTO object,
+                                    HttpServletRequest request) {
+
+        String token = (String) request.getSession().getAttribute(SESSION_TOKEN);
+        invoiceOrderProductClient.updateInvoiceOrderProduct(id,object, token);
+
+        return new ModelAndView(REDIRECTTXT);
+    }
+    @PostMapping("/edit/materialOrder/{id}")
+    public ModelAndView editObjects(@PathVariable(name = "id") Long id,
+                                    @ModelAttribute MaterialOrderDTO object,
+                                    HttpServletRequest request) {
+
+        String token = (String) request.getSession().getAttribute(SESSION_TOKEN);
+        materialOrderClient.updateMaterialOrder(id,object, token);
+
+        return new ModelAndView(REDIRECTTXT);
+    }
 }
