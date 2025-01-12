@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Данни от базата</title>
+    <title>База Данни</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 </head>
 <body>
 <div class="container mt-5">
-    <h1 class="mb-4">Всички Данни</h1>
+    <h1 class="mb-4">База Данни</h1>
 
-    <h2>Кутии</h2>
+    <h2>Кутии "package"</h2>
     <table class="table table-bordered">
         <thead>
         <tr>
@@ -40,7 +40,7 @@
         </tbody>
     </table>
 
-    <h2>Продукти</h2>
+    <h2>Продукти "product"</h2>
     <table class="table table-bordered">
         <thead>
         <tr>
@@ -66,7 +66,7 @@
         </tbody>
     </table>
 
-    <h2>Тарелки</h2>
+    <h2>Тарелки "plate"</h2>
     <table class="table table-bordered">
         <thead>
         <tr>
@@ -86,7 +86,7 @@
         </tbody>
     </table>
 
-    <h2>Кашони</h2>
+    <h2>Кашони "carton"</h2>
     <table class="table table-bordered">
         <thead>
         <tr>
@@ -108,7 +108,35 @@
         </tbody>
     </table>
 
-    <h2>Клиенти</h2>
+    <h2>Потребители "user"</h2>
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th>#</th>
+            <th>Име</th>
+            <th>Фамилия</th>
+            <th>Потребителско име</th>
+            <th>Адрес</th>
+            <th>Имейл</th>
+            <th>Роля</th>
+            <th>ID на клиента</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="user : ${userDTOS}">
+            <td th:text="${user.id}"></td>
+            <td th:text="${user.firstname}"></td>
+            <td th:text="${user.lastname}"></td>
+            <td th:text="${user.username}"></td>
+            <td th:text="${user.address}"></td>
+            <td th:text="${user.email}"></td>
+            <td th:text="${user.role}"></td>
+            <td th:text="${user.clientID}"></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <h2>Клиенти "client"</h2>
     <table class="table table-bordered">
         <thead>
         <tr>
@@ -145,7 +173,56 @@
         </tr>
         </tbody>
     </table>
-    <h2>Поръчки</h2>
+
+    <h2>Персонализирани цени на клиенти "customerCustomPrice"</h2>
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>ID на клиента</th>
+            <th>ID на продукта</th>
+            <th>Персонализирана цена</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="customPrice : ${customerCustomPriceDTOS}">
+            <td th:text="${customPrice.id}"></td>
+            <td th:text="${customPrice.clientId}"></td>
+            <td th:text="${customPrice.productId}"></td>
+            <td th:text="${customPrice.price}"></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <h2>Фактури "invoice"</h2>
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Дата на фактурата</th>
+            <th>Номер на фактурата</th>
+            <th>Обща цена</th>
+            <th>Начин Плащане</th>
+            <th>Краен срок</th>
+            <th>Създадена</th>
+            <th>Банкова сметка</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="invoice : ${invoiceDTOS}">
+            <td th:text="${invoice.id}"></td>
+            <td th:text="${invoice.invoiceDate}"></td>
+            <td th:text="${invoice.invoiceNumber}"></td>
+            <td th:text="${invoice.totalPrice}"></td>
+            <td th:text="${invoice.isCashPayment ? 'В Брой' : 'Преводно нареждане'}"></td>
+            <td th:text="${invoice.deadline}"></td>
+            <td th:text="${invoice.created ? 'Да' : 'Не'}"></td>
+            <td th:text="${invoice.bankAccount}"></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <h2>Поръчки "order"</h2>
     <table class="table table-bordered">
         <thead>
         <tr>
@@ -164,28 +241,135 @@
         </tr>
         </tbody>
     </table>
-    <h2>Продукти от поръчки</h2>
+
+    <h2>Продукти от поръчки "orderProduct"</h2>
     <table class="table table-bordered">
         <thead>
         <tr>
-            <th>#</th>
+            <th>ID</th>
             <th>Брой</th>
             <th>ID на поръчката</th>
             <th>ID на пакета</th>
             <th>Продажна цена</th>
+            <th>Действия</th>
         </tr>
         </thead>
         <tbody>
         <tr th:each="orderProduct : ${orderProductDTOS}">
-            <td th:text="${orderProduct.id}"></td>
-            <td th:text="${orderProduct.number}"></td>
-            <td th:text="${orderProduct.orderId}"></td>
-            <td th:text="${orderProduct.packageId}"></td>
-            <td th:text="${orderProduct.sellingPrice}"></td>
+            <form th:action="@{/database/edit/{id}(id=${orderProduct.id})}" method="post">
+                <td th:text="${orderProduct.id}"></td>
+                <td>
+                    <input type="number" name="number" th:value="${orderProduct.number}" class="form-control"/>
+                </td>
+                <td>
+                    <input type="number" name="orderId" th:value="${orderProduct.orderId}" class="form-control"/>
+                </td>
+                <td>
+                    <input type="number" name="packageId" th:value="${orderProduct.packageId}" class="form-control"/>
+                </td>
+                <td>
+                    <input type="number" step="0.01" name="sellingPrice" th:value="${orderProduct.sellingPrice}" class="form-control"/>
+                </td>
+                <td>
+                    <input type="hidden" name="id" th:value="${orderProduct.id}"/>
+                    <button type="submit" class="btn btn-primary">Изпрати промени</button>
+                </td>
+            </form>
         </tr>
         </tbody>
     </table>
 
+
+
+    <h2>Фактури и поръчкови продукти "invoiceOrderProduct"</h2>
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>ID на фактурата</th>
+            <th>ID на поръчковия продукт</th>
+            <th>Изтрито</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="invoiceOrderProduct : ${invoiceOrderProductDTOS}">
+            <td th:text="${invoiceOrderProduct.id}"></td>
+            <td th:text="${invoiceOrderProduct.invoiceId}"></td>
+            <td th:text="${invoiceOrderProduct.orderProductId}"></td>
+            <td th:text="${invoiceOrderProduct.deleted ? 'Да' : 'Не'}"></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <h2>Поръчки за материали "materialOrder"</h2>
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Поръчано количество</th>
+            <th>Получено количество</th>
+            <th>ID на материала</th>
+            <th>Тип материал</th>
+            <th>Цена на материала</th>
+            <th>Дата на пристигане</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="materialOrder : ${materialOrderDTOS}">
+            <td th:text="${materialOrder.id}"></td>
+            <td th:text="${materialOrder.orderedQuantity}"></td>
+            <td th:text="${materialOrder.receivedQuantity}"></td>
+            <td th:text="${materialOrder.materialId}"></td>
+            <td th:text="${materialOrder.materialType}"></td>
+            <td th:text="${materialOrder.materialPrice}"></td>
+            <td th:text="${#dates.format(materialOrder.arrivalDate, 'yyyy-MM-dd')}"></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <h2>Месечни поръчки "monthlyOrder"</h2>
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>ID на клиента</th>
+            <th>Начална дата</th>
+            <th>Крайна дата</th>
+            <th>Фактурирано</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="monthlyOrder : ${monthlyOrderDTOS}">
+            <td th:text="${monthlyOrder.id}"></td>
+            <td th:text="${monthlyOrder.clientId}"></td>
+            <td th:text="${#dates.format(monthlyOrder.startDate, 'yyyy-MM-dd')}"></td>
+            <td th:text="${#dates.format(monthlyOrder.endDate, 'yyyy-MM-dd')}"></td>
+            <td th:text="${monthlyOrder.invoiced ? 'Да' : 'Не'}"></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <h2>Продукти от месечни поръчки "monthlyOrderProduct"</h2>
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th>#</th>
+            <th>ID на опаковката</th>
+            <th>Поръчано количество</th>
+            <th>Изпратено количество</th>
+            <th>ID на месечната поръчка</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="monthlyOrderProduct : ${monthlyOrderProductDTOS}">
+            <td th:text="${monthlyOrderProduct.id}"></td>
+            <td th:text="${monthlyOrderProduct.packageId}"></td>
+            <td th:text="${monthlyOrderProduct.orderedQuantity}"></td>
+            <td th:text="${monthlyOrderProduct.sentQuantity}"></td>
+            <td th:text="${monthlyOrderProduct.monthlyOrderId}"></td>
+        </tr>
+        </tbody>
+    </table>
 </div>
 </body>
 </html>
