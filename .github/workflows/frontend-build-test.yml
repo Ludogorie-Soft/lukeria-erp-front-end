@@ -1,12 +1,5 @@
 name: frontend-build-and-deploy
 
-#on:
-#  workflow_dispatch:
-#    inputs:
-#      branch:
-#        description: 'Branch to run the workflow on'
-#        required: true
-#        default: 'main'
 on:
   push:
     branches:
