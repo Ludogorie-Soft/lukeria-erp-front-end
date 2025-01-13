@@ -111,6 +111,20 @@
         </main>
     </div>
 </div>
+<img id="image-preview" src="" alt="Изображение" style="width: 150px; height: auto;" />
+
+<script>
+    document.querySelectorAll('select[name="productId[]"]').forEach(select => {
+        select.addEventListener('change', event => {
+            const selectedOption = event.target.options[event.target.selectedIndex];
+            const imageUrl = selectedOption.getAttribute('data-image-url');
+            if (imageUrl) {
+                document.getElementById('image-preview').src = imageUrl;
+            }
+        });
+    });
+</script>
+
 <script th:inline="javascript">
     var products = /*[[${products}]]*/ [];
     var productPackageMap = /*[[${productPackageMap}]]*/ {};

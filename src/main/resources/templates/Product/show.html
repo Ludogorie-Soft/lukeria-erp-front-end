@@ -102,11 +102,13 @@ document.addEventListener("DOMContentLoaded", function() {
                                         <td>
                                             <img th:if="${productPackageMapImages.containsKey(product.packageId)}"
                                                  th:src="${productPackageMapImages[product.packageId]}"
+                                                 loading="lazy"
                                                  height="100"
                                                  width="100" />
                                             <img th:unless="${productPackageMapImages.containsKey(product.packageId)}"
                                                  class="card-img-top"
                                                  src="/img/photos/noImage.png"
+                                                 loading="lazy"
                                                  height="100"
                                                  width="100" />
                                         </td>
