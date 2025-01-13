@@ -54,6 +54,7 @@ public class ProductController {
             }
         }
 
+
         model.addAttribute("productPackageMapImages", productPackageMapImages);
         model.addAttribute("backendBaseUrl", backendBaseUrl);
         model.addAttribute("packages", packages);
