@@ -111,11 +111,11 @@ jobs:
           cd /home/ubuntu/test
 
           # Stop and remove existing containers
-          docker-compose down
+          docker compose down
 
           # Pull the latest images
-          docker-compose pull
+          docker compose pull
 
           # Start the containers in detached mode
-          docker-compose up -d
+          docker compose up -d
           EOF
