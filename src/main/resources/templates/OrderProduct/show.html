@@ -42,7 +42,6 @@ document.addEventListener("DOMContentLoaded", function() {
                             <div class="d-flex justify-content-center flex-wrap">
                                 <th:block th:if="${session.sessionRole == 'ADMIN' or session.sessionRole == 'TRANSPORT_MANAGER'}">
                                     <a href="/order/create" class="btn btn-success mx-2 mb-2">Транспортиране на стоки</a>
-                                    <a href="/order/monthly/create" class="btn btn-primary mx-2 mb-2">Транспортиране към месечна поръчка</a>
                                 </th:block>
 
                                 <th:block th:if="${session.sessionRole == 'ADMIN' or session.sessionRole == 'PRODUCTION_MANAGER'}">
