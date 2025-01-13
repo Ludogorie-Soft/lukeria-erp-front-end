@@ -1,10 +1,17 @@
 name: frontend-build-and-deploy
 
 on:
-  push:
-    branches:
-      - docker-deployment
   workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch to run the workflow on'
+        required: true
+        default: 'main'
+#on:
+#  push:
+#    branches:
+#      - test-images-loading-lazy
+#  workflow_dispatch:
 
 jobs:
   compile:
