@@ -1,4 +1,4 @@
-name: frontend-build
+name: frontend-build-and-deploy
 
 on:
   push:
@@ -108,7 +108,7 @@ jobs:
       - name: Stop, update, and restart containers using Docker Compose
         run: |
           ssh -i ~/.ssh/id_rsa ubuntu@${{ secrets.EC2_HOST }} << 'EOF'
-          cd /test
+          cd /home/ubuntu/test
 
           # Stop and remove existing containers
           docker-compose down
