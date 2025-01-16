@@ -77,7 +77,7 @@ public class PackageController {
         if (selectedPackage.getPhoto() != null) {
             byte[] imageBytes = imageService.getImage(selectedPackage.getPhoto());
             if (imageBytes != null) {
-                packageImage = "data:image/jpeg;base64," + Base64.getEncoder().encodeToString(imageBytes);
+                packageImage = backendBaseUrl + "/" + selectedPackage.getPhoto();
             }
         }
 
@@ -86,7 +86,7 @@ public class PackageController {
         if (selectedPlate.getPhoto() != null) {
             byte[] imageBytes = imageService.getImage(selectedPlate.getPhoto());
             if (imageBytes != null) {
-                plateImage = "data:image/jpeg;base64," + Base64.getEncoder().encodeToString(imageBytes);
+                plateImage = backendBaseUrl + "/" + selectedPlate.getPhoto();
             }
         }
 
