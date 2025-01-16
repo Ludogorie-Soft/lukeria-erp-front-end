@@ -115,7 +115,10 @@
                                     </div>
                                     <div>
                                         <th:block th:if="${packageImage != null}">
-                                            <img th:src="${packageImage}" alt="Снимка на пакет" class="img-fluid package-img">
+                                            <img th:src="${packageImage}" alt="Снимка на пакет" class="img-fluid package-img" loading="lazy">
+                                        </th:block>
+                                        <th:block th:if="${packageImage == null}">
+                                            <p>Няма налична снимка за този пакет.</p>
                                         </th:block>
                                     </div>
                                 </div>
@@ -147,7 +150,10 @@
                                     </div>
                                     <div>
                                         <th:block th:if="${plateImage != null}">
-                                            <img th:src="${plateImage}" alt="Снимка на тарелка" class="img-fluid plate-img">
+                                            <img th:src="${plateImage}" alt="Снимка на пакет" class="img-fluid package-img" loading="lazy">
+                                        </th:block>
+                                        <th:block th:if="${plateImage == null}">
+                                            <p>Няма налична снимка за този пакет.</p>
                                         </th:block>
                                     </div>
                                 </div>
