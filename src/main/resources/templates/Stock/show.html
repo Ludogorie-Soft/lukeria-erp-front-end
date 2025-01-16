@@ -100,138 +100,124 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-    const navbar = document.getElementById("sidebar");
-    const toggler = document.querySelector("a.sidebar-toggle");
-    toggler.addEventListener("click", () => {
-        navbar.classList.toggle("collapsed");
-    });
+        const navbar = document.getElementById("sidebar");
+        const toggler = document.querySelector("a.sidebar-toggle");
+        toggler.addEventListener("click", () => {
+            navbar.classList.toggle("collapsed");
+        });
 
-    // Универсална функция за търсене
-    function setupSearch(inputId, columnIdx, resultCountId) {
-        document.getElementById(inputId).addEventListener('input', function () {
-            const filter = this.value.toUpperCase();
-            const table = document.querySelector('table');
-            const tr = table.getElementsByTagName('tr');
-            let count = 0;
+        function setupSearch(inputId, columnIdx, resultCountId) {
+            document.getElementById(inputId).addEventListener('input', function () {
+                const filter = this.value.toUpperCase();
+                const table = document.querySelector('table');
+                const tr = table.getElementsByTagName('tr');
+                let count = 0;
 
-            for (let i = 1; i < tr.length; i++) { // Започваме от ред 1, защото ред 0 е заглавната част
-                const td = tr[i].getElementsByTagName('td')[columnIdx];
-                if (td) {
-                    const txtValue = td.textContent || td.innerText;
-                    if (txtValue.toUpperCase().indexOf(filter) > -1) {
-                        tr[i].style.display = '';
-                        count++;
-                    } else {
-                        tr[i].style.display = 'none';
+                for (let i = 1; i < tr.length; i++) {
+                    const td = tr[i].getElementsByTagName('td')[columnIdx];
+                    if (td) {
+                        const txtValue = td.textContent || td.innerText;
+                        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                            tr[i].style.display = '';
+                            count++;
+                        } else {
+                            tr[i].style.display = 'none';
+                        }
                     }
                 }
-            }
 
-            const resultsCountElement = document.getElementById(resultCountId);
-            resultsCountElement.textContent = count;
-        });
-    }
-
-    // Инициализиране на търсенето за двата филтъра
-    setupSearch('searchInput1', 1, 'resultsCount');
-    setupSearch('searchInput2', 2, 'resultsCount2');
-
-    // Сортиране на таблицата
-    function sortTable(columnIndex) {
-        const table = document.querySelector('table');
-        const rows = Array.from(table.rows).slice(1); // Пропускаме заглавията
-        let isAscending = table.getAttribute('data-sort-order') === 'asc';
-        const sortedRows = rows.sort((rowA, rowB) => {
-            const cellA = rowA.cells[columnIndex];
-            const cellB = rowB.cells[columnIndex];
-            let textA = cellA.textContent || cellA.innerText;
-            let textB = cellB.textContent || cellB.innerText;
-
-            // Сортиране за колони с числа
-            if (columnIndex === 4 || columnIndex === 5 || columnIndex === 6) {
-                textA = parseFloat(textA.replace(/[^\d.-]/g, ''));
-                textB = parseFloat(textB.replace(/[^\d.-]/g, ''));
-            }
-
-            return isAscending
-                ? (textA > textB ? 1 : (textA < textB ? -1 : 0))
-                : (textA < textB ? 1 : (textA > textB ? -1 : 0));
-        });
-
-        // Възстановяваме редовете на таблицата
-        table.tBodies[0].innerHTML = '';
-        sortedRows.forEach(row => table.tBodies[0].appendChild(row));
-
-        // Променяме реда на сортиране за следващото кликване
-        table.setAttribute('data-sort-order', isAscending ? 'desc' : 'asc');
-
-        // Обновяваме иконите
-        updateSortIcons(columnIndex, isAscending);
-    }
-
-    // Обновяване на иконите за сортиране
-    function updateSortIcons(columnIndex, isAscending) {
-        const headers = document.querySelectorAll('th');
-        headers.forEach((header, index) => {
-            const arrow = header.querySelector('.sort-arrow');
-            if (arrow) {
-                if (index === columnIndex) {
-                    if (isAscending) {
-                        arrow.classList.remove('sorted-desc');
-                        arrow.classList.add('sorted-asc');
-                    } else {
-                        arrow.classList.remove('sorted-asc');
-                        arrow.classList.add('sorted-desc');
-                    }
-                } else {
-                    arrow.classList.remove('sorted-asc', 'sorted-desc');
-                }
-            }
-        });
-    }
-
-    // Добавяне на обработчик за клик на заглавията
-    const headers = document.querySelectorAll('th');
-    headers.forEach((header, index) => {
-        // Проверяваме дали колоната трябва да бъде сортирана
-        if (index !== 0 && index !== headers.length - 1) { // Изключваме първата и последната колона
-            // Добавяме иконка за сортиране
-            const arrow = document.createElement('i');
-            arrow.classList.add('fas', 'fa-arrow-up', 'sort-arrow');
-            header.appendChild(arrow);
-
-            header.addEventListener('click', () => sortTable(index));
+                const resultsCountElement = document.getElementById(resultCountId);
+                resultsCountElement.textContent = count;
+            });
         }
-    });
 
-    // Експортиране в Excel
-    const exportButton = document.getElementById('exportExcel');
-    if (exportButton) {
-        exportButton.addEventListener('click', function () {
+        setupSearch('searchInput1', 1, 'resultsCount');
+        setupSearch('searchInput2', 2, 'resultsCount2');
+
+        function sortTable(columnIndex) {
             const table = document.querySelector('table');
-            const rows = Array.from(table.rows);
+            const rows = Array.from(table.rows).slice(1);
+            let isAscending = table.getAttribute('data-sort-order') === 'asc';
+            const sortedRows = rows.sort((rowA, rowB) => {
+                const cellA = rowA.cells[columnIndex];
+                const cellB = rowB.cells[columnIndex];
+                let textA = cellA.textContent || cellA.innerText;
+                let textB = cellB.textContent || cellB.innerText;
 
-            // Вземаме заглавията на колоните
-            const header = Array.from(rows[0].cells).map(cell => cell.textContent);
-            const data = rows.slice(1).map(row => {
-                return Array.from(row.cells).map(cell => cell.textContent);
+                if (columnIndex === 4 || columnIndex === 5 || columnIndex === 6) {
+                    textA = parseFloat(textA.replace(/[^\d.-]/g, ''));
+                    textB = parseFloat(textB.replace(/[^\d.-]/g, ''));
+                }
+
+                return isAscending
+                    ? (textA > textB ? 1 : (textA < textB ? -1 : 0))
+                    : (textA < textB ? 1 : (textA > textB ? -1 : 0));
             });
 
-            // Създаване на нов Excel файл
-            const wb = XLSX.utils.book_new();
-            const ws = XLSX.utils.aoa_to_sheet([header, ...data]);
-            XLSX.utils.book_append_sheet(wb, ws, "Таблица");
+            table.tBodies[0].innerHTML = '';
+            sortedRows.forEach(row => table.tBodies[0].appendChild(row));
 
-            const currentDate = new Date();
-            const formattedDate = `${String(currentDate.getDate()).padStart(2, '0')}-${String(currentDate.getMonth() + 1).padStart(2, '0')}-${currentDate.getFullYear()}`;
+            table.setAttribute('data-sort-order', isAscending ? 'desc' : 'asc');
 
-            const fileName = `Сток Материали Лукерия ${formattedDate}.xlsx`;
+            updateSortIcons(columnIndex, isAscending);
+        }
 
-            XLSX.writeFile(wb, fileName);
+        function updateSortIcons(columnIndex, isAscending) {
+            const headers = document.querySelectorAll('th');
+            headers.forEach((header, index) => {
+                const arrow = header.querySelector('.sort-arrow');
+                if (arrow) {
+                    if (index === columnIndex) {
+                        if (isAscending) {
+                            arrow.classList.remove('sorted-desc');
+                            arrow.classList.add('sorted-asc');
+                        } else {
+                            arrow.classList.remove('sorted-asc');
+                            arrow.classList.add('sorted-desc');
+                        }
+                    } else {
+                        arrow.classList.remove('sorted-asc', 'sorted-desc');
+                    }
+                }
+            });
+        }
+
+        const headers = document.querySelectorAll('th');
+        headers.forEach((header, index) => {
+            if (index !== 0 && index !== headers.length - 1) {
+                const arrow = document.createElement('i');
+                arrow.classList.add('fas', 'fa-arrow-up', 'sort-arrow');
+                header.appendChild(arrow);
+
+                header.addEventListener('click', () => sortTable(index));
+            }
         });
-    }
-});
 
+        const exportButton = document.getElementById('exportExcel');
+        if (exportButton) {
+            exportButton.addEventListener('click', function () {
+                const table = document.querySelector('table');
+                const rows = Array.from(table.rows);
+
+                const header = Array.from(rows[0].cells).slice(1).map(cell => cell.textContent);
+
+                const data = rows.slice(1).map(row => {
+                    return Array.from(row.cells).slice(1).map(cell => cell.textContent);
+                });
+
+                const wb = XLSX.utils.book_new();
+                const ws = XLSX.utils.aoa_to_sheet([header, ...data]);
+                XLSX.utils.book_append_sheet(wb, ws, "Таблица");
+
+                const currentDate = new Date();
+                const formattedDate = `${String(currentDate.getDate()).padStart(2, '0')}-${String(currentDate.getMonth() + 1).padStart(2, '0')}-${currentDate.getFullYear()}`;
+
+                const fileName = `Сток Материали Лукерия ${formattedDate}.xlsx`;
+
+                XLSX.writeFile(wb, fileName);
+            });
+        }
+    });
 </script>
 
 <body>
