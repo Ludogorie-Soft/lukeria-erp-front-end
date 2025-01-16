@@ -69,15 +69,15 @@ document.addEventListener("DOMContentLoaded", function() {
                                     <tbody>
                                     <tr th:each="plate : ${plates}" data-id="${plate.id}" class="plate-row">
                                         <td>
-                                            <img th:if="${plateImages[plate.id] != null}"
+                                            <img th:if="${plateImages.containsKey(plate.id)}"
                                                  th:src="${plateImages[plate.id]}"
-                                                 alt="Plate Image"
+                                                 loading="lazy"
                                                  height="100"
                                                  width="100" />
-                                            <img th:unless="${plateImages[plate.id] != null}"
+                                            <img th:unless="${plateImages.containsKey(plate.id)}"
                                                  class="card-img-top"
-                                                 src="/img/photos/logo.png"
-                                                 alt="Default Image"
+                                                 src="/img/photos/noImage.png"
+                                                 loading="lazy"
                                                  height="100"
                                                  width="100" />
                                         </td>

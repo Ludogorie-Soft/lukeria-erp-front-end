@@ -39,8 +39,8 @@ public String index(Model model, HttpServletRequest request) {
         if (plate.getPhoto() != null) {
             byte[] imageBytes = imageService.getImage(plate.getPhoto());
             if (imageBytes != null) {
-                String imageUrl = "data:image/jpeg;base64," + Base64.getEncoder().encodeToString(imageBytes);
-                plateImages.put(plate.getId(), imageUrl); // Асoциираме ID с Base64 URL
+                String imageUrl = backendBaseUrl + "/" + plate.getPhoto();
+                plateImages.put(plate.getId(), imageUrl);
             }
         }
     }
