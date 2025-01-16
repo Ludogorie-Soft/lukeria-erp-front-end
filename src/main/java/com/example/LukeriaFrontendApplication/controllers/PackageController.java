@@ -37,22 +37,19 @@ public class PackageController {
         String token = (String) request.getSession().getAttribute(SESSION_TOKEN);
         List<PackageDTO> packages = packageClient.getAllPackages(token);
 
-        Map<Long, String> packageImages = new HashMap<>();
+        Map<Long, String> productPackageMapImages = new HashMap<>();
 
-        for (PackageDTO aPackage : packages) {
-            if (aPackage.getPhoto() != null) {
-                byte[] imageBytes = imageService.getImage(aPackage.getPhoto());
-                if (imageBytes != null) {
-                    String imageUrl = "data:image/jpeg;base64," + Base64.getEncoder().encodeToString(imageBytes);
-                    packageImages.put(aPackage.getId(), imageUrl);
-                }
+        for (PackageDTO packageDTO : packages) {
+            if (packageDTO.getPhoto() != null) {
+                String imageUrl = backendBaseUrl + "/" + packageDTO.getPhoto();
+                productPackageMapImages.put(packageDTO.getId(), imageUrl);
             }
         }
+        model.addAttribute("productPackageMapImages", productPackageMapImages);
         List<PackageDTO> sortedPackages = packages.stream()
                 .sorted(Comparator.comparingInt(PackageDTO::getAvailableQuantity).reversed())
                 .toList();
         model.addAttribute("packages", sortedPackages);
-        model.addAttribute("packageImages", packageImages);
         return "Package/show";
     }
 

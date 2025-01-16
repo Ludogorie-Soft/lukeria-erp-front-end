@@ -85,16 +85,11 @@ public class StockController {
 
     private Map<Long, String> mapPackageImagesById(List<PackageDTO> packages) {
         return packages.stream()
-                .filter(packageDTO -> packageDTO.getPhoto() != null)
-                .collect(Collectors.toMap(PackageDTO::getId, this::getImageUrl));
-    }
-
-    private String getImageUrl(PackageDTO packageDTO) {
-        byte[] imageBytes = imageService.getImage(packageDTO.getPhoto());
-        if (imageBytes != null) {
-            return "data:image/jpeg;base64," + Base64.getEncoder().encodeToString(imageBytes);
-        }
-        return null; // Return null if the image is not available
+                .filter(packageDTO -> packageDTO.getPhoto() != null) // Филтриране само на пакети с налични снимки
+                .collect(Collectors.toMap(
+                        PackageDTO::getId,
+                        packageDTO -> backendBaseUrl + "/" + packageDTO.getPhoto()
+                ));
     }
 }
 

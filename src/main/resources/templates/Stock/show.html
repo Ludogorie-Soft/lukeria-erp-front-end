@@ -292,12 +292,17 @@
                                     <tbody>
                                     <tr th:each="package : ${packages}" data-id="${package.id}" class="package-row">
                                         <td>
-                                            <img th:if="${packageImages[package.id] != null}"
+                                            <img th:if="${packageImages.containsKey(package.id)}"
                                                  th:src="${packageImages[package.id]}"
-                                                 height="100" width="100"/>
-                                            <img th:unless="${packageImages[package.id] != null}"
+                                                 loading="lazy"
+                                                 height="100"
+                                                 width="100" />
+                                            <img th:unless="${packageImages.containsKey(package.id)}"
+                                                 class="card-img-top"
                                                  src="/img/photos/noImage.png"
-                                                 height="100" width="100"/>
+                                                 loading="lazy"
+                                                 height="100"
+                                                 width="100" />
                                         </td>
                                         <td th:text="${package.productCode}"></td>
                                         <td>
