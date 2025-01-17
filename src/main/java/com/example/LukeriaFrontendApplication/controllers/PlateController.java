@@ -75,7 +75,7 @@ public class PlateController {
         String token = (String) request.getSession().getAttribute("sessionToken");
         PlateDTO existingPlate = plateClient.getPlateById(id, token);
 
-        String imageUrl = imageService.getImage(existingPlate.getPhoto()) != null ? S3bucketImagesLink + "/" + existingPlate.getPhoto() : null;
+        String imageUrl = existingPlate.getPhoto() != null ? S3bucketImagesLink + "/" + existingPlate.getPhoto() : null;
 
         model.addAttribute(CARTONTXT, existingPlate);
         model.addAttribute("image", imageUrl);
