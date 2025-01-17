@@ -24,6 +24,7 @@ import java.util.*;
 @RequestMapping("/product")
 public class ProductController {
     private static final String REDIRECTTXT = "redirect:/product/show";
+    private static final String S3bucketImagesLink = "https://lukeria-images.s3.eu-central-1.amazonaws.com";
     private static final String SESSION_TOKEN = "sessionToken";
     private final ProductClient productClient;
     private final PackageClient packageClient;
@@ -49,14 +50,14 @@ public class ProductController {
 
         for (PackageDTO packageDTO : packages) {
             if (packageDTO.getPhoto() != null) {
-                String imageUrl = backendBaseUrl + "/" + packageDTO.getPhoto();
+                String imageUrl = S3bucketImagesLink + "/" + packageDTO.getPhoto();
                 productPackageMapImages.put(packageDTO.getId(), imageUrl);
             }
         }
 
 
         model.addAttribute("productPackageMapImages", productPackageMapImages);
-        model.addAttribute("backendBaseUrl", backendBaseUrl);
+        //model.addAttribute("backendBaseUrl", backendBaseUrl);
         model.addAttribute("packages", packages);
         model.addAttribute("productPackageMap", productPackageMap);
     }
@@ -179,7 +180,7 @@ public class ProductController {
         }
         model.addAttribute("mapProductsAndPieces", mapProductsAndPieces); // Add the map to the model
         model.addAttribute("productPackageMapImages", productPackageMapImages);
-        model.addAttribute("backendBaseUrl", backendBaseUrl);
+        model.addAttribute("backendBaseUrl", S3bucketImagesLink);
         model.addAttribute("products", allProductsForSale);
         model.addAttribute("packages", packages);
         model.addAttribute("productPackageMap", productPackageMap);
@@ -232,7 +233,7 @@ public class ProductController {
         Map<Long, String> productPackageMapImages = new HashMap<>();
         for (PackageDTO packageDTO : packages) {
             if (packageDTO.getPhoto() != null) {
-                String imageUrl = backendBaseUrl + "/" + packageDTO.getPhoto();
+                String imageUrl = S3bucketImagesLink + "/" + packageDTO.getPhoto();
                 productPackageMapImages.put(packageDTO.getId(), imageUrl);
             }
         }
@@ -243,7 +244,7 @@ public class ProductController {
         model.addAttribute("emptyProductIdList", emptyProductIdList);
         model.addAttribute("emptyQuantityList", emptyQuantityList);
         model.addAttribute("products", products);
-        model.addAttribute("backendBaseUrl", backendBaseUrl);
+        model.addAttribute("backendBaseUrl", S3bucketImagesLink);
         model.addAttribute("productPackageMap", productPackageMap);
         model.addAttribute("productPackageMapImages", productPackageMapImages);
         return "Product/produce";

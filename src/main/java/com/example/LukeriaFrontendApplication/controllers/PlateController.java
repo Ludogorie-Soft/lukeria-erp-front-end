@@ -22,39 +22,38 @@ import java.util.*;
 public class PlateController {
     private static final String CARTONTXT = "plate";
     private static final String REDIRECTTXT = "redirect:/plate/show";
+    private static final String S3bucketImagesLink = "https://lukeria-images.s3.eu-central-1.amazonaws.com";
+
     private final PlateClient plateClient;
     private final ImageClient imageService;
     @Value("${backend.base-url}/images")
     private String backendBaseUrl;
 
     @GetMapping("/show")
-public String index(Model model, HttpServletRequest request) {
-    String token = (String) request.getSession().getAttribute("sessionToken");
-    List<PlateDTO> plates = plateClient.getAllPlates(token);
+    public String index(Model model, HttpServletRequest request) {
+        String token = (String) request.getSession().getAttribute("sessionToken");
+        List<PlateDTO> plates = plateClient.getAllPlates(token);
 
-    // Карта за съхраняване на изображения
-    Map<Long, String> plateImages = new HashMap<>();
+        Map<Long, String> plateImages = new HashMap<>();
 
-    for (PlateDTO plate : plates) {
-        if (plate.getPhoto() != null) {
-            byte[] imageBytes = imageService.getImage(plate.getPhoto());
-            if (imageBytes != null) {
-                String imageUrl = backendBaseUrl + "/" + plate.getPhoto();
+        for (PlateDTO plate : plates) {
+            if (plate.getPhoto() != null) {
+                String imageUrl = S3bucketImagesLink + "/" + plate.getPhoto();
                 plateImages.put(plate.getId(), imageUrl);
             }
         }
+
+        List<PlateDTO> sortedPlates = plates.stream()
+                .sorted(Comparator.comparingInt(PlateDTO::getAvailableQuantity).reversed())
+                .toList();
+
+        model.addAttribute("plates", sortedPlates);
+        model.addAttribute("plateImages", plateImages);
+        model.addAttribute("backendBaseUrl", S3bucketImagesLink);
+
+        return "Plate/show";
     }
 
-    List<PlateDTO> sortedPlates = plates.stream()
-            .sorted(Comparator.comparingInt(PlateDTO::getAvailableQuantity).reversed())
-            .toList();
-
-    model.addAttribute("plates", sortedPlates);
-    model.addAttribute("plateImages", plateImages);
-    model.addAttribute("backendBaseUrl", backendBaseUrl);
-
-    return "Plate/show";
-}
     @GetMapping("/show/{id}")
     String getPlateById(@PathVariable(name = "id") Long id, Model model, HttpServletRequest request) {
         String token = (String) request.getSession().getAttribute("sessionToken");
@@ -76,9 +75,7 @@ public String index(Model model, HttpServletRequest request) {
         String token = (String) request.getSession().getAttribute("sessionToken");
         PlateDTO existingPlate = plateClient.getPlateById(id, token);
 
-        byte[] imageBytes = existingPlate.getPhoto() != null ? imageService.getImage(existingPlate.getPhoto()) : null;
-        String imageUrl = imageBytes != null ? "data:image/jpeg;base64," + Base64.getEncoder().encodeToString(imageBytes) : null;
-
+        String imageUrl = imageService.getImage(existingPlate.getPhoto()) != null ? S3bucketImagesLink + "/" + existingPlate.getPhoto() : null;
 
         model.addAttribute(CARTONTXT, existingPlate);
         model.addAttribute("image", imageUrl);
