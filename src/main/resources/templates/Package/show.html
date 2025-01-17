@@ -92,16 +92,17 @@ document.addEventListener("DOMContentLoaded", function() {
                                     <tbody>
                                     <tr th:each="package : ${packages}" data-id="${package.id}" class="package-row">
                                         <td>
-                                            <a th:href="@{/package/{id}(id=${package.id})}">
-                                                <img th:if="${packageImages[package.id] != null}"
-                                                     th:src="${packageImages[package.id]}"
-                                                     height="100"
-                                                     width="100" />
-                                                <img th:unless="${packageImages[package.id] != null}"
-                                                     src="/img/photos/noImage.png"
-                                                     height="100"
-                                                     width="100" />
-                                            </a>
+                                            <img th:if="${productPackageMapImages.containsKey(package.id)}"
+                                                 th:src="${productPackageMapImages[package.id]}"
+                                                 loading="lazy"
+                                                 height="100"
+                                                 width="100" />
+                                            <img th:unless="${productPackageMapImages.containsKey(package.id)}"
+                                                 class="card-img-top"
+                                                 src="/img/photos/noImage.png"
+                                                 loading="lazy"
+                                                 height="100"
+                                                 width="100" />
                                         </td>
                                         <td th:text="${package.productCode}"></td>
                                         <td>

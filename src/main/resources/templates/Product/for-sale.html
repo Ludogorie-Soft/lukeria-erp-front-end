@@ -129,10 +129,12 @@
                                         <td>
                                             <img th:if="${productPackageMapImages.containsKey(productPrice.product.packageId)}"
                                                  th:src="@{${backendBaseUrl} + '/' + ${productPackageMapImages.get(productPrice.product.packageId)}}"
-                                                 style="height: 100px; width: 150px;">
+                                                 style="height: 100px; width: 100px;"
+                                                 loading="lazy">
                                             <img th:unless="${productPackageMapImages.containsKey(productPrice.product.packageId)}"
                                                  src="/img/photos/noImage.png"
-                                                 style="height: 100px; width: 150px;">
+                                                 style="height: 100px; width: 100px;"
+                                                 loading="lazy">
                                         </td>
                                         <td th:text="${productPrice.product.productCode}"></td>
                                         <td th:text="${productPackageMap.get(productPrice.product.packageId)}"></td>

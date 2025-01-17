@@ -49,13 +49,11 @@ public class ProductController {
 
         for (PackageDTO packageDTO : packages) {
             if (packageDTO.getPhoto() != null) {
-                byte[] imageBytes = imageService.getImage(packageDTO.getPhoto());
-                if (imageBytes != null) {
-                    String imageUrl = "data:image/jpeg;base64," + Base64.getEncoder().encodeToString(imageBytes);
-                    productPackageMapImages.put(packageDTO.getId(), imageUrl);
-                }
+                String imageUrl = backendBaseUrl + "/" + packageDTO.getPhoto();
+                productPackageMapImages.put(packageDTO.getId(), imageUrl);
             }
         }
+
 
         model.addAttribute("productPackageMapImages", productPackageMapImages);
         model.addAttribute("backendBaseUrl", backendBaseUrl);
@@ -234,13 +232,11 @@ public class ProductController {
         Map<Long, String> productPackageMapImages = new HashMap<>();
         for (PackageDTO packageDTO : packages) {
             if (packageDTO.getPhoto() != null) {
-                byte[] imageBytes = imageService.getImage(packageDTO.getPhoto());
-                if (imageBytes != null) {
-                    String imageUrl = "data:image/jpeg;base64," + Base64.getEncoder().encodeToString(imageBytes);
-                    productPackageMapImages.put(packageDTO.getId(), imageUrl);
-                }
+                String imageUrl = backendBaseUrl + "/" + packageDTO.getPhoto();
+                productPackageMapImages.put(packageDTO.getId(), imageUrl);
             }
         }
+
 
         List<Long> emptyProductIdList = new ArrayList<>();
         List<Integer> emptyQuantityList = new ArrayList<>();

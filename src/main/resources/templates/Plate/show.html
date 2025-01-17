@@ -69,15 +69,15 @@ document.addEventListener("DOMContentLoaded", function() {
                                     <tbody>
                                     <tr th:each="plate : ${plates}" data-id="${plate.id}" class="plate-row">
                                         <td>
-                                            <img th:if="${plateImages[plate.id] != null}"
+                                            <img th:if="${plateImages.containsKey(plate.id)}"
                                                  th:src="${plateImages[plate.id]}"
-                                                 alt="Plate Image"
+                                                 loading="lazy"
                                                  height="100"
                                                  width="100" />
-                                            <img th:unless="${plateImages[plate.id] != null}"
+                                            <img th:unless="${plateImages.containsKey(plate.id)}"
                                                  class="card-img-top"
-                                                 src="/img/photos/logo.png"
-                                                 alt="Default Image"
+                                                 src="/img/photos/noImage.png"
+                                                 loading="lazy"
                                                  height="100"
                                                  width="100" />
                                         </td>
@@ -136,7 +136,6 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
 
-    // Display the results count for the second search input
     var resultsCountElement = document.getElementById('resultsCount2');
     if (resultsCountElement) {
         resultsCountElement.textContent = count;
@@ -145,7 +144,7 @@ document.addEventListener("DOMContentLoaded", function() {
         resultsCountElement = document.createElement('div');
         resultsCountElement.id = 'resultsCount2';
         resultsCountElement.textContent = count;
-        input.parentNode.appendChild(resultsCountElement); // Appending to the parent of the input
+        input.parentNode.appendChild(resultsCountElement);
     }
 });
 
