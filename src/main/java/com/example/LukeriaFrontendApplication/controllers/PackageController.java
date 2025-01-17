@@ -41,7 +41,7 @@ public class PackageController {
 
         for (PackageDTO packageDTO : packages) {
             if (packageDTO.getPhoto() != null) {
-                String imageUrl = backendBaseUrl + "/" + packageDTO.getPhoto();
+                String imageUrl = "https://lukeria-images.s3.eu-central-1.amazonaws.com" + "/" + packageDTO.getPhoto();
                 productPackageMapImages.put(packageDTO.getId(), imageUrl);
             }
         }
