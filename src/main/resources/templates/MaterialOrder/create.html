@@ -85,7 +85,7 @@
                                     <option th:each="package : ${packages}"
                                             th:value="${package.id}"
                                             th:data-image-url="@{${backendBaseUrl} + '/' + ${package.photo}}"
-                                            th:text="${package.id} + ' - ' + ${package.name}">
+                                            th:text="${package.productCode} + ' - ' + ${package.name}">
                                         <img th:if="${package.photo != null}"
                                              th:src="@{${backendBaseUrl} + '/' + ${package.photo}}"
                                              alt="no image" height="50" width="50">

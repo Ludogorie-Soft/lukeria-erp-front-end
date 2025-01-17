@@ -31,6 +31,7 @@ public class PackageController {
     private final ImageClient imageService;
     @Value("${backend.base-url}/images")
     private String backendBaseUrl;
+    private static final String S3bucketImagesLink = "https://lukeria-images.s3.eu-central-1.amazonaws.com";
 
     @GetMapping("/package/show")
     public String showPackage(Model model, HttpServletRequest request) {
@@ -41,7 +42,7 @@ public class PackageController {
 
         for (PackageDTO packageDTO : packages) {
             if (packageDTO.getPhoto() != null) {
-                String imageUrl = "https://lukeria-images.s3.eu-central-1.amazonaws.com" + "/" + packageDTO.getPhoto();
+                String imageUrl = S3bucketImagesLink + "/" + packageDTO.getPhoto();
                 productPackageMapImages.put(packageDTO.getId(), imageUrl);
             }
         }
@@ -77,7 +78,7 @@ public class PackageController {
         if (selectedPackage.getPhoto() != null) {
             byte[] imageBytes = imageService.getImage(selectedPackage.getPhoto());
             if (imageBytes != null) {
-                packageImage = backendBaseUrl + "/" + selectedPackage.getPhoto();
+                packageImage = S3bucketImagesLink + "/" + selectedPackage.getPhoto();
             }
         }
 
@@ -86,7 +87,7 @@ public class PackageController {
         if (selectedPlate.getPhoto() != null) {
             byte[] imageBytes = imageService.getImage(selectedPlate.getPhoto());
             if (imageBytes != null) {
-                plateImage = backendBaseUrl + "/" + selectedPlate.getPhoto();
+                plateImage = S3bucketImagesLink + "/" + selectedPlate.getPhoto();
             }
         }
 
@@ -139,7 +140,7 @@ public class PackageController {
         List<PlateDTO> plates = plateClient.getAllPlates(token);
 
         byte[] imageBytes = existingPackage.getPhoto() != null ? imageService.getImage(existingPackage.getPhoto()) : null;
-        String imageUrl = imageBytes != null ? "data:image/jpeg;base64," + Base64.getEncoder().encodeToString(imageBytes) : null;
+        String imageUrl = imageBytes != null ? S3bucketImagesLink + "/" + existingPackage.getPhoto() : null;
 
         model.addAttribute("plates", plates);
         model.addAttribute("cartons", cartons);

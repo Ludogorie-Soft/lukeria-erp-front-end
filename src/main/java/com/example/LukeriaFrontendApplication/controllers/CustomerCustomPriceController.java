@@ -42,6 +42,8 @@ public class CustomerCustomPriceController {
     private final ProductClient productClient;
     private final PackageClient packageClient;
     private final ImageClient imageService;
+    private static final String S3bucketImagesLink = "https://lukeria-images.s3.eu-central-1.amazonaws.com";
+
     @Value("${backend.base-url}/images")
     private String backendBaseUrl;
 
@@ -111,7 +113,7 @@ public class CustomerCustomPriceController {
         }
         model.addAttribute("allProducts", allProductsWithPrice);
         model.addAttribute("productPackageMapImages", productPackageMapImages);
-        model.addAttribute("backendBaseUrl", backendBaseUrl);
+        model.addAttribute("backendBaseUrl", S3bucketImagesLink);
         model.addAttribute("packages", packages);
         model.addAttribute("productPackageMap", productPackageMap);
         model.addAttribute("clientId", id);

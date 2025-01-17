@@ -21,6 +21,8 @@ import java.util.Objects;
 @RequestMapping("/orderProduct")
 public class OrderProductController {
     private static final String ORDERPRODUCT = "orderProduct";
+    private static final String S3bucketImagesLink = "https://lukeria-images.s3.eu-central-1.amazonaws.com";
+
     private static final String REDIRECTTXT = "redirect:/order/show";
     private final OrderProductClient orderProductClient;
     private final OrderClient orderClient;
@@ -40,7 +42,7 @@ public class OrderProductController {
         OrderDTO orderDTO = orderClient.getOrderById(orderClient.findFirstByOrderByIdDesc(token).getId(), token);
         List<OrderProductDTO> orderProductDTOS = getOrderProductsForOrder(orderDTO, token);
         List<PackageDTO> packageDTOList = getPackageDTOListForOrderProducts(orderProductDTOS, token);
-        model.addAttribute("backendBaseUrl", backendBaseUrl);
+        model.addAttribute("backendBaseUrl",S3bucketImagesLink );
         model.addAttribute("orderProducts", orderProductDTOS);
         model.addAttribute("products", packageDTOList);
         model.addAttribute("order", orderDTO);
@@ -80,7 +82,7 @@ public class OrderProductController {
             model.addAttribute("packages", packageDTOS);
             model.addAttribute("orderProducts", orderProductDTOS);
             model.addAttribute("products", packageDTOList);
-            model.addAttribute("backendBaseUrl", backendBaseUrl);
+            model.addAttribute("backendBaseUrl", S3bucketImagesLink);
             return new ModelAndView("OrderProduct/addProduct");
         }
         return new ModelAndView(REDIRECTTXT);
@@ -93,7 +95,7 @@ public class OrderProductController {
         List<Long> packageDTOIds = orderProductDTOS.stream().map(OrderProductDTO::getPackageId).toList();
         List<PackageDTO> packageDTOList = packageDTOIds.stream()
                 .map(id1 -> packageClient.getPackageById(id1, token)).toList();
-        model.addAttribute("backendBaseUrl", backendBaseUrl);
+        model.addAttribute("backendBaseUrl", S3bucketImagesLink);
         model.addAttribute("order", orderClient.getOrderById(orderId, token));
         model.addAttribute("orderProducts", orderProductDTOS);
         model.addAttribute("products", packageDTOList);
@@ -113,7 +115,7 @@ public class OrderProductController {
         model.addAttribute("products", packageDTOList);
         model.addAttribute("order", orderDTO);
         model.addAttribute("packages", packageDTOS);
-        model.addAttribute("backendBaseUrl", backendBaseUrl);
+        model.addAttribute("backendBaseUrl", S3bucketImagesLink);
         model.addAttribute(ORDERPRODUCT, orderProduct);
         return "OrderProduct/addProductToExistingOrder";
     }

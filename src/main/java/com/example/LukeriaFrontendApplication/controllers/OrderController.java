@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 public class OrderController {
     public static boolean isMonthlyOrder;
     private static final String ORDERTXT = "order";
+    private static final String S3bucketImagesLink = "https://lukeria-images.s3.eu-central-1.amazonaws.com";
     private static final String REDIRECTTXT = "redirect:/order/show";
     private final OrderClient orderClient;
     private final UserClient userClient;
@@ -135,7 +136,7 @@ public class OrderController {
         PackageDTO packageDTO = packageClient.getPackageById(productDTO.getPackageId(), token);
 
         String productImageUrl = (packageDTO.getPhoto() != null)
-                ? backendBaseUrl + "/" + packageDTO.getPhoto()
+                ? S3bucketImagesLink + "/" + packageDTO.getPhoto()
                 : "/img/photos/noImage.png";
 
         model.addAttribute("product", productDTO);
@@ -261,7 +262,7 @@ public class OrderController {
         }
         model.addAttribute("items", orderProductsForShowing);
         model.addAttribute("productPackageMapImages", productPackageMapImages);
-        model.addAttribute("backendBaseUrl", backendBaseUrl);
+        model.addAttribute("backendBaseUrl", S3bucketImagesLink);
         model.addAttribute("packages", packages);
         model.addAttribute("productPackageMap", productPackageMap);
 
