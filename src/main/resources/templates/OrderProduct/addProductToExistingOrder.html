@@ -46,8 +46,8 @@ document.addEventListener("DOMContentLoaded", function() {
                                 <label for="packageId" style="width: 100%;">Продукти:</label>
                                 <select class="form-select" size="6" aria-label="size 6 select example" id="packageId" name="packageId" style="width: 100%;" required>
                                     <option th:each="packageId : ${packages}" th:value="${packageId.id}"
-                                            th:text="${packageId.productCode} + ' - ' +${packageId.name}"  th:data-image-url="@{${backendBaseUrl} + '/' + ${packageId.photo}}">
-                                        <img th:src="@{'${backendBaseUrl}' + '/' + ${package.photo}}"  width="50" height="50">
+                                            th:text="${packageId.productCode} + ' - ' +${packageId.name}"  th:data-image-url="@{${S3bucketImagesLink} + '/' + ${packageId.photo}}">
+                                        <img th:src="@{'${S3bucketImagesLink}' + '/' + ${package.photo}}"  width="50" height="50">
                                     </option>
                                 </select>
                             </div>

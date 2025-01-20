@@ -26,8 +26,7 @@ public class PlateController {
 
     private final PlateClient plateClient;
     private final ImageClient imageService;
-    @Value("${backend.base-url}/images")
-    private String backendBaseUrl;
+    
 
     @GetMapping("/show")
     public String index(Model model, HttpServletRequest request) {
@@ -49,7 +48,7 @@ public class PlateController {
 
         model.addAttribute("plates", sortedPlates);
         model.addAttribute("plateImages", plateImages);
-        model.addAttribute("backendBaseUrl", S3bucketImagesLink);
+        model.addAttribute("S3bucketImagesLink", S3bucketImagesLink);
 
         return "Plate/show";
     }
