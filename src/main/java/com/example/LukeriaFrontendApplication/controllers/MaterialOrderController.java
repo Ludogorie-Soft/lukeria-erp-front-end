@@ -33,8 +33,6 @@ public class MaterialOrderController {
     private final PackageClient packageClient;
     private final PlateClient plateClient;
     private final ProductClient productClient;
-    @Value("${backend.base-url}/images")
-    private String backendBaseUrl;
 
     @GetMapping("/create")
     String createMaterialOrder(Model model, HttpServletRequest request) {
@@ -44,7 +42,7 @@ public class MaterialOrderController {
         model.addAttribute(PACKAGETXT, packageClient.getAllPackages(token));
         model.addAttribute(PLATETXT, plateClient.getAllPlates(token));
         model.addAttribute("order", materialOrderDTO);
-        model.addAttribute("backendBaseUrl",S3bucketImagesLink );
+        model.addAttribute("S3bucketImagesLink",S3bucketImagesLink );
         return "MaterialOrder/create";
     }
 

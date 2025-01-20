@@ -71,7 +71,7 @@ document.addEventListener("DOMContentLoaded", function() {
                                     <tr th:each="orderProduct, iter : ${orderProducts}">
                                         <td>
                                             <img th:if="${products[iter.index]?.photo != null}"
-                                                 th:src="@{${backendBaseUrl} + '/' + ${products[iter.index]?.photo}}"
+                                                 th:src="@{${S3bucketImagesLink} + '/' + ${products[iter.index]?.photo}}"
                                                  alt="no image"
                                                  height="100"
                                                  width="100">

@@ -58,8 +58,8 @@ document.addEventListener("DOMContentLoaded", function() {
                                             <label for="packageId" style="width: 100%;">Кутия на Продукта:</label>
                                             <select id="packageId" name="packageId" style="width: 100%;">
                                                     <option th:each="package : ${packages}" th:value="${package.id}"
-                                                            th:data-image-url="@{${backendBaseUrl} + '/' + ${package.photo}}" >
-                                                        <img th:src="@{'${backendBaseUrl}' + '/' + ${package.photo}}"  width="50" height="50">
+                                                            th:data-image-url="@{${S3bucketImagesLink} + '/' + ${package.photo}}" >
+                                                        <img th:src="@{'${S3bucketImagesLink}' + '/' + ${package.photo}}"  width="50" height="50">
                                                         <span th:text = "${package.productCode} + ' - ' +${package.name}"></span>
                                                     </option>
                                                 </select>

@@ -57,10 +57,10 @@
                                 <select class="form-select select2" id="plateId" name="materialId">
                                     <option th:each="plate : ${plates}"
                                             th:value="${plate.id}"
-                                            th:data-image-url="@{${backendBaseUrl} + '/' + ${plate.photo}}"
+                                            th:data-image-url="@{${S3bucketImagesLink} + '/' + ${plate.photo}}"
                                             th:text="${plate.id} + ' - ' + ${plate.name}">
                                         <img th:if="${plate.photo != null}"
-                                             th:src="@{${backendBaseUrl} + '/' + ${plate.photo}}"
+                                             th:src="@{${S3bucketImagesLink} + '/' + ${plate.photo}}"
                                              alt="no image" height="50" width="50">
                                         <span th:text="${plate.name}"></span>
                                     </option>
@@ -84,10 +84,10 @@
                                 <select class="form-select select2" id="packageId" name="materialId">
                                     <option th:each="package : ${packages}"
                                             th:value="${package.id}"
-                                            th:data-image-url="@{${backendBaseUrl} + '/' + ${package.photo}}"
+                                            th:data-image-url="@{${S3bucketImagesLink} + '/' + ${package.photo}}"
                                             th:text="${package.productCode} + ' - ' + ${package.name}">
                                         <img th:if="${package.photo != null}"
-                                             th:src="@{${backendBaseUrl} + '/' + ${package.photo}}"
+                                             th:src="@{${S3bucketImagesLink} + '/' + ${package.photo}}"
                                              alt="no image" height="50" width="50">
                                         <span th:text="${package.name}"></span>
                                     </option>
