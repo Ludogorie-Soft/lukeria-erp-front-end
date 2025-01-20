@@ -76,7 +76,7 @@
                                         data-id="${productPrice.product.id}" class="plate-row">
                                         <td>
                                             <img th:if="${productPackageMapImages.containsKey(productPrice.product.packageId)}"
-                                                 th:src="@{${backendBaseUrl} + '/' + ${productPackageMapImages.get(productPrice.product.packageId)}}"
+                                                 th:src="@{${S3bucketImagesLink} + '/' + ${productPackageMapImages.get(productPrice.product.packageId)}}"
                                                  height="100"
                                                  width="100">
                                             <img th:unless="${productPackageMapImages.containsKey(productPrice.product.packageId)}"

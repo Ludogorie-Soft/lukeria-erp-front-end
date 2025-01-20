@@ -26,16 +26,12 @@ public class StockController {
     private final PackageClient packageClient;
     private final PlateClient plateClient;
     private final CartonClient cartonClient;
-    private final ImageClient imageService;
-
-    @Value("${backend.base-url}/images")
-    private String backendBaseUrl;
+    private static final String S3bucketImagesLink = "https://lukeria-images.s3.eu-central-1.amazonaws.com";
 
     @GetMapping("/show")
     public String showAllStocks(Model model, HttpServletRequest request) {
         String token = (String) request.getSession().getAttribute(SESSION_TOKEN);
 
-        // Fetch data from clients
         List<ProductDTO> sortedProducts = productClient.getAllProducts(token);
         List<PackageDTO> packages = packageClient.getAllPackages(token);
         List<PlateDTO> plates = plateClient.getAllPlates(token);
@@ -52,7 +48,7 @@ public class StockController {
         model.addAttribute("cartonMap", cartonMap);
         model.addAttribute("productMap", productMap);
         model.addAttribute("packageImages", productPackageMapImages);
-        model.addAttribute("backendBaseUrl", backendBaseUrl);
+        model.addAttribute("S3bucketImagesLink", S3bucketImagesLink);
         model.addAttribute("products", sortedProducts);
         model.addAttribute("packages", packages);
         model.addAttribute("cartons", cartons);
@@ -88,7 +84,7 @@ public class StockController {
                 .filter(packageDTO -> packageDTO.getPhoto() != null) // Филтриране само на пакети с налични снимки
                 .collect(Collectors.toMap(
                         PackageDTO::getId,
-                        packageDTO -> backendBaseUrl + "/" + packageDTO.getPhoto()
+                        packageDTO -> S3bucketImagesLink + "/" + packageDTO.getPhoto()
                 ));
     }
 }

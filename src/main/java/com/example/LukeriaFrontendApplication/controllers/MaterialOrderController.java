@@ -25,14 +25,14 @@ public class MaterialOrderController {
     private static final String PRODUCTTXT = "products";
     private static final String MATERIALTXT = "material";
     private static final String REDIRECTTXT = "redirect:/material-order/show";
+    private static final String S3bucketImagesLink = "https://lukeria-images.s3.eu-central-1.amazonaws.com";
+
     private static final String MATERIALSORDERSHOW = "MaterialOrder/show";
     private final MaterialOrderClient materialOrderClient;
     private final CartonClient cartonClient;
     private final PackageClient packageClient;
     private final PlateClient plateClient;
     private final ProductClient productClient;
-    @Value("${backend.base-url}/images")
-    private String backendBaseUrl;
 
     @GetMapping("/create")
     String createMaterialOrder(Model model, HttpServletRequest request) {
@@ -42,7 +42,7 @@ public class MaterialOrderController {
         model.addAttribute(PACKAGETXT, packageClient.getAllPackages(token));
         model.addAttribute(PLATETXT, plateClient.getAllPlates(token));
         model.addAttribute("order", materialOrderDTO);
-        model.addAttribute("backendBaseUrl", backendBaseUrl);
+        model.addAttribute("S3bucketImagesLink",S3bucketImagesLink );
         return "MaterialOrder/create";
     }
 

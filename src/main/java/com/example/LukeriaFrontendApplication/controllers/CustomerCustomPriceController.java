@@ -42,8 +42,8 @@ public class CustomerCustomPriceController {
     private final ProductClient productClient;
     private final PackageClient packageClient;
     private final ImageClient imageService;
-    @Value("${backend.base-url}/images")
-    private String backendBaseUrl;
+    private static final String S3bucketImagesLink = "https://lukeria-images.s3.eu-central-1.amazonaws.com";
+    
 
 
     @GetMapping("/create")
@@ -53,7 +53,6 @@ public class CustomerCustomPriceController {
         List<ProductDTO> allProducts = productClient.getAllProducts(token);
         ClientDTO client = clientClient.getClientById(id, token);
 
-        // Филтрираме продуктите, за да премахнем тези, които вече имат персонализирана цена за дадения клиент
         List<ProductDTO> filteredProducts = allProducts.stream()
                 .filter(product -> allCustomPrice.stream()
                         .noneMatch(customPrice -> customPrice.getProductId().equals(product.getId()) && customPrice.getClientId().equals(id)))
@@ -111,7 +110,7 @@ public class CustomerCustomPriceController {
         }
         model.addAttribute("allProducts", allProductsWithPrice);
         model.addAttribute("productPackageMapImages", productPackageMapImages);
-        model.addAttribute("backendBaseUrl", backendBaseUrl);
+        model.addAttribute("S3bucketImagesLink", S3bucketImagesLink);
         model.addAttribute("packages", packages);
         model.addAttribute("productPackageMap", productPackageMap);
         model.addAttribute("clientId", id);

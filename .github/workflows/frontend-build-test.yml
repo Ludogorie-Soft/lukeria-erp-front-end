@@ -1,9 +1,11 @@
 name: frontend-build-and-deploy
 
 on:
-  push:
+  pull_request:
+    types:
+      - closed
     branches:
-      - test-images-loading-lazy
+      - main
   workflow_dispatch:
 
 jobs:
@@ -74,6 +76,7 @@ jobs:
         with:
           fetch-depth: 0
 
+
       - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
@@ -109,6 +112,12 @@ jobs:
         run: |
           ssh -i ~/.ssh/id_rsa ubuntu@${{ secrets.EC2_HOST }} << 'EOF'
           cd /home/ubuntu/test
+          
+          # Check for and remove stopped containers
+          docker container prune -f
+
+          # Check for and remove unused images
+          docker image prune -af
 
           # Stop and remove existing containers
           docker compose down

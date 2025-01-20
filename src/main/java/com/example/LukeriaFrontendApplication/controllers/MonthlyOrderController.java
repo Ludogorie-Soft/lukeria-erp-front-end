@@ -22,6 +22,8 @@ import java.util.stream.Collectors;
 @RequestMapping("/monthlyOrder")
 public class MonthlyOrderController {
     private static final String ORDERTXT = "monthlyOrder";
+    private static final String S3bucketImagesLink = "https://lukeria-images.s3.eu-central-1.amazonaws.com";
+
     private static final String REDIRECTTXT = "redirect:/monthlyOrder/show";
     private final MonthlyOrderClient monthlyOrderClient;
     private final MonthlyOrderProductClient monthlyOrderProductClient;
@@ -31,10 +33,6 @@ public class MonthlyOrderController {
     private final OrderProductClient orderProductClient;
     private final ClientClient clientClient;
     private final OrderClient orderClient;
-    private final ImageClient imageService;
-
-    @Value("${backend.base-url}/images")
-    private String backendBaseUrl;
 
     @GetMapping("/create")
     String createOrder(Model model, HttpServletRequest request) {
@@ -80,7 +78,7 @@ public class MonthlyOrderController {
         List<PackageDTO> packageDTOList = packageDTOIds.stream()
                 .map(id1 -> packageClient.getPackageById(id1, token))
                 .collect(Collectors.toList());
-        model.addAttribute("backendBaseUrl", backendBaseUrl);
+        model.addAttribute("S3bucketImagesLink", S3bucketImagesLink);
         model.addAttribute("orderProducts", orderProductDTOS);
         model.addAttribute("products", packageDTOList);
         model.addAttribute("order", orderDTO);
@@ -107,7 +105,7 @@ public class MonthlyOrderController {
                     .collect(Collectors.toList());
             model.addAttribute("orderProducts", monthlyOrderProductDTOS);
             model.addAttribute("products", packageDTOList);
-            model.addAttribute("backendBaseUrl", backendBaseUrl);
+            model.addAttribute("S3bucketImagesLink", S3bucketImagesLink);
             return new ModelAndView("MonthlyOrder/addProduct");
         }
         return new ModelAndView(REDIRECTTXT);
@@ -128,7 +126,7 @@ public class MonthlyOrderController {
         model.addAttribute("order", orderDTO);
         model.addAttribute("packages", packageClient.getAllPackages(token));
         model.addAttribute("orderProduct", monthlyOrderProductDTO);
-        model.addAttribute("backendBaseUrl", backendBaseUrl);
+        model.addAttribute("S3bucketImagesLink", S3bucketImagesLink);
         return "MonthlyOrder/addProductToExistingOrder";
     }
 
@@ -213,7 +211,7 @@ public class MonthlyOrderController {
         model.addAttribute("orderProducts", monthlyOrderProductDTOS);
         model.addAttribute("products", packageDTOList);
         model.addAttribute("order", monthlyOrderDTO);
-        model.addAttribute("backendBaseUrl", backendBaseUrl);
+        model.addAttribute("S3bucketImagesLink", S3bucketImagesLink);
         return "MonthlyOrder/orderDetails";
     }
 

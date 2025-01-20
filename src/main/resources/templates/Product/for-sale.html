@@ -128,7 +128,7 @@
                                     <tr th:each="productPrice : ${products}">
                                         <td>
                                             <img th:if="${productPackageMapImages.containsKey(productPrice.product.packageId)}"
-                                                 th:src="@{${backendBaseUrl} + '/' + ${productPackageMapImages.get(productPrice.product.packageId)}}"
+                                                 th:src="@{${S3bucketImagesLink} + '/' + ${productPackageMapImages.get(productPrice.product.packageId)}}"
                                                  style="height: 100px; width: 100px;"
                                                  loading="lazy">
                                             <img th:unless="${productPackageMapImages.containsKey(productPrice.product.packageId)}"

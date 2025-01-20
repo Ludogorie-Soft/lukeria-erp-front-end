@@ -35,9 +35,7 @@ public class ShoppingCartController {
     private final ProductClient productClient;
     private final PackageClient packageClient;
     private final ImageClient imageService;
-    @Value("${backend.base-url}/images")
-    private String backendBaseUrl;
-
+    private static final String S3bucketImagesLink = "https://lukeria-images.s3.eu-central-1.amazonaws.com";
     private static final String SESSION_TOKEN = "sessionToken";
 
     @PostMapping("/addToCart")
@@ -86,7 +84,7 @@ public class ShoppingCartController {
         }
         model.addAttribute("items", cartItemsForShowing);
         model.addAttribute("productPackageMapImages", productPackageMapImages);
-        model.addAttribute("backendBaseUrl", backendBaseUrl);
+        model.addAttribute("S3bucketImagesLink", S3bucketImagesLink);
         model.addAttribute("packages", packages);
         model.addAttribute("productPackageMap", productPackageMap);
         model.addAttribute("totalPrice", totalPrice);
