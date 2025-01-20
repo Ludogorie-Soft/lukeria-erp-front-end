@@ -3,7 +3,8 @@
   on:
     pull_request:
       types:
-        - open
+        - opened
+        - reopened
       branches:
         - main
     workflow_dispatch:
