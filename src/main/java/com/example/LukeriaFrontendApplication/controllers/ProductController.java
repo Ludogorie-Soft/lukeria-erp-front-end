@@ -32,9 +32,6 @@ public class ProductController {
     private final UserClient userClient;
     private final CustomerCustomPriceClient customerCustomPriceClient;
     private final ClientUserClient clientUserClient;
-    private final CartonClient cartonClient;
-    @Value("${backend.base-url}/images")
-    private String backendBaseUrl;
 
     public void modelAtributes(Model model, HttpServletRequest request) {
         String token = (String) request.getSession().getAttribute(SESSION_TOKEN);
@@ -57,7 +54,6 @@ public class ProductController {
 
 
         model.addAttribute("productPackageMapImages", productPackageMapImages);
-        //model.addAttribute("backendBaseUrl", backendBaseUrl);
         model.addAttribute("packages", packages);
         model.addAttribute("productPackageMap", productPackageMap);
     }
@@ -180,7 +176,7 @@ public class ProductController {
         }
         model.addAttribute("mapProductsAndPieces", mapProductsAndPieces); // Add the map to the model
         model.addAttribute("productPackageMapImages", productPackageMapImages);
-        model.addAttribute("backendBaseUrl", S3bucketImagesLink);
+        model.addAttribute("S3bucketImagesLink", S3bucketImagesLink);
         model.addAttribute("products", allProductsForSale);
         model.addAttribute("packages", packages);
         model.addAttribute("productPackageMap", productPackageMap);
@@ -244,7 +240,7 @@ public class ProductController {
         model.addAttribute("emptyProductIdList", emptyProductIdList);
         model.addAttribute("emptyQuantityList", emptyQuantityList);
         model.addAttribute("products", products);
-        model.addAttribute("backendBaseUrl", S3bucketImagesLink);
+        model.addAttribute("S3bucketImagesLink", S3bucketImagesLink);
         model.addAttribute("productPackageMap", productPackageMap);
         model.addAttribute("productPackageMapImages", productPackageMapImages);
         return "Product/produce";

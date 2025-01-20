@@ -36,10 +36,6 @@ public class OrderController {
     private final OrderProductClient orderProductClient;
     private final CustomerCustomPriceClient customerCustomPriceClient;
     private final ImageClient imageService;
-
-    @Value("${backend.base-url}/images")
-    private String backendBaseUrl;
-
     @GetMapping("/create")
     String createOrder(Model model, HttpServletRequest request) {
         isMonthlyOrder = false;
@@ -262,7 +258,7 @@ public class OrderController {
         }
         model.addAttribute("items", orderProductsForShowing);
         model.addAttribute("productPackageMapImages", productPackageMapImages);
-        model.addAttribute("backendBaseUrl", S3bucketImagesLink);
+        model.addAttribute("S3bucketImagesLink", S3bucketImagesLink);
         model.addAttribute("packages", packages);
         model.addAttribute("productPackageMap", productPackageMap);
 

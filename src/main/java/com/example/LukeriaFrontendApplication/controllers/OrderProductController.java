@@ -27,14 +27,9 @@ public class OrderProductController {
     private final OrderProductClient orderProductClient;
     private final OrderClient orderClient;
     private final ProductClient productClient;
-    private final ClientClient clientClient;
     private final MonthlyOrderClient monthlyOrderClient;
     private final MonthlyOrderProductClient monthlyOrderProductClient;
     private final PackageClient packageClient;
-    private final ImageClient imageService;
-
-    @Value("${backend.base-url}/images")
-    private String backendBaseUrl;
 
     @GetMapping("/addProduct")
     String createOrderProduct(Model model, HttpServletRequest request) {
@@ -42,7 +37,7 @@ public class OrderProductController {
         OrderDTO orderDTO = orderClient.getOrderById(orderClient.findFirstByOrderByIdDesc(token).getId(), token);
         List<OrderProductDTO> orderProductDTOS = getOrderProductsForOrder(orderDTO, token);
         List<PackageDTO> packageDTOList = getPackageDTOListForOrderProducts(orderProductDTOS, token);
-        model.addAttribute("backendBaseUrl",S3bucketImagesLink );
+        model.addAttribute("S3bucketImagesLink",S3bucketImagesLink );
         model.addAttribute("orderProducts", orderProductDTOS);
         model.addAttribute("products", packageDTOList);
         model.addAttribute("order", orderDTO);
@@ -82,7 +77,7 @@ public class OrderProductController {
             model.addAttribute("packages", packageDTOS);
             model.addAttribute("orderProducts", orderProductDTOS);
             model.addAttribute("products", packageDTOList);
-            model.addAttribute("backendBaseUrl", S3bucketImagesLink);
+            model.addAttribute("S3bucketImagesLink", S3bucketImagesLink);
             return new ModelAndView("OrderProduct/addProduct");
         }
         return new ModelAndView(REDIRECTTXT);
@@ -95,7 +90,7 @@ public class OrderProductController {
         List<Long> packageDTOIds = orderProductDTOS.stream().map(OrderProductDTO::getPackageId).toList();
         List<PackageDTO> packageDTOList = packageDTOIds.stream()
                 .map(id1 -> packageClient.getPackageById(id1, token)).toList();
-        model.addAttribute("backendBaseUrl", S3bucketImagesLink);
+        model.addAttribute("S3bucketImagesLink", S3bucketImagesLink);
         model.addAttribute("order", orderClient.getOrderById(orderId, token));
         model.addAttribute("orderProducts", orderProductDTOS);
         model.addAttribute("products", packageDTOList);
@@ -115,7 +110,7 @@ public class OrderProductController {
         model.addAttribute("products", packageDTOList);
         model.addAttribute("order", orderDTO);
         model.addAttribute("packages", packageDTOS);
-        model.addAttribute("backendBaseUrl", S3bucketImagesLink);
+        model.addAttribute("S3bucketImagesLink", S3bucketImagesLink);
         model.addAttribute(ORDERPRODUCT, orderProduct);
         return "OrderProduct/addProductToExistingOrder";
     }

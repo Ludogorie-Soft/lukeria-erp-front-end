@@ -29,8 +29,6 @@ public class PackageController {
     private final ProductClient productClient;
     private final PlateClient plateClient;
     private final ImageClient imageService;
-    @Value("${backend.base-url}/images")
-    private String backendBaseUrl;
     private static final String S3bucketImagesLink = "https://lukeria-images.s3.eu-central-1.amazonaws.com";
 
     @GetMapping("/package/show")

@@ -73,7 +73,7 @@ document.addEventListener("DOMContentLoaded", function() {
                                 <tbody>
                                 <tr th:each="product, iter : ${products}">
                                     <td>
-                                        <img th:src="@{${backendBaseUrl} + '/'+ ${product.photo}}" alt="no image"
+                                        <img th:src="@{${S3bucketImagesLink} + '/'+ ${product.photo}}" alt="no image"
                                              height="100" width="100">
                                     </td>
                                     <td th:text="${product.productCode}"></td>
