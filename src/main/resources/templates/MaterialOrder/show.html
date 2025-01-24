@@ -44,7 +44,7 @@ document.addEventListener("DOMContentLoaded", function() {
                                     <thead>
                                     <tr>
                                         <th>Поръчка</th>
-                                        <th>Материал  ID</th>
+                                        <th>Име на материал</th>
                                         <th>Вид материал</th>
                                         <th>Поръчан брой</th>
                                     </tr>
@@ -52,7 +52,7 @@ document.addEventListener("DOMContentLoaded", function() {
                                     <tbody>
                                     <tr th:each="order : ${orders}" th:unless="${order.receivedQuantity}">
                                         <td th:text="${order.id}"></td>
-                                        <td th:text="${order.materialId}"></td>
+                                        <td th:text="${order.name}"></td>
                                         <td>
                                             <a th:if="${order.materialType == 'CARTON'}" th:href="@{'/material-order/material/' + ${order.materialId} + '?materialType=CARTON'}">Кашон</a>
                                             <a th:if="${order.materialType == 'PLATE'}" th:href="@{'/material-order/material/' + ${order.materialId} + '?materialType=PLATE'}">Тарелка</a>
@@ -88,7 +88,7 @@ document.addEventListener("DOMContentLoaded", function() {
                                     <thead>
                                     <tr>
                                         <th>Поръчка</th>
-                                        <th>Материал  ID </th>
+                                        <th>Име на материал</th>
                                         <th>Вид материал</th>
                                         <th>Поръчан брой</th>
                                         <th>Доставен брой</th>
@@ -99,7 +99,7 @@ document.addEventListener("DOMContentLoaded", function() {
                                     <tbody>
                                     <tr th:each="order : ${orders}" th:if="${order.receivedQuantity}">
                                         <td th:text="${order.id}"></td>
-                                        <td th:text="${order.materialId}"></td>
+                                        <td th:text="${order.name}"></td>
                                         <td>
                                             <a th:if="${order.materialType == 'CARTON'}" th:href="@{'/material-order/material/' + ${order.materialId} + '?materialType=CARTON'}">Кашон</a>
                                             <a th:if="${order.materialType == 'PLATE'}" th:href="@{'/material-order/material/' + ${order.materialId} + '?materialType=PLATE'}">Тарелка</a>

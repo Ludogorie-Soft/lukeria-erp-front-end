@@ -10,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -42,7 +43,7 @@ public class MaterialOrderController {
         model.addAttribute(PACKAGETXT, packageClient.getAllPackages(token));
         model.addAttribute(PLATETXT, plateClient.getAllPlates(token));
         model.addAttribute("order", materialOrderDTO);
-        model.addAttribute("S3bucketImagesLink",S3bucketImagesLink );
+        model.addAttribute("S3bucketImagesLink", S3bucketImagesLink);
         return "MaterialOrder/create";
     }
 
@@ -50,8 +51,41 @@ public class MaterialOrderController {
     public String index(Model model, HttpServletRequest request) {
         String token = (String) request.getSession().getAttribute("sessionToken");
         List<MaterialOrderDTO> materialOrderDTOS = materialOrderClient.getAllMaterialOrders(token);
-        Collections.reverse(materialOrderDTOS);
-        model.addAttribute(ORDERTXT, materialOrderDTOS);
+        List<MaterialOrderHelperForShowDTO> forShow = new ArrayList<>();
+
+        for (MaterialOrderDTO materialOrder : materialOrderDTOS) {
+            MaterialOrderHelperForShowDTO materialOrderHelperForShowDTO = new MaterialOrderHelperForShowDTO();
+            Long materialId = materialOrder.getMaterialId();
+
+            if (materialOrder.getMaterialType().equalsIgnoreCase("Carton")) {
+                CartonDTO cartonDTO = cartonClient.getCartonById(materialId, token);
+                materialOrderHelperForShowDTO.setName(cartonDTO.getName());
+            }
+            if (materialOrder.getMaterialType().equalsIgnoreCase("Plate")) {
+                PlateDTO plateDTO = plateClient.getPlateById(materialId, token);
+                materialOrderHelperForShowDTO.setName(plateDTO.getName());
+            }
+            if (materialOrder.getMaterialType().equalsIgnoreCase("Package")) {
+                PackageDTO packageDTO = packageClient.getPackageById(materialId, token);
+                String packageString = packageDTO.getProductCode()+" - "+packageDTO.getName();
+                materialOrderHelperForShowDTO.setName(packageString);
+            }
+
+
+
+
+            materialOrderHelperForShowDTO.setId(materialOrder.getId());
+            materialOrderHelperForShowDTO.setMaterialType(materialOrder.getMaterialType());
+            materialOrderHelperForShowDTO.setOrderedQuantity(materialOrder.getOrderedQuantity());
+            materialOrderHelperForShowDTO.setMaterialId(materialId);
+            materialOrderHelperForShowDTO.setReceivedQuantity(materialOrder.getReceivedQuantity());
+            materialOrderHelperForShowDTO.setArrivalDate(materialOrder.getArrivalDate());
+            materialOrderHelperForShowDTO.setMaterialPrice(materialOrder.getMaterialPrice());
+            forShow.add(materialOrderHelperForShowDTO);
+        }
+
+        Collections.reverse(forShow);
+        model.addAttribute(ORDERTXT, forShow);
         return MATERIALSORDERSHOW;
     }
 
@@ -64,12 +98,12 @@ public class MaterialOrderController {
             model.addAttribute("materialsForOrder", materialsForOrder);
             model.addAttribute("message", "Всички материални са налични!");
         }
-        List<ProductDTO> products=productClient.getAllProducts(token);
+        List<ProductDTO> products = productClient.getAllProducts(token);
         List<PackageDTO> packages = packageClient.getAllPackages(token);
         List<CartonDTO> cartons = cartonClient.getAllCartons(token);
         List<PlateDTO> plates = plateClient.getAllPlates(token);
 
-        model.addAttribute(PRODUCTTXT,products);
+        model.addAttribute(PRODUCTTXT, products);
         model.addAttribute(PACKAGETXT, packages);
         model.addAttribute(CARTONTXT, cartons);
         model.addAttribute(PLATETXT, plates);
@@ -89,9 +123,9 @@ public class MaterialOrderController {
         List<PackageDTO> packages = packageClient.getAllPackages(token);
         List<CartonDTO> cartons = cartonClient.getAllCartons(token);
         List<PlateDTO> plates = plateClient.getAllPlates(token);
-        List<ProductDTO> products=productClient.getAllProducts(token);
+        List<ProductDTO> products = productClient.getAllProducts(token);
 
-        model.addAttribute(PRODUCTTXT,products);
+        model.addAttribute(PRODUCTTXT, products);
         model.addAttribute(PACKAGETXT, packages);
         model.addAttribute(CARTONTXT, cartons);
         model.addAttribute(PLATETXT, plates);
