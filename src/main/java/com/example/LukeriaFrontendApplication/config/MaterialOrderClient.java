@@ -15,8 +15,8 @@ public interface MaterialOrderClient {
     @GetMapping("/{id}")
     MaterialOrderDTO getMaterialOrderById(@PathVariable(name = "id") Long id, @RequestHeader("Authorization") String auth);
 
-    @PostMapping
-    MaterialOrderDTO createMaterialOrder(@Valid @RequestBody MaterialOrderDTO materialOrderDTO, @RequestHeader("Authorization") String auth);
+//    @PostMapping
+//    MaterialOrderDTO createMaterialOrder(@Valid @RequestBody MaterialOrderDTO materialOrderDTO, @RequestHeader("Authorization") String auth);
 
     @PutMapping("/{id}")
     MaterialOrderDTO updateMaterialOrder(@PathVariable("id") Long id, @Valid @RequestBody MaterialOrderDTO materialOrderDTO, @RequestHeader("Authorization") String auth);
@@ -29,4 +29,8 @@ public interface MaterialOrderClient {
 
     @GetMapping("/all-missing-materials")
     List<MaterialOrderDTO> allAvailableProducts(@RequestHeader("Authorization") String auth);
+    @PostMapping("/submit")
+    MaterialOrderDTO submitMaterialOrder(@Valid @RequestBody MaterialOrderDTO materialOrderDTO,
+                                         @RequestHeader("Authorization") String auth);
+
 }
