@@ -29,8 +29,8 @@ public class PackageController {
     private final ProductClient productClient;
     private final PlateClient plateClient;
     private final ImageClient imageService;
-    private static final String S3bucketImagesLink = "https://lukeria-images.s3.eu-central-1.amazonaws.com";
-
+    @Value("${aws.s3.bucket-url}")
+    private String S3bucketImagesLink;;
     @GetMapping("/package/show")
     public String showPackage(Model model, HttpServletRequest request) {
         String token = (String) request.getSession().getAttribute(SESSION_TOKEN);

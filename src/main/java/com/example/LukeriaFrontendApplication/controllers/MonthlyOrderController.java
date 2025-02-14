@@ -22,8 +22,8 @@ import java.util.stream.Collectors;
 @RequestMapping("/monthlyOrder")
 public class MonthlyOrderController {
     private static final String ORDERTXT = "monthlyOrder";
-    private static final String S3bucketImagesLink = "https://lukeria-images.s3.eu-central-1.amazonaws.com";
-
+    @Value("${aws.s3.bucket-url}")
+    private String S3bucketImagesLink;;
     private static final String REDIRECTTXT = "redirect:/monthlyOrder/show";
     private final MonthlyOrderClient monthlyOrderClient;
     private final MonthlyOrderProductClient monthlyOrderProductClient;
