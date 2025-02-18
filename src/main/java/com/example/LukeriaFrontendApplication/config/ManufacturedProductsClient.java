@@ -10,7 +10,7 @@ import java.util.List;
 
 @FeignClient(name = "lukeria-erp-manufactured-products", url = "${backend.base-url}/manufactured-product")
 public interface ManufacturedProductsClient {
-    @GetMapping
+    @GetMapping("/all")
     List<ManufacturedProductDTO> getAllManufacturedProducts(@RequestHeader("Authorization") String auth);
 
     }
