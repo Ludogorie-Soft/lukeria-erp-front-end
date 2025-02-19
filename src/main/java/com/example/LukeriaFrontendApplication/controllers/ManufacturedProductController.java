@@ -73,7 +73,7 @@ public class ManufacturedProductController {
         model.addAttribute("packages", packages);
         model.addAttribute("productPackageMap", productPackageMap);
 
-        return "ManufacturedProducts/all-produced-products";
+        return "ManufacturedProducts/all";
     }
 
 }
