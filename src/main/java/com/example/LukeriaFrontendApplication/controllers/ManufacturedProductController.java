@@ -32,22 +32,10 @@ public class ManufacturedProductController {
     private final ImageClient imageService;
     private static final String S3bucketImagesLink = "https://lukeria-images.s3.eu-central-1.amazonaws.com";
 
-    @GetMapping("/all")
+    @GetMapping
     public String allManufacturedProducts(Model model, HttpServletRequest request){
         String token = (String) request.getSession().getAttribute("sessionToken");
-        List<ManufacturedProductDTO> manufacturedProductDTOS = manufacturedProductsClient.getAllManufacturedProducts(token);
-        List<ManufacturedProductHelperDTO> producedProducts = new ArrayList<>();
-
-        for (ManufacturedProductDTO manufacturedProductDTO : manufacturedProductDTOS){
-            ProductDTO productDTO = productClient.getProductById(manufacturedProductDTO.getProductId(),token);
-            ManufacturedProductHelperDTO producedProduct = new ManufacturedProductHelperDTO();
-            producedProduct.setId(manufacturedProductDTO.getId());
-            producedProduct.setProduct(productDTO);
-            producedProduct.setQuantity(manufacturedProductDTO.getQuantity());
-            producedProduct.setManufactureDate(manufacturedProductDTO.getManufactureDate().toLocalDate());
-
-            producedProducts.add(producedProduct);
-        }
+        List<ManufacturedProductDTO> producedProducts = manufacturedProductsClient.getAllManufacturedProducts(token);
 
         List<PackageDTO> packages = packageClient.getAllPackages(token);
 
@@ -61,11 +49,6 @@ public class ManufacturedProductController {
                 productPackageMapImages.put(packageDTO.getId(), packageDTO.getPhoto());
             }
         }
-        for (PackageDTO packageDTO : packages) {
-            if (packageDTO.getPhoto() != null) {
-                imageService.getImage(packageDTO.getPhoto());
-            }
-        }
 
         model.addAttribute("producedProducts", producedProducts);
         model.addAttribute("productPackageMapImages", productPackageMapImages);
@@ -73,7 +56,7 @@ public class ManufacturedProductController {
         model.addAttribute("packages", packages);
         model.addAttribute("productPackageMap", productPackageMap);
 
-        return "ManufacturedProducts/all-produced-products";
+        return "ManufacturedProducts/all";
     }
 
 }

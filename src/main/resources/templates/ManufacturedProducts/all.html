@@ -74,19 +74,22 @@
                   <tr th:each="producedProduct, iter : ${producedProducts}"
                       data-id="${producedProduct.product.id}" class="plate-row">
                     <td>
-                      <img th:if="${productPackageMapImages.containsKey(producedProduct.product.packageId)}"
-                           th:src="@{${S3bucketImagesLink} + '/' + ${productPackageMapImages.get(producedProduct.product.packageId)}}"
-                           style="height: 100px; width: 150px;">
-                      <img th:unless="${productPackageMapImages.containsKey(producedProduct.product.packageId)}"
+                      <img th:if="${productPackageMapImages.containsKey(producedProduct.productId)}"
+                           th:src="@{${S3bucketImagesLink} + '/' + ${productPackageMapImages.get(producedProduct.productId)}}"
+                           loading="lazy"
+                           style="height: 100px; width: 100px;">
+                      <img th:unless="${productPackageMapImages.containsKey(producedProduct.productId)}"
                            class="card-img-top"
                            src="/img/photos/noImage.png"
-                           style="height: 100px; width: 150px;">
+                           style="height: 100px; width: ;100px">
                     </td>
 
-                    <td th:text="${producedProduct.product.productCode}"></td>
-                    <td th:text="${productPackageMap.get(producedProduct.product.packageId)}"></td>
+                    <td>
+                        <span th:each="package : ${packages}"
+                              th:text="${package.id == producedProduct.productId ? package.productCode : ''}"></span>
+                    </td>                    <td th:text="${productPackageMap.get(producedProduct.productId)}"></td>
                     <td th:text="${producedProduct.quantity}"></td>
-                    <td th:text="${producedProduct.manufactureDate}"></td>
+                    <td th:text="${#temporals.format(producedProduct.manufactureDate, 'dd.MM.yyyy')}"></td>
                   </tr>
                   </tbody>
                 </table>
