@@ -1,5 +1,6 @@
 package com.example.LukeriaFrontendApplication.controllers;
 
+import com.example.LukeriaFrontendApplication.config.CartonClient;
 import com.example.LukeriaFrontendApplication.config.ImageClient;
 import com.example.LukeriaFrontendApplication.config.PackageClient;
 import com.example.LukeriaFrontendApplication.config.ProducedProductsClient;
@@ -23,14 +24,14 @@ import java.util.Map;
 @RequestMapping("/manufactured-product")
 public class ManufacturedProductController {
 
-    private final ProducedProductsClient manufacturedProductsClient;
+    private final CartonClient cartonClient;
     private final PackageClient packageClient;
     private static final String S3bucketImagesLink = "https://lukeria-images.s3.eu-central-1.amazonaws.com";
 
     @GetMapping("/show")
     public String allManufacturedProducts(Model model, HttpServletRequest request){
         String token = (String) request.getSession().getAttribute("sessionToken");
-        List<ManufacturedProductDTO> producedProducts = manufacturedProductsClient.getAllManufacturedProducts(token);
+        List<ManufacturedProductDTO> producedProducts = cartonClient.getAllManufacturedProducts(token);
 
         List<PackageDTO> packages = packageClient.getAllPackages(token);
 
