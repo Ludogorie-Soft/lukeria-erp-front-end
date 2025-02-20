@@ -7,8 +7,9 @@ import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.util.List;
 
-@FeignClient(name = "lukeria-erp-manufactured-products", url = "${backend.base-url}/manufactured-product")
-public interface ManufacturedProductsClient {
+@FeignClient(name = "lukeria-erp-producedProducts", url = "${backend.base-url}/manufactured-product")
+
+public interface ProducedProductsClient {
     @GetMapping()
-   List<ManufacturedProductDTO> getAllManufacturedProducts(@RequestHeader("Authorization") String auth);
+    List<ManufacturedProductDTO> getAllManufacturedProducts(@RequestHeader("Authorization") String auth) ;
     }

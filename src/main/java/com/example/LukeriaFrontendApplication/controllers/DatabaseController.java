@@ -32,7 +32,7 @@ public class DatabaseController {
     private final MonthlyOrderClient monthlyOrderClient;
     private final MonthlyOrderProductClient monthlyOrderProductClient;
     private final UserClient userClient;
-    private final ManufacturedProductsClient manufacturedProductsClient;
+    private final ProducedProductsClient manufacturedProductsClient;
 
     @GetMapping("/show")
     public String showPackage(Model model, HttpServletRequest request) {
