@@ -35,8 +35,8 @@ public class ShoppingCartController {
     private final ProductClient productClient;
     private final PackageClient packageClient;
     private final ImageClient imageService;
-    private static final String S3bucketImagesLink = "https://lukeria-images.s3.eu-central-1.amazonaws.com";
-    private static final String SESSION_TOKEN = "sessionToken";
+    @Value("${aws.s3.bucket-url}")
+    private String S3bucketImagesLink;;    private static final String SESSION_TOKEN = "sessionToken";
 
     @PostMapping("/addToCart")
     public ModelAndView addToCart(@RequestParam("productId") Long productId, @RequestParam("quantity") int quantity, HttpServletRequest request) {
