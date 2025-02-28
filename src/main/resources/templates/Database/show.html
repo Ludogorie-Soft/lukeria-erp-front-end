@@ -603,5 +603,28 @@
             </tbody>
         </table>
     </section>
+
+    <section class="table-section">
+        <h2>Произведени продукти  "producedProducts" </h2>
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>ID на продукт</th>
+                <th>Количество</th>
+                <th>Дата на производство</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="product : ${producedProducts}">
+                    <td th:text="${product.id}"></td>
+                    <td><input type="text" name="name" th:value="${product.productId}" class="form-control"/></td>
+                    <td><input type="text" name="size" th:value="${product.quantity}" class="form-control"/></td>
+                    <td><input type="datetime-local" name="availableQuantity" th:value="${product.manufactureDate}"
+                               class="form-control"/></td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
 </body>
 </html>

@@ -71,7 +71,7 @@ document.addEventListener("DOMContentLoaded", function() {
                             </thead>
                             <tbody>
                             <tr th:each="product, iter : ${products}">
-                                <td th:text="${product.id}"></td>
+                                <td th:text="${product.productCode}"></td>
                                 <td th:text="${product.name}"></td>
                                 <td th:text="${orderProducts[iter.index]?.orderedQuantity}"></td>
                             </tr>
