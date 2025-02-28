@@ -39,6 +39,7 @@
         <main class="content">
             <div class="container-fluid">
                 <h1 class="h3 mb-4">История на поръчките</h1>
+                <a href="/material-order/create" class="btn btn-primary mb-3">Създай поръчка</a>
 
                 <div th:each="order : ${materialOrders}" class="card mb-4 shadow-sm">
                     <div class="card-header bg-light">
@@ -79,12 +80,10 @@
                                             <div class="card-body">
                                                 <h6 class="card-title" th:text="${item.materialName}"></h6>
                                                 <div class="d-flex justify-content-between align-items-center">
-                                                    <span class="text-muted small">Код:
-                                                        <span th:text="${item.materialId}"></span>
-                                                    </span>
                                                     <span class="badge bg-success material-badge">
                                                         <span th:text="${item.orderedQuantity}"></span> бр.
                                                     </span>
+                                                    <a th:href="@{/material-order/item/edit/{id}(id=${item.id})}" class="btn btn-sm btn-warning">Редактирай</a>
                                                 </div>
                                             </div>
                                         </div>
@@ -114,14 +113,10 @@
                                                         <i class="fas fa-cube fa-2x"></i>
                                                     </div>
                                                 </div>
-                                                <div class="d-flex justify-content-between align-items-center">
-                                                    <span class="text-muted small">Код:
-                                                        <span th:text="${item.materialId}"></span>
-                                                    </span>
-                                                    <span class="badge bg-primary material-badge">
-                                                        <span th:text="${item.orderedQuantity}"></span> бр.
-                                                    </span>
-                                                </div>
+                                                <span class="badge bg-primary material-badge">
+                                                    <span th:text="${item.orderedQuantity}"></span> бр.
+                                                </span>
+                                                <a th:href="@{/material-order/item/edit/{id}(id=${item.id})}" class="btn btn-sm btn-warning">Редактирай</a>
                                             </div>
                                         </div>
                                     </div>
@@ -151,14 +146,10 @@
                                                     </div>
                                                 </div>
                                                 <h6 class="card-title mb-1" th:text="${item.materialName}"></h6>
-                                                <div class="d-flex justify-content-between align-items-center">
-                                                    <span class="text-muted small">Код:
-                                                        <span th:text="${item.materialId}"></span>
-                                                    </span>
-                                                    <span class="badge bg-warning material-badge">
-                                                        <span th:text="${item.orderedQuantity}"></span> бр.
-                                                    </span>
-                                                </div>
+                                                <span class="badge bg-warning material-badge">
+                                                    <span th:text="${item.orderedQuantity}"></span> бр.
+                                                </span>
+                                                <a th:href="@{/material-order/item/edit/{id}(id=${item.id})}" class="btn btn-sm btn-warning">Редактирай</a>
                                             </div>
                                         </div>
                                     </div>
@@ -171,18 +162,5 @@
         </main>
     </div>
 </div>
-
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        const navbar = document.getElementById("sidebar");
-        const toggler = document.querySelector("a.sidebar-toggle");
-
-        if(toggler) {
-            toggler.addEventListener("click", () => {
-                navbar.classList.toggle("collapsed");
-            });
-        }
-    });
-</script>
 </body>
 </html>

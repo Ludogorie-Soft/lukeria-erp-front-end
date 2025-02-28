@@ -1,6 +1,7 @@
 package com.example.LukeriaFrontendApplication.config;
 
 import com.example.LukeriaFrontendApplication.dtos.MaterialOrderDTO;
+import com.example.LukeriaFrontendApplication.dtos.MaterialOrderItemDTO;
 import jakarta.validation.Valid;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
@@ -32,5 +33,9 @@ public interface MaterialOrderClient {
     @PostMapping("/submit")
     MaterialOrderDTO submitMaterialOrder(@Valid @RequestBody MaterialOrderDTO materialOrderDTO,
                                          @RequestHeader("Authorization") String auth);
-
+    @GetMapping("/items")
+    List<MaterialOrderItemDTO> getAllMaterialOrderItems(@RequestHeader("Authorization") String auth);
+    @PutMapping("/item/update")
+    MaterialOrderItemDTO updateMaterialOrderItem(@Valid @RequestBody MaterialOrderItemDTO materialOrderItemDTO,
+                                                 @RequestHeader("Authorization") String auth);
 }
