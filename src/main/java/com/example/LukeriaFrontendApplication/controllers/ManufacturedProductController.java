@@ -1,10 +1,7 @@
 package com.example.LukeriaFrontendApplication.controllers;
 
 import com.example.LukeriaFrontendApplication.config.CartonClient;
-import com.example.LukeriaFrontendApplication.config.ImageClient;
 import com.example.LukeriaFrontendApplication.config.PackageClient;
-import com.example.LukeriaFrontendApplication.config.ProducedProductsClient;
-import com.example.LukeriaFrontendApplication.config.ProductClient;
 import com.example.LukeriaFrontendApplication.dtos.ManufacturedProductDTO;
 import com.example.LukeriaFrontendApplication.dtos.PackageDTO;
 import jakarta.servlet.http.HttpServletRequest;
