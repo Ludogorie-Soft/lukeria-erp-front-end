@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:insert="~{fragments/links}"></th:block>
+    <title>Редакция на артикул</title>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const materialTypeSelect = document.getElementById("materialType");
+            const materialIdSelect = document.getElementById("materialId");
+
+            // Get the initially selected material ID from Thymeleaf
+            const selectedMaterialId = materialIdSelect.getAttribute("data-selected");
+
+            function updateMaterialOptions(clearSelection) {
+                const selectedType = materialTypeSelect.value;
+                const groups = materialIdSelect.querySelectorAll(".material-group");
+
+                // Hide all groups and show only the relevant one
+                groups.forEach(group => {
+                    if (group.getAttribute("data-type") === selectedType) {
+                        group.style.display = "block";
+                    } else {
+                        group.style.display = "none";
+                    }
+                });
+
+                // If changing material type, clear selection
+                if (clearSelection) {
+                    materialIdSelect.value = "";
+                } else if (selectedMaterialId) {
+                    // Try to set the previously selected value if it still exists in the new list
+                    const optionToSelect = materialIdSelect.querySelector(`option[value="${selectedMaterialId}"]`);
+                    if (optionToSelect) {
+                        materialIdSelect.value = selectedMaterialId;
+                    }
+                }
+            }
+
+            // Update options when changing material type (clears selection)
+            materialTypeSelect.addEventListener("change", function() {
+                updateMaterialOptions(true);
+            });
+
+            // Initialize dropdown on page load (preserves selection)
+            updateMaterialOptions(false);
+        });
+    </script>
+
+</head>
+<body>
+<div class="wrapper">
+    <th:block th:insert="~{fragments/header}"></th:block>
+    <div class="main">
+        <main class="content">
+            <form th:action="@{/material-order/item/update}" th:object="${materialOrderItem}" method="post">
+
+            <!-- Hidden input to make sure the ID is passed correctly -->
+            <input type="hidden" th:field="*{id}">
+
+            <div class="mb-3">
+                <label class="form-label">Тип на материала</label>
+                <select class="form-control" id="materialType" th:field="*{materialType}" required>
+                    <option value="CARTON">Кашон</option>
+                    <option value="PACKAGE">Кутия</option>
+                    <option value="PLATE">Тарелка</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Конкретен материал</label>
+                <select class="form-control" id="materialId" th:field="*{materialId}" required>
+                    <option value="">Избери...</option>
+                    <optgroup label="Кашони" class="material-group" data-type="CARTON">
+                        <option th:each="carton : ${cartons}" th:value="${carton.id}" th:text="${carton.name}"></option>
+                    </optgroup>
+                    <optgroup label="Кутии" class="material-group" data-type="PACKAGE">
+                        <option th:each="package : ${packages}" th:value="${package.id}" th:text="${package.name}"></option>
+                    </optgroup>
+                    <optgroup label="Тарелки" class="material-group" data-type="PLATE">
+                        <option th:each="plate : ${plates}" th:value="${plate.id}" th:text="${plate.name}"></option>
+                    </optgroup>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Поръчано количество</label>
+                <input type="number" class="form-control" th:field="*{orderedQuantity}" min="1" required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Получено количество</label>
+                <input type="number" class="form-control" th:field="*{receivedQuantity}" min="0">
+            </div>
+
+            <div class="mb-3 text-center">
+                <img th:if="*{photo}" th:src="@{${S3bucketImagesLink} + '/' + *{photo}}" class="img-fluid" alt="Снимка на материал">
+            </div>
+
+            <button type="submit" class="btn btn-primary">Запази промените</button>
+            <a th:href="@{/material-order/show}" class="btn btn-secondary">Отказ</a>
+        </form>
+
+        </main>
+    </div>
+</div>
+</body>
+</html>

@@ -2,17 +2,20 @@ package com.example.LukeriaFrontendApplication.controllers;
 
 import com.example.LukeriaFrontendApplication.config.*;
 import com.example.LukeriaFrontendApplication.dtos.*;
+import com.example.LukeriaFrontendApplication.enums.MaterialType;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @org.springframework.stereotype.Controller
 @RequiredArgsConstructor
@@ -38,56 +41,139 @@ public class MaterialOrderController {
     @GetMapping("/create")
     String createMaterialOrder(Model model, HttpServletRequest request) {
         String token = (String) request.getSession().getAttribute("sessionToken");
-        MaterialOrderDTO materialOrderDTO = new MaterialOrderDTO();
-        model.addAttribute(CARTONTXT, cartonClient.getAllCartons(token));
-        model.addAttribute(PACKAGETXT, packageClient.getAllPackages(token));
-        model.addAttribute(PLATETXT, plateClient.getAllPlates(token));
-        model.addAttribute("order", materialOrderDTO);
+        model.addAttribute("cartons", cartonClient.getAllCartons(token));
+        model.addAttribute("packages", packageClient.getAllPackages(token));
+        model.addAttribute("plates", plateClient.getAllPlates(token));
+        model.addAttribute("order", new MaterialOrderDTO());
         model.addAttribute("S3bucketImagesLink", S3bucketImagesLink);
         return "MaterialOrder/create";
     }
 
+    @GetMapping("/item/edit/{id}")
+    public String showUpdateForm(@PathVariable Long id, Model model, HttpServletRequest request) {
+        String token = (String) request.getSession().getAttribute("sessionToken");
+
+        // Fetch all material order items
+        List<MaterialOrderItemDTO> materialOrderItemDTOS = materialOrderClient.getAllMaterialOrderItems(token);
+
+        for (MaterialOrderItemDTO item : materialOrderItemDTOS) {
+            if (item.getId().equals(id)) {
+                model.addAttribute("materialOrderItem", item);
+                model.addAttribute("cartons", cartonClient.getAllCartons(token));
+                model.addAttribute("packages", packageClient.getAllPackages(token));
+                model.addAttribute("plates", plateClient.getAllPlates(token));
+                model.addAttribute("S3bucketImagesLink", S3bucketImagesLink);
+                return "MaterialOrder/item/edit";
+            }
+        }
+        return "redirect:/material-order/show";
+    }
+
+    @PostMapping("/item/update")
+    public String updateMaterialOrderItem(
+            @ModelAttribute("materialOrderItem") @Valid MaterialOrderItemDTO materialOrderItemDTO,
+            BindingResult bindingResult, HttpServletRequest request,
+            RedirectAttributes redirectAttributes) {
+        String token = (String) request.getSession().getAttribute("sessionToken");
+//        if (materialOrderItemDTO.getId() == null) {
+//     throw new NoSuchElementException("Material order item not found.");
+//        }
+        if (bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.materialOrderItem", bindingResult);
+            redirectAttributes.addFlashAttribute("materialOrderItem", materialOrderItemDTO);
+            return "redirect:/material-order/edit/" + materialOrderItemDTO.getId(); // Redirect back to edit form
+        }
+
+//        try {
+        materialOrderClient.updateMaterialOrderItem(materialOrderItemDTO, token);
+        redirectAttributes.addFlashAttribute("successMessage", "Материалът беше успешно актуализиран.");
+//        } catch (Exception e) {
+//            redirectAttributes.addFlashAttribute("errorMessage", "Грешка при обновяването на материала.");
+//        }
+
+        return "redirect:/material-order/show";
+    }
+
+
+//    @PostMapping("/{id}/update")
+//    public String updateMaterialOrderItem(@PathVariable Long id, @ModelAttribute MaterialOrderItemDTO itemDTO) {
+//        materialOrderItemService.updateItem(id, itemDTO);
+//        return "redirect:/material-order/show/" + itemDTO.getOrderId();
+//    }
+
+    //    @GetMapping("/show")
+//    public String index(Model model, HttpServletRequest request) {
+//        String token = (String) request.getSession().getAttribute("sessionToken");
+//        List<MaterialOrderDTO> materialOrderDTOS = materialOrderClient.getAllMaterialOrders(token);
+//
+//        for (MaterialOrderDTO materialOrder : materialOrderDTOS) {
+//            MaterialOrderHelperForShowDTO materialOrderHelperForShowDTO = new MaterialOrderHelperForShowDTO();
+//            Long materialId = materialOrder.getMaterialId();
+//
+//            if (materialOrder.getMaterialType().equalsIgnoreCase("Carton")) {
+//                CartonDTO cartonDTO = cartonClient.getCartonById(materialId, token);
+//                materialOrderHelperForShowDTO.setName(cartonDTO.getName());
+//            }
+//            if (materialOrder.getMaterialType().equalsIgnoreCase("Plate")) {
+//                PlateDTO plateDTO = plateClient.getPlateById(materialId, token);
+//                materialOrderHelperForShowDTO.setName(plateDTO.getName());
+//            }
+//            if (materialOrder.getMaterialType().equalsIgnoreCase("Package")) {
+//                PackageDTO packageDTO = packageClient.getPackageById(materialId, token);
+//                String packageString = packageDTO.getProductCode()+" - "+packageDTO.getName();
+//                materialOrderHelperForShowDTO.setName(packageString);
+//            }
+//
+//
+//
+//
+//            materialOrderHelperForShowDTO.setId(materialOrder.getId());
+//            materialOrderHelperForShowDTO.setMaterialType(materialOrder.getMaterialType());
+//            materialOrderHelperForShowDTO.setOrderedQuantity(materialOrder.getOrderedQuantity());
+//            materialOrderHelperForShowDTO.setMaterialId(materialId);
+//            materialOrderHelperForShowDTO.setReceivedQuantity(materialOrder.getReceivedQuantity());
+//            materialOrderHelperForShowDTO.setArrivalDate(materialOrder.getArrivalDate());
+//            materialOrderHelperForShowDTO.setMaterialPrice(materialOrder.getMaterialPrice());
+//            forShow.add(materialOrderHelperForShowDTO);
+//        }
+//
+//        Collections.reverse(forShow);
+//        model.addAttribute(ORDERTXT, forShow);
+//        return MATERIALSORDERSHOW;
+//    }
     @GetMapping("/show")
     public String index(Model model, HttpServletRequest request) {
         String token = (String) request.getSession().getAttribute("sessionToken");
-        List<MaterialOrderDTO> materialOrderDTOS = materialOrderClient.getAllMaterialOrders(token);
-        List<MaterialOrderHelperForShowDTO> forShow = new ArrayList<>();
+        List<MaterialOrderDTO> materialOrders = materialOrderClient.getAllMaterialOrders(token);
 
-        for (MaterialOrderDTO materialOrder : materialOrderDTOS) {
-            MaterialOrderHelperForShowDTO materialOrderHelperForShowDTO = new MaterialOrderHelperForShowDTO();
-            Long materialId = materialOrder.getMaterialId();
+        materialOrders.forEach(order ->
+                order.getItems().forEach(item -> {
+                    if (item.getMaterialType() == MaterialType.CARTON) {
+                        CartonDTO carton = cartonClient.getCartonById(item.getMaterialId(), token);
+                        item.setMaterialName(carton.getName());
+                    }
+                })
+        );
 
-            if (materialOrder.getMaterialType().equalsIgnoreCase("Carton")) {
-                CartonDTO cartonDTO = cartonClient.getCartonById(materialId, token);
-                materialOrderHelperForShowDTO.setName(cartonDTO.getName());
-            }
-            if (materialOrder.getMaterialType().equalsIgnoreCase("Plate")) {
-                PlateDTO plateDTO = plateClient.getPlateById(materialId, token);
-                materialOrderHelperForShowDTO.setName(plateDTO.getName());
-            }
-            if (materialOrder.getMaterialType().equalsIgnoreCase("Package")) {
-                PackageDTO packageDTO = packageClient.getPackageById(materialId, token);
-                String packageString = packageDTO.getProductCode()+" - "+packageDTO.getName();
-                materialOrderHelperForShowDTO.setName(packageString);
-            }
+        List<PackageDTO> packages = packageClient.getAllPackages(token);
+        Map<Long, PackageDTO> packageMap = packages.stream()
+                .collect(Collectors.toMap(PackageDTO::getId, Function.identity()));
 
 
+        List<PlateDTO> plates = plateClient.getAllPlates(token);
+        Map<Long, PlateDTO> plateMap = plates.stream()
+                .collect(Collectors.toMap(PlateDTO::getId, Function.identity()));
 
-
-            materialOrderHelperForShowDTO.setId(materialOrder.getId());
-            materialOrderHelperForShowDTO.setMaterialType(materialOrder.getMaterialType());
-            materialOrderHelperForShowDTO.setOrderedQuantity(materialOrder.getOrderedQuantity());
-            materialOrderHelperForShowDTO.setMaterialId(materialId);
-            materialOrderHelperForShowDTO.setReceivedQuantity(materialOrder.getReceivedQuantity());
-            materialOrderHelperForShowDTO.setArrivalDate(materialOrder.getArrivalDate());
-            materialOrderHelperForShowDTO.setMaterialPrice(materialOrder.getMaterialPrice());
-            forShow.add(materialOrderHelperForShowDTO);
-        }
-
-        Collections.reverse(forShow);
-        model.addAttribute(ORDERTXT, forShow);
-        return MATERIALSORDERSHOW;
+        model.addAttribute("packageMap", packageMap); // Добавяме Map-а за пакети в Thymeleaf
+        model.addAttribute("plateMap", plateMap); // Добавяме Map-а за плочи в Thymeleaf
+        model.addAttribute("packages", packages);
+        model.addAttribute("plates", plates);
+        model.addAttribute("materialOrders", materialOrders);
+        model.addAttribute("MaterialTypes", MaterialType.values());
+        model.addAttribute("S3bucketImagesLink", S3bucketImagesLink);
+        return "MaterialOrder/show";
     }
+
 
     @GetMapping("/materials/{id}")
     public String showMaterialForOrderId(@PathVariable("id") Long id, Model model, HttpServletRequest request) {
@@ -133,12 +219,29 @@ public class MaterialOrderController {
         return "MaterialOrder/showMaterialForOrderId";
     }
 
-    @PostMapping("/submit")
-    public ModelAndView submitMaterialOrder(@ModelAttribute("order") MaterialOrderDTO materialOrderDTO, HttpServletRequest request) {
+    //    @PostMapping("/submit")
+//    public ModelAndView submitMaterialOrder(@ModelAttribute("order") MaterialOrderDTO materialOrderDTO, HttpServletRequest request) {
+//        String token = (String) request.getSession().getAttribute("sessionToken");
+//        materialOrderClient.createMaterialOrder(materialOrderDTO, token);
+//        return new ModelAndView(REDIRECTTXT);
+//    }
+    @PostMapping("/order-materials")
+    public String submitMaterialOrder(@ModelAttribute MaterialOrderDTO order, HttpServletRequest request, RedirectAttributes redirectAttributes) {
         String token = (String) request.getSession().getAttribute("sessionToken");
-        materialOrderClient.createMaterialOrder(materialOrderDTO, token);
-        return new ModelAndView(REDIRECTTXT);
+        for (int i = 0; i < order.getItems().size(); i++) {
+            order.getItems().get(i).setReceivedQuantity(0);
+        }
+
+        try {
+            materialOrderClient.submitMaterialOrder(order, token);
+            redirectAttributes.addFlashAttribute("successMessage", "Поръчката е изпратена успешно!");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Възникна грешка при изпращането на поръчката.");
+        }
+
+        return "redirect:/material-order/show";
     }
+
 
     @PostMapping("/delete/{id}")
     ModelAndView deleteMaterialOrderById(@PathVariable("id") Long id, Model model, HttpServletRequest request) {
@@ -147,16 +250,16 @@ public class MaterialOrderController {
         return new ModelAndView(REDIRECTTXT);
     }
 
-    @GetMapping("/edit/{id}")
-    String editMaterialOrder(@PathVariable(name = "id") Long id, Model model, HttpServletRequest request) {
-        String token = (String) request.getSession().getAttribute("sessionToken");
-        MaterialOrderDTO existingOrder = materialOrderClient.getMaterialOrderById(id, token);
-        model.addAttribute(CARTONTXT, cartonClient.getAllCartons(token));
-        model.addAttribute(PACKAGETXT, packageClient.getAllPackages(token));
-        model.addAttribute(PLATETXT, plateClient.getAllPlates(token));
-        model.addAttribute("order", existingOrder);
-        return "MaterialOrder/edit";
-    }
+//    @GetMapping("/edit/{id}")
+//    String editMaterialOrder(@PathVariable(name = "id") Long id, Model model, HttpServletRequest request) {
+//        String token = (String) request.getSession().getAttribute("sessionToken");
+//        MaterialOrderDTO existingOrder = materialOrderClient.getMaterialOrderById(id, token);
+//        model.addAttribute(CARTONTXT, cartonClient.getAllCartons(token));
+//        model.addAttribute(PACKAGETXT, packageClient.getAllPackages(token));
+//        model.addAttribute(PLATETXT, plateClient.getAllPlates(token));
+//        model.addAttribute("order", existingOrder);
+//        return "MaterialOrder/edit";
+//    }
 
     @PostMapping("/editSubmit/{id}")
     ModelAndView editMaterialOrder(@PathVariable(name = "id") Long id, MaterialOrderDTO materialOrderDTO, HttpServletRequest request) {

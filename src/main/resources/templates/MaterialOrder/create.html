@@ -1,115 +1,137 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
-
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <!--    LINKS  -->
     <th:block th:insert="~{fragments/links}"></th:block>
-
-    <title> Поръчка на материали </title>
-    <link rel="icon" type="image/x-icon" href="/img/photos/noImage.png">
+    <title>Поръчка на материали</title>
     <link href="/css/form.css" rel="stylesheet">
+    <style>
+        /* Custom button styles */
+        .btn-primary { background-color: #007bff; color: white; border-radius: 5px; padding: 10px 15px; }
+        .btn-danger { background-color: #dc3545; color: white; border-radius: 5px; padding: 5px 10px; }
+        .btn-primary:hover, .btn-danger:hover { opacity: 0.8; }
+    </style>
 </head>
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        const navbar = document.getElementById("sidebar");
-        console.log(navbar);
-        const toggler = document.querySelector("a.sidebar-toggle");
-        toggler.addEventListener("click", () => {
-        navbar.classList.toggle("collapsed");
-        });
-    });
-</script>
 <body>
 <div class="wrapper">
     <th:block th:insert="~{fragments/header}"></th:block>
     <div class="main">
-        <nav class="navbar navbar-expand navbar-light navbar-bg">
-            <a class="sidebar-toggle js-sidebar-toggle">
-                <i class="hamburger align-self-center"></i>
-            </a>
-        </nav>
         <main class="content">
-            <div class="form-container">
-                <div class="card custom-card-width-lg">
-                    <div class="card-header">
-                        <h5 class="card-title mb-0">Създай поръчка на материал</h5>
-                    </div>
-                    <div class="card-body">
-                        <form action="/material-order/submit" method="post">
-                            <div class="form-group">
-                                <label for="materialId">Вид на материала:</label>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="materialType" value="CARTON" id="materialType">
-                                    <label class="form-check-label" for="materialType">Кашон</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="materialType" value="PACKAGE" id="materialType1">
-                                    <label class="form-check-label" for="materialType1">Кутия</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="materialType" value="PLATE" id="materialType2">
-                                    <label class="form-check-label" for="materialType2">Тарелка</label>
-                                </div>
-                            </div>
-                            <!-- Plate dropdown (with image) -->
-                            <div id="plateDropdown" class="material-dropdown" style="display: none;">
-                                <label for="plateId">Тарелки:</label>
-                                <select class="form-select select2" id="plateId" name="materialId">
-                                    <option th:each="plate : ${plates}"
-                                            th:value="${plate.id}"
-                                            th:data-image-url="@{${S3bucketImagesLink} + '/' + ${plate.photo}}"
-                                            th:text="${plate.id} + ' - ' + ${plate.name}">
-                                        <img th:if="${plate.photo != null}"
-                                             th:src="@{${S3bucketImagesLink} + '/' + ${plate.photo}}"
-                                             alt="no image" height="50" width="50">
-                                        <span th:text="${plate.name}"></span>
-                                    </option>
+            <form method="post" action="/material-order/order-materials">
+                <div id="itemsContainer">
+                    <!-- Initial row -->
+                    <div class="material-item">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label>Тип материал</label>
+                                <select class="form-select material-type" name="items[0].materialType" required>
+                                    <option value="">Избери...</option>
+                                    <option value="CARTON">Кашон</option>
+                                    <option value="PACKAGE">Кутия</option>  <!-- Changed from Опаковка to Тарелка -->
+                                    <option value="PLATE">Тарелка</option>  <!-- Swapped names -->
                                 </select>
                             </div>
+                            <div class="col-md-4">
+                                <label>Конкретен материал</label>
+                                <select class="form-select material-id" name="items[0].materialId" required>
+                                    <option value="">Избери...</option>
 
-                            <!-- Carton dropdown (without image) -->
-                            <div id="cartonDropdown" class="material-dropdown" style="display: none;">
-                                <label for="cartonId">Кашони:</label>
-                                <select class="form-select select2" id="cartonId" name="materialId">
-                                    <option th:each="carton : ${cartons}"
-                                            th:value="${carton.id}"
-                                            th:text="${carton.id} + ' - ' + ${carton.name}">
-                                    </option>
+                                    <!-- Cartons -->
+                                    <optgroup label="Кашони" class="material-group" data-type="CARTON">
+                                        <option th:each="carton : ${cartons}" th:value="${carton.id}" th:text="${carton.name}"></option>
+                                    </optgroup>
+
+                                    <!-- Packages (now labeled as Тарелки) -->
+                                    <optgroup label="Тарелки" class="material-group" data-type="PACKAGE">
+                                        <option th:each="package : ${packages}" th:value="${package.id}" th:text="${package.name}"></option>
+                                    </optgroup>
+
+                                    <!-- Plates (now labeled as Опаковки) -->
+                                    <optgroup label="Опаковки" class="material-group" data-type="PLATE">
+                                        <option th:each="plate : ${plates}" th:value="${plate.id}" th:text="${plate.name}"></option>
+                                    </optgroup>
+
                                 </select>
                             </div>
-
-                            <!-- Package dropdown (with image) -->
-                            <div id="packageDropdown" class="material-dropdown" style="display: none;">
-                                <label for="packageId">Кутии:</label>
-                                <select class="form-select select2" id="packageId" name="materialId">
-                                    <option th:each="package : ${packages}"
-                                            th:value="${package.id}"
-                                            th:data-image-url="@{${S3bucketImagesLink} + '/' + ${package.photo}}"
-                                            th:text="${package.productCode} + ' - ' + ${package.name}">
-                                        <img th:if="${package.photo != null}"
-                                             th:src="@{${S3bucketImagesLink} + '/' + ${package.photo}}"
-                                             alt="no image" height="50" width="50">
-                                        <span th:text="${package.name}"></span>
-                                    </option>
-                                </select>
+                            <div class="col-md-3">
+                                <label>Количество</label>
+                                <input type="number" class="form-control" name="items[0].orderedQuantity" min="1" required>
                             </div>
-
-                            <div class="form-group">
-                                <label for="orderedQuantity">Брой:</label>
-                                <input type="number" id="orderedQuantity" name="orderedQuantity" required
-                                       th:field="${order.orderedQuantity}" min="1" oninput="validity.valid||(value='');"/>
+                            <div class="col-md-1">
+                                <button type="button" class="btn btn-danger remove-item">✕</button>
                             </div>
-                            <div class="text-center">
-                                <button type="submit" class="btn btn-primary">Поръчай</button>
-                            </div>
-                        </form>
+                        </div>
                     </div>
                 </div>
-            </div>
+
+                <button type="button" class="btn btn-primary" id="addItem">Добави материал</button>
+                <button type="submit" class="btn btn-success">Изпрати</button>
+            </form>
         </main>
     </div>
 </div>
 
-<script src="/js/material-order.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        let itemIndex = 1; // Start from 1 since we already have the first row
+
+        // Function to filter material dropdown based on selected type
+        function filterMaterials(selectElement) {
+            let selectedType = selectElement.value;
+            let materialSelect = selectElement.closest(".row").querySelector(".material-id");
+            let options = materialSelect.querySelectorAll(".material-group");
+
+            options.forEach(group => {
+                if (group.getAttribute("data-type") === selectedType) {
+                    group.style.display = "block";
+                } else {
+                    group.style.display = "none";
+                }
+            });
+
+            // Reset selected material when type changes
+            materialSelect.value = "";
+        }
+
+        // Attach event listener to all material type dropdowns
+        document.querySelectorAll(".material-type").forEach(select => {
+            select.addEventListener("change", function() {
+                filterMaterials(this);
+            });
+        });
+
+        // Add new material row
+        document.getElementById("addItem").addEventListener("click", function() {
+            const container = document.getElementById("itemsContainer");
+
+            // Clone the first material-item and modify the names to include the new index
+            const newItem = container.firstElementChild.cloneNode(true);
+
+            // Update input names
+            newItem.querySelector(".material-type").setAttribute("name", `items[${itemIndex}].materialType`);
+            newItem.querySelector(".material-id").setAttribute("name", `items[${itemIndex}].materialId`);
+            newItem.querySelector(".form-control").setAttribute("name", `items[${itemIndex}].orderedQuantity`);
+
+            // Attach event listener for filtering
+            newItem.querySelector(".material-type").addEventListener("change", function() {
+                filterMaterials(this);
+            });
+
+            // Reset values
+            newItem.querySelector(".material-type").value = "";
+            newItem.querySelector(".material-id").value = "";
+
+            // Append new row
+            container.appendChild(newItem);
+            itemIndex++;
+        });
+
+        // Remove material row
+        document.addEventListener("click", function(event) {
+            if (event.target.classList.contains("remove-item")) {
+                event.target.closest(".material-item").remove();
+            }
+        });
+    });
+</script>
 </body>
 </html>
