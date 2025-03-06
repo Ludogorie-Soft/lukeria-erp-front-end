@@ -32,7 +32,6 @@ public class DatabaseController {
     private final MonthlyOrderClient monthlyOrderClient;
     private final MonthlyOrderProductClient monthlyOrderProductClient;
     private final UserClient userClient;
-    private final ProducedProductsClient manufacturedProductsClient;
 
     @GetMapping("/show")
     public String showPackage(Model model, HttpServletRequest request) {
@@ -52,7 +51,7 @@ public class DatabaseController {
         List<MonthlyOrderProductDTO> monthlyOrderProductDTOS = monthlyOrderProductClient.getAllMonthlyProductOrders(token);
         List<UserDTO> userDTOS = userClient.getAllUsers(token);
 
-        List<ManufacturedProductDTO> producedProducts = manufacturedProductsClient.getAllManufacturedProducts(token);
+        List<ManufacturedProductDTO> producedProducts = cartonClient.getAllManufacturedProducts(token);
         model.addAttribute("producedProducts", producedProducts);
 
 
