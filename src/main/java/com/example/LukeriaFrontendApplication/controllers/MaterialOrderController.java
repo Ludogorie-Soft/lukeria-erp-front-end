@@ -7,17 +7,15 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @org.springframework.stereotype.Controller
 @RequiredArgsConstructor
@@ -172,8 +170,17 @@ public class MaterialOrderController {
                 })
         );
 
+        List<PackageDTO> packages = packageClient.getAllPackages(token);
+        Map<Long, PackageDTO> packageMap = packages.stream()
+                .collect(Collectors.toMap(PackageDTO::getId, Function.identity()));
+
+        model.addAttribute("packageMap", packageMap); // Добавяме Map-а в Thymeleaf
+        List<PlateDTO> plates = plateClient.getAllPlates(token);
+        model.addAttribute("packages", packages);
+        model.addAttribute("plates", plates);
         model.addAttribute("materialOrders", materialOrders);
         model.addAttribute("MaterialTypes", MaterialType.values());
+        model.addAttribute("S3bucketImagesLink", S3bucketImagesLink);
         return "MaterialOrder/show";
     }
 
