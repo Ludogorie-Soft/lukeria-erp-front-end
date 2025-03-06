@@ -148,24 +148,9 @@ public class MaterialOrderController {
 
         materialOrders.forEach(order ->
                 order.getItems().forEach(item -> {
-                    switch (item.getMaterialType()) {
-                        case CARTON:
-                            CartonDTO carton = cartonClient.getCartonById(item.getMaterialId(), token);
-                            item.setMaterialName(carton.getName());
-                            break;
-                        case PACKAGE:
-                            PackageDTO packageDTO = packageClient.getPackageById(item.getMaterialId(), token);
-                            if (packageDTO.getPhoto() != null) {
-                                item.setPhoto(S3bucketImagesLink + "/" + packageDTO.getPhoto()); // ✅ Set full URL
-                            }
-                            break;
-                        case PLATE:
-                            PlateDTO plate = plateClient.getPlateById(item.getMaterialId(), token);
-                            item.setMaterialName(plate.getName());
-                            if (plate.getPhoto() != null) {
-                                item.setPhoto(S3bucketImagesLink + "/" + plate.getPhoto()); // ✅ Set full URL
-                            }
-                            break;
+                    if (item.getMaterialType() == MaterialType.CARTON) {
+                        CartonDTO carton = cartonClient.getCartonById(item.getMaterialId(), token);
+                        item.setMaterialName(carton.getName());
                     }
                 })
         );
@@ -174,8 +159,13 @@ public class MaterialOrderController {
         Map<Long, PackageDTO> packageMap = packages.stream()
                 .collect(Collectors.toMap(PackageDTO::getId, Function.identity()));
 
-        model.addAttribute("packageMap", packageMap); // Добавяме Map-а в Thymeleaf
+
         List<PlateDTO> plates = plateClient.getAllPlates(token);
+        Map<Long, PlateDTO> plateMap = plates.stream()
+                .collect(Collectors.toMap(PlateDTO::getId, Function.identity()));
+
+        model.addAttribute("packageMap", packageMap); // Добавяме Map-а за пакети в Thymeleaf
+        model.addAttribute("plateMap", plateMap); // Добавяме Map-а за плочи в Thymeleaf
         model.addAttribute("packages", packages);
         model.addAttribute("plates", plates);
         model.addAttribute("materialOrders", materialOrders);
