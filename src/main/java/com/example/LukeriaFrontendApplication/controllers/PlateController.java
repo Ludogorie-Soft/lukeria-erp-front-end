@@ -22,8 +22,8 @@ import java.util.*;
 public class PlateController {
     private static final String CARTONTXT = "plate";
     private static final String REDIRECTTXT = "redirect:/plate/show";
-    private static final String S3bucketImagesLink = "https://lukeria-images.s3.eu-central-1.amazonaws.com";
-
+    @Value("${aws.s3.bucket-url}")
+    private String S3bucketImagesLink;;
     private final PlateClient plateClient;
     private final ImageClient imageService;
     
