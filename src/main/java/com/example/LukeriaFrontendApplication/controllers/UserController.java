@@ -119,7 +119,7 @@ public class UserController {
     @PostMapping("/edit/{id}")
     ModelAndView editSubmitUser(@PathVariable(name = "id") Long id, UserDTO userDTO, HttpServletRequest request) {
         String token = (String) request.getSession().getAttribute(SESSION_TOKEN);
-        try {
+//        try {
             UserDTO authenticatedUser = userClient.findAuthenticatedUser(token);
             UserDTO existingUser = userClient.getUserById(id, token);
 
@@ -133,11 +133,13 @@ public class UserController {
                 return new ModelAndView(REDIRECTTXT2);
             }
             userClient.updateUser(id, userDTO, token);
-        } catch (Exception ex) {
-            ModelAndView modelAndView = new ModelAndView("redirect:/user/editUser/" + userDTO.getId());
-            modelAndView.addObject(ERRORTXT, "Потребител с този имейл вече съществува!");
-            return modelAndView;
-        }
+//        } catch (Exception ex) {
+//            ModelAndView modelAndView = new ModelAndView("redirect:/user/editUser/" + userDTO.getId());
+//            modelAndView.addObject(ERRORTXT, "Потребител с този имейл вече съществува!");
+//            return modelAndView;
+//        }
+        //we don't know what exception is exactly thrown
+        //don't think the exception is caused by the email
 
 
         return new ModelAndView(REDIRECTTXT);
