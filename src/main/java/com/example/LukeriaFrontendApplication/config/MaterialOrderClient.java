@@ -4,6 +4,7 @@ import com.example.LukeriaFrontendApplication.dtos.MaterialOrderDTO;
 import com.example.LukeriaFrontendApplication.dtos.MaterialOrderItemDTO;
 import jakarta.validation.Valid;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,12 +31,19 @@ public interface MaterialOrderClient {
 
     @GetMapping("/all-missing-materials")
     List<MaterialOrderDTO> allAvailableProducts(@RequestHeader("Authorization") String auth);
+
     @PostMapping("/submit")
     MaterialOrderDTO submitMaterialOrder(@Valid @RequestBody MaterialOrderDTO materialOrderDTO,
                                          @RequestHeader("Authorization") String auth);
+
     @GetMapping("/items")
     List<MaterialOrderItemDTO> getAllMaterialOrderItems(@RequestHeader("Authorization") String auth);
+
     @PutMapping("/item/update")
     MaterialOrderItemDTO updateMaterialOrderItem(@Valid @RequestBody MaterialOrderItemDTO materialOrderItemDTO,
                                                  @RequestHeader("Authorization") String auth);
+
+    @PutMapping("/edit/{id}")
+    MaterialOrderDTO updateWholeMaterialOrder(@PathVariable("id") Long id, @Valid @RequestBody MaterialOrderDTO materialOrderDTO, @RequestHeader("Authorization") String auth);
+
 }

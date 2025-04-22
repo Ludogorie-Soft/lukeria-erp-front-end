@@ -93,8 +93,6 @@
                                                     <span class="badge bg-success material-badge">
                                                         <span th:text="${item.orderedQuantity}"></span> бр.
                                                     </span>
-                                                    <a th:href="@{/material-order/item/edit/{id}(id=${item.id})}"
-                                                       class="btn btn-sm btn-warning">Редактирай</a>
                                                 </div>
                                             </div>
                                         </div>
@@ -138,8 +136,6 @@
                                                 <span class="badge bg-primary material-badge">
                                                     <span th:text="${item.orderedQuantity}"></span> бр.
                                                 </span>
-                                                <a th:href="@{/material-order/item/edit/{id}(id=${item.id})}"
-                                                   class="btn btn-sm btn-warning">Редактирай</a>
                                             </div>
                                         </div>
                                     </div>
@@ -180,13 +176,17 @@
                                                 <span class="badge bg-warning material-badge">
                                                     <span th:text="${item.orderedQuantity}"></span> бр.
                                                 </span>
-                                                <a th:href="@{/material-order/item/edit/{id}(id=${item.id})}"
-                                                   class="btn btn-sm btn-warning">Редактирай</a>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                        <div class="mt-4 text-end">
+                            <a th:href="@{/material-order/edit/{orderId}(orderId=${order.id})}"
+                               class="btn btn-outline-primary">
+                                <i class="fas fa-edit"></i> Редактирай поръчката
+                            </a>
                         </div>
                     </div>
                 </div>

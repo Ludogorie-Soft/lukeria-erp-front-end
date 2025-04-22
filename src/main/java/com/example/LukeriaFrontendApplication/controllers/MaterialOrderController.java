@@ -285,4 +285,18 @@ public class MaterialOrderController {
         }
         return "MaterialOrder/material";
     }
+
+    @GetMapping("/edit/{id}")
+    public String editOrder(@PathVariable Long id,HttpServletRequest request, Model model){
+        String token = (String) request.getSession().getAttribute("sessionToken");
+        MaterialOrderDTO materialOrderDTO = materialOrderClient.getMaterialOrderById(id,token);
+        model.addAttribute("materialOrder", materialOrderDTO);
+        return "MaterialOrder/editOrder";
+    }
+    @PostMapping("/update/{id}")
+    public String postUpdate(@PathVariable Long id, MaterialOrderDTO materialOrderDTO,HttpServletRequest request ){
+        String token = (String) request.getSession().getAttribute("sessionToken");
+        materialOrderClient.updateWholeMaterialOrder(id,materialOrderDTO,token);
+        return "redirect:/material-order/show";
+    }
 }

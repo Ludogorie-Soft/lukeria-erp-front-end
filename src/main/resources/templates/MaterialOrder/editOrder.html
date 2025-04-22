@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Редакция на поръчка</title>
+  <th:block th:insert="~{fragments/links}"></th:block>
+</head>
+<body>
+<div class="wrapper">
+  <th:block th:insert="~{fragments/header}"></th:block>
+  <div class="main">
+    <main class="content container mt-4">
+      <h2 class="mb-4">Редакция на поръчка №<span th:text="${materialOrder.id}"></span></h2>
+
+      <form th:action="@{/material-order/update/{id}(id=${materialOrder.id})}" th:object="${materialOrder}" method="post">
+        <input type="hidden" th:field="*{id}" />
+
+        <div class="mb-3">
+          <label class="form-label">Дата на доставка</label>
+          <input type="date" class="form-control" th:value="${materialOrder.arrivalDate}" readonly disabled />
+        </div>
+
+        <input type="hidden" th:field="*{status}" />
+
+        <h4 class="mb-3">Артикули в поръчката</h4>
+        <div th:each="item, iterStat : *{items}" class="card mb-3 p-3 shadow-sm">
+          <input type="hidden" th:field="*{items[__${iterStat.index}__].id}" />
+
+          <div class="row">
+            <div class="col-md-3">
+              <label class="form-label">Тип</label>
+              <select class="form-control" th:field="*{items[__${iterStat.index}__].materialType}">
+                <option value="CARTON">Кашон</option>
+                <option value="PACKAGE">Кутия</option>
+                <option value="PLATE">Тарелка</option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Материал ID</label>
+              <input type="text" class="form-control" th:field="*{items[__${iterStat.index}__].materialId}" />
+            </div>
+            <div class="col-md-2">
+              <label class="form-label">Поръчано</label>
+              <input type="number" min="1" class="form-control" th:field="*{items[__${iterStat.index}__].orderedQuantity}" />
+            </div>
+            <div class="col-md-2">
+              <label class="form-label">Получено</label>
+              <input type="number" min="0" class="form-control" th:field="*{items[__${iterStat.index}__].receivedQuantity}" />
+            </div>
+            <div class="col-md-1 d-flex align-items-end">
+              <button type="button" class="btn btn-outline-danger w-100" onclick="removeItem(this)">✖</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="mb-4 text-end">
+          <button type="submit" class="btn btn-success">Запази промените</button>
+          <a th:href="@{/material-order/show}" class="btn btn-secondary">Отказ</a>
+        </div>
+      </form>
+    </main>
+  </div>
+</div>
+
+<script>
+  function removeItem(button) {
+      const card = button.closest('.card');
+      if (card) {
+          card.remove();
+      }
+  }
+</script>
+
+</body>
+</html>
