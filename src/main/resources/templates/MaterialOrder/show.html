@@ -50,132 +50,232 @@
                 <h1 class="h3 mb-4">История на поръчките</h1>
                 <a href="/material-order/create" class="btn btn-primary mb-3">Създай поръчка</a>
 
-                <div th:each="order : ${materialOrders}" class="card mb-4 shadow-sm">
-                    <div class="card-header bg-light">
-                        <div class="row">
-                            <div class="col-md-4">
-                                <h5 class="mb-0">Поръчка №<span th:text="${order.id}"></span></h5>
-                            </div>
-                            <div class="col-md-8 text-muted small">
+                <h2 class="h4 mb-3 mt-5 text-warning">Поръчки в процес (Активни)</h2>
+                <th:block th:each="order : ${materialOrders}">
+                    <div th:if="${order.status != 'COMPLETED'}" class="card mb-4 shadow-sm">
+                        <div class="card-header bg-light">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <h5 class="mb-0">Поръчка №<span th:text="${order.id}"></span></h5>
+                                </div>
+                                <div class="col-md-8 text-muted small">
                                 <span class="me-3">
                                     <i class="fas fa-calendar-alt"></i>
                                     <span th:text="${#temporals.format(order.orderDate, 'dd.MM.yyyy HH:mm')}"></span>
                                 </span>
-                                <span th:if="${order.arrivalDate}" class="me-3">
+                                    <span th:if="${order.arrivalDate}" class="me-3">
                                     <i class="fas fa-truck"></i>
                                     <span th:text="${#temporals.format(order.arrivalDate, 'dd.MM.yyyy')}"></span>
                                 </span>
-                                <span th:classappend="${order.status == 'COMPLETED'} ? 'text-success' : 'text-warning'">
-                                    <i class="fas fa-check-circle"></i>
-                                    <span th:text="${order.status == 'COMPLETED'} ? 'Завършена' : 'Активна'"></span>
+                                    <span th:classappend="${order.status == 'COMPLETED'} ? 'text-success' : 'text-warning'">
+                                    <i class="fas fa-info-circle"></i> <span th:text="${order.status == 'COMPLETED'} ? 'Завършена' : 'Активна'"></span>
                                 </span>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="card-body">
-                        <div class="row g-3">
-                            <!-- Cartons Section -->
-                            <div th:if="${not #lists.isEmpty(order.items.?[materialType.name() == 'CARTON'])}" class="col-12">
-                                <h6 class="text-success mb-3">
-                                    <i class="fas fa-boxes"></i> Кашони
-                                </h6>
-                                <div class="row g-2">
-                                    <div th:each="item : ${order.items.?[materialType.name() == 'CARTON']}" class="col-md-4">
-                                        <div class="card material-card carton">
-                                            <div class="card-body">
-                                                <h6 class="card-title" th:text="${item.materialName}"></h6>
-                                                <div class="d-flex justify-content-between align-items-center">
+                        <div class="card-body">
+                            <div class="row g-3">
+                                <div th:if="${not #lists.isEmpty(order.items.?[materialType.name() == 'CARTON'])}" class="col-12">
+                                    <h6 class="text-success mb-3"><i class="fas fa-boxes"></i> Кашони</h6>
+                                    <div class="row g-2">
+                                        <div th:each="item : ${order.items.?[materialType.name() == 'CARTON']}" class="col-md-4">
+                                            <div class="card material-card carton">
+                                                <div class="card-body">
+                                                    <h6 class="card-title" th:text="${item.materialName}"></h6>
+                                                    <div class="d-flex justify-content-between align-items-center">
                                                     <span class="badge bg-success material-badge">
                                                         <span th:text="${item.orderedQuantity}"></span> бр.
                                                     </span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Packages Section -->
-                            <div th:if="${not #lists.isEmpty(order.items.?[materialType.name() == 'PACKAGE'])}" class="col-12 mt-4">
-                                <h6 class="text-primary mb-3">
-                                    <i class="fas fa-cube"></i> Опаковки
-                                </h6>
-                                <div class="row g-2">
-                                    <div th:each="item : ${order.items.?[materialType.name() == 'PACKAGE']}" class="col-md-3">
-                                        <div class="card material-card package">
-                                            <div class="card-body">
-                                                <div class="text-center mb-2">
-                                                    <img th:if="${packageMap[item.materialId]?.photo}"
-                                                         th:src="@{${S3bucketImagesLink} + '/' + ${packageMap[item.materialId]?.photo}}"
-                                                         class="material-image"
-                                                         alt="Снимка на опаковка"
-                                                         style="width: 100px; height: 100px; object-fit: cover;">
-                                                    <div th:unless="${packageMap[item.materialId]?.photo}"
-                                                         class="material-image d-flex align-items-center justify-content-center text-muted">
-                                                        <i class="fas fa-cube fa-2x"></i>
                                                     </div>
                                                 </div>
-                                                <h6 class="card-title mb-1"
-                                                    th:text="${packageMap[item.materialId]?.productCode + ' - ' + packageMap[item.materialId]?.name}"></h6>
-                                                <p>
-                                                    Материал ID: <span th:text="${item.materialId}"></span><br>
-                                                    КОД: <span th:text="${packageMap[item.materialId]?.productCode ?: 'Няма код'}"></span><br>
-                                                    Налични бройки: <span th:text="${packageMap[item.materialId]?.availableQuantity ?: 'Няма инфо'}"></span><br>
-                                                </p>
-                                                <span class="badge bg-primary material-badge">
-                                                    <span th:text="${item.orderedQuantity}"></span> бр.
-                                                </span>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
 
-                            <!-- Plates Section -->
-                            <div th:if="${not #lists.isEmpty(order.items.?[materialType.name() == 'PLATE'])}" class="col-12 mt-4">
-                                <h6 class="text-warning mb-3">
-                                    <i class="fas fa-utensils"></i> Тарелки
-                                </h6>
-                                <div class="row g-2">
-                                    <div th:each="item : ${order.items.?[materialType.name() == 'PLATE']}" class="col-md-3">
-                                        <div class="card material-card plate">
-                                            <div class="card-body">
-                                                <div class="text-center mb-2">
-                                                    <img th:if="${plateMap[item.materialId]?.photo}"
-                                                         th:src="@{${S3bucketImagesLink} + '/' + ${plateMap[item.materialId]?.photo}}"
-                                                         class="material-image"
-                                                         alt="Снимка на тарелка"
-                                                         style="width: 100px; height: 100px; object-fit: cover;">
-                                                    <div th:unless="${plateMap[item.materialId]?.photo}"
-                                                         class="material-image d-flex align-items-center justify-content-center text-muted">
-                                                        <i class="fas fa-utensils fa-2x"></i>
+                                <div th:if="${not #lists.isEmpty(order.items.?[materialType.name() == 'PACKAGE'])}" class="col-12 mt-4">
+                                    <h6 class="text-primary mb-3"><i class="fas fa-cube"></i> Опаковки</h6>
+                                    <div class="row g-2">
+                                        <div th:each="item : ${order.items.?[materialType.name() == 'PACKAGE']}" class="col-md-3">
+                                            <div class="card material-card package">
+                                                <div class="card-body">
+                                                    <div class="text-center mb-2">
+                                                        <img th:if="${packageMap[item.materialId]?.photo}"
+                                                             th:src="@{${S3bucketImagesLink} + '/' + ${packageMap[item.materialId]?.photo}}"
+                                                             class="material-image" alt="Снимка на опаковка" style="width: 100px; height: 100px; object-fit: cover;">
+                                                        <div th:unless="${packageMap[item.materialId]?.photo}"
+                                                             class="material-image d-flex align-items-center justify-content-center text-muted">
+                                                            <i class="fas fa-cube fa-2x"></i>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <h6 class="card-title mb-1" th:text="${plateMap[item.materialId]?.name}"></h6>
-                                                <p>
-                                                    Материал ID: <span th:text="${item.materialId}"></span><br>
-                                                    Налични бройки: <span th:text="${plateMap[item.materialId]?.availableQuantity ?: 'Няма инфо'}"></span><br>
-                                                </p>
-                                                <span class="badge bg-warning material-badge">
+                                                    <h6 class="card-title mb-1" th:text="${packageMap[item.materialId]?.productCode + ' - ' + packageMap[item.materialId]?.name}"></h6>
+                                                    <p>
+                                                        Материал ID: <span th:text="${item.materialId}"></span><br>
+                                                        КОД: <span th:text="${packageMap[item.materialId]?.productCode ?: 'Няма код'}"></span><br>
+                                                        Налични бройки: <span th:text="${packageMap[item.materialId]?.availableQuantity ?: 'Няма инфо'}"></span><br>
+                                                    </p>
+                                                    <span class="badge bg-primary material-badge">
                                                     <span th:text="${item.orderedQuantity}"></span> бр.
                                                 </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div th:if="${not #lists.isEmpty(order.items.?[materialType.name() == 'PLATE'])}" class="col-12 mt-4">
+                                    <h6 class="text-warning mb-3"><i class="fas fa-utensils"></i> Тарелки</h6>
+                                    <div class="row g-2">
+                                        <div th:each="item : ${order.items.?[materialType.name() == 'PLATE']}" class="col-md-3">
+                                            <div class="card material-card plate">
+                                                <div class="card-body">
+                                                    <div class="text-center mb-2">
+                                                        <img th:if="${plateMap[item.materialId]?.photo}"
+                                                             th:src="@{${S3bucketImagesLink} + '/' + ${plateMap[item.materialId]?.photo}}"
+                                                             class="material-image" alt="Снимка на тарелка" style="width: 100px; height: 100px; object-fit: cover;">
+                                                        <div th:unless="${plateMap[item.materialId]?.photo}"
+                                                             class="material-image d-flex align-items-center justify-content-center text-muted">
+                                                            <i class="fas fa-utensils fa-2x"></i>
+                                                        </div>
+                                                    </div>
+                                                    <h6 class="card-title mb-1" th:text="${plateMap[item.materialId]?.name}"></h6>
+                                                    <p>
+                                                        Материал ID: <span th:text="${item.materialId}"></span><br>
+                                                        Налични бройки: <span th:text="${plateMap[item.materialId]?.availableQuantity ?: 'Няма инфо'}"></span><br>
+                                                    </p>
+                                                    <span class="badge bg-warning material-badge">
+                                                    <span th:text="${item.orderedQuantity}"></span> бр.
+                                                </span>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <div class="mt-4 text-end">
-                            <a th:if="${order.status != 'COMPLETED'}"
-                               th:href="@{/material-order/edit/{orderId}(orderId=${order.id})}"
-                               class="btn btn-outline-primary">
-                                <i class="fas fa-edit"></i> Редактирай поръчката
-                            </a>
+                            <div class="mt-4 text-end">
+                                <a th:if="${order.status != 'COMPLETED'}"
+                                   th:href="@{/material-order/edit/{orderId}(orderId=${order.id})}"
+                                   class="btn btn-outline-primary">
+                                    <i class="fas fa-edit"></i> Редактирай поръчката
+                                </a>
+                            </div>
                         </div>
                     </div>
-                </div>
+                </th:block>
+
+                <hr class="my-5">
+
+                <h2 class="h4 mb-3 text-success">Завършени поръчки</h2>
+                <th:block th:each="order : ${materialOrders}">
+                    <div th:if="${order.status == 'COMPLETED'}" class="card mb-4 shadow-sm">
+                        <div class="card-header bg-light">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <h5 class="mb-0">Поръчка №<span th:text="${order.id}"></span></h5>
+                                </div>
+                                <div class="col-md-8 text-muted small">
+                                <span class="me-3">
+                                    <i class="fas fa-calendar-alt"></i>
+                                    <span th:text="${#temporals.format(order.orderDate, 'dd.MM.yyyy HH:mm')}"></span>
+                                </span>
+                                    <span th:if="${order.arrivalDate}" class="me-3">
+                                    <i class="fas fa-truck"></i>
+                                    <span th:text="${#temporals.format(order.arrivalDate, 'dd.MM.yyyy')}"></span>
+                                </span>
+                                    <span th:classappend="${order.status == 'COMPLETED'} ? 'text-success' : 'text-warning'">
+                                    <i class="fas fa-check-circle"></i> <span th:text="${order.status == 'COMPLETED'} ? 'Завършена' : 'Активна'"></span>
+                                </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card-body">
+                            <div class="row g-3">
+                                <div th:if="${not #lists.isEmpty(order.items.?[materialType.name() == 'CARTON'])}" class="col-12">
+                                    <h6 class="text-success mb-3"><i class="fas fa-boxes"></i> Кашони</h6>
+                                    <div class="row g-2">
+                                        <div th:each="item : ${order.items.?[materialType.name() == 'CARTON']}" class="col-md-4">
+                                            <div class="card material-card carton">
+                                                <div class="card-body">
+                                                    <h6 class="card-title" th:text="${item.materialName}"></h6>
+                                                    <div class="d-flex justify-content-between align-items-center">
+                                                    <span class="badge bg-success material-badge">
+                                                        <span th:text="${item.orderedQuantity}"></span> бр.
+                                                    </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div th:if="${not #lists.isEmpty(order.items.?[materialType.name() == 'PACKAGE'])}" class="col-12 mt-4">
+                                    <h6 class="text-primary mb-3"><i class="fas fa-cube"></i> Опаковки</h6>
+                                    <div class="row g-2">
+                                        <div th:each="item : ${order.items.?[materialType.name() == 'PACKAGE']}" class="col-md-3">
+                                            <div class="card material-card package">
+                                                <div class="card-body">
+                                                    <div class="text-center mb-2">
+                                                        <img th:if="${packageMap[item.materialId]?.photo}"
+                                                             th:src="@{${S3bucketImagesLink} + '/' + ${packageMap[item.materialId]?.photo}}"
+                                                             class="material-image" alt="Снимка на опаковка" style="width: 100px; height: 100px; object-fit: cover;">
+                                                        <div th:unless="${packageMap[item.materialId]?.photo}"
+                                                             class="material-image d-flex align-items-center justify-content-center text-muted">
+                                                            <i class="fas fa-cube fa-2x"></i>
+                                                        </div>
+                                                    </div>
+                                                    <h6 class="card-title mb-1" th:text="${packageMap[item.materialId]?.productCode + ' - ' + packageMap[item.materialId]?.name}"></h6>
+                                                    <p>
+                                                        Материал ID: <span th:text="${item.materialId}"></span><br>
+                                                        КОД: <span th:text="${packageMap[item.materialId]?.productCode ?: 'Няма код'}"></span><br>
+                                                        Налични бройки: <span th:text="${packageMap[item.materialId]?.availableQuantity ?: 'Няма инфо'}"></span><br>
+                                                    </p>
+                                                    <span class="badge bg-primary material-badge">
+                                                    <span th:text="${item.orderedQuantity}"></span> бр.
+                                                </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div th:if="${not #lists.isEmpty(order.items.?[materialType.name() == 'PLATE'])}" class="col-12 mt-4">
+                                    <h6 class="text-warning mb-3"><i class="fas fa-utensils"></i> Тарелки</h6>
+                                    <div class="row g-2">
+                                        <div th:each="item : ${order.items.?[materialType.name() == 'PLATE']}" class="col-md-3">
+                                            <div class="card material-card plate">
+                                                <div class="card-body">
+                                                    <div class="text-center mb-2">
+                                                        <img th:if="${plateMap[item.materialId]?.photo}"
+                                                             th:src="@{${S3bucketImagesLink} + '/' + ${plateMap[item.materialId]?.photo}}"
+                                                             class="material-image" alt="Снимка на тарелка" style="width: 100px; height: 100px; object-fit: cover;">
+                                                        <div th:unless="${plateMap[item.materialId]?.photo}"
+                                                             class="material-image d-flex align-items-center justify-content-center text-muted">
+                                                            <i class="fas fa-utensils fa-2x"></i>
+                                                        </div>
+                                                    </div>
+                                                    <h6 class="card-title mb-1" th:text="${plateMap[item.materialId]?.name}"></h6>
+                                                    <p>
+                                                        Материал ID: <span th:text="${item.materialId}"></span><br>
+                                                        Налични бройки: <span th:text="${plateMap[item.materialId]?.availableQuantity ?: 'Няма инфо'}"></span><br>
+                                                    </p>
+                                                    <span class="badge bg-warning material-badge">
+                                                    <span th:text="${item.orderedQuantity}"></span> бр.
+                                                </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mt-4 text-end">
+                            </div>
+                        </div>
+                    </div>
+                </th:block>
 
             </div>
         </main>
