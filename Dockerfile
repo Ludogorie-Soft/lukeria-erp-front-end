@@ -6,11 +6,8 @@ COPY src ./src
 RUN --mount=type=cache,target=/root/.m2 mvn clean package -DskipTests
 
 # Production stage for the frontend
-FROM bellsoft/liberica-openjdk-debian:17.0.13-12 AS production
-RUN groupadd -r appgroup && useradd -r -g appgroup appuser
+FROM gcr.io/distroless/java17-debian12
 WORKDIR /app
 COPY --from=build /app/target/*.jar ./lukeria-frontend.jar
-RUN chown -R appuser:appgroup /app
-USER appuser
 EXPOSE 8090
 ENTRYPOINT ["java", "-jar", "lukeria-frontend.jar"]
