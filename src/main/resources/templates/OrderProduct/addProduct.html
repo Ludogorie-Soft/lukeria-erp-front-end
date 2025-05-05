@@ -68,14 +68,19 @@ document.addEventListener("DOMContentLoaded", function() {
                         <table class="table table-hover">
                             <thead>
                             <tr>
-                                <th>Номер</th>
+                                <th>Снимка</th>
+                                <th>Код</th>
                                 <th>Име</th>
                                 <th>Брой</th><!-- Replace with the actual name of the third column -->
                             </tr>
                             </thead>
                             <tbody>
                             <tr th:each="product, iter : ${products}">
-                                <td th:text="${product.id}"></td>
+                                <td>
+                                    <img th:src="@{${S3bucketImagesLink} + '/'+ ${product.photo}}" alt="no image"
+                                         height="100" width="100">
+                                </td>
+                                <td th:text="${product.productCode}"></td>
                                 <td th:text="${product.name}"></td>
                                 <td th:text="${orderProducts[iter.index]?.number}"></td>
                             </tr>
@@ -100,7 +105,7 @@ function formatState(state) {
     }
     var imageUrl = state.element.getAttribute('data-image-url');
     var $state = $(
-        '<span><img src="' + imageUrl + '" width="50" height="50" /> ' + state.text + '</span>'
+        '<span><img src="' + imageUrl + '" width="30" height="30" /> ' + state.text + '</span>'
     );
     return $state;
 }

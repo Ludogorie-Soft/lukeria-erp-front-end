@@ -64,7 +64,8 @@ document.addEventListener("DOMContentLoaded", function() {
                         <table class="table table-hover">
                             <thead>
                             <tr>
-                                <th>Номер</th>
+                                <th>Код</th>
+                                <th>Снимка</th>
                                 <th>Име</th>
                                 <th>Брой</th>
                             </tr>
@@ -72,6 +73,10 @@ document.addEventListener("DOMContentLoaded", function() {
                             <tbody>
                             <tr th:each="product, iter : ${products}">
                                 <td th:text="${product.productCode}"></td>
+                                <td>
+                                    <img th:src="@{${S3bucketImagesLink} + '/'+ ${product.photo}}" alt="no image"
+                                         height="100" width="100">
+                                </td>
                                 <td th:text="${product.name}"></td>
                                 <td th:text="${orderProducts[iter.index]?.number}"></td>
                             </tr>
