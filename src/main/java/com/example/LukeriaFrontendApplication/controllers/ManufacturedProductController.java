@@ -11,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +30,7 @@ public class ManufacturedProductController {
     public String allManufacturedProducts(Model model, HttpServletRequest request){
         String token = (String) request.getSession().getAttribute("sessionToken");
         List<ManufacturedProductDTO> producedProducts = cartonClient.getAllManufacturedProducts(token);
+        Collections.reverse(producedProducts);
 
         List<PackageDTO> packages = packageClient.getAllPackages(token);
 

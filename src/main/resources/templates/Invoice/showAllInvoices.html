@@ -59,6 +59,7 @@ document.addEventListener("DOMContentLoaded", function() {
                                 <thead>
                                 <tr>
                                     <th>ID</th>
+                                    <th>Клиент</th>
                                     <th>Дата</th>
                                     <th>Номер на Фактура</th>
                                     <th>Стойност на Фактурата </th>
@@ -67,11 +68,13 @@ document.addEventListener("DOMContentLoaded", function() {
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr th:each="invoice : ${invoiceDTOS}">
+                                <tr th:each="invoice : ${invoiceDTOS}"
+                                    th:with="order=${orderMap[invoice.id]}, client=${clientMap[order.clientId]}">
                                     <td th:text="${invoice.id}"></td>
-                                    <td th:text="${invoice.invoiceDate}"></td>
+                                    <td th:text="${client.businessName}"></td>
+                                    <td th:text="${invoice.invoiceDate != null ? invoice.invoiceDate.format(T(java.time.format.DateTimeFormatter).ofPattern('dd.MM.yyyy')) : ''}"></td>
                                     <td th:text="${invoice.invoiceNumber}"></td>
-                                    <td th:text="${invoice.totalPrice} + ' Лв'" ></td>
+                                    <td th:text="${invoice.totalPrice + ' Лв'}"></td>
                                     <td th:text="${invoice.isCashPayment} ? 'В Брой' : 'По Банка'"></td>
                                     <td th:text="${invoice.deadline}"></td>
                                     <td>

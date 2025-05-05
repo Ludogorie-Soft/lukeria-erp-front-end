@@ -15,6 +15,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @org.springframework.stereotype.Controller
 @RequiredArgsConstructor
@@ -114,10 +115,23 @@ public class InvoiceController {
     public String showAllInvoices(Model model, HttpServletRequest request) {
         String token = (String) request.getSession().getAttribute("sessionToken");
         List<InvoiceDTO> invoiceDTOS = invoiceClient.getAllInvoices(token);
+        List<OrderDTO> orderDTOS = orderClient.getAllOrders(token);
+        List<ClientDTO> clientDTOS = clientClient.getAllClients(token);
         Collections.reverse(invoiceDTOS);
+
+        Map<Long, OrderDTO> orderMap = orderDTOS.stream()
+                .collect(Collectors.toMap(OrderDTO::getId, o -> o));
+
+        Map<Long, ClientDTO> clientMap = clientDTOS.stream()
+                .collect(Collectors.toMap(ClientDTO::getId, c -> c));
+
+        model.addAttribute("orderMap", orderMap);
+        model.addAttribute("clientMap", clientMap);
         model.addAttribute("invoiceDTOS", invoiceDTOS);
+
         return "Invoice/showAllInvoices";
     }
+
 
     @PostMapping("/submit")
     public ModelAndView submitInvoice(@RequestParam("paymentMethod") boolean paymentMethod,
