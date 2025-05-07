@@ -55,3 +55,8 @@ margin: 0 auto; /* Опционално: Центриране на карта х
           box-sizing: border-box;
           text-align: center;
       }
+      img.card-img-top {
+          width: 100px;
+          height: 100px;
+          object-fit: cover;  /* За да поддържаш правилно съотношение */
+      }
