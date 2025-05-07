@@ -114,22 +114,28 @@ public class InvoiceController {
     @GetMapping("/showAllInvoices")
     public String showAllInvoices(Model model, HttpServletRequest request) {
         String token = (String) request.getSession().getAttribute("sessionToken");
-        List<InvoiceDTO> invoiceDTOS = invoiceClient.getAllInvoices(token);
-        List<OrderDTO> orderDTOS = orderClient.getAllOrders(token);
-        List<ClientDTO> clientDTOS = clientClient.getAllClients(token);
-        Collections.reverse(invoiceDTOS);
+        try {
+            List<InvoiceDTO> invoiceDTOS = invoiceClient.getAllInvoices(token);
+            Collections.reverse(invoiceDTOS);
 
-        Map<Long, OrderDTO> orderMap = orderDTOS.stream()
-                .collect(Collectors.toMap(OrderDTO::getId, o -> o));
+            List<OrderDTO> orderDTOS = orderClient.getAllOrders(token);
+            List<ClientDTO> clientDTOS = clientClient.getAllClients(token);
 
-        Map<Long, ClientDTO> clientMap = clientDTOS.stream()
-                .collect(Collectors.toMap(ClientDTO::getId, c -> c));
 
-        model.addAttribute("orderMap", orderMap);
-        model.addAttribute("clientMap", clientMap);
-        model.addAttribute("invoiceDTOS", invoiceDTOS);
+            Map<Long, OrderDTO> orderMap = orderDTOS.stream()
+                    .collect(Collectors.toMap(OrderDTO::getId, o -> o));
 
-        return "Invoice/showAllInvoices";
+            Map<Long, ClientDTO> clientMap = clientDTOS.stream()
+                    .collect(Collectors.toMap(ClientDTO::getId, c -> c));
+
+            model.addAttribute("orderMap", orderMap);
+            model.addAttribute("clientMap", clientMap);
+            model.addAttribute("invoiceDTOS", invoiceDTOS);
+
+            return "Invoice/showAllInvoices";
+        } catch (Exception e) {
+            return "error";
+        }
     }
 
 

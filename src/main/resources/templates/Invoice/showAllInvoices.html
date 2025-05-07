@@ -3,7 +3,7 @@
 <head>
     <th:block th:insert="~{fragments/links}"></th:block>
     <title>Всички Фактури</title>
-    <link rel="icon" type="image/x-icon" href="/img/photos/noImage.png">
+    <link rel="icon" href="/img/photos/noImage.png" type="image/x-icon">
     <link href="/css/show.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
@@ -81,7 +81,6 @@
                                                 <i class="fas fa-eye"></i>
                                             </button>
                                         </form>
-
                                     </td>
                                 </tr>
                                 </tbody>
@@ -95,17 +94,8 @@
     </div>
 </div>
 
-<!-- JS Scripts -->
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        const navbar = document.getElementById("sidebar");
-        const toggler = document.querySelector("a.sidebar-toggle");
-        if (toggler && navbar) {
-            toggler.addEventListener("click", () => {
-                navbar.classList.toggle("collapsed");
-            });
-        }
-
         function setupFilter(inputId, columnIndex, resultId) {
             document.getElementById(inputId).addEventListener('input', function () {
                 const filter = this.value.toUpperCase();
@@ -137,36 +127,9 @@
         }
 
         setupFilter('searchInput1', 3, 'resultsCount'); // Номер на фактура → 4-та колона (index 3)
+        setupFilter('clientSelect', 1, 'resultsCountClient'); // Клиент → 2-ра колона (index 1)
     });
 
-    // Филтър по клиент
-    document.getElementById('clientSelect').addEventListener('change', function () {
-        const filter = this.value.toUpperCase();
-        const table = document.querySelector('table');
-        const tr = table.getElementsByTagName('tr');
-        let count = 0;
-
-        for (let i = 0; i < tr.length; i++) {
-            const tdList = tr[i].getElementsByTagName('td');
-            if (!tdList.length) continue;
-
-            const td = tdList[1]; // Клиентът е във 2-ра колона
-            if (td) {
-                const txtValue = td.textContent || td.innerText;
-                if (filter === '' || txtValue.toUpperCase().includes(filter)) {
-                    tr[i].style.display = '';
-                    count++;
-                } else {
-                    tr[i].style.display = 'none';
-                }
-            }
-        }
-
-        const resultsCountElement = document.getElementById('resultsCountClient');
-        if (resultsCountElement) {
-            resultsCountElement.textContent = count;
-        }
-    });
 </script>
 </body>
 </html>
