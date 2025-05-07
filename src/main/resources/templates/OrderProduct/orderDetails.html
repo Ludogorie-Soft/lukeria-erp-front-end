@@ -73,8 +73,15 @@ document.addEventListener("DOMContentLoaded", function() {
                                 <tbody>
                                 <tr th:each="product, iter : ${products}">
                                     <td>
-                                        <img th:src="@{${S3bucketImagesLink} + '/'+ ${product.photo}}" alt="no image"
-                                             height="100" width="100">
+                                        <img th:if="${product.photo != null and !#strings.isEmpty(product.photo)}"
+                                             th:src="@{${S3bucketImagesLink} + '/' + ${product.photo}}"
+                                             alt="product image"
+                                             height="100" width="100" loading="lazy" />
+
+                                        <img th:unless="${product.photo != null and !#strings.isEmpty(product.photo)}"
+                                             src="/img/photos/noImage.png"
+                                             alt="no image"
+                                             height="100" width="100" loading="lazy" />
                                     </td>
                                     <td th:text="${product.productCode}"></td>
                                     <td th:text="${product.name}"></td>
