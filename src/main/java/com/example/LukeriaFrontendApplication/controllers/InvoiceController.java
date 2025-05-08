@@ -123,8 +123,18 @@ public class InvoiceController {
         for (InvoiceDTO invoiceDTO : invoiceDTOS) {
             Long orderId = invoiceDTO.getId();
             OrderDTO orderDto = orderClient.getOrderById(orderId, token);
-            ClientDTO client = clientClient.getClientById(orderDto.getClientId(), token);
-            invoiceDTO.setClientBusinessName(client.getBusinessName());
+
+            if (orderDto != null) {
+                ClientDTO client = clientClient.getClientById(orderDto.getClientId(), token);
+
+                if (client != null) {
+                    invoiceDTO.setClientBusinessName(client.getBusinessName());
+                } else {
+                    invoiceDTO.setClientBusinessName(null);
+                }
+            } else {
+                invoiceDTO.setClientBusinessName(null);
+            }
         }
 
         Collections.reverse(invoiceDTOS);
