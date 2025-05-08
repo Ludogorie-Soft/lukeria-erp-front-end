@@ -113,7 +113,9 @@ document.addEventListener("DOMContentLoaded", function() {
                                                  width="100" />
                                         </td>
                                         <td th:text="${product.productCode}"></td>
-                                        <td th:text="${productPackageMap.get(product.packageId)}"></td>
+                                        <td>
+                                            <a th:href="@{/package/{id}(id=${product.packageId})}" th:text="${productPackageMap.get(product.packageId)}"></a>
+                                        </td>
                                         <td>
                                             <span th:text="${product.availableQuantity + ' Броя'}"
                                                   th:class="${product.availableQuantity <= 20 ? 'red-cell' : (product.availableQuantity <= 100 ? 'yellow-cell' : '')}"></span>
