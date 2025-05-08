@@ -117,34 +117,31 @@ public class InvoiceController {
         List<InvoiceDTO> invoiceDTOS = invoiceClient.getAllInvoices(token);
         List<ClientDTO> clientDTOS = clientClient.getAllClients(token);
 
+        // Карта на клиентите за бързо търсене по ID
         Map<Long, ClientDTO> clientMap = clientDTOS.stream()
                 .collect(Collectors.toMap(ClientDTO::getId, c -> c));
 
         for (InvoiceDTO invoiceDTO : invoiceDTOS) {
             Long orderId = invoiceDTO.getId();
-            OrderDTO orderDto = orderClient.getOrderById(orderId, token);
 
-            if (orderDto != null) {
-                ClientDTO client = clientClient.getClientById(orderDto.getClientId(), token);
-
-                if (client != null) {
-                    invoiceDTO.setClientBusinessName(client.getBusinessName());
-                } else {
-                    invoiceDTO.setClientBusinessName(null);
-                }
-            } else {
-                invoiceDTO.setClientBusinessName(null);
+            OrderDTO orderDto = null;
+            try {
+                orderDto = orderClient.getOrderById(orderId, token);
+            } catch (Exception e) {
+                System.out.println("Не може да се намери поръчка с ID: " + orderId);
+                continue;
             }
+            ClientDTO client = clientClient.getClientById(orderDto.getClientId(), token);
+            invoiceDTO.setClientBusinessName(client.getBusinessName());
         }
 
         Collections.reverse(invoiceDTOS);
 
-        model.addAttribute("clientMap", clientMap);
-        model.addAttribute("invoiceDTOS", invoiceDTOS);
+        model.addAttribute("clientMap",clientMap);
+        model.addAttribute("invoiceDTOS",invoiceDTOS);
 
-
-        return "Invoice/showAllInvoices";
-    }
+        return"Invoice/showAllInvoices";
+}
 
 
     @PostMapping("/submit")
