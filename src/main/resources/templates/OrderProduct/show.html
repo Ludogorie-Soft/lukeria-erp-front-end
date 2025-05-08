@@ -65,7 +65,7 @@ document.addEventListener("DOMContentLoaded", function() {
                                     <tr th:each="order : ${orders}" th:if="${!order.invoiced}">
                                         <td th:text="${order.id}"></td>
                                         <td th:text="${clients[__${orderStat.index}__]?.businessName}"></td>
-                                        <td th:text="${order.orderDate}"></td>
+                                        <td th:text="${#dates.format(order.orderDate, 'dd.MM.yyyy')}"></td>
                                         <td><a th:href="@{/orderProduct/orderDetails/{orderId}(orderId=${order.id})}">Повече
                                             информация</a></td>
                                         <th:block
@@ -141,7 +141,7 @@ document.addEventListener("DOMContentLoaded", function() {
                                         <tr th:each="order, iter : ${orders}" th:if="${order.invoiced}">
                                             <td th:text="${order.id}"></td>
                                             <td th:text="${clients[iter.index]?.businessName}"></td>
-                                            <td th:text="${order.orderDate}"></td>
+                                            <td th:text="${#dates.format(order.orderDate, 'dd.MM.yyyy')}"></td>
                                             <td>
                                                 <a th:href="@{/orderProduct/orderDetails/{orderId}(orderId=${order.id})}">Повече
                                                     информация</a></td>

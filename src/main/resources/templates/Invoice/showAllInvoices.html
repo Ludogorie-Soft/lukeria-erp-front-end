@@ -1,29 +1,16 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
-
 <head>
-    <!--    LINKS  -->
     <th:block th:insert="~{fragments/links}"></th:block>
-
-    <title> Всички Фактури </title>
-    <link rel="icon" type="image/x-icon" href="/img/photos/noImage.png">
+    <title>Всички Фактури</title>
+    <link rel="icon" href="/img/photos/noImage.png" type="image/x-icon">
     <link href="/css/show.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
-<script>
-document.addEventListener("DOMContentLoaded", function() {
-    const navbar = document.getElementById("sidebar");
-    console.log(navbar);
-    const toggler = document.querySelector("a.sidebar-toggle");
-    toggler.addEventListener("click", () => {
-    navbar.classList.toggle("collapsed");
-    });
-});
-</script>
+
 <body>
 <div class="wrapper">
-    <!--    HEADER  -->
     <th:block th:insert="~{fragments/header}"></th:block>
-
 
     <div class="main">
         <nav class="navbar navbar-expand navbar-light navbar-bg">
@@ -31,6 +18,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 <i class="hamburger align-self-center"></i>
             </a>
         </nav>
+
         <main class="content">
             <div class="row">
                 <div class="col-lg-11 mx-auto">
@@ -38,6 +26,7 @@ document.addEventListener("DOMContentLoaded", function() {
                         <div class="card-header">
                             <h5 class="card-title mb-0">Всички фактури</h5>
                         </div>
+
                         <div class="card-body">
                             <div class="row mb-3">
                                 <div class="col">
@@ -46,116 +35,100 @@ document.addEventListener("DOMContentLoaded", function() {
                                         <label>Резултати от търсенето: <span id="resultsCount"></span></label>
                                     </div>
                                 </div>
+
                                 <div class="col">
-                                    <input type="text" id="searchInput2" class="form-control" placeholder="Търсене по дата на фактура"><br>
+                                    <select id="clientSelect" class="form-control">
+                                        <option value="">-- Избери клиент --</option>
+                                        <option th:each="client : ${clientMap.values()}"
+                                                th:value="${client.businessName}"
+                                                th:text="${client.businessName}">
+                                        </option>
+                                    </select><br>
                                     <div class="alert alert-primary" role="alert">
-                                        <label>Резултати от търсенето: <span id="resultsCount2"></span></label>
+                                        <label>Резултати от търсенето: <span id="resultsCountClient"></span></label>
                                     </div>
                                 </div>
                             </div>
                         </div>
+
                         <div class="table-responsive">
                             <table class="table">
                                 <thead>
                                 <tr>
                                     <th>ID</th>
+                                    <th>Клиент</th>
                                     <th>Дата</th>
                                     <th>Номер на Фактура</th>
-                                    <th>Стойност на Фактурата </th>
-                                    <th>Начина на Плащане</th>
+                                    <th>Стойност на Фактурата</th>
+                                    <th>Начин на Плащане</th>
                                     <th>Дата на Падеж</th>
+                                    <th></th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr th:each="invoice : ${invoiceDTOS}">
+                                <tr th:each="invoice : ${invoiceDTOS}"                                 >
                                     <td th:text="${invoice.id}"></td>
-                                    <td th:text="${invoice.invoiceDate}"></td>
+                                    <td th:text="${invoice.clientBusinessName}"></td>
+                                    <td th:text="${invoice.invoiceDate != null ? invoice.invoiceDate.format(T(java.time.format.DateTimeFormatter).ofPattern('dd.MM.yyyy')) : ''}"></td>
                                     <td th:text="${invoice.invoiceNumber}"></td>
-                                    <td th:text="${invoice.totalPrice} + ' Лв'" ></td>
+                                    <td th:text="${invoice.totalPrice + ' Лв'}"></td>
                                     <td th:text="${invoice.isCashPayment} ? 'В Брой' : 'По Банка'"></td>
-                                    <td th:text="${invoice.deadline}"></td>
+                                    <td th:text="${invoice.deadline != null ? invoice.deadline.format(T(java.time.format.DateTimeFormatter).ofPattern('dd.MM.yyyy')) : ''}"></td>
                                     <td>
-                                        <form th:action="@{'/invoice/showId/' + ${invoice.id}}" method="get">
-                                            <button type="submit" class="btn btn-primary">Виж Фактурата</button>
+                                        <form th:action="@{'/invoice/showId/' + ${invoice.id}}" method="get" style="display:inline;">
+                                            <button type="submit" class="btn btn-outline-primary btn-sm" title="Виж Фактурата">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
                                         </form>
                                     </td>
                                 </tr>
                                 </tbody>
                             </table>
                         </div>
+
                     </div>
                 </div>
             </div>
         </main>
     </div>
 </div>
+
 <script>
-      document.getElementById('searchInput2').addEventListener('input', function () {
-    var input, filter, table, tr, td, i, txtValue;
-    input = document.getElementById('searchInput2');
-    filter = input.value.toUpperCase();
-    table = document.querySelector('table');
-    tr = table.getElementsByTagName('tr');
-    var count = 0; // Initialize the count variable
+    document.addEventListener("DOMContentLoaded", function () {
+        function setupFilter(inputId, columnIndex, resultId) {
+            document.getElementById(inputId).addEventListener('input', function () {
+                const filter = this.value.toUpperCase();
+                const table = document.querySelector('table');
+                const tr = table.getElementsByTagName('tr');
+                let count = 0;
 
-    for (i = 0; i < tr.length; i++) {
-        td = tr[i].getElementsByTagName('td')[1];
-        if (td) {
-            txtValue = td.textContent || td.innerText;
-            if (txtValue.toUpperCase().indexOf(filter) > -1) {
-                tr[i].style.display = '';
-                count++; // Increment the count when a match is found
-            } else {
-                tr[i].style.display = 'none';
-            }
+                for (let i = 0; i < tr.length; i++) {
+                    const tdList = tr[i].getElementsByTagName('td');
+                    if (!tdList.length) continue;
+
+                    const td = tdList[columnIndex];
+                    if (td) {
+                        const txtValue = td.textContent || td.innerText;
+                        if (txtValue.toUpperCase().includes(filter)) {
+                            tr[i].style.display = '';
+                            count++;
+                        } else {
+                            tr[i].style.display = 'none';
+                        }
+                    }
+                }
+
+                const resultsCountElement = document.getElementById(resultId);
+                if (resultsCountElement) {
+                    resultsCountElement.textContent = count;
+                }
+            });
         }
-    }
 
-    // Display the results count for the second search input
-    var resultsCountElement = document.getElementById('resultsCount2');
-    if (resultsCountElement) {
-        resultsCountElement.textContent = count;
-    } else {
-        // If the element doesn't exist, you can create and append it
-        resultsCountElement = document.createElement('div');
-        resultsCountElement.id = 'resultsCount2';
-        resultsCountElement.textContent = count;
-        input.parentNode.appendChild(resultsCountElement); // Appending to the parent of the input
-    }
-});
-    document.getElementById('searchInput1').addEventListener('input', function () {
-    var input, filter, table, tr, td, i, txtValue;
-    input = document.getElementById('searchInput1');
-    filter = input.value.toUpperCase();
-    table = document.querySelector('table');
-    tr = table.getElementsByTagName('tr');
-    var count = 0; // Initialize the count variable
+        setupFilter('searchInput1', 3, 'resultsCount'); // Номер на фактура → 4-та колона (index 3)
+        setupFilter('clientSelect', 1, 'resultsCountClient'); // Клиент → 2-ра колона (index 1)
+    });
 
-    for (i = 0; i < tr.length; i++) {
-        td = tr[i].getElementsByTagName('td')[2];
-        if (td) {
-            txtValue = td.textContent || td.innerText;
-            if (txtValue.toUpperCase().indexOf(filter) > -1) {
-                tr[i].style.display = '';
-                count++; // Increment the count when a match is found
-            } else {
-                tr[i].style.display = 'none';
-            }
-        }
-    }
-
-    // Display the results count
-    var resultsCountElement = document.getElementById('resultsCount');
-    if (resultsCountElement) {
-        resultsCountElement.textContent = count;
-    } else {
-        // If the element doesn't exist, you can create and append it
-        resultsCountElement = document.createElement('div');
-        resultsCountElement.id = 'resultsCount';
-        resultsCountElement.textContent = count;
-        input.parentNode.appendChild(resultsCountElement); // Appending to the parent of the input
-    }
-});
 </script>
 </body>
 </html>

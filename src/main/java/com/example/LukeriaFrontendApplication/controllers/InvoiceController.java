@@ -15,6 +15,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @org.springframework.stereotype.Controller
 @RequiredArgsConstructor
@@ -114,10 +115,34 @@ public class InvoiceController {
     public String showAllInvoices(Model model, HttpServletRequest request) {
         String token = (String) request.getSession().getAttribute("sessionToken");
         List<InvoiceDTO> invoiceDTOS = invoiceClient.getAllInvoices(token);
+        List<ClientDTO> clientDTOS = clientClient.getAllClients(token);
+
+        // Карта на клиентите за бързо търсене по ID
+        Map<Long, ClientDTO> clientMap = clientDTOS.stream()
+                .collect(Collectors.toMap(ClientDTO::getId, c -> c));
+
+        for (InvoiceDTO invoiceDTO : invoiceDTOS) {
+            Long orderId = invoiceDTO.getId();
+
+            OrderDTO orderDto = null;
+            try {
+                orderDto = orderClient.getOrderById(orderId, token);
+            } catch (Exception e) {
+                System.out.println("Не може да се намери поръчка с ID: " + orderId);
+                continue;
+            }
+            ClientDTO client = clientClient.getClientById(orderDto.getClientId(), token);
+            invoiceDTO.setClientBusinessName(client.getBusinessName());
+        }
+
         Collections.reverse(invoiceDTOS);
-        model.addAttribute("invoiceDTOS", invoiceDTOS);
-        return "Invoice/showAllInvoices";
-    }
+
+        model.addAttribute("clientMap",clientMap);
+        model.addAttribute("invoiceDTOS",invoiceDTOS);
+
+        return"Invoice/showAllInvoices";
+}
+
 
     @PostMapping("/submit")
     public ModelAndView submitInvoice(@RequestParam("paymentMethod") boolean paymentMethod,
