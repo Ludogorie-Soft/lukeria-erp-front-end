@@ -66,10 +66,9 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr th:each="invoice : ${invoiceDTOS}"
-                                    th:with="order=${orderMap[invoice.id]}, client=${clientMap[order.clientId]}">
+                                <tr th:each="invoice : ${invoiceDTOS}"                                 >
                                     <td th:text="${invoice.id}"></td>
-                                    <td th:text="${client.businessName}"></td>
+                                    <td th:text="${invoice.clientBusinessName}"></td>
                                     <td th:text="${invoice.invoiceDate != null ? invoice.invoiceDate.format(T(java.time.format.DateTimeFormatter).ofPattern('dd.MM.yyyy')) : ''}"></td>
                                     <td th:text="${invoice.invoiceNumber}"></td>
                                     <td th:text="${invoice.totalPrice + ' Лв'}"></td>
