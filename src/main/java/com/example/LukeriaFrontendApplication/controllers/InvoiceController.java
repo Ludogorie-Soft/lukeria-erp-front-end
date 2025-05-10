@@ -125,13 +125,15 @@ public class InvoiceController {
             Long orderId = invoiceDTO.getId();
 
             OrderDTO orderDto = null;
+            int orderContinue = 0;
             try {
                 orderDto = orderClient.getOrderById(orderId, token);
             } catch (Exception e) {
                 System.out.println("Не може да се намери поръчка с ID: " + orderId);
+                orderContinue++;
                 continue;
             }
-            ClientDTO client = clientClient.getClientById(orderDto.getClientId(), token);
+            ClientDTO client = clientClient.getClientById(orderDto.getClientId()-orderContinue, token);
             invoiceDTO.setClientBusinessName(client.getBusinessName());
         }
 
