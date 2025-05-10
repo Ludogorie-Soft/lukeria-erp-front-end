@@ -124,6 +124,7 @@ public class InvoiceController {
         for (int i = 0; i < invoiceDTOS.size(); i++) {
             InvoiceDTO invoiceDTO = invoiceDTOS.get(i);
             int orderContinue=1;
+
             Long orderId = invoiceDTO.getId()+orderContinue;
 
             OrderDTO orderDto = null;
