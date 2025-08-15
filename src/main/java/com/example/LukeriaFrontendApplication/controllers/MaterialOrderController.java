@@ -26,8 +26,8 @@ public class MaterialOrderController {
     private static final String PRODUCTTXT = "products";
     private static final String MATERIALTXT = "material";
     private static final String REDIRECTTXT = "redirect:/material-order/show";
-    private static final String S3bucketImagesLink = "https://lukeria-images.s3.eu-central-1.amazonaws.com";
-
+    @Value("${aws.s3.bucket-url}")
+    private String S3bucketImagesLink;
     private static final String MATERIALSORDERSHOW = "MaterialOrder/show";
     private final MaterialOrderClient materialOrderClient;
     private final CartonClient cartonClient;

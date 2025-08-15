@@ -24,8 +24,8 @@ import java.util.stream.Collectors;
 public class OrderController {
     public static boolean isMonthlyOrder;
     private static final String ORDERTXT = "order";
-    private static final String S3bucketImagesLink = "https://lukeria-images.s3.eu-central-1.amazonaws.com";
-    private static final String REDIRECTTXT = "redirect:/order/show";
+    @Value("${aws.s3.bucket-url}")
+    private String S3bucketImagesLink;;    private static final String REDIRECTTXT = "redirect:/order/show";
     private final OrderClient orderClient;
     private final UserClient userClient;
     private final ClientClient clientClient;
