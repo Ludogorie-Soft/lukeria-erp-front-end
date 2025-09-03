@@ -395,6 +395,7 @@
         </thead>
         <tbody>
         <tr th:each="order : ${orderDTOS}">
+            <!-- форма за редакция -->
             <form th:action="@{/database/edit/order/{id}(id=${order.id})}" method="post">
                 <td th:text="${order.id}"></td>
                 <td><input type="text" name="clientId" th:value="${order.clientId}" class="form-control"/></td>
@@ -411,6 +412,11 @@
                     <button type="submit" class="btn btn-primary">Изпрати</button>
                 </td>
             </form>
+            <td>
+                <form th:action="@{/database/delete/order/{id}(id=${order.id})}" method="post">
+                    <button type="submit" class="btn btn-danger">Изтрий</button>
+                </form>
+            </td>
         </tr>
         </tbody>
     </table>
