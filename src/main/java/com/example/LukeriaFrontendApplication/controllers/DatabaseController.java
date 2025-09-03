@@ -174,10 +174,15 @@ public class DatabaseController {
     public ModelAndView editObjects(@PathVariable(name = "id") Long id,
                                     @ModelAttribute OrderDTO object,
                                     HttpServletRequest request) {
-
         String token = (String) request.getSession().getAttribute(SESSION_TOKEN);
         orderClient.updateOrder(id,object, token);
-
+        return new ModelAndView(REDIRECTTXT);
+    }
+    @PostMapping("/delete/order/{id}")
+    public ModelAndView deleteOrder(@PathVariable(name = "id") Long id,
+                                    HttpServletRequest request) {
+        String token = (String) request.getSession().getAttribute(SESSION_TOKEN);
+        orderClient.deleteOrderById(id,token);
         return new ModelAndView(REDIRECTTXT);
     }
 

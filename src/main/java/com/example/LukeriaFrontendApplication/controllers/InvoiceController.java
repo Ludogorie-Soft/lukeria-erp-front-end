@@ -121,33 +121,29 @@ public class InvoiceController {
         Map<Long, ClientDTO> clientMap = clientDTOS.stream()
                 .collect(Collectors.toMap(ClientDTO::getId, c -> c));
 
-        for (int i = 0; i < invoiceDTOS.size(); i++) {
-            InvoiceDTO invoiceDTO = invoiceDTOS.get(i);
-            int orderContinue=1;
-            Long orderId = invoiceDTO.getId()+orderContinue;
+        List<InvoiceDTO> validInvoices = new ArrayList<>();
 
-            OrderDTO orderDto = null;
+        for (InvoiceDTO invoiceDTO : invoiceDTOS) {
+            Long orderId = invoiceDTO.getId(); // ⚠️ тук трябва реално да е orderId, ако го има в DTO-то
             try {
-                orderDto = orderClient.getOrderById(orderId, token);
-            } catch (Exception e) {
-                orderDto = orderClient.getOrderById(orderId + 1, token);
+                OrderDTO orderDto = orderClient.getOrderById(orderId, token);
                 ClientDTO client = clientClient.getClientById(orderDto.getClientId(), token);
                 invoiceDTO.setClientBusinessName(client.getBusinessName());
-                orderContinue++;
-                System.out.println("Не може да се намери поръчка с ID: " + orderId);
-                continue;
+
+                validInvoices.add(invoiceDTO); // добавяме само ако има ордер
+            } catch (Exception e) {
+                System.out.println("Пропусната фактура (няма поръчка с ID: " + orderId + ")");
             }
-            ClientDTO client = clientClient.getClientById(orderDto.getClientId(), token);
-            invoiceDTO.setClientBusinessName(client.getBusinessName());
         }
 
-        Collections.reverse(invoiceDTOS);
+        Collections.reverse(validInvoices);
 
         model.addAttribute("clientMap", clientMap);
-        model.addAttribute("invoiceDTOS", invoiceDTOS);
+        model.addAttribute("invoiceDTOS", validInvoices);
 
         return "Invoice/showAllInvoices";
     }
+
 
 
     @PostMapping("/submit")
