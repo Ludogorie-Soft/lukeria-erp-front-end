@@ -43,7 +43,7 @@ public class InvoiceController {
         List<PackageDTO> packages = packageClient.getAllPackages(token);
         Long lastInvoiceNumber;
         List<OrderProductDTO> orderProductDTOS = queryClient.getOrderProductsByOrderId(id);
-        OrderDTO order = orderClient.getOrderById(orderProductDTOS.get(0).getOrderId(), token);
+        OrderDTO order = orderClient.getOrderById(id, token);
         ClientDTO client = clientClient.getClientById(order.getClientId(), token);
         if (client.isBulgarianClient()) {
             lastInvoiceNumber = invoiceClient.findLastInvoiceNumberStartingWith(token);
@@ -156,6 +156,7 @@ public class InvoiceController {
                                       @RequestParam("quantityInputList") List<String> quantityInput,
                                       @RequestParam("priceInputList") List<String> priceInputList,
                                       @RequestParam("bankAccount") String bankAccount,
+                                      @RequestParam("orderId") Long orderId,
                                       HttpServletRequest request) {
         String token = (String) request.getSession().getAttribute("sessionToken");
         DateTimeFormatter formatterInput = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -170,7 +171,7 @@ public class InvoiceController {
                 .map(BigDecimal::new).toList();
 
         InvoiceDTO invoiceDTO = new InvoiceDTO();
-
+        invoiceDTO.setOrderIdManually(orderId);
         invoiceDTO.setInvoiceNumber(invoiceNumber);
         invoiceDTO.setInvoiceDate(currentDateSte);
         invoiceDTO.setTotalPrice(paymentAmountStr);
@@ -194,7 +195,7 @@ public class InvoiceController {
         invoiceOrderProductConfigDTO.setPriceInputBigDecimalList(priceInputBigDecimalList);
 
         invoiceOrderProductClient.createInvoiceOrderProductWhitIdsList(invoiceOrderProductConfigDTO, token);
-        orderProductClient.findInvoiceOrderProductsByInvoiceIdLessening(createdInvoice.getId(), token);
+        //orderProductClient.findInvoiceOrderProductsByInvoiceIdLessening(createdInvoice.getId(), token);
         return new ModelAndView(REDIRECTTXT + createdInvoice.getId().toString());
     }
 

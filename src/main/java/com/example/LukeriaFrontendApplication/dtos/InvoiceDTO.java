@@ -26,7 +26,10 @@ public class InvoiceDTO {
     private String bankAccount;
     private String clientBusinessName;
     private Long orderId; // тук ще се сложи id-то на order
-    @JsonProperty("order")
+
+    public void setOrderIdManually(Long id) {
+        this.orderId = id;
+    }    @JsonProperty("order")
     private void unpackOrder(Map<String, Object> order) {
         if (order != null && order.get("id") != null) {
             this.orderId = ((Number) order.get("id")).longValue();
