@@ -200,9 +200,10 @@
                                     <input type="hidden" id="priceInputList" name="priceInputList">
                                     <input type="hidden" id="lastInvoiceNumber" name="lastInvoiceNumber"
                                            th:value="${lastInvoiceNumber}">
-
                                     <th:block th:each="orderProductDTO : ${orderProductDTOS}">
                                         <input type="hidden" name="orderProductIds" th:value="${orderProductDTO.id}">
+                                        <input type="hidden" name="orderId"
+                                               th:value="${#lists.isEmpty(orderProductDTOS) ? '' : orderProductDTOS.get(0).orderId}" />
                                     </th:block>
                                     <div>
                                         <button id="printButton3" type="submit"

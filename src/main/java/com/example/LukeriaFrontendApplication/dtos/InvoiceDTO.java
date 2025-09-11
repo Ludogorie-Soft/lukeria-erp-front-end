@@ -1,5 +1,6 @@
 package com.example.LukeriaFrontendApplication.dtos;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Map;
 
 @Data
 @AllArgsConstructor
@@ -23,4 +25,14 @@ public class InvoiceDTO {
     private boolean created;
     private String bankAccount;
     private String clientBusinessName;
+    private Long orderId; // тук ще се сложи id-то на order
+
+    public void setOrderIdManually(Long id) {
+        this.orderId = id;
+    }    @JsonProperty("order")
+    private void unpackOrder(Map<String, Object> order) {
+        if (order != null && order.get("id") != null) {
+            this.orderId = ((Number) order.get("id")).longValue();
+        }
+    }
 }

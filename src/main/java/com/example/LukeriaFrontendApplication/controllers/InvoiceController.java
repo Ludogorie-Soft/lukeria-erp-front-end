@@ -43,7 +43,7 @@ public class InvoiceController {
         List<PackageDTO> packages = packageClient.getAllPackages(token);
         Long lastInvoiceNumber;
         List<OrderProductDTO> orderProductDTOS = queryClient.getOrderProductsByOrderId(id);
-        OrderDTO order = orderClient.getOrderById(orderProductDTOS.get(0).getOrderId(), token);
+        OrderDTO order = orderClient.getOrderById(id, token);
         ClientDTO client = clientClient.getClientById(order.getClientId(), token);
         if (client.isBulgarianClient()) {
             lastInvoiceNumber = invoiceClient.findLastInvoiceNumberStartingWith(token);
@@ -70,10 +70,11 @@ public class InvoiceController {
     @GetMapping("/showId/{id}")
     public String invoiceShow(@PathVariable(name = "id") Long id, Model model, HttpSession session, HttpServletRequest request) {
         String token = (String) request.getSession().getAttribute("sessionToken");
+        InvoiceDTO invoiceDTO = invoiceClient.getInvoiceById(id, token);
         Long lastInvoiceNumber = invoiceClient.findLastInvoiceNumberStartingWith(token);
-        Long orderId = 0L;
+        Long orderId = invoiceDTO.getOrderId();
         for (InvoiceOrderProductDTO invoiceOrderProductDTO : invoiceOrderProductClient.getAllInvoiceOrderProduct(token)) {
-            if (invoiceOrderProductDTO.getInvoiceId() == id) {
+            if (invoiceOrderProductDTO.getInvoiceId().equals(id)) {
                 OrderProductDTO orderProductDTO = orderProductClient.getOrderProductById(invoiceOrderProductDTO.getOrderProductId(), token);
                 orderId = orderProductDTO.getOrderId();
                 break;
@@ -84,7 +85,6 @@ public class InvoiceController {
         List<ClientDTO> clientDTOS = clientClient.getAllClients(token);
         OrderDTO orderDTO = orderClient.getOrderById(orderId, token);
         List<ProductDTO> productDTOS = productClient.getAllProducts(token);
-        InvoiceDTO invoiceDTO = invoiceClient.getInvoiceById(id, token);
         ClientDTO clientDTO = clientClient.getClientById(orderDTO.getClientId(), token);
         if (invoiceDTO.getInvoiceNumber() >= 2000000000) {
             session.setAttribute(SessionLocaleResolver.LOCALE_SESSION_ATTRIBUTE_NAME, new Locale("bg"));
@@ -124,7 +124,7 @@ public class InvoiceController {
         List<InvoiceDTO> validInvoices = new ArrayList<>();
 
         for (InvoiceDTO invoiceDTO : invoiceDTOS) {
-            Long orderId = invoiceDTO.getId(); // ⚠️ тук трябва реално да е orderId, ако го има в DTO-то
+            Long orderId = invoiceDTO.getOrderId(); // ⚠️ тук трябва реално да е orderId, ако го има в DTO-то
             try {
                 OrderDTO orderDto = orderClient.getOrderById(orderId, token);
                 ClientDTO client = clientClient.getClientById(orderDto.getClientId(), token);
@@ -156,6 +156,7 @@ public class InvoiceController {
                                       @RequestParam("quantityInputList") List<String> quantityInput,
                                       @RequestParam("priceInputList") List<String> priceInputList,
                                       @RequestParam("bankAccount") String bankAccount,
+                                      @RequestParam("orderId") Long orderId,
                                       HttpServletRequest request) {
         String token = (String) request.getSession().getAttribute("sessionToken");
         DateTimeFormatter formatterInput = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -170,7 +171,7 @@ public class InvoiceController {
                 .map(BigDecimal::new).toList();
 
         InvoiceDTO invoiceDTO = new InvoiceDTO();
-
+        invoiceDTO.setOrderIdManually(orderId);
         invoiceDTO.setInvoiceNumber(invoiceNumber);
         invoiceDTO.setInvoiceDate(currentDateSte);
         invoiceDTO.setTotalPrice(paymentAmountStr);
@@ -194,7 +195,7 @@ public class InvoiceController {
         invoiceOrderProductConfigDTO.setPriceInputBigDecimalList(priceInputBigDecimalList);
 
         invoiceOrderProductClient.createInvoiceOrderProductWhitIdsList(invoiceOrderProductConfigDTO, token);
-        orderProductClient.findInvoiceOrderProductsByInvoiceIdLessening(createdInvoice.getId(), token);
+        //orderProductClient.findInvoiceOrderProductsByInvoiceIdLessening(createdInvoice.getId(), token);
         return new ModelAndView(REDIRECTTXT + createdInvoice.getId().toString());
     }
 
