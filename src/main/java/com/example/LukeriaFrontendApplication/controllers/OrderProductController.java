@@ -21,8 +21,8 @@ import java.util.Objects;
 @RequestMapping("/orderProduct")
 public class OrderProductController {
     private static final String ORDERPRODUCT = "orderProduct";
-    private static final String S3bucketImagesLink = "https://lukeria-images.s3.eu-central-1.amazonaws.com";
-
+    @Value("${aws.s3.bucket-url}")
+    private String S3bucketImagesLink;;
     private static final String REDIRECTTXT = "redirect:/order/show";
     private final OrderProductClient orderProductClient;
     private final OrderClient orderClient;

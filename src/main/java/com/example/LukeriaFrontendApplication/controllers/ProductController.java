@@ -24,8 +24,8 @@ import java.util.*;
 @RequestMapping("/product")
 public class ProductController {
     private static final String REDIRECTTXT = "redirect:/product/show";
-    private static final String S3bucketImagesLink = "https://lukeria-images.s3.eu-central-1.amazonaws.com";
-    private static final String SESSION_TOKEN = "sessionToken";
+    @Value("${aws.s3.bucket-url}")
+    private String S3bucketImagesLink;;    private static final String SESSION_TOKEN = "sessionToken";
     private final ProductClient productClient;
     private final PackageClient packageClient;
     private final ImageClient imageService;
